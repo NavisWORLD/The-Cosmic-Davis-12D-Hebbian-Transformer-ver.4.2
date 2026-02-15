@@ -1,7 +1,12 @@
-"""DropClaw SDK — Permanent Encrypted On-Chain Storage for AI Agents."""
+"""
+DropClaw — Permanent Encrypted On-Chain Storage for AI Agents
 
-from dropclaw.client import VaultClient
-from dropclaw.crypto import encrypt, decrypt
+This is the official PyPI listing for DropClaw.
+Full SDK access is available via the DropClaw gateway.
 
-__all__ = ["VaultClient", "encrypt", "decrypt"]
-__version__ = "1.0.0"
+Website: https://dropclaw.cloud
+"""
+
+__version__ = "1.0.1"
+
+GATEWAY = "https://dropclaw.cloud"
