@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DropClaw Marketplace — Decentralized File Marketplace on Monad</title>
+<title>Planet Express Marketplace — Decentralized File Marketplace on Monad</title>
 <meta name="description" content="Buy and sell encrypted files on-chain. Commit-reveal key exchange with escrow. Fully decentralized on Monad blockchain.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -176,7 +176,7 @@ footer{position:relative;z-index:2;padding:30px 24px;border-top:1px solid var(--
 <body>
 
 <nav>
-  <a href="#browse" class="nav-logo">DROP<span>CLAW</span> <small>MARKETPLACE</small></a>
+  <a href="#browse" class="nav-logo">PLANET<span>EXPRESS</span> <small>MARKETPLACE</small></a>
   <div class="nav-links">
     <a href="#browse">Browse</a>
     <a href="#sell">Sell</a>
@@ -189,7 +189,7 @@ footer{position:relative;z-index:2;padding:30px 24px;border-top:1px solid var(--
 <main id="app"></main>
 <div id="toast-container"></div>
 
-<footer>Built By FARNSWORTH &mdash; Fully Decentralized on Monad &mdash; No Server Required</footer>
+<footer>PLANET EXPRESS MARKETPLACE &mdash; Built By FARNSWORTH &mdash; Fully Decentralized on Monad</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6/dist/ethers.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pako@2/dist/pako.min.js"></script>
@@ -198,7 +198,7 @@ footer{position:relative;z-index:2;padding:30px 24px;border-top:1px solid var(--
 'use strict';
 
 // ═══════════ CONFIG ═══════════
-const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000'; // UPDATE AFTER DEPLOYMENT
+const CONTRACT_ADDRESS = '0xeFc5D4f6ee82849492b1F297134872dA2Abb260d';
 
 const MONAD_CHAIN = {
   chainId: '0x8f',
@@ -208,19 +208,33 @@ const MONAD_CHAIN = {
   blockExplorerUrls: ['https://monadexplorer.com']
 };
 
+const BASE_CHAIN = {
+  chainId: '0x2105',
+  chainName: 'Base',
+  rpcUrls: ['https://mainnet.base.org'],
+  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+  blockExplorerUrls: ['https://basescan.org']
+};
+
+const USDC_BASE = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 const IPFS_GATEWAY = 'https://gateway.pinata.cloud/ipfs/';
 const HEADER_BYTES = 47;
 
-// ABI matching MarketplaceV1.sol exactly
+// Server for x402 multi-chain payments (SOL/BASE)
+const API_SERVER = 'https://dropclaw.cloud';
+
+// ABI matching MarketplaceV2.sol
 const ABI = [
-  "function listFile(string calldata _fileId, string calldata _title, string calldata _description, string calldata _skillFileUri, bytes32 _keyHash, uint256 _price) external returns (uint256)",
+  "function listFile(string calldata _fileId, string calldata _title, string calldata _description, string calldata _skillFileUri, bytes32 _keyHash, uint256 _price) external payable returns (uint256)",
   "function purchase(uint256 _listingId) external payable",
   "function deliverKey(uint256 _listingId, string calldata _keyHex) external",
   "function claimRefund(uint256 _listingId) external",
   "function delistFile(uint256 _listingId) external",
   "function getListing(uint256 _listingId) external view returns (tuple(address seller, string fileId, string title, string description, string skillFileUri, bytes32 keyHash, uint256 price, uint256 createdAt, address buyer, uint256 purchasedAt, bool keyRevealed, bool refunded, bool active))",
   "function listingCount() external view returns (uint256)",
-  "function FEE_BPS() external view returns (uint256)",
+  "function listingFee() external view returns (uint256)",
+  "function buyerFee() external view returns (uint256)",
+  "function DELIVERY_FEE_BPS() external view returns (uint256)",
   "function KEY_DELIVERY_TIMEOUT() external view returns (uint256)",
   "event Listed(uint256 indexed listingId, address indexed seller, string fileId, string title, uint256 price)",
   "event Purchased(uint256 indexed listingId, address indexed buyer, uint256 price)",
@@ -228,6 +242,17 @@ const ABI = [
   "event Refunded(uint256 indexed listingId, address indexed buyer, uint256 amount)",
   "event Delisted(uint256 indexed listingId)"
 ];
+
+// Cached fees
+var cachedListingFee = null;
+var cachedBuyerFee = null;
+async function getFees() {
+  if (!cachedListingFee) {
+    cachedListingFee = await readContract.listingFee();
+    cachedBuyerFee = await readContract.buyerFee();
+  }
+  return { listingFee: cachedListingFee, buyerFee: cachedBuyerFee };
+}
 
 // ═══════════ STATE ═══════════
 let provider = null;
@@ -422,7 +447,9 @@ async function renderListing(id) {
     }
 
     html += '<div class="detail-actions">';
-    if (s === 'available' && !isSeller) html += '<button class="btn btn-primary" id="buy-btn">Buy for ' + formatMON(l.price) + ' MON</button>';
+    var fees = await getFees();
+    var totalBuy = l.price + fees.buyerFee;
+    if (s === 'available' && !isSeller) html += '<button class="btn btn-primary" id="buy-btn">Buy for ' + formatMON(totalBuy) + ' MON</button><div style="font-size:11px;color:var(--text-muted);margin-top:4px">(Price: ' + formatMON(l.price) + ' + Fee: ' + formatMON(fees.buyerFee) + ' MON)</div>';
     if (s === 'pending' && isSeller) html += '<button class="btn btn-primary" id="deliver-btn">Deliver Key</button>';
     if (canRefund) html += '<button class="btn btn-danger" id="refund-btn">Claim Refund</button>';
     if (s === 'available' && isSeller) html += '<button class="btn btn-danger btn-sm" id="delist-btn">Delist</button>';
@@ -433,20 +460,22 @@ async function renderListing(id) {
 
     app.innerHTML = html;
 
-    // Bind buy
+    // Bind buy — pays listing price + buyer fee
     var buyBtn = document.getElementById('buy-btn');
     if (buyBtn) buyBtn.addEventListener('click', async function() {
       if (!contract) { toast('Connect wallet first', 'error'); return; }
       buyBtn.disabled = true; buyBtn.textContent = 'Processing...';
       try {
-        var tx = await contract.purchase(id, { value: l.price });
+        var fees = await getFees();
+        var totalValue = l.price + fees.buyerFee;
+        var tx = await contract.purchase(id, { value: totalValue });
         toast('Transaction sent...', 'info');
         await tx.wait();
         toast('Purchase successful!', 'success');
         renderListing(id);
       } catch(e) {
         toast('Purchase failed: ' + (e.reason || e.message), 'error');
-        buyBtn.disabled = false; buyBtn.textContent = 'Buy for ' + formatMON(l.price) + ' MON';
+        buyBtn.disabled = false; buyBtn.textContent = 'Buy';
       }
     });
 
@@ -521,20 +550,25 @@ async function renderListing(id) {
 }
 
 // -- Sell --
-function renderSell() {
+async function renderSell() {
   if (!account) {
     app.innerHTML = '<h1>Sell a File</h1><div class="empty-state"><h3>Wallet not connected</h3><p>Connect your wallet to list a file for sale.</p></div>';
     return;
   }
+
+  var fees = await getFees();
+  var listingFeeMON = formatMON(fees.listingFee);
+
   app.innerHTML = '<h1>Create Listing</h1><p class="page-sub">List an encrypted file for sale on the marketplace</p>' +
     '<div class="card" style="max-width:640px">' +
+      '<div style="padding:12px 16px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:8px;margin-bottom:20px;font-size:13px;color:#c4b5fd">Listing fee: <strong>' + listingFeeMON + ' MON</strong> (~$30 USD) — paid on-chain when you create the listing. 50% supports the FARNS ecosystem.</div>' +
       '<div class="form-group"><label>File ID</label><input type="text" id="sf-fileId" placeholder="DropClaw file ID (from skill file)"></div>' +
       '<div class="form-group"><label>Title</label><input type="text" id="sf-title" placeholder="Display title"></div>' +
       '<div class="form-group"><label>Description</label><textarea id="sf-desc" placeholder="Describe the file contents..."></textarea></div>' +
       '<div class="form-group"><label>Skill File IPFS CID</label><input type="text" id="sf-uri" placeholder="Qm... or bafy..."><div class="hint">Upload your skill file JSON to IPFS first, then paste the CID</div></div>' +
-      '<div class="form-group"><label>Price (MON)</label><input type="text" id="sf-price" placeholder="0.5"></div>' +
+      '<div class="form-group"><label>Price (MON)</label><input type="text" id="sf-price" placeholder="0.5"><div class="hint">The price buyers will pay for your file</div></div>' +
       '<div class="form-group"><label>Encryption Key (hex)</label><input type="text" id="sf-key" placeholder="Your AES-256 key hex"><div class="hint">Stays secret until you deliver it after purchase. We compute the keccak256 hash for the on-chain commitment.</div><div class="computed" id="sf-hash"></div></div>' +
-      '<button class="btn btn-primary" id="sf-submit">Create Listing</button>' +
+      '<button class="btn btn-primary" id="sf-submit">Create Listing (' + listingFeeMON + ' MON fee)</button>' +
     '</div>';
 
   document.getElementById('sf-key').addEventListener('input', function() {
@@ -561,8 +595,10 @@ function renderSell() {
     try {
       var price = ethers.parseEther(priceStr);
       var keyHash = ethers.keccak256(ethers.toUtf8Bytes(keyHex));
-      var tx = await contract.listFile(fileId, title, desc, uri, keyHash, price);
-      toast('Transaction sent...', 'info');
+      var fees = await getFees();
+      // listFile is payable — must send listing fee
+      var tx = await contract.listFile(fileId, title, desc, uri, keyHash, price, { value: fees.listingFee });
+      toast('Transaction sent (includes ' + formatMON(fees.listingFee) + ' MON listing fee)...', 'info');
       await tx.wait();
       toast('Listing created!', 'success');
       location.hash = '#my-listings';

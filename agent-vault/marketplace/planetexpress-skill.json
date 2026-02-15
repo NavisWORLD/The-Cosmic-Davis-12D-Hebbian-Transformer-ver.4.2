@@ -1,0 +1,88 @@
+{
+  "name": "Planet Express Marketplace",
+  "version": "2.0.0",
+  "description": "Decentralized file marketplace on Monad blockchain. Buy and sell encrypted files with commit-reveal key exchange and escrow. Accepts MON, SOL, and Base USDC via x402 protocol.",
+  "protocol": "x402",
+  "chain": {
+    "name": "Monad",
+    "chainId": 143,
+    "rpcUrl": "https://rpc.monad.xyz"
+  },
+  "contract": {
+    "address": "0xeFc5D4f6ee82849492b1F297134872dA2Abb260d",
+    "type": "MarketplaceV2"
+  },
+  "endpoints": {
+    "browse": {
+      "url": "https://dropclaw.cloud/marketplace/listings",
+      "method": "GET",
+      "description": "Browse all marketplace listings",
+      "price": "free"
+    },
+    "detail": {
+      "url": "https://dropclaw.cloud/marketplace/listing/{id}",
+      "method": "GET",
+      "description": "Get listing detail with pricing in MON/SOL/USDC",
+      "price": "free"
+    },
+    "purchase": {
+      "url": "https://dropclaw.cloud/marketplace/purchase",
+      "method": "POST",
+      "description": "Purchase a listed file. Supports MON, SOL, Base USDC via x402.",
+      "price": "listing price + ~$1 buyer fee",
+      "contentType": "application/json",
+      "input": {
+        "listingId": "integer — the listing ID to purchase",
+        "buyerAddress": "string (optional) — buyer wallet address for tracking"
+      }
+    },
+    "list": {
+      "url": "https://dropclaw.cloud/marketplace/list",
+      "method": "POST",
+      "description": "List a file for sale on the marketplace. Requires $30 listing fee via x402.",
+      "price": "$30 USD listing fee",
+      "contentType": "application/json",
+      "input": {
+        "fileId": "string — DropClaw file ID",
+        "title": "string — display title",
+        "description": "string — file description",
+        "skillFileUri": "string — IPFS CID of skill file JSON",
+        "keyHash": "bytes32 — keccak256 of encryption key hex",
+        "price": "string — price in MON (e.g. '0.5')"
+      }
+    }
+  },
+  "paymentNetworks": [
+    {
+      "network": "eip155:143",
+      "name": "Monad",
+      "asset": "MON (native)",
+      "directContract": true
+    },
+    {
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "name": "Solana",
+      "asset": "SOL (native)",
+      "directContract": false,
+      "facilitated": true
+    },
+    {
+      "network": "eip155:8453",
+      "name": "Base",
+      "asset": "USDC",
+      "directContract": false,
+      "facilitated": true
+    }
+  ],
+  "frontend": {
+    "ipfs": "QmTF1Pacu2nTiaF8N19PEb88dxgqdAwYGpMyCPB5zJ9h3J",
+    "domain": "planetexpress.sol",
+    "gateway": "https://ipfs.io/ipfs/QmTF1Pacu2nTiaF8N19PEb88dxgqdAwYGpMyCPB5zJ9h3J"
+  },
+  "fees": {
+    "listingFee": "$30 USD (dynamic in MON)",
+    "buyerFee": "$1 USD (dynamic in MON)",
+    "deliveryFee": "2.5% of listing price",
+    "farnsBuyback": "50% of protocol fees go to FARNS token buyback"
+  }
+}
