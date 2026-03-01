@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/core/learning/synergy.py
 cosmos Synergy Engine.
+=======
+Farnsworth Synergy Engine.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/learning/synergy.py
 
 "The whole is greater than the sum of its parts, especially when the parts are explosive!"
 
@@ -16,12 +20,21 @@ import asyncio
 from typing import Dict, Any, List
 from loguru import logger
 
+<<<<<<< HEAD:cosmos/core/learning/synergy.py
 from cosmos.core.nexus import nexus, Signal, SignalType
 from cosmos.core.neuromorphic.engine import neuro_engine
 from cosmos.core.learning.continual import continual_learner
 
 from cosmos.memory.project_tracking import ProjectTracker
 from cosmos.core.learning.paths import learning_copilot
+=======
+from farnsworth.core.nexus import nexus, Signal, SignalType
+from farnsworth.core.neuromorphic.engine import neuro_engine
+from farnsworth.core.learning.continual import continual_learner
+
+from farnsworth.memory.project_tracking import ProjectTracker
+from farnsworth.core.learning.paths import learning_copilot
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/learning/synergy.py
 
 class SynergyEngine:
     def __init__(self, project_tracker: ProjectTracker):

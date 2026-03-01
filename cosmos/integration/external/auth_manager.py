@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/integration/external/auth_manager.py
 cosmos Authentication Manager.
+=======
+Farnsworth Authentication Manager.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/auth_manager.py
 
 Manages secure storage and interactive retrieval of credentials for external integrations.
 Uses the system keyring service for security.
@@ -18,17 +22,28 @@ except ImportError:
     logger.warning("Keyring not installed. Credentials will be stored in environment variables only.")
 
 class AuthManager:
+<<<<<<< HEAD:cosmos/integration/external/auth_manager.py
     def __init__(self, service_prefix: str = "cosmos_integration"):
+=======
+    def __init__(self, service_prefix: str = "farnsworth_integration"):
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/auth_manager.py
         self.prefix = service_prefix
 
     def get_credential(self, provider_name: str, key_name: str = "api_key") -> Optional[str]:
         """
         Retrieve a credential. 
         Priority:
+<<<<<<< HEAD:cosmos/integration/external/auth_manager.py
         1. Environment Variable (cosmos_{PROVIDER}_{KEY})
         2. System Keyring
         """
         env_var = f"cosmos_{provider_name.upper()}_{key_name.upper()}"
+=======
+        1. Environment Variable (FARNSWORTH_{PROVIDER}_{KEY})
+        2. System Keyring
+        """
+        env_var = f"FARNSWORTH_{provider_name.upper()}_{key_name.upper()}"
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/auth_manager.py
         val = os.environ.get(env_var)
         if val:
             return val

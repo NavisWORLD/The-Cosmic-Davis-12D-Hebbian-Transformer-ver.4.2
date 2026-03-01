@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/integration/external/db_manager.py
 cosmos Database Manager - Universal SQL Access.
+=======
+Farnsworth Database Manager - Universal SQL Access.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/db_manager.py
 
 "Data is the new oil, and I'm the one who knows how to refine it."
 

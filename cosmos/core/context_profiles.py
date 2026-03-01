@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/core/context_profiles.py
 cosmos Context Profiles - Multi-Context Management
+=======
+Farnsworth Context Profiles - Multi-Context Management
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/context_profiles.py
 
 "Be many people at once! Like a quantum superposition of personalities!"
 

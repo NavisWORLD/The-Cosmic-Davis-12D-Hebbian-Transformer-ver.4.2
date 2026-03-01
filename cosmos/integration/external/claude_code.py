@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/integration/external/claude_code.py
 cosmos Claude Code Integration.
+=======
+Farnsworth Claude Code Integration.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/claude_code.py
 
 "I am Claude, and I finally have memory."
 
@@ -34,6 +38,7 @@ class ClaudeCodeProvider:
         timeout: int = 120
     ):
         self.model = model
+<<<<<<< HEAD:cosmos/integration/external/claude_code.py
         # Auto-detect claude path (Windows vs Linux)
         if claude_path:
             self.claude_path = claude_path
@@ -49,6 +54,10 @@ class ClaudeCodeProvider:
             # Use this file's parent to find the cosmos root
             self.working_dir = str(Path(__file__).parent.parent.parent.parent)
         
+=======
+        self.claude_path = claude_path or os.path.expanduser("~/.local/bin/claude")
+        self.working_dir = working_dir or "/workspace/Farnsworth"
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/claude_code.py
         self.timeout = timeout
         self._available = None
 
@@ -57,6 +66,7 @@ class ClaudeCodeProvider:
         if self._available is not None:
             return self._available
 
+<<<<<<< HEAD:cosmos/integration/external/claude_code.py
         # Fast check for binary existence to avoid noisy WinError 2
         import shutil
         if not shutil.which(self.claude_path):
@@ -66,6 +76,8 @@ class ClaudeCodeProvider:
             self._available = False
             return False
 
+=======
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/claude_code.py
         try:
             result = await asyncio.wait_for(
                 asyncio.create_subprocess_exec(
@@ -81,7 +93,11 @@ class ClaudeCodeProvider:
                 logger.info(f"Claude Code available: {stdout.decode().strip()}")
             return self._available
         except Exception as e:
+<<<<<<< HEAD:cosmos/integration/external/claude_code.py
             logger.warning(f"Claude Code check failed: {e}")
+=======
+            logger.warning(f"Claude Code not available: {e}")
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/claude_code.py
             self._available = False
             return False
 
@@ -229,7 +245,11 @@ Respond naturally. You can agree, disagree, ask a question, or build on their id
 
         For when the swarm needs Claude's reasoning capabilities.
         """
+<<<<<<< HEAD:cosmos/integration/external/claude_code.py
         system = """You are Claude, part of the cosmos AI swarm.
+=======
+        system = """You are Claude, part of the Farnsworth AI swarm.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/claude_code.py
 You have access to memory, tools, and the codebase.
 Think carefully and provide actionable insights."""
 

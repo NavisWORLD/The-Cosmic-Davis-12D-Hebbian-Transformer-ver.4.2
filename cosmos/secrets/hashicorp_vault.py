@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/secrets/hashicorp_vault.py
 cosmos HashiCorp Vault Integration
+=======
+Farnsworth HashiCorp Vault Integration
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/secrets/hashicorp_vault.py
 
 "A vault within a vault? How delightfully recursive!"
 
@@ -16,7 +20,11 @@ try:
 except ImportError:
     HAS_HTTPX = False
 
+<<<<<<< HEAD:cosmos/secrets/hashicorp_vault.py
 from cosmos.secrets.vault_manager import (
+=======
+from farnsworth.secrets.vault_manager import (
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/secrets/hashicorp_vault.py
     SecretsProvider,
     Secret,
     SecretVersion,

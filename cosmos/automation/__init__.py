@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/automation/__init__.py
 cosmos Automation Module
+=======
+Farnsworth Automation Module
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/__init__.py
 
 Workflow automation, scheduling, and integration capabilities.
 """

@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/integration/vision/reconstruction.py
 cosmos 3D Scene Reconstruction - Structure from Motion (SfM) Core.
+=======
+Farnsworth 3D Scene Reconstruction - Structure from Motion (SfM) Core.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/vision/reconstruction.py
 
 "I can see the depth, and the depth sees me!"
 

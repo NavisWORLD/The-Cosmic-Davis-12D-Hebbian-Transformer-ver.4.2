@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/tools/productivity/__init__.py
 cosmos Productivity Tools
+=======
+Farnsworth Productivity Tools
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/productivity/__init__.py
 
 A collection of productivity utilities:
 - Focus Mode (Cone of Silence) - Distraction blocking

@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/tools/productivity/mimic.py
 cosmos Mimic - Voice Clone & TTS Engine
+=======
+Farnsworth Mimic - Voice Clone & TTS Engine
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/productivity/mimic.py
 -------------------------------------------
 
 "Good news everyone! I can now speak in my own voice!"

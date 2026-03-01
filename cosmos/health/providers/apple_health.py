@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/health/providers/apple_health.py
 cosmos Apple Health Provider
+=======
+Farnsworth Apple Health Provider
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/providers/apple_health.py
 
 Integration with Apple Health via exported XML files.
 Since Apple Health doesn't have a direct API, this parses export.xml files.
@@ -246,7 +250,11 @@ class AppleHealthProvider(HealthProvider):
         except ValueError:
             try:
                 return datetime.fromisoformat(date_str.replace(" ", "T"))
+<<<<<<< HEAD:cosmos/health/providers/apple_health.py
             except:
+=======
+            except Exception:
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/providers/apple_health.py
                 return None
 
     async def _fetch_daily_summary_impl(self, target_date: date) -> Optional[DailySummary]:

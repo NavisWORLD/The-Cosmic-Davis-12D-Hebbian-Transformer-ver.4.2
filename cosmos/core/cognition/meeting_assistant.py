@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/core/cognition/meeting_assistant.py
 cosmos Meeting Assistant.
+=======
+Farnsworth Meeting Assistant.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/cognition/meeting_assistant.py
 
 "Good news! I've prepared a briefing so you can pretend to listen!"
 
@@ -14,8 +18,13 @@ from typing import List, Dict, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 
+<<<<<<< HEAD:cosmos/core/cognition/meeting_assistant.py
 from cosmos.memory.project_tracking import ProjectTracker, Task
 from cosmos.core.nexus import nexus, Signal, SignalType
+=======
+from farnsworth.memory.project_tracking import ProjectTracker, Task
+from farnsworth.core.nexus import nexus, Signal, SignalType
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/cognition/meeting_assistant.py
 
 @dataclass
 class MeetingContext:

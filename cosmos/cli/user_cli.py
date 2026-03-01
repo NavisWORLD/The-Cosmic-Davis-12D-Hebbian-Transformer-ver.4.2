@@ -1,10 +1,19 @@
 """
+<<<<<<< HEAD:cosmos/cli/user_cli.py
 cosmos Direct-to-User CLI
 
 "Good news, everyone! I've made cosmos accessible to mere mortals!"
 
 A user-friendly command-line interface that provides easy access to all
 cosmos features without requiring technical knowledge.
+=======
+Farnsworth Direct-to-User CLI
+
+"Good news, everyone! I've made Farnsworth accessible to mere mortals!"
+
+A user-friendly command-line interface that provides easy access to all
+Farnsworth features without requiring technical knowledge.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 """
 
 import asyncio
@@ -46,9 +55,15 @@ class MenuItem:
     requires_setup: bool = False
 
 
+<<<<<<< HEAD:cosmos/cli/user_cli.py
 class cosmosCLI:
     """
     User-friendly CLI wrapper for cosmos.
+=======
+class FarnsworthCLI:
+    """
+    User-friendly CLI wrapper for Farnsworth.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 
     Provides an intuitive interface for:
     - Health tracking and insights
@@ -249,11 +264,19 @@ class cosmosCLI:
         if self._initialized:
             return
 
+<<<<<<< HEAD:cosmos/cli/user_cli.py
         print("\nInitializing cosmos...")
 
         # Initialize memory system
         try:
             from cosmos.memory.memory_system import MemorySystem
+=======
+        print("\nInitializing Farnsworth...")
+
+        # Initialize memory system
+        try:
+            from farnsworth.memory.memory_system import MemorySystem
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
             self._memory = MemorySystem(data_dir=str(self.data_dir))
             await self._memory.initialize()
             print("  Memory system ready")
@@ -262,7 +285,11 @@ class cosmosCLI:
 
         # Initialize health manager
         try:
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.health.providers import HealthProviderManager
+=======
+            from farnsworth.health.providers import HealthProviderManager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
             self._health_manager = HealthProviderManager()
             print("  Health tracking ready")
         except Exception as e:
@@ -276,7 +303,11 @@ class cosmosCLI:
         banner = """
     ╔═══════════════════════════════════════════════════════════╗
     ║                                                           ║
+<<<<<<< HEAD:cosmos/cli/user_cli.py
     ║     cosmos - Your Personal AI Companion               ║
+=======
+    ║     FARNSWORTH - Your Personal AI Companion               ║
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
     ║                                                           ║
     ║     "Good news, everyone!"                                ║
     ║                                                           ║
@@ -480,8 +511,13 @@ class cosmosCLI:
             return
 
         try:
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.health.models import MetricType
             from cosmos.health.analysis import HealthAnalysisEngine
+=======
+            from farnsworth.health.models import MetricType
+            from farnsworth.health.analysis import HealthAnalysisEngine
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 
             # Get today's summary
             today = date.today()
@@ -515,7 +551,11 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.health.nutrition import NutritionManager
+=======
+            from farnsworth.health.nutrition import NutritionManager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 
             nutrition = NutritionManager(str(self.data_dir / "nutrition"))
 
@@ -563,7 +603,11 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.health.swarm_advisor import SwarmHealthAdvisor
+=======
+            from farnsworth.health.swarm_advisor import SwarmHealthAdvisor
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 
             advisor = SwarmHealthAdvisor()
 
@@ -604,7 +648,11 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.health.ocr_parser import DeepSeekOCRParser
+=======
+            from farnsworth.health.ocr_parser import DeepSeekOCRParser
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 
             parser = DeepSeekOCRParser()
 
@@ -660,7 +708,11 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.health.models import HealthGoal, GoalType, GoalPeriod
+=======
+            from farnsworth.health.models import HealthGoal, GoalType, GoalPeriod
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 
             # Goal type
             goal_types = list(GoalType)
@@ -830,7 +882,11 @@ class cosmosCLI:
         output_path = output_path or "memories_export.json"
 
         try:
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.memory.conversation_export import ConversationExporter
+=======
+            from farnsworth.memory.conversation_export import ConversationExporter
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 
             exporter = ConversationExporter(str(self.data_dir))
             await exporter.export_all(output_path, format="json")
@@ -876,7 +932,11 @@ class cosmosCLI:
 
         try:
             # Use swarm orchestrator to get response
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
+=======
+            from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 
             orchestrator = SwarmOrchestrator()
 
@@ -908,7 +968,11 @@ class cosmosCLI:
         print("\nAssigning task to agents...")
 
         try:
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
+=======
+            from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 
             orchestrator = SwarmOrchestrator()
             result = await orchestrator.process(query=task)
@@ -941,7 +1005,11 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.automation.workflow_builder import WorkflowBuilder
+=======
+            from farnsworth.automation.workflow_builder import WorkflowBuilder
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 
             builder = WorkflowBuilder()
 
@@ -982,7 +1050,11 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.automation.workflow_builder import WorkflowBuilder
+=======
+            from farnsworth.automation.workflow_builder import WorkflowBuilder
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 
             builder = WorkflowBuilder()
             workflows = builder.list_workflows()
@@ -1020,10 +1092,17 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.automation.n8n_enhanced import EnhancedN8nIntegration
 
             print("\nn8n is a powerful workflow automation tool.")
             print("You can connect cosmos to trigger and receive n8n workflows.\n")
+=======
+            from farnsworth.automation.n8n_enhanced import EnhancedN8nIntegration
+
+            print("\nn8n is a powerful workflow automation tool.")
+            print("You can connect Farnsworth to trigger and receive n8n workflows.\n")
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
 
             base_url = input("n8n URL (e.g., http://localhost:5678): ").strip()
             api_key = input("n8n API Key: ").strip()
@@ -1147,11 +1226,19 @@ class cosmosCLI:
 
         # Check for various integrations
         try:
+<<<<<<< HEAD:cosmos/cli/user_cli.py
             from cosmos.core.swarm.p2p import swarm_fabric
             p2p_status = "" if swarm_fabric.peers else ""
             print(f"\n{p2p_status} P2P Network")
             print(f"   Peers: {len(swarm_fabric.peers)}")
         except:
+=======
+            from farnsworth.core.swarm.p2p import swarm_fabric
+            p2p_status = "" if swarm_fabric.peers else ""
+            print(f"\n{p2p_status} P2P Network")
+            print(f"   Peers: {len(swarm_fabric.peers)}")
+        except Exception:
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
             print(f"\n P2P Network (not running)")
 
         input("\nPress Enter to continue...")
@@ -1199,7 +1286,11 @@ class cosmosCLI:
 
 async def run_user_cli(data_dir: Optional[str] = None):
     """Entry point for the user CLI."""
+<<<<<<< HEAD:cosmos/cli/user_cli.py
     cli = cosmosCLI(data_dir=data_dir)
+=======
+    cli = FarnsworthCLI(data_dir=data_dir)
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/user_cli.py
     await cli.run()
 
 

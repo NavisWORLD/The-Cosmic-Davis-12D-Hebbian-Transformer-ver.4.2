@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/integration/email/mailbox_filter.py
 cosmos Mailbox Filter
+=======
+Farnsworth Mailbox Filter
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/mailbox_filter.py
 
 "Good news, everyone! I can sort your email faster than you can say 'spam'!"
 

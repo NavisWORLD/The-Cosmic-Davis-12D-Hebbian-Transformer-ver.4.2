@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/secrets/azure_keyvault.py
 cosmos Azure Key Vault Integration
+=======
+Farnsworth Azure Key Vault Integration
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/secrets/azure_keyvault.py
 
 "Microsoft's vault? I hope it doesn't need rebooting!"
 
@@ -19,7 +23,11 @@ try:
 except ImportError:
     HAS_AZURE = False
 
+<<<<<<< HEAD:cosmos/secrets/azure_keyvault.py
 from cosmos.secrets.vault_manager import (
+=======
+from farnsworth.secrets.vault_manager import (
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/secrets/azure_keyvault.py
     SecretsProvider,
     Secret,
     SecretVersion,

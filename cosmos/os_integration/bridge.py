@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/os_integration/bridge.py
 cosmos Agentic OS Integration.
+=======
+Farnsworth Agentic OS Integration.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/os_integration/bridge.py
 
 "The computer is no longer a tool. It is an extension of the Swarm."
 
@@ -17,10 +21,19 @@ from typing import Dict, Any, Optional
 from loguru import logger
 
 # Conditional imports for cross-platform safety
+<<<<<<< HEAD:cosmos/os_integration/bridge.py
 # Lazy-loaded inside methods to prevent startup hang
 pyautogui = None
 
 from cosmos.core.nexus import nexus, Signal, SignalType
+=======
+try:
+    import pyautogui
+except ImportError:
+    pyautogui = None
+
+from farnsworth.core.nexus import nexus, Signal, SignalType
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/os_integration/bridge.py
 
 class SystemContext:
     """Captures the holistic state of the machine."""
@@ -80,6 +93,7 @@ class OSBridge:
         """Safe sandbox for OS-level actuations."""
         logger.info(f"Agentic OS: Executing '{action}'")
         
+<<<<<<< HEAD:cosmos/os_integration/bridge.py
         # Lazy load pyautogui only when needed for actions
         global pyautogui
         if pyautogui is None:
@@ -89,6 +103,8 @@ class OSBridge:
             except ImportError:
                 logger.warning("Agentic OS: pyautogui not available")
 
+=======
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/os_integration/bridge.py
         if action == "launch_app":
             # subprocess.Popen...
             pass

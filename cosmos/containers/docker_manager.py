@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/containers/docker_manager.py
 cosmos Docker Manager
+=======
+Farnsworth Docker Manager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/containers/docker_manager.py
 
 "Containers within containers! It's like Russian nesting dolls, but for code!"
 
@@ -103,7 +107,11 @@ class ContainerStats:
 
 class DockerManager:
     """
+<<<<<<< HEAD:cosmos/containers/docker_manager.py
     Comprehensive Docker management for cosmos.
+=======
+    Comprehensive Docker management for Farnsworth.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/containers/docker_manager.py
 
     Features:
     - Container lifecycle management

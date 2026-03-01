@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/secrets/vault_manager.py
 cosmos Secrets and Credentials Vault Manager
+=======
+Farnsworth Secrets and Credentials Vault Manager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/secrets/vault_manager.py
 
 "I've hidden my secrets so well, even I can't find them!"
 
@@ -181,7 +185,11 @@ class LocalVaultProvider(SecretsProvider):
 
     def _derive_key(self, password: str) -> Fernet:
         """Derive encryption key from password."""
+<<<<<<< HEAD:cosmos/secrets/vault_manager.py
         salt = b"cosmos_vault_salt"  # In production, use random salt
+=======
+        salt = b"farnsworth_vault_salt"  # In production, use random salt
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/secrets/vault_manager.py
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
@@ -336,7 +344,11 @@ class VaultManager:
         provider: str = None,
         version: int = None,
         actor: str = "system",
+<<<<<<< HEAD:cosmos/secrets/vault_manager.py
         service: str = "cosmos",
+=======
+        service: str = "farnsworth",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/secrets/vault_manager.py
     ) -> Optional[Secret]:
         """Get a secret by path."""
         prov = self.get_provider(provider)
@@ -407,7 +419,11 @@ class VaultManager:
             secret_path=path,
             action="create",
             actor=actor,
+<<<<<<< HEAD:cosmos/secrets/vault_manager.py
             service="cosmos",
+=======
+            service="farnsworth",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/secrets/vault_manager.py
             timestamp=datetime.utcnow(),
             success=success,
         ))
@@ -452,7 +468,11 @@ class VaultManager:
             secret_path=path,
             action="update",
             actor=actor,
+<<<<<<< HEAD:cosmos/secrets/vault_manager.py
             service="cosmos",
+=======
+            service="farnsworth",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/secrets/vault_manager.py
             timestamp=datetime.utcnow(),
             success=success,
         ))
@@ -478,7 +498,11 @@ class VaultManager:
             secret_path=path,
             action="delete",
             actor=actor,
+<<<<<<< HEAD:cosmos/secrets/vault_manager.py
             service="cosmos",
+=======
+            service="farnsworth",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/secrets/vault_manager.py
             timestamp=datetime.utcnow(),
             success=success,
         ))
@@ -545,7 +569,11 @@ class VaultManager:
             secret_path=path,
             action="rotate",
             actor=actor,
+<<<<<<< HEAD:cosmos/secrets/vault_manager.py
             service="cosmos",
+=======
+            service="farnsworth",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/secrets/vault_manager.py
             timestamp=datetime.utcnow(),
             success=success,
         ))

@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/health/providers/base.py
 cosmos Health Provider Base Classes
+=======
+Farnsworth Health Provider Base Classes
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/providers/base.py
 
 Abstract base class for health data providers, extending BioInterfaceProvider
 with OAuth support, historical data fetching, and real-time streaming.
@@ -19,7 +23,11 @@ from ..models import (
 )
 
 try:
+<<<<<<< HEAD:cosmos/health/providers/base.py
     from cosmos.integration.bio.interface import (
+=======
+    from farnsworth.integration.bio.interface import (
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/providers/base.py
         BioInterfaceProvider,
         BioDataPacket,
     )

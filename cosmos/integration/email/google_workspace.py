@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/integration/email/google_workspace.py
 cosmos Google Workspace Integration
+=======
+Farnsworth Google Workspace Integration
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/google_workspace.py
 
 "Good news, everyone! I can manage your Google Workspace email!"
 
@@ -155,7 +159,11 @@ class GoogleWorkspaceIntegration:
             "scope": scope_str,
             "access_type": "offline",
             "prompt": "consent",
+<<<<<<< HEAD:cosmos/integration/email/google_workspace.py
             "state": "cosmos_google",
+=======
+            "state": "farnsworth_google",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/google_workspace.py
         }
 
         query = "&".join(f"{k}={v}" for k, v in params.items())
@@ -677,7 +685,11 @@ class GoogleWorkspaceIntegration:
 
 1. Go to https://console.cloud.google.com
 2. Click "Select a project" > "New Project"
+<<<<<<< HEAD:cosmos/integration/email/google_workspace.py
 3. Name your project (e.g., "cosmos Integration")
+=======
+3. Name your project (e.g., "Farnsworth Integration")
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/google_workspace.py
 4. Click "Create"
 
 ## Step 2: Enable Required APIs
@@ -693,7 +705,11 @@ class GoogleWorkspaceIntegration:
 1. Go to "APIs & Services" > "OAuth consent screen"
 2. Select "Internal" (for Workspace users) or "External"
 3. Fill in app information:
+<<<<<<< HEAD:cosmos/integration/email/google_workspace.py
    - App name: "cosmos Integration"
+=======
+   - App name: "Farnsworth Integration"
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/google_workspace.py
    - User support email: your email
    - Developer contact: your email
 4. Add scopes:
@@ -706,7 +722,11 @@ class GoogleWorkspaceIntegration:
 1. Go to "APIs & Services" > "Credentials"
 2. Click "Create Credentials" > "OAuth client ID"
 3. Application type: "Desktop app" or "Web application"
+<<<<<<< HEAD:cosmos/integration/email/google_workspace.py
 4. Name: "cosmos OAuth Client"
+=======
+4. Name: "Farnsworth OAuth Client"
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/google_workspace.py
 5. For Web app, add redirect URI: http://localhost:8400/callback
 6. Click "Create"
 7. Download the credentials JSON file
@@ -717,7 +737,11 @@ For automated/server-side access:
 
 1. Go to "APIs & Services" > "Credentials"
 2. Click "Create Credentials" > "Service account"
+<<<<<<< HEAD:cosmos/integration/email/google_workspace.py
 3. Name: "cosmos Service Account"
+=======
+3. Name: "Farnsworth Service Account"
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/google_workspace.py
 4. Click "Create and Continue"
 5. Grant role: "Editor" (or custom role with Gmail permissions)
 6. Click "Done"
@@ -739,7 +763,11 @@ For service account to access user mailboxes:
    - https://mail.google.com/
 6. Click "Authorize"
 
+<<<<<<< HEAD:cosmos/integration/email/google_workspace.py
 ## Step 6: Configure cosmos
+=======
+## Step 6: Configure Farnsworth
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/google_workspace.py
 
 Add to your environment or config:
 
@@ -757,7 +785,11 @@ GOOGLE_DELEGATED_USER=admin@yourdomain.com
 ## Step 7: Test Connection
 
 ```python
+<<<<<<< HEAD:cosmos/integration/email/google_workspace.py
 from cosmos.integration.email.google_workspace import GoogleWorkspaceIntegration, GoogleConfig
+=======
+from farnsworth.integration.email.google_workspace import GoogleWorkspaceIntegration, GoogleConfig
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/google_workspace.py
 
 # OAuth flow
 config = GoogleConfig(

@@ -1,9 +1,17 @@
 """
+<<<<<<< HEAD:cosmos/plugins/base.py
 cosmos Plugin Base Classes
 
 "With my new invention, the plugin system, anyone can add to my genius!"
 
 Base classes and interfaces for the cosmos plugin system.
+=======
+Farnsworth Plugin Base Classes
+
+"With my new invention, the plugin system, anyone can add to my genius!"
+
+Base classes and interfaces for the Farnsworth plugin system.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/plugins/base.py
 """
 
 import asyncio
@@ -70,9 +78,15 @@ class PluginMetadata:
 
 class Plugin(ABC):
     """
+<<<<<<< HEAD:cosmos/plugins/base.py
     Base class for cosmos plugins.
 
     Plugins extend cosmos's functionality by providing:
+=======
+    Base class for Farnsworth plugins.
+
+    Plugins extend Farnsworth's functionality by providing:
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/plugins/base.py
     - New agents and tools
     - Data providers and integrations
     - UI components
@@ -231,7 +245,11 @@ class Plugin(ABC):
 
 class PluginManager:
     """
+<<<<<<< HEAD:cosmos/plugins/base.py
     Manages cosmos plugins.
+=======
+    Manages Farnsworth plugins.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/plugins/base.py
 
     Handles:
     - Plugin discovery and loading

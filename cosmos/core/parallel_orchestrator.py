@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/core/parallel_orchestrator.py
 cosmos Parallel AI Orchestrator.
+=======
+Farnsworth Parallel AI Orchestrator.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/parallel_orchestrator.py
 
 "Why use one brain when you can have a committee that actually agrees for once?"
 
@@ -11,7 +15,11 @@ and fusing the results.
 import asyncio
 from typing import List, Dict, Any, Callable
 from loguru import logger
+<<<<<<< HEAD:cosmos/core/parallel_orchestrator.py
 from cosmos.core.nexus import nexus, Signal, SignalType
+=======
+from farnsworth.core.nexus import nexus, Signal, SignalType
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/parallel_orchestrator.py
 
 class ParallelAIOrchestrator:
     def __init__(self, backends: List[Callable]):

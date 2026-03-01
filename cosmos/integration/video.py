@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/integration/video.py
 cosmos Video Module v2.1 - Advanced Spatio-Temporal Flow Analysis.
+=======
+Farnsworth Video Module v2.1 - Advanced Spatio-Temporal Flow Analysis.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/video.py
 
 "I can see the wind, and the code within the wind!"
 
@@ -18,8 +22,13 @@ from typing import List, Optional, Dict, Any, Tuple
 from dataclasses import dataclass, field
 from loguru import logger
 
+<<<<<<< HEAD:cosmos/integration/video.py
 from cosmos.integration.vision import VisionModule, VisionTask, ImageInput
 from cosmos.integration.multimodal import MultimodalProcessor
+=======
+from farnsworth.integration.vision import VisionModule, VisionTask, ImageInput
+from farnsworth.integration.multimodal import MultimodalProcessor
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/video.py
 
 @dataclass
 class VisualEvent:

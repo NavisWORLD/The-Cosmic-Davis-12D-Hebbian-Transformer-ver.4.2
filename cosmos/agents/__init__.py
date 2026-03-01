@@ -58,7 +58,11 @@ from cosmos.agents.filesystem_agent import (
     FileChange,
     SearchResult as FileSearchResult,
 )
+<<<<<<< HEAD:cosmos/agents/__init__.py
 from cosmos.agents.proactive_agent import ProactiveAgent, Suggestion
+=======
+from farnsworth.agents.proactive_agent import ProactiveAgent, Suggestion
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/agents/__init__.py
 
 # Q2 2025 - Agent Collaboration
 from cosmos.agents.agent_debates import (

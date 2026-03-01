@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/core/cognition/sequential_thinking.py
 cosmos Sequential Thinking - Systematic Reasoning Tool.
+=======
+Farnsworth Sequential Thinking - Systematic Reasoning Tool.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/cognition/sequential_thinking.py
 
 "Thinking about thinking is the only way to ensure we're actually thinking."
 

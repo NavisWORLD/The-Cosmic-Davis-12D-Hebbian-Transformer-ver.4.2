@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/health/providers/fitbit.py
 cosmos Fitbit Health Provider
+=======
+Farnsworth Fitbit Health Provider
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/providers/fitbit.py
 
 Integration with Fitbit Web API for health metrics.
 Requires OAuth 2.0 authentication.

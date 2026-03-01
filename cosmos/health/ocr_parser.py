@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/health/ocr_parser.py
 cosmos DeepSeek OCR2 Integration
+=======
+Farnsworth DeepSeek OCR2 Integration
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/ocr_parser.py
 
 Parses health documents (lab results, prescriptions, nutrition labels)
 using DeepSeek OCR2 vision model via DeepInfra or local deployment.

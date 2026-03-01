@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/dns/ssl_certificates.py
 cosmos SSL Certificate Manager
+=======
+Farnsworth SSL Certificate Manager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/dns/ssl_certificates.py
 
 "I've encrypted everything! Even my lab coat has a certificate!"
 
@@ -76,7 +80,11 @@ class CertificateAlert:
 
 class SSLManager:
     """
+<<<<<<< HEAD:cosmos/dns/ssl_certificates.py
     SSL/TLS certificate management for cosmos.
+=======
+    SSL/TLS certificate management for Farnsworth.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/dns/ssl_certificates.py
 
     Features:
     - Certificate inspection

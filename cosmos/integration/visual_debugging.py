@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/integration/visual_debugging.py
 cosmos Visual Debugging - Screenshot & Diagram Analysis.
+=======
+Farnsworth Visual Debugging - Screenshot & Diagram Analysis.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/visual_debugging.py
 
 "Let me look at that with my special eyes!"
 
@@ -15,7 +19,11 @@ from dataclasses import dataclass, field
 from typing import List, Optional, Dict, Any
 from loguru import logger
 
+<<<<<<< HEAD:cosmos/integration/visual_debugging.py
 from cosmos.integration.vision import VisionModule, VisionTask, ImageInput
+=======
+from farnsworth.integration.vision import VisionModule, VisionTask, ImageInput
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/visual_debugging.py
 
 @dataclass
 class UIElement:

@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/tools/security/header_analyzer.py
 cosmos Email Header Analyzer
+=======
+Farnsworth Email Header Analyzer
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/security/header_analyzer.py
 
 "Good news, everyone! I can trace emails back through the tubes of the internet!"
 

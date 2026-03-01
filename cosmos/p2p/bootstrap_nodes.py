@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/p2p/bootstrap_nodes.py
 cosmos Global Bootstrap Nodes for P2P Discovery
+=======
+Farnsworth Global Bootstrap Nodes for P2P Discovery
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/p2p/bootstrap_nodes.py
 
 "Good news, everyone! I've created a network of relay points
  across the entire galaxy... well, across the internet at least!"
@@ -135,32 +139,55 @@ class BootstrapNodeManager:
     - Trust scoring
     """
 
+<<<<<<< HEAD:cosmos/p2p/bootstrap_nodes.py
     # Official cosmos bootstrap nodes (simulated)
     OFFICIAL_NODES = [
         {
             "id": "cosmos-us-east-1",
             "address": "bootstrap-us-east.cosmos.ai",
+=======
+    # Official Farnsworth bootstrap nodes (simulated)
+    OFFICIAL_NODES = [
+        {
+            "id": "farnsworth-us-east-1",
+            "address": "bootstrap-us-east.farnsworth.ai",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/p2p/bootstrap_nodes.py
             "port": 4001,
             "region": "us-east",
             "is_official": True,
         },
         {
+<<<<<<< HEAD:cosmos/p2p/bootstrap_nodes.py
             "id": "cosmos-us-west-1",
             "address": "bootstrap-us-west.cosmos.ai",
+=======
+            "id": "farnsworth-us-west-1",
+            "address": "bootstrap-us-west.farnsworth.ai",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/p2p/bootstrap_nodes.py
             "port": 4001,
             "region": "us-west",
             "is_official": True,
         },
         {
+<<<<<<< HEAD:cosmos/p2p/bootstrap_nodes.py
             "id": "cosmos-eu-1",
             "address": "bootstrap-eu.cosmos.ai",
+=======
+            "id": "farnsworth-eu-1",
+            "address": "bootstrap-eu.farnsworth.ai",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/p2p/bootstrap_nodes.py
             "port": 4001,
             "region": "eu-west",
             "is_official": True,
         },
         {
+<<<<<<< HEAD:cosmos/p2p/bootstrap_nodes.py
             "id": "cosmos-asia-1",
             "address": "bootstrap-asia.cosmos.ai",
+=======
+            "id": "farnsworth-asia-1",
+            "address": "bootstrap-asia.farnsworth.ai",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/p2p/bootstrap_nodes.py
             "port": 4001,
             "region": "asia-pacific",
             "is_official": True,

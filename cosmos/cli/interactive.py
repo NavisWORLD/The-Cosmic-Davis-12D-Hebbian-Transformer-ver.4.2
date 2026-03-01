@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/cli/interactive.py
 cosmos Interactive Shell
+=======
+Farnsworth Interactive Shell
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/interactive.py
 
 An enhanced interactive shell with history, autocomplete, and rich output.
 """
@@ -25,7 +29,11 @@ class Command:
 
 class InteractiveShell:
     """
+<<<<<<< HEAD:cosmos/cli/interactive.py
     Enhanced interactive shell for cosmos.
+=======
+    Enhanced interactive shell for Farnsworth.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/interactive.py
 
     Features:
     - Command history with persistence
@@ -37,7 +45,11 @@ class InteractiveShell:
     def __init__(self, data_dir: Optional[str] = None):
         """Initialize the interactive shell."""
         self.data_dir = Path(data_dir or "./data")
+<<<<<<< HEAD:cosmos/cli/interactive.py
         self.history_file = self.data_dir / ".cosmos_history"
+=======
+        self.history_file = self.data_dir / ".farnsworth_history"
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/interactive.py
 
         self.commands: Dict[str, Command] = {}
         self.running = False
@@ -151,11 +163,19 @@ class InteractiveShell:
             for alias in command.aliases:
                 self.commands[alias] = command
 
+<<<<<<< HEAD:cosmos/cli/interactive.py
     async def run(self, prompt: str = "cosmos> "):
         """Run the interactive shell."""
         self.running = True
 
         print("\ncosmos Interactive Shell")
+=======
+    async def run(self, prompt: str = "farnsworth> "):
+        """Run the interactive shell."""
+        self.running = True
+
+        print("\nFarnsworth Interactive Shell")
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/interactive.py
         print("Type 'help' for available commands.\n")
 
         while self.running:
