@@ -1,5 +1,5 @@
 """
-Farnsworth Environment Verifier
+cosmos Environment Verifier
 -------------------------------
 Checks system permissions and dependencies for advanced features.
 """
@@ -57,7 +57,7 @@ def check_python_ver():
         logger.error(f"❌ Python Version: {ver.major}.{ver.minor} (Requires 3.10+)")
 
 def main():
-    print("\n🔍 FARNSWORTH SYSTEM DIAGNOSTICS\n" + "="*40)
+    print("\n🔍 cosmos SYSTEM DIAGNOSTICS\n" + "="*40)
     check_python_ver()
     check_admin()
     check_playwright()

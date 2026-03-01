@@ -1,11 +1,11 @@
-# 👁️ Vision: Farnsworth
+# 👁️ Vision: COSMOS
 
 > "The architectural axioms and crystallized intent."
 
 ## Core Purpose
 To create the ultimate "Connected Agent" that lives in your project and communicates with you anywhere.
 
-Farnsworth transforms Claude from a tool into a persistent, evolving, and proactive companion that:
+COSMOS transforms Claude from a tool into a persistent, evolving, and proactive companion that:
 1.  **Remembers** everything (Memory System)
 2.  **Acts** autonomously (Agent Swarm)
 3.  **Collaborates** with you (Omni-Channel Messaging)

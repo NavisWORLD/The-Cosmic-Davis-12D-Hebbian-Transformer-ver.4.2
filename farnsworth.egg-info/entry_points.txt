@@ -1,3 +1,0 @@
-[console_scripts]
-farnsworth = farnsworth.main:main
-farnsworth-server = farnsworth.mcp_server:run_server

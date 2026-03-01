@@ -1,5 +1,5 @@
 """
-Tests for Farnsworth Q1 2025 (v0.2.0) Features
+Tests for cosmos Q1 2025 (v0.2.0) Features
 
 Tests:
 - Episodic Memory Timeline
@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 # Episodic Memory imports
-from farnsworth.memory.episodic_memory import (
+from cosmos.memory.episodic_memory import (
     EpisodicMemory,
     Episode,
     Session,
@@ -27,35 +27,35 @@ from farnsworth.memory.episodic_memory import (
 )
 
 # Semantic Layers imports
-from farnsworth.memory.semantic_layers import (
+from cosmos.memory.semantic_layers import (
     SemanticLayerSystem,
     SemanticConcept,
     AbstractionLevel,
 )
 
 # Memory Sharing imports
-from farnsworth.memory.memory_sharing import (
+from cosmos.memory.memory_sharing import (
     MemorySharing,
     ExportFormat,
     MergeStrategy,
 )
 
 # Knowledge Graph V2 imports
-from farnsworth.memory.knowledge_graph_v2 import (
+from cosmos.memory.knowledge_graph_v2 import (
     KnowledgeGraphV2,
     TemporalEdge,
     EntityResolutionCandidate,
 )
 
 # Hybrid Search V2 imports
-from farnsworth.rag.hybrid_search_v2 import (
+from cosmos.rag.hybrid_search_v2 import (
     HybridSearchV2,
     QueryIntent,
     QueryAnalysis,
 )
 
 # Context Compression imports
-from farnsworth.rag.context_compression import (
+from cosmos.rag.context_compression import (
     ContextCompressor,
     CompressionLevel,
     ContentPriority,

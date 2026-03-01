@@ -1,6 +1,6 @@
-# Farnsworth Technical Specification
+# cosmos Technical Specification
 
-> A comprehensive technical deep-dive into the architecture, technology stack, and capabilities of the Farnsworth AI Companion System.
+> A comprehensive technical deep-dive into the architecture, technology stack, and capabilities of the cosmos AI Companion System.
 
 **Version:** 0.1.0
 **Last Updated:** January 2026
@@ -24,9 +24,9 @@
 
 ## Executive Summary
 
-### What Farnsworth Does
+### What cosmos Does
 
-Farnsworth is a **companion AI system** that extends Claude Code with:
+cosmos is a **companion AI system** that extends Claude Code with:
 
 | Capability | Technical Implementation |
 |------------|-------------------------|
@@ -65,7 +65,7 @@ Farnsworth is a **companion AI system** that extends Claude Code with:
 │                          INTEGRATION LAYER                                   │
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────┐      │
-│   │                     Farnsworth MCP Server                        │      │
+│   │                     cosmos MCP Server                        │      │
 │   │  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐       │      │
 │   │  │  Memory   │ │  Agent    │ │ Evolution │ │ Resource  │       │      │
 │   │  │  Tools    │ │  Tools    │ │  Tools    │ │ Streams   │       │      │
@@ -491,7 +491,7 @@ Farnsworth is a **companion AI system** that extends Claude Code with:
 │  │  Claude Code  │                                                          │
 │  └───────┬───────┘                                                          │
 │          │                                                                  │
-│          │ MCP Tool Call: farnsworth_remember                               │
+│          │ MCP Tool Call: cosmos_remember                               │
 │          ▼                                                                  │
 │  ┌───────────────┐         ┌───────────────┐                               │
 │  │  MCP Server   │────────►│ Memory System │                               │
@@ -699,14 +699,14 @@ Farnsworth is a **companion AI system** that extends Claude Code with:
 │  THEORETICAL CEILING                                                        │
 │  ┌───────────────────────────────────────────────────────────────────────┐ │
 │  │                                                                        │ │
-│  │  Given unlimited resources and time, Farnsworth's architecture         │ │
+│  │  Given unlimited resources and time, cosmos's architecture         │ │
 │  │  could theoretically support:                                          │ │
 │  │                                                                        │ │
 │  │  • Unbounded memory with perfect recall                                │ │
 │  │  • Arbitrary specialist agents for any domain                          │ │
 │  │  • Continuous self-improvement toward user goals                       │ │
 │  │  • Multi-modal understanding (text, vision, audio, physical world)     │ │
-│  │  • Collaborative intelligence with other Farnsworth instances          │ │
+│  │  • Collaborative intelligence with other cosmos instances          │ │
 │  │                                                                        │ │
 │  │  The limiting factor is not architecture, but:                         │ │
 │  │  • Available compute resources                                         │ │
@@ -793,13 +793,13 @@ Farnsworth is a **companion AI system** that extends Claude Code with:
 
 | File | Purpose | Key Classes/Functions |
 |------|---------|----------------------|
-| `farnsworth/core/llm_backend.py` | LLM abstraction | `OllamaBackend`, `CascadeBackend` |
-| `farnsworth/memory/memory_system.py` | Memory coordinator | `MemorySystem` |
-| `farnsworth/memory/archival_memory.py` | Long-term storage | `ArchivalMemory` |
-| `farnsworth/memory/knowledge_graph.py` | Entity relationships | `KnowledgeGraph` |
-| `farnsworth/agents/swarm_orchestrator.py` | Agent management | `SwarmOrchestrator` |
-| `farnsworth/evolution/genetic_optimizer.py` | NSGA-II optimization | `GeneticOptimizer` |
-| `farnsworth/mcp_server/server.py` | Claude integration | `FarnsworthMCPServer` |
+| `cosmos/core/llm_backend.py` | LLM abstraction | `OllamaBackend`, `CascadeBackend` |
+| `cosmos/memory/memory_system.py` | Memory coordinator | `MemorySystem` |
+| `cosmos/memory/archival_memory.py` | Long-term storage | `ArchivalMemory` |
+| `cosmos/memory/knowledge_graph.py` | Entity relationships | `KnowledgeGraph` |
+| `cosmos/agents/swarm_orchestrator.py` | Agent management | `SwarmOrchestrator` |
+| `cosmos/evolution/genetic_optimizer.py` | NSGA-II optimization | `GeneticOptimizer` |
+| `cosmos/mcp_server/server.py` | Claude integration | `cosmosMCPServer` |
 
 ---
 

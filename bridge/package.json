@@ -1,7 +1,7 @@
 {
-    "name": "farnsworth-bridge",
+    "name": "cosmos-bridge",
     "version": "2.0.0",
-    "description": "TypeScript bridge for Farnsworth AI",
+    "description": "TypeScript bridge for cosmos AI",
     "type": "module",
     "main": "index.ts",
     "scripts": {

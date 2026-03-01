@@ -1,7 +1,7 @@
-# Farnsworth Default Configuration
+# cosmos Default Configuration
 
 system:
-  name: "Farnsworth"
+  name: "cosmos"
   version: "0.1.0"
   log_level: "INFO"
   data_dir: "./data"
@@ -36,7 +36,7 @@ memory:
 
   vector_db:
     type: "chromadb"
-    collection_name: "farnsworth_memories"
+    collection_name: "cosmos_memories"
     embedding_model: "all-MiniLM-L6-v2"
 
   knowledge_graph:
@@ -118,17 +118,17 @@ mcp:
   port: 8765
 
   tools:
-    - "farnsworth_remember"
-    - "farnsworth_recall"
-    - "farnsworth_delegate"
-    - "farnsworth_evolve"
-    - "farnsworth_status"
+    - "cosmos_remember"
+    - "cosmos_recall"
+    - "cosmos_delegate"
+    - "cosmos_evolve"
+    - "cosmos_status"
 
   resources:
-    - "farnsworth://memory/recent"
-    - "farnsworth://memory/graph"
-    - "farnsworth://agents/active"
-    - "farnsworth://evolution/fitness"
+    - "cosmos://memory/recent"
+    - "cosmos://memory/graph"
+    - "cosmos://agents/active"
+    - "cosmos://evolution/fitness"
 
 ui:
   theme: "dark"

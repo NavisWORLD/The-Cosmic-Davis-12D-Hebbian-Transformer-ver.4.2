@@ -1,8 +1,8 @@
-# Farnsworth Setup Guide 🛠️
+# cosmos Setup Guide 🛠️
 
-Welcome to Farnsworth! This guide provides detailed instructions on configuring the environment, API keys, and local services.
+Welcome to cosmos! This guide provides detailed instructions on configuring the environment, API keys, and local services.
 
-> **🔒 Privacy First**: Farnsworth is designed to run 100% locally. No data is sent to the cloud unless you explicitly enable an external integration (like X.com or Grok). All memories, vector databases, and keyrings are stored in your `./data` folder.
+> **🔒 Privacy First**: cosmos is designed to run 100% locally. No data is sent to the cloud unless you explicitly enable an external integration (like X.com or Grok). All memories, vector databases, and keyrings are stored in your `./data` folder.
 
 ---
 
@@ -65,7 +65,7 @@ python main.py --setup
 
 ### 4. Local Model Management
 
-Farnsworth uses Ollama for local intelligence.
+cosmos uses Ollama for local intelligence.
 
 ```bash
 # 1. Install Ollama from ollama.ai

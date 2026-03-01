@@ -3,14 +3,14 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "farnsworth-ai"
+name = "cosmos-ai"
 version = "2.1.0-alpha"
 description = "Self-evolving companion AI with MemGPT-style memory, LangGraph agent swarm, and conversation export"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
 authors = [
-    {name = "Farnsworth Team"}
+    {name = "cosmos Team"}
 ]
 keywords = ["ai", "llm", "memory", "agents", "evolution", "mcp", "export", "knowledge-graph"]
 classifiers = [
@@ -25,7 +25,8 @@ classifiers = [
 dependencies = [
     # Core LLM
     "ollama>=0.4.0",
-    "llama-cpp-python>=0.3.0",
+    "google-generativeai>=0.8.0",  # Gemini AI
+    "openai>=1.0.0",  # OpenAI-compatible APIs
 
     # Memory
     "faiss-cpu>=1.8.0",
@@ -62,6 +63,8 @@ dependencies = [
     "httpx>=0.27.0",
     "opencv-python-headless>=4.8.0",
     "pillow>=10.0.0",
+    "python-dotenv>=1.0.0",
+    "psutil>=5.9.0",
 ]
 
 [project.optional-dependencies]
@@ -79,13 +82,16 @@ gpu = [
     "torch>=2.0.0",
 ]
 
+local = [
+    "llama-cpp-python>=0.3.0",  # Requires C++ build tools
+]
+
 [project.scripts]
-farnsworth = "farnsworth.main:main"
-farnsworth-server = "farnsworth.mcp_server:run_server"
+cosmos = "cosmos.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["farnsworth*"]
+include = ["cosmos*"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

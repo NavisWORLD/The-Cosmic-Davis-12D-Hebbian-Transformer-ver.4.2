@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Farnsworth Model Downloader
+cosmos Model Downloader
 
-Downloads and configures local LLMs for Farnsworth:
+Downloads and configures local LLMs for cosmos:
 - Ollama models
 - GGUF models for llama.cpp
 - Embedding models
@@ -59,7 +59,7 @@ def print_banner():
     """Print download banner."""
     print("""
 ╔═══════════════════════════════════════════╗
-║     Farnsworth Model Downloader           ║
+║     cosmos Model Downloader           ║
 ╚═══════════════════════════════════════════╝
     """)
 
@@ -229,7 +229,7 @@ def interactive_setup(data_dir: Path):
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Download models for Farnsworth"
+        description="Download models for cosmos"
     )
 
     parser.add_argument(
@@ -286,7 +286,7 @@ def main():
         interactive_setup(data_dir)
 
     print("\n✨ Model setup complete!")
-    print("Run 'python main.py' to start Farnsworth")
+    print("Run 'python main.py' to start cosmos")
 
 
 if __name__ == "__main__":

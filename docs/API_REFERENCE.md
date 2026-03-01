@@ -1,20 +1,20 @@
-# Farnsworth API Reference
+# cosmos API Reference
 
 ## Core Concepts
 
-Farnsworth is designed around three main pillars:
+cosmos is designed around three main pillars:
 1. **Memory**: Persistent storage for context, facts, and relationships.
 2. **Agents**: Specialist workers for code, reasoning, and research.
 3. **Evolution**: Self-improving feedback loops.
 
 ## Python SDK
 
-The `FarnsworthClient` is the primary entry point for Python integrations.
+The `cosmosClient` is the primary entry point for Python integrations.
 
 ```python
-from farnsworth.client import FarnsworthClient
+from cosmos.client import cosmosClient
 
-client = FarnsworthClient()
+client = cosmosClient()
 client.remember("Project X deadline is Friday")
 ```
 
@@ -31,11 +31,11 @@ Dispatches a task to the Agent Swarm. The system automatically selects the best 
 
 ## MCP Protocol
 
-For integration with Claude Code or other MCP-compatible IDEs, Farnsworth exposes the following tools and resources.
+For integration with Claude Code or other MCP-compatible IDEs, cosmos exposes the following tools and resources.
 
 ### Tools
 
-#### `farnsworth_remember`
+#### `cosmos_remember`
 Store information in long-term memory.
 
 **Parameters:**
@@ -43,44 +43,44 @@ Store information in long-term memory.
 - `tags` (array[string], optional): Tags for categorization
 - `importance` (number, optional): Importance score 0-1 (default: 0.5)
 
-#### `farnsworth_recall`
+#### `cosmos_recall`
 Search and retrieve relevant memories.
 
 **Parameters:**
 - `query` (string, required): Search query
 - `limit` (integer, optional): Maximum results (default: 5)
 
-#### `farnsworth_delegate`
+#### `cosmos_delegate`
 Delegate a task to a specialist agent.
 
 **Parameters:**
 - `task` (string, required): The task to delegate
 - `agent_type` (string, optional): Type of specialist: 'code', 'reasoning', 'research', 'creative', or 'auto' (default: auto)
 
-#### `farnsworth_evolve`
+#### `cosmos_evolve`
 Provide feedback for system improvement.
 
 **Parameters:**
 - `feedback` (string, required): Your feedback on the system's performance
 
-#### `farnsworth_status`
+#### `cosmos_status`
 Get the current system status including memory statistics, active agents, and evolution metrics.
 
-#### `farnsworth_vision`
+#### `cosmos_vision`
 Analyze an image using the vision module.
 
 **Parameters:**
 - `image` (string, required): Image path, URL, or base64 string
 - `task` (string, optional): Task type: 'caption', 'vqa', 'ocr', 'classify' (default: caption)
 
-#### `farnsworth_browse`
+#### `cosmos_browse`
 Use the intelligent web agent to browse the internet.
 
 **Parameters:**
 - `goal` (string, required): What to accomplish or find
 - `url` (string, optional): Starting URL
 
-#### `farnsworth_export`
+#### `cosmos_export`
 Export conversation history, memories, and context to a shareable format.
 
 **Parameters:**
@@ -105,18 +105,18 @@ Export conversation history, memories, and context to a shareable format.
 }
 ```
 
-#### `farnsworth_list_exports`
+#### `cosmos_list_exports`
 List all available conversation exports.
 
 ### Resources
 
-- `farnsworth://memory/recent`: View active context and recent memories
-- `farnsworth://memory/graph`: Knowledge graph entities and relationships
-- `farnsworth://agents/active`: Currently running specialist agents
-- `farnsworth://evolution/fitness`: System performance and evolution metrics
-- `farnsworth://proactive/suggestions`: Anticipatory suggestions from the proactive agent
-- `farnsworth://system/health`: Real-time health status and metrics
-- `farnsworth://exports/list`: List of all available conversation exports
+- `cosmos://memory/recent`: View active context and recent memories
+- `cosmos://memory/graph`: Knowledge graph entities and relationships
+- `cosmos://agents/active`: Currently running specialist agents
+- `cosmos://evolution/fitness`: System performance and evolution metrics
+- `cosmos://proactive/suggestions`: Anticipatory suggestions from the proactive agent
+- `cosmos://system/health`: Real-time health status and metrics
+- `cosmos://exports/list`: List of all available conversation exports
 
 ## Best Practices
 

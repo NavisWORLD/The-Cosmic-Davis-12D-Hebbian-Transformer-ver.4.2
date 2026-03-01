@@ -1,1 +1,1 @@
-"""Farnsworth Test Suite"""
+"""cosmos Test Suite"""

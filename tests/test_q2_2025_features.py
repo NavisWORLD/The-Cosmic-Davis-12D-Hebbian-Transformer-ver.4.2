@@ -23,7 +23,7 @@ class TestPlannerAgent:
 
     def test_planner_agent_import(self):
         """Test PlannerAgent can be imported."""
-        from farnsworth.agents.planner_agent import (
+        from cosmos.agents.planner_agent import (
             PlannerAgent,
             Plan,
             SubTask,
@@ -35,7 +35,7 @@ class TestPlannerAgent:
     @pytest.mark.asyncio
     async def test_create_plan_without_llm(self):
         """Test plan creation without LLM (single task fallback)."""
-        from farnsworth.agents.planner_agent import PlannerAgent, TaskStatus
+        from cosmos.agents.planner_agent import PlannerAgent, TaskStatus
 
         planner = PlannerAgent()
         plan = await planner.create_plan("Build a REST API")
@@ -48,7 +48,7 @@ class TestPlannerAgent:
     @pytest.mark.asyncio
     async def test_add_task_to_plan(self):
         """Test adding tasks to existing plan."""
-        from farnsworth.agents.planner_agent import PlannerAgent
+        from cosmos.agents.planner_agent import PlannerAgent
 
         planner = PlannerAgent()
         plan = await planner.create_plan("Test project")
@@ -66,7 +66,7 @@ class TestPlannerAgent:
     @pytest.mark.asyncio
     async def test_plan_execution(self):
         """Test plan execution flow."""
-        from farnsworth.agents.planner_agent import PlannerAgent, TaskStatus
+        from cosmos.agents.planner_agent import PlannerAgent, TaskStatus
 
         planner = PlannerAgent()
         plan = await planner.create_plan("Simple task")
@@ -79,7 +79,7 @@ class TestPlannerAgent:
 
     def test_plan_progress_calculation(self):
         """Test plan progress percentage."""
-        from farnsworth.agents.planner_agent import Plan, SubTask, TaskStatus
+        from cosmos.agents.planner_agent import Plan, SubTask, TaskStatus
 
         plan = Plan(id="test", goal="test goal")
 
@@ -100,7 +100,7 @@ class TestCriticAgent:
 
     def test_critic_agent_import(self):
         """Test CriticAgent can be imported."""
-        from farnsworth.agents.critic_agent import (
+        from cosmos.agents.critic_agent import (
             CriticAgent,
             Review,
             QualityScore,
@@ -112,7 +112,7 @@ class TestCriticAgent:
     @pytest.mark.asyncio
     async def test_review_without_llm(self):
         """Test review with heuristic scoring."""
-        from farnsworth.agents.critic_agent import CriticAgent, ReviewType
+        from cosmos.agents.critic_agent import CriticAgent, ReviewType
 
         critic = CriticAgent()
         review = await critic.review(
@@ -128,7 +128,7 @@ class TestCriticAgent:
     @pytest.mark.asyncio
     async def test_compare_artifacts(self):
         """Test comparison of multiple artifacts."""
-        from farnsworth.agents.critic_agent import CriticAgent, ReviewType
+        from cosmos.agents.critic_agent import CriticAgent, ReviewType
 
         critic = CriticAgent()
         comparison = await critic.compare(
@@ -146,7 +146,7 @@ class TestCriticAgent:
 
     def test_quality_score_calculation(self):
         """Test overall score calculation."""
-        from farnsworth.agents.critic_agent import CriticAgent, QualityScore, QualityDimension
+        from cosmos.agents.critic_agent import CriticAgent, QualityScore, QualityDimension
 
         critic = CriticAgent()
 
@@ -176,7 +176,7 @@ class TestWebAgent:
 
     def test_web_agent_import(self):
         """Test WebAgent can be imported."""
-        from farnsworth.agents.web_agent import (
+        from cosmos.agents.web_agent import (
             WebAgent,
             BrowsingSession,
             PageState,
@@ -186,7 +186,7 @@ class TestWebAgent:
 
     def test_page_classification(self):
         """Test page type classification."""
-        from farnsworth.agents.web_agent import WebAgent, PageState
+        from cosmos.agents.web_agent import WebAgent, PageState
 
         agent = WebAgent()
 
@@ -200,7 +200,7 @@ class TestWebAgent:
 
     def test_session_creation(self):
         """Test browsing session structure."""
-        from farnsworth.agents.web_agent import BrowsingSession
+        from cosmos.agents.web_agent import BrowsingSession
 
         session = BrowsingSession(
             id="test_session",
@@ -219,7 +219,7 @@ class TestFileSystemAgent:
 
     def test_filesystem_agent_import(self):
         """Test FileSystemAgent can be imported."""
-        from farnsworth.agents.filesystem_agent import (
+        from cosmos.agents.filesystem_agent import (
             FileSystemAgent,
             FileInfo,
             ProjectStructure,
@@ -229,7 +229,7 @@ class TestFileSystemAgent:
 
     def test_project_type_detection(self):
         """Test project type detection."""
-        from farnsworth.agents.filesystem_agent import FileSystemAgent
+        from cosmos.agents.filesystem_agent import FileSystemAgent
         from pathlib import Path
         import tempfile
         import os
@@ -244,7 +244,7 @@ class TestFileSystemAgent:
 
     def test_naming_convention_detection(self):
         """Test naming convention detection."""
-        from farnsworth.agents.filesystem_agent import FileSystemAgent
+        from cosmos.agents.filesystem_agent import FileSystemAgent
         from pathlib import Path
         import tempfile
 
@@ -265,7 +265,7 @@ class TestAgentDebates:
 
     def test_debates_import(self):
         """Test AgentDebates can be imported."""
-        from farnsworth.agents.agent_debates import (
+        from cosmos.agents.agent_debates import (
             AgentDebates,
             Debate,
             Argument,
@@ -276,7 +276,7 @@ class TestAgentDebates:
     @pytest.mark.asyncio
     async def test_start_debate(self):
         """Test starting a debate."""
-        from farnsworth.agents.agent_debates import AgentDebates
+        from cosmos.agents.agent_debates import AgentDebates
 
         debates = AgentDebates()
         debate = await debates.start_debate(
@@ -291,7 +291,7 @@ class TestAgentDebates:
     @pytest.mark.asyncio
     async def test_add_argument(self):
         """Test adding arguments to debate."""
-        from farnsworth.agents.agent_debates import AgentDebates, DebateRole
+        from cosmos.agents.agent_debates import AgentDebates, DebateRole
 
         debates = AgentDebates()
         debate = await debates.start_debate(topic="Test topic")
@@ -309,7 +309,7 @@ class TestAgentDebates:
 
     def test_consensus_calculation(self):
         """Test consensus score calculation."""
-        from farnsworth.agents.agent_debates import (
+        from cosmos.agents.agent_debates import (
             AgentDebates,
             Debate,
             Argument,
@@ -356,7 +356,7 @@ class TestSpecializationLearning:
 
     def test_learning_import(self):
         """Test SpecializationLearning can be imported."""
-        from farnsworth.agents.specialization_learning import (
+        from cosmos.agents.specialization_learning import (
             SpecializationLearning,
             AgentProfile,
             Skill,
@@ -367,7 +367,7 @@ class TestSpecializationLearning:
     @pytest.mark.asyncio
     async def test_register_agent(self):
         """Test agent registration."""
-        from farnsworth.agents.specialization_learning import SpecializationLearning
+        from cosmos.agents.specialization_learning import SpecializationLearning
 
         learning = SpecializationLearning()
         profile = await learning.register_agent(
@@ -382,7 +382,7 @@ class TestSpecializationLearning:
     @pytest.mark.asyncio
     async def test_record_outcome(self):
         """Test recording task outcome."""
-        from farnsworth.agents.specialization_learning import SpecializationLearning
+        from cosmos.agents.specialization_learning import SpecializationLearning
 
         learning = SpecializationLearning()
         await learning.register_agent("agent_1", "code")
@@ -401,7 +401,7 @@ class TestSpecializationLearning:
     @pytest.mark.asyncio
     async def test_get_best_agent(self):
         """Test best agent selection."""
-        from farnsworth.agents.specialization_learning import SpecializationLearning
+        from cosmos.agents.specialization_learning import SpecializationLearning
 
         learning = SpecializationLearning()
         await learning.register_agent("code_agent", "code")
@@ -422,7 +422,7 @@ class TestHierarchicalTeams:
 
     def test_teams_import(self):
         """Test HierarchicalTeams can be imported."""
-        from farnsworth.agents.hierarchical_teams import (
+        from cosmos.agents.hierarchical_teams import (
             HierarchicalTeams,
             Team,
             AgentNode,
@@ -433,7 +433,7 @@ class TestHierarchicalTeams:
     @pytest.mark.asyncio
     async def test_create_agent_hierarchy(self):
         """Test creating agent hierarchy."""
-        from farnsworth.agents.hierarchical_teams import HierarchicalTeams, AgentRole
+        from cosmos.agents.hierarchical_teams import HierarchicalTeams, AgentRole
 
         teams = HierarchicalTeams()
 
@@ -457,7 +457,7 @@ class TestHierarchicalTeams:
     @pytest.mark.asyncio
     async def test_form_team(self):
         """Test dynamic team formation."""
-        from farnsworth.agents.hierarchical_teams import (
+        from cosmos.agents.hierarchical_teams import (
             HierarchicalTeams,
             AgentRole,
             TeamStatus,
@@ -482,7 +482,7 @@ class TestHierarchicalTeams:
     @pytest.mark.asyncio
     async def test_assign_task(self):
         """Test task assignment."""
-        from farnsworth.agents.hierarchical_teams import HierarchicalTeams, AgentRole
+        from cosmos.agents.hierarchical_teams import HierarchicalTeams, AgentRole
 
         teams = HierarchicalTeams()
         await teams.create_agent("spec1", "Specialist", AgentRole.SPECIALIST, ["code"])
@@ -498,7 +498,7 @@ class TestHierarchicalTeams:
 
     def test_hierarchy_tree(self):
         """Test hierarchy tree generation."""
-        from farnsworth.agents.hierarchical_teams import HierarchicalTeams, AgentRole, AgentNode
+        from cosmos.agents.hierarchical_teams import HierarchicalTeams, AgentRole, AgentNode
 
         teams = HierarchicalTeams()
 
@@ -524,8 +524,8 @@ class TestQ2Integration:
     @pytest.mark.asyncio
     async def test_planner_with_critic(self):
         """Test planner and critic working together."""
-        from farnsworth.agents.planner_agent import PlannerAgent
-        from farnsworth.agents.critic_agent import CriticAgent, ReviewType
+        from cosmos.agents.planner_agent import PlannerAgent
+        from cosmos.agents.critic_agent import CriticAgent, ReviewType
 
         planner = PlannerAgent()
         critic = CriticAgent()
@@ -542,8 +542,8 @@ class TestQ2Integration:
     @pytest.mark.asyncio
     async def test_learning_with_teams(self):
         """Test specialization learning with hierarchical teams."""
-        from farnsworth.agents.specialization_learning import SpecializationLearning
-        from farnsworth.agents.hierarchical_teams import HierarchicalTeams, AgentRole
+        from cosmos.agents.specialization_learning import SpecializationLearning
+        from cosmos.agents.hierarchical_teams import HierarchicalTeams, AgentRole
 
         learning = SpecializationLearning()
         teams = HierarchicalTeams()

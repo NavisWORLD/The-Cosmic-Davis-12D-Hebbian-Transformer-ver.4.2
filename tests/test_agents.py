@@ -1,5 +1,5 @@
 """
-Farnsworth Agent System Tests
+cosmos Agent System Tests
 
 Comprehensive tests for:
 - Agent base functionality
@@ -39,7 +39,7 @@ class TestBaseAgent:
 
     def test_agent_creation(self):
         """Test agent initialization."""
-        from farnsworth.agents.base_agent import BaseAgent, AgentCapability
+        from cosmos.agents.base_agent import BaseAgent, AgentCapability
 
         agent = BaseAgent(
             name="TestAgent",
@@ -52,7 +52,7 @@ class TestBaseAgent:
 
     def test_agent_status(self):
         """Test agent status reporting."""
-        from farnsworth.agents.base_agent import BaseAgent, AgentStatus
+        from cosmos.agents.base_agent import BaseAgent, AgentStatus
 
         agent = BaseAgent(name="TestAgent")
 
@@ -65,7 +65,7 @@ class TestBaseAgent:
     @pytest.mark.asyncio
     async def test_agent_execution(self, mock_llm_backend):
         """Test agent task execution."""
-        from farnsworth.agents.base_agent import BaseAgent
+        from cosmos.agents.base_agent import BaseAgent
 
         agent = BaseAgent(name="TestAgent", llm_backend=mock_llm_backend)
 
@@ -76,7 +76,7 @@ class TestBaseAgent:
 
     def test_capability_check(self):
         """Test capability checking."""
-        from farnsworth.agents.base_agent import BaseAgent, AgentCapability
+        from cosmos.agents.base_agent import BaseAgent, AgentCapability
 
         agent = BaseAgent(
             name="CodeAgent",
@@ -93,7 +93,7 @@ class TestSpecialistAgents:
     @pytest.mark.asyncio
     async def test_code_agent_creation(self, mock_llm_backend):
         """Test code agent initialization."""
-        from farnsworth.agents.specialist_agents import create_code_agent
+        from cosmos.agents.specialist_agents import create_code_agent
 
         agent = create_code_agent(llm_backend=mock_llm_backend)
 
@@ -103,7 +103,7 @@ class TestSpecialistAgents:
     @pytest.mark.asyncio
     async def test_reasoning_agent_creation(self, mock_llm_backend):
         """Test reasoning agent initialization."""
-        from farnsworth.agents.specialist_agents import create_reasoning_agent
+        from cosmos.agents.specialist_agents import create_reasoning_agent
 
         agent = create_reasoning_agent(llm_backend=mock_llm_backend)
 
@@ -113,7 +113,7 @@ class TestSpecialistAgents:
     @pytest.mark.asyncio
     async def test_research_agent_creation(self, mock_llm_backend):
         """Test research agent initialization."""
-        from farnsworth.agents.specialist_agents import create_research_agent
+        from cosmos.agents.specialist_agents import create_research_agent
 
         agent = create_research_agent(llm_backend=mock_llm_backend)
 
@@ -123,7 +123,7 @@ class TestSpecialistAgents:
     @pytest.mark.asyncio
     async def test_creative_agent_creation(self, mock_llm_backend):
         """Test creative agent initialization."""
-        from farnsworth.agents.specialist_agents import create_creative_agent
+        from cosmos.agents.specialist_agents import create_creative_agent
 
         agent = create_creative_agent(llm_backend=mock_llm_backend)
 
@@ -133,7 +133,7 @@ class TestSpecialistAgents:
     @pytest.mark.asyncio
     async def test_code_agent_task(self, mock_llm_backend):
         """Test code agent executing a coding task."""
-        from farnsworth.agents.specialist_agents import create_code_agent
+        from cosmos.agents.specialist_agents import create_code_agent
 
         agent = create_code_agent(llm_backend=mock_llm_backend)
 
@@ -148,7 +148,7 @@ class TestSwarmOrchestrator:
 
     def test_orchestrator_creation(self):
         """Test swarm orchestrator initialization."""
-        from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
+        from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
 
         orchestrator = SwarmOrchestrator(max_concurrent=5)
 
@@ -158,8 +158,8 @@ class TestSwarmOrchestrator:
     @pytest.mark.asyncio
     async def test_agent_spawning(self, mock_llm_backend):
         """Test spawning agents from the orchestrator."""
-        from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
-        from farnsworth.agents.specialist_agents import create_code_agent
+        from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
+        from cosmos.agents.specialist_agents import create_code_agent
 
         orchestrator = SwarmOrchestrator()
         orchestrator.register_agent_factory("code", lambda: create_code_agent(llm_backend=mock_llm_backend))
@@ -173,7 +173,7 @@ class TestSwarmOrchestrator:
     @pytest.mark.asyncio
     async def test_task_submission(self, mock_llm_backend):
         """Test submitting tasks to the swarm."""
-        from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
+        from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
 
         orchestrator = SwarmOrchestrator()
         orchestrator.llm_backend = mock_llm_backend
@@ -188,7 +188,7 @@ class TestSwarmOrchestrator:
     @pytest.mark.asyncio
     async def test_task_routing(self, mock_llm_backend):
         """Test automatic task routing to appropriate agents."""
-        from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
+        from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
 
         orchestrator = SwarmOrchestrator()
         orchestrator.llm_backend = mock_llm_backend
@@ -203,7 +203,7 @@ class TestSwarmOrchestrator:
 
     def test_swarm_status(self):
         """Test getting swarm status."""
-        from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
+        from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
 
         orchestrator = SwarmOrchestrator()
         status = orchestrator.get_swarm_status()
@@ -214,7 +214,7 @@ class TestSwarmOrchestrator:
     @pytest.mark.asyncio
     async def test_handoff_protocol(self, mock_llm_backend):
         """Test agent handoff for complex tasks."""
-        from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
+        from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
 
         orchestrator = SwarmOrchestrator()
         orchestrator.llm_backend = mock_llm_backend
@@ -235,7 +235,7 @@ class TestMultiAgentCoordination:
     @pytest.mark.asyncio
     async def test_parallel_execution(self, mock_llm_backend):
         """Test parallel task execution across agents."""
-        from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
+        from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
 
         orchestrator = SwarmOrchestrator(max_concurrent=3)
         orchestrator.llm_backend = mock_llm_backend
@@ -253,7 +253,7 @@ class TestMultiAgentCoordination:
     @pytest.mark.asyncio
     async def test_subtask_decomposition(self, mock_llm_backend):
         """Test decomposing main task into subtasks."""
-        from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
+        from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
 
         orchestrator = SwarmOrchestrator()
         orchestrator.llm_backend = mock_llm_backend
@@ -277,7 +277,7 @@ class TestUserAvatar:
 
     def test_avatar_creation(self):
         """Test user avatar initialization."""
-        from farnsworth.agents.user_avatar import UserAvatar
+        from cosmos.agents.user_avatar import UserAvatar
 
         avatar = UserAvatar(user_id="test_user")
 
@@ -287,7 +287,7 @@ class TestUserAvatar:
     @pytest.mark.asyncio
     async def test_preference_learning(self):
         """Test learning user preferences from interactions."""
-        from farnsworth.agents.user_avatar import UserAvatar
+        from cosmos.agents.user_avatar import UserAvatar
 
         avatar = UserAvatar(user_id="test_user")
 
@@ -311,7 +311,7 @@ class TestUserAvatar:
     @pytest.mark.asyncio
     async def test_response_personalization(self):
         """Test personalizing responses based on user model."""
-        from farnsworth.agents.user_avatar import UserAvatar
+        from cosmos.agents.user_avatar import UserAvatar
 
         avatar = UserAvatar(user_id="test_user")
 
@@ -333,7 +333,7 @@ class TestMetaCognition:
 
     def test_metacognition_creation(self):
         """Test meta-cognition agent initialization."""
-        from farnsworth.agents.meta_cognition import MetaCognitionAgent
+        from cosmos.agents.meta_cognition import MetaCognitionAgent
 
         agent = MetaCognitionAgent()
         assert agent is not None
@@ -341,7 +341,7 @@ class TestMetaCognition:
     @pytest.mark.asyncio
     async def test_self_reflection(self, mock_llm_backend):
         """Test self-reflection capability."""
-        from farnsworth.agents.meta_cognition import MetaCognitionAgent
+        from cosmos.agents.meta_cognition import MetaCognitionAgent
 
         agent = MetaCognitionAgent(llm_backend=mock_llm_backend)
 
@@ -356,7 +356,7 @@ class TestMetaCognition:
     @pytest.mark.asyncio
     async def test_capability_gap_detection(self, mock_llm_backend):
         """Test detecting capability gaps."""
-        from farnsworth.agents.meta_cognition import MetaCognitionAgent
+        from cosmos.agents.meta_cognition import MetaCognitionAgent
 
         agent = MetaCognitionAgent(llm_backend=mock_llm_backend)
 
@@ -372,7 +372,7 @@ class TestMetaCognition:
     @pytest.mark.asyncio
     async def test_improvement_proposals(self, mock_llm_backend):
         """Test generating improvement proposals."""
-        from farnsworth.agents.meta_cognition import MetaCognitionAgent
+        from cosmos.agents.meta_cognition import MetaCognitionAgent
 
         agent = MetaCognitionAgent(llm_backend=mock_llm_backend)
 

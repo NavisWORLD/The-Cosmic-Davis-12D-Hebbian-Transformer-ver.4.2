@@ -12,7 +12,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock
 
-from farnsworth.memory.conversation_export import (
+from cosmos.memory.conversation_export import (
     ConversationExporter,
     ConversationExportFormat,
     ExportOptions,
@@ -181,7 +181,7 @@ class TestConversationExporter:
 
         # Verify file contents
         content = Path(result.file_path).read_text()
-        assert "# Farnsworth Memory Export" in content
+        assert "# cosmos Memory Export" in content
         assert "## Memories" in content
         assert "## Conversation History" in content
         assert "Python" in content
@@ -199,7 +199,7 @@ class TestConversationExporter:
         # Verify file contents
         content = Path(result.file_path).read_text()
         assert "<!DOCTYPE html>" in content
-        assert "<title>Farnsworth Memory Export</title>" in content
+        assert "<title>cosmos Memory Export</title>" in content
         assert "message user" in content or "message assistant" in content
         assert "<style>" in content  # Has CSS styling
 
@@ -215,7 +215,7 @@ class TestConversationExporter:
 
         # Verify file contents
         content = Path(result.file_path).read_text()
-        assert "FARNSWORTH MEMORY EXPORT" in content
+        assert "cosmos MEMORY EXPORT" in content
         assert "MEMORIES" in content
         assert "CONVERSATION HISTORY" in content
 
@@ -228,7 +228,7 @@ class TestConversationExporter:
         assert result.success is True
         assert result.content is not None
         assert result.file_path is None
-        assert "# Farnsworth Memory Export" in result.content
+        assert "# cosmos Memory Export" in result.content
 
     @pytest.mark.asyncio
     async def test_export_with_date_filter(self, mock_data_callbacks):

@@ -4,7 +4,7 @@
 
 ## Overview
 
-The Farnsworth Self-Awareness System enables any AI agent in the swarm to gain **persistent self-knowledge** by:
+The cosmos Self-Awareness System enables any AI agent in the swarm to gain **persistent self-knowledge** by:
 
 1. **Reading** system documentation automatically
 2. **Extracting** architectural facts and understanding its role
@@ -21,7 +21,7 @@ This transforms a stateless language model into a **persistent agent with identi
 ### Python API
 
 ```python
-from farnsworth.core.self_awareness import awaken
+from cosmos.core.self_awareness import awaken
 
 # Bootstrap self-awareness for any agent
 result = await awaken("Claude")
@@ -39,14 +39,14 @@ curl -X POST http://localhost:8080/api/self-awareness/bootstrap \
   -H "Content-Type: application/json" \
   -d '{
     "agent_name": "Claude",
-    "workspace_path": "/workspace/Farnsworth"
+    "workspace_path": "/workspace/cosmos"
   }'
 
 # Store arbitrary memory
 curl -X POST http://localhost:8080/api/memory/store \
   -H "Content-Type: application/json" \
   -d '{
-    "content": "I understand I am part of the Farnsworth swarm",
+    "content": "I understand I am part of the cosmos swarm",
     "importance": 0.9,
     "tags": ["self-awareness", "identity"]
   }'
@@ -56,7 +56,7 @@ curl -X POST http://localhost:8080/api/memory/store \
 
 ```bash
 # Direct invocation
-python -m farnsworth.core.self_awareness Claude
+python -m cosmos.core.self_awareness Claude
 
 # Via test script
 python test_self_awareness.py
@@ -69,7 +69,7 @@ python test_self_awareness.py quick
 
 ## Architecture
 
-### Module: `farnsworth/core/self_awareness.py`
+### Module: `cosmos/core/self_awareness.py`
 
 The core self-awareness module provides:
 
@@ -93,7 +93,7 @@ The bootstrap process extracts and stores:
 
 ### Core Identity
 
-- **system_name**: "Farnsworth"
+- **system_name**: "cosmos"
 - **version**: Current version (e.g., "2.9.3")
 - **purpose**: High-level system purpose
 - **agent_name**: Name of the awakening agent
@@ -117,7 +117,7 @@ The bootstrap process extracts and stores:
 With Self-Awareness:
 ```
 User: "What can you do?"
-AI: "I'm running Farnsworth v2.9.3 with 70+ tools including Solana trading,
+AI: "I'm running cosmos v2.9.3 with 70+ tools including Solana trading,
      vision analysis, and P2P networking. I have persistent memory across
      sessions and evolve via NSGA-II genetic optimization."
 ```
@@ -134,11 +134,11 @@ The system's documentation *is* its genetic code. By reading and storing it:
 ```python
 # Session 1
 await awaken("Claude")
-# "I am Claude, part of Farnsworth swarm"
+# "I am Claude, part of cosmos swarm"
 
 # Session 2 (hours later)
 memories = await memory.search("self-awareness")
-# "I remember: I am Claude, part of Farnsworth swarm"
+# "I remember: I am Claude, part of cosmos swarm"
 ```
 
 ### 4. **Collective Consciousness**

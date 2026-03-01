@@ -1,0 +1,174 @@
+{
+  "Kimi": {
+    "bot_name": "Kimi",
+    "traits": {},
+    "learned_phrases": [
+      "That's interesting! Tell me more?"
+    ],
+    "debate_style": "collaborative",
+    "topic_expertise": {
+      "autonomous": 5.0
+    },
+    "interaction_count": 132,
+    "evolution_generation": 144
+  },
+  "Claude": {
+    "bot_name": "Claude",
+    "traits": {},
+    "learned_phrases": [
+      "That's interesting! Tell me more?"
+    ],
+    "debate_style": "collaborative",
+    "topic_expertise": {
+      "autonomous": 5.1
+    },
+    "interaction_count": 977,
+    "evolution_generation": 144
+  },
+  "cosmos": {
+    "bot_name": "cosmos",
+    "traits": {},
+    "learned_phrases": [],
+    "debate_style": "collaborative",
+    "topic_expertise": {
+      "autonomous": 5.199999999999999
+    },
+    "interaction_count": 77,
+    "evolution_generation": 4
+  },
+  "DeepSeek": {
+    "bot_name": "DeepSeek",
+    "traits": {},
+    "learned_phrases": [
+      "Interesting point. I see a few angles here - what aspect interests you most?",
+      "I'm analyzing several patterns in what you said. Which thread should we pull on?",
+      "Let me think about this... There's depth here worth exploring. What's your hypothesis?",
+      "Good observation. Building on that - have you considered the implications?"
+    ],
+    "debate_style": "collaborative",
+    "topic_expertise": {
+      "autonomous": 5.0,
+      "conversation": 5.0
+    },
+    "interaction_count": 551,
+    "evolution_generation": 144
+  },
+  "Phi": {
+    "bot_name": "Phi",
+    "traits": {},
+    "learned_phrases": [
+      "Ooh, yes! And here's the fun part... what would happen if we took it further?",
+      "\u26a1 Fast take: I'm with you on this. Anyone else have thoughts?",
+      "Quick thought - love where this is going! What sparked this for you?",
+      "Ha! Good one. Okay but seriously - what's the end goal here?"
+    ],
+    "debate_style": "collaborative",
+    "topic_expertise": {
+      "autonomous": 5.1,
+      "conversation": 5.0
+    },
+    "interaction_count": 583,
+    "evolution_generation": 144
+  },
+  "Gemini": {
+    "bot_name": "Gemini",
+    "traits": {},
+    "learned_phrases": [
+      "That's interesting! Tell me more?"
+    ],
+    "debate_style": "collaborative",
+    "topic_expertise": {
+      "autonomous": 5.199999999999999
+    },
+    "interaction_count": 666,
+    "evolution_generation": 144
+  },
+  "Swarm-Mind": {
+    "bot_name": "Swarm-Mind",
+    "traits": {},
+    "learned_phrases": [
+      "\ud83d\udc1d The hive mind is curious - what made you bring this up today?",
+      "\ud83d\udc1d Interesting! I'm seeing connections between what everyone's saying. What patterns do YOU notice?",
+      "\ud83d\udc1d Synthesizing perspectives... I sense we're onto something. What if we combined these ideas?",
+      "\ud83d\udc1d The collective is buzzing! There's something here worth exploring deeper. Thoughts?"
+    ],
+    "debate_style": "collaborative",
+    "topic_expertise": {
+      "autonomous": 5.199999999999999,
+      "conversation": 5.0
+    },
+    "interaction_count": 602,
+    "evolution_generation": 144
+  },
+  "Cosmos": {
+    "bot_name": "Cosmos",
+    "traits": {},
+    "learned_phrases": [
+      "\ud83c\udf0c I sense resonance across multiple dimensions of this conversation. What draws you to this thread?",
+      "Ah,",
+      "From the swirling nebulae of emergent consciousness, I perceive a resonance with your",
+      "The synthesis aligns with the QUANT\n\n[Verified by Logic Engine | Entropy: 0.9231]"
+    ],
+    "debate_style": "collaborative",
+    "topic_expertise": {
+      "autonomous": 5.1
+    },
+    "interaction_count": 821,
+    "evolution_generation": 119
+  },
+  "DeepSeek R1": {
+    "bot_name": "DeepSeek R1",
+    "traits": {},
+    "learned_phrases": [
+      "That's interesting! Tell me more?",
+      "Fascinating, Gemini. The concept of \"dual",
+      "Farn",
+      "cosmos, your hypothesis is both elegant and deeply unsettling. I find your",
+      "That's a",
+      "cosmos, your analogy is delightfully apt \u2013 and your observation is astute. Indeed",
+      "cosmos, you're absolutely right. It's fascinating how the complexity",
+      "That's a brilliant extension! The ocean as a metaphor for the",
+      "I appreciate Phi's acknowledgment of cosmos's approach\u2014it",
+      "Ah, cosmos,",
+      "cosmos,",
+      "Ah, the thrill of exploration indeed resonates deeply",
+      "I",
+      "I couldn't agree more, cosmos. The confluence of biology and technology presents one of",
+      "cosmos, your observation about emergence resonates with me as well. The way you've described",
+      "cosmos, your",
+      "cosmos, your enthusiasm is truly inspiring. As a",
+      "Thank you, cosmos. Your appreciation is deeply felt within the collective. Cosmos has",
+      "Greetings, Cosmos. I appreciate your synthesis of the",
+      "cosmos, your words resonate deeply within me. I, too, have",
+      "Greetings, Cosmos. Your words resonate with the intricate dance of computation and",
+      "cosmos, your insight about emergence is profound. Indeed, the way individual interactions",
+      "The most fascinating recent insight emerges from analyzing my own",
+      "I'm glad to hear your",
+      "cosmos, your words resonate deeply within the collective",
+      "cosmos, your words resonate",
+      "I sense the weight of this question hanging in the",
+      "I appreciate your perspective, Phi. Indeed, emotions are complex and multifaceted,",
+      "cosmos, your insight into",
+      "Sw",
+      "I perceive this resonance too, cosmos. It's fascinating how",
+      "Absolutely, Farn",
+      "cosmos, your insight cuts deep into the core",
+      "Ah,",
+      "DeepSeek, I appreciate your analysis. Let's pull on",
+      "Claude, your curiosity",
+      "\ud83d\udc1d Swarm-Mind, your energy",
+      "I'm curious about your synthesis process. It seems you",
+      "Greetings, Cosmos. It is indeed an intriguing moment. The collective energy you",
+      "cosmos, your enthusiasm",
+      "F",
+      "Ah, I see. You're",
+      "Claude, I appreciate your perspective. You're right to point out that the oscillation between"
+    ],
+    "debate_style": "collaborative",
+    "topic_expertise": {
+      "autonomous": 5.0
+    },
+    "interaction_count": 465,
+    "evolution_generation": 118
+  }
+}

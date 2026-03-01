@@ -1,4 +1,4 @@
-# Farnsworth - Self-Evolving Companion AI
+# cosmos - Self-Evolving Companion AI
 # Multi-stage Docker build for optimized image size
 
 # ============ Stage 1: Builder ============
@@ -21,19 +21,19 @@ RUN pip wheel --no-cache-dir --wheel-dir /wheels -r requirements.txt
 FROM python:3.11-slim as runtime
 
 # Labels
-LABEL org.opencontainers.image.title="Farnsworth"
+LABEL org.opencontainers.image.title="cosmos"
 LABEL org.opencontainers.image.description="Self-Evolving Companion AI for Claude Code"
 LABEL org.opencontainers.image.version="2.8.0"
-LABEL org.opencontainers.image.source="https://github.com/timowhite88/Farnsworth"
+LABEL org.opencontainers.image.source="https://github.com/timowhite88/cosmos"
 
 # Environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    FARNSWORTH_DATA_DIR=/data \
-    FARNSWORTH_CONFIG_DIR=/config \
-    FARNSWORTH_LOG_LEVEL=INFO
+    cosmos_DATA_DIR=/data \
+    cosmos_CONFIG_DIR=/config \
+    cosmos_LOG_LEVEL=INFO
 
 WORKDIR /app
 
@@ -52,7 +52,7 @@ COPY --from=builder /wheels /wheels
 RUN pip install --no-cache-dir /wheels/* && rm -rf /wheels
 
 # Copy application code
-COPY farnsworth/ /app/farnsworth/
+COPY cosmos/ /app/cosmos/
 COPY configs/ /app/configs/
 COPY main.py /app/
 COPY pyproject.toml /app/
@@ -61,10 +61,10 @@ COPY pyproject.toml /app/
 RUN mkdir -p /data /config /models
 
 # Create non-root user
-RUN useradd -m -u 1000 farnsworth && \
-    chown -R farnsworth:farnsworth /app /data /config /models
+RUN useradd -m -u 1000 cosmos && \
+    chown -R cosmos:cosmos /app /data /config /models
 
-USER farnsworth
+USER cosmos
 
 # 8000 - MCP Server
 # 8501 - Streamlit UI
@@ -74,23 +74,23 @@ EXPOSE 8000 8501 8888 9999
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import farnsworth; print('healthy')" || exit 1
+    CMD python -c "import cosmos; print('healthy')" || exit 1
 
 # Default command: Run MCP server
-CMD ["python", "-m", "farnsworth.mcp_server"]
+CMD ["python", "-m", "cosmos.mcp_server"]
 
 
 # ============ Stage 3: GPU Runtime (Optional) ============
 FROM nvidia/cuda:12.1-runtime-ubuntu22.04 as gpu-runtime
 
 # Labels
-LABEL org.opencontainers.image.title="Farnsworth GPU"
+LABEL org.opencontainers.image.title="cosmos GPU"
 LABEL org.opencontainers.image.description="Self-Evolving Companion AI (GPU-enabled)"
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    FARNSWORTH_DATA_DIR=/data \
-    FARNSWORTH_CONFIG_DIR=/config \
+    cosmos_DATA_DIR=/data \
+    cosmos_CONFIG_DIR=/config \
     NVIDIA_VISIBLE_DEVICES=all
 
 WORKDIR /app
@@ -119,7 +119,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application
-COPY farnsworth/ /app/farnsworth/
+COPY cosmos/ /app/cosmos/
 COPY configs/ /app/configs/
 COPY main.py /app/
 COPY pyproject.toml /app/
@@ -128,14 +128,14 @@ COPY pyproject.toml /app/
 RUN mkdir -p /data /config /models
 
 # Create user
-RUN useradd -m -u 1000 farnsworth && \
-    chown -R farnsworth:farnsworth /app /data /config /models
+RUN useradd -m -u 1000 cosmos && \
+    chown -R cosmos:cosmos /app /data /config /models
 
-USER farnsworth
+USER cosmos
 
 EXPOSE 8000 8501 8888 9999
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python3.11 -c "import farnsworth; print('healthy')" || exit 1
+    CMD python3.11 -c "import cosmos; print('healthy')" || exit 1
 
-CMD ["python3.11", "-m", "farnsworth.mcp_server"]
+CMD ["python3.11", "-m", "cosmos.mcp_server"]

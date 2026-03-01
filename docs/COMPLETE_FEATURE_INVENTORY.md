@@ -1,4 +1,4 @@
-# 🧠 FARNSWORTH - COMPLETE FEATURE INVENTORY
+# 🧠 cosmos - COMPLETE FEATURE INVENTORY
 
 ## 📊 STATISTICS
 - **249 Python Files**
@@ -475,11 +475,11 @@ Trigger, Action, Condition, Loop, Transform, HTTP, Code, Wait, Split, Merge, Err
 
 | Category | Tools |
 |----------|-------|
-| Memory | farnsworth_remember, farnsworth_recall, remember_with_context |
-| Agents | farnsworth_delegate |
+| Memory | cosmos_remember, cosmos_recall, remember_with_context |
+| Agents | cosmos_delegate |
 | Evolution | record_feedback |
 | Health | health summary, metrics, trends, nutrition, goals |
-| Status | farnsworth_status |
+| Status | cosmos_status |
 
 ---
 

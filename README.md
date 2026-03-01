@@ -1,19 +1,19 @@
-# 🧠 Farnsworth: Your Claude Companion AI
+# 🧠 cosmos: Your Claude Companion AI
 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
 <div align="center">
 
 **Give Claude superpowers: persistent memory, model swarms, multimodal understanding, and self-evolution.**
 
-[![Version](https://img.shields.io/badge/version-2.9.3-blue.svg)](https://github.com/timowhite88/Farnsworth)
+[![Version](https://img.shields.io/badge/version-2.9.3-blue.svg)](https://github.com/timowhite88/cosmos)
 [![Python](https://img.shields.io/badge/python-3.10+-green.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Dual%20(Free%20%2B%20Commercial)-purple.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-MCP%20Integration-orange.svg)](https://claude.ai)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)](docker/)
 [![Models](https://img.shields.io/badge/Models-12%2B%20Supported-green.svg)](configs/models.yaml)
-[![Smithery](https://img.shields.io/badge/Smithery-MCP%20Server-blueviolet.svg)](https://smithery.ai/server/farnsworth)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-ai.farnsworth.cloud-ff69b4.svg)](https://ai.farnsworth.cloud)
+[![Smithery](https://img.shields.io/badge/Smithery-MCP%20Server-blueviolet.svg)](https://smithery.ai/server/cosmos)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-ai.cosmos.cloud-ff69b4.svg)](https://ai.cosmos.cloud)
 
-[**Live Demo**](https://ai.farnsworth.cloud) • [**Documentation**](docs/USER_GUIDE.md) • [**Smithery**](https://smithery.ai/server/farnsworth) • [**Roadmap**](ROADMAP.md) • [**Setup Wizard**](farnsworth/core/setup_wizard.py) • [**Isolated Mode**](README.md#isolated-mode)
+[**Live Demo**](https://ai.cosmos.cloud) • [**Documentation**](docs/USER_GUIDE.md) • [**Smithery**](https://smithery.ai/server/cosmos) • [**Roadmap**](ROADMAP.md) • [**Setup Wizard**](cosmos/core/setup_wizard.py) • [**Isolated Mode**](README.md#isolated-mode)
 
 </div>
 
@@ -26,7 +26,7 @@
 ```
     ╔══════════════════════════════════════════════════════════════════╗
     ║                                                                  ║
-    ║   🧪 FARNSWORTH  ×  🌸 KIMI  ×  🎭 CLAUDE                        ║
+    ║   🧪 cosmos  ×  🌸 KIMI  ×  🎭 CLAUDE                        ║
     ║                                                                  ║
     ║        ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ║
     ║        │  Ollama     │    │  Moonshot   │    │ Claude Code │    ║
@@ -53,7 +53,7 @@
 
 | Provider | Models | Capabilities |
 |:--------:|:------:|:------------|
-| 🧪 **Ollama** | Farnsworth, DeepSeek, Phi, Swarm-Mind | Local GPU, fast inference, privacy |
+| 🧪 **Ollama** | cosmos, DeepSeek, Phi, Swarm-Mind | Local GPU, fast inference, privacy |
 | 🌸 **Kimi** | Moonshot K2 | 256K context, Eastern philosophy, synthesis |
 | 🎭 **Claude** | Claude Code CLI | Nuanced thinking, uses your Claude Max subscription |
 
@@ -68,8 +68,8 @@
 <details>
 <summary><strong>Click to expand full table of contents</strong></summary>
 
-- [🌐 Try Farnsworth Live](#-try-farnsworth-live)
-- [🎯 What is Farnsworth?](#-what-is-farnsworth)
+- [🌐 Try cosmos Live](#-try-cosmos-live)
+- [🎯 What is cosmos?](#-what-is-cosmos)
 - [✨ What's New](#-whats-new-in-v290-the-cloud-native-release)
 - [⚡ Quick Start Installation](#-quick-start)
 - [📦 Complete Installation Guide](#-complete-installation-guide)
@@ -112,18 +112,18 @@
 
 ---
 
-## 🌐 Try Farnsworth Live
+## 🌐 Try cosmos Live
 
-Experience Farnsworth without installing anything:
+Experience cosmos without installing anything:
 
-### **https://ai.farnsworth.cloud**
+### **https://ai.cosmos.cloud**
 
 The live demo features:
-- **Professor Farnsworth Persona** - All responses in his eccentric scientist voice
+- **Professor cosmos Persona** - All responses in his eccentric scientist voice
 - **Token-Gated Access** - Premium glassmorphism interface
-- **Neural Chat Interface** - Talk to Farnsworth AI directly
+- **Neural Chat Interface** - Talk to cosmos AI directly
 - **Voice Input** - Click the mic button to speak your queries
-- **Voice Output** - Hear responses in Farnsworth's elderly professor tones (Text-to-Speech)
+- **Voice Output** - Hear responses in cosmos's elderly professor tones (Text-to-Speech)
 - **Holder Tools** - Whale Tracker, Rug Check, Token Scanner, Market Mood
 - **Cosmic Background** - Animated nebula and star field
 
@@ -131,11 +131,11 @@ The live demo features:
 
 ---
 
-## 🎯 What is Farnsworth?
+## 🎯 What is cosmos?
 
-Farnsworth is a **companion AI system** that integrates with [Claude Code](https://claude.ai) to give Claude capabilities it doesn't have on its own:
+cosmos is a **companion AI system** that integrates with [Claude Code](https://claude.ai) to give Claude capabilities it doesn't have on its own:
 
-| Without Farnsworth | With Farnsworth |
+| Without cosmos | With cosmos |
 |:------------------:|:---------------:|
 | 🚫 Claude forgets everything between sessions | ✅ Claude remembers your preferences forever |
 | 🚫 Claude is a single model | ✅ **Model Swarm**: 12+ models collaborate via PSO |
@@ -148,9 +148,9 @@ Farnsworth is a **companion AI system** that integrates with [Claude Code](https
 
 **All processing happens locally on your machine.** Your data never leaves your computer.
 
-### ⚔️ Why choose Farnsworth?
+### ⚔️ Why choose cosmos?
 
-| Feature | 🧠 **Farnsworth** | 🤖 **Others (Marge, Ralph, Claudebot)** |
+| Feature | 🧠 **cosmos** | 🤖 **Others (Marge, Ralph, Claudebot)** |
 |:---|:---:|:---:|
 | **Memory** | **Infinite & Planetary** | Session / Repo Only |
 | **Logic** | **Quantum & Causal** | Linear Chain-of-Thought |
@@ -185,7 +185,7 @@ Farnsworth is a **companion AI system** that integrates with [Claude Code](https
 <details>
 <summary><strong>🌐 Cloud Deployment & Live Demo</strong></summary>
 
-- 🌐 **Live Web Interface** - Try Farnsworth at [ai.farnsworth.cloud](https://ai.farnsworth.cloud)
+- 🌐 **Live Web Interface** - Try cosmos at [ai.cosmos.cloud](https://ai.cosmos.cloud)
 - 🚀 **Cloudflare Tunnel Integration** - Secure HTTPS access to your local instance
 - 🔐 **Token-Gated Access** - Solana SPL token verification for premium features
 - 🎨 **Glassmorphism UI** - Premium animated interface with cosmic background
@@ -196,7 +196,7 @@ Farnsworth is a **companion AI system** that integrates with [Claude Code](https
 <details>
 <summary><strong>💬 Messaging Integrations (v2.9.1)</strong></summary>
 
-- 💬 **Telegram Adapter** - Control Farnsworth via Telegram bot
+- 💬 **Telegram Adapter** - Control cosmos via Telegram bot
 - 🔗 **Slack Adapter** - Full Slack workspace integration with slash commands
 - 📱 **WhatsApp Adapter** - WhatsApp Business via Twilio integration
 
@@ -299,7 +299,7 @@ Farnsworth is a **companion AI system** that integrates with [Claude Code](https
 - 🧠 **Synergy Engine** - Automated cross-domain learning (GitHub -> Memory -> Projects)
 
 #### v2.7.0 - The "Cognitive Productivity" Suite
-- 💤 **Dream Catcher (Sleep Learning)** - Farnsworth performs "offline memory consolidation" while idling
+- 💤 **Dream Catcher (Sleep Learning)** - cosmos performs "offline memory consolidation" while idling
 - 🏙️ **The Holodeck** - A 3D WebGL visualization of your codebase topology
 - 🤫 **Cone of Silence (Focus Mode)** - System-level blocking of distraction sites
 - 🪃 **Boomerang** - "Remind me of this if I don't hear back." Smart task resurfacing
@@ -330,16 +330,16 @@ Farnsworth is a **companion AI system** that integrates with [Claude Code](https
 ### 🔮 Install via Smithery (Easiest)
 
 ```bash
-npx @smithery/cli install farnsworth
+npx @smithery/cli install cosmos
 ```
 
 Or add to your Claude Desktop config manually:
 ```json
 {
   "mcpServers": {
-    "farnsworth": {
+    "cosmos": {
       "command": "npx",
-      "args": ["-y", "@smithery/cli", "run", "farnsworth"],
+      "args": ["-y", "@smithery/cli", "run", "cosmos"],
       "env": {
         "SOLANA_RPC_URL": "your-rpc-url-here"
       }
@@ -352,7 +352,7 @@ Or add to your Claude Desktop config manually:
 
 **Just paste this to Claude:**
 ```
-Clone and set up Farnsworth from https://github.com/timowhite88/Farnsworth -
+Clone and set up cosmos from https://github.com/timowhite88/cosmos -
 it's a companion AI system with persistent memory, model swarms, and P2P networking.
 After cloning, run the setup wizard and help me configure it.
 ```
@@ -372,10 +372,10 @@ Claude will:
 
 ```bash
 # Install from PyPI
-pip install farnsworth-ai
+pip install cosmos-ai
 
 # Start the MCP server
-farnsworth-server
+cosmos-server
 
 # Run the setup wizard
 python main.py --setup
@@ -387,8 +387,8 @@ python main.py --setup
 <summary><strong>🐳 Option 2: Docker Install</strong></summary>
 
 ```bash
-git clone https://github.com/timowhite88/Farnsworth.git
-cd Farnsworth
+git clone https://github.com/timowhite88/cosmos.git
+cd cosmos
 docker-compose -f docker/docker-compose.yml up -d
 
 # With GPU support
@@ -419,8 +419,8 @@ docker-compose -f docker/docker-compose.yml --profile dev up -d
 
 ```bash
 # Clone repository
-git clone https://github.com/timowhite88/Farnsworth.git
-cd Farnsworth
+git clone https://github.com/timowhite88/cosmos.git
+cd cosmos
 
 # Create virtual environment (recommended)
 python -m venv venv
@@ -438,7 +438,7 @@ pip install -r requirements-dev.txt
 python main.py --setup
 
 # Start the server
-python -m farnsworth.mcp_server
+python -m cosmos.mcp_server
 ```
 
 </details>
@@ -452,11 +452,11 @@ Add to your Claude Code MCP settings (usually found in `claude_desktop_config.js
 ```json
 {
   "mcpServers": {
-    "farnsworth": {
-      "command": "farnsworth-server",
+    "cosmos": {
+      "command": "cosmos-server",
       "args": [],
       "env": {
-        "FARNSWORTH_LOG_LEVEL": "INFO"
+        "cosmos_LOG_LEVEL": "INFO"
       }
     }
   }
@@ -467,12 +467,12 @@ Add to your Claude Code MCP settings (usually found in `claude_desktop_config.js
 ```json
 {
   "mcpServers": {
-    "farnsworth": {
+    "cosmos": {
       "command": "python",
-      "args": ["-m", "farnsworth.mcp_server"],
-      "cwd": "/path/to/Farnsworth",
+      "args": ["-m", "cosmos.mcp_server"],
+      "cwd": "/path/to/cosmos",
       "env": {
-        "FARNSWORTH_LOG_LEVEL": "INFO"
+        "cosmos_LOG_LEVEL": "INFO"
       }
     }
   }
@@ -512,10 +512,10 @@ This checks for:
 <summary><strong>📄 configs/default.yaml - Full Configuration</strong></summary>
 
 ```yaml
-# Farnsworth Default Configuration
+# cosmos Default Configuration
 
 system:
-  name: "Farnsworth"
+  name: "cosmos"
   version: "0.1.0"
   log_level: "INFO"
   data_dir: "./data"
@@ -550,7 +550,7 @@ memory:
 
   vector_db:
     type: "chromadb"
-    collection_name: "farnsworth_memories"
+    collection_name: "cosmos_memories"
     embedding_model: "all-MiniLM-L6-v2"
 
   knowledge_graph:
@@ -632,17 +632,17 @@ mcp:
   port: 8765
 
   tools:
-    - "farnsworth_remember"
-    - "farnsworth_recall"
-    - "farnsworth_delegate"
-    - "farnsworth_evolve"
-    - "farnsworth_status"
+    - "cosmos_remember"
+    - "cosmos_recall"
+    - "cosmos_delegate"
+    - "cosmos_evolve"
+    - "cosmos_status"
 
   resources:
-    - "farnsworth://memory/recent"
-    - "farnsworth://memory/graph"
-    - "farnsworth://agents/active"
-    - "farnsworth://evolution/fitness"
+    - "cosmos://memory/recent"
+    - "cosmos://memory/graph"
+    - "cosmos://agents/active"
+    - "cosmos://evolution/fitness"
 
 ui:
   theme: "dark"
@@ -717,38 +717,38 @@ max:         # UNLIMITED: All models + cloud APIs + max parallel
 # ============================================
 # CORE SETTINGS
 # ============================================
-FARNSWORTH_DATA_DIR="/path/to/data"          # Data storage directory
-FARNSWORTH_LOG_LEVEL="INFO"                   # DEBUG, INFO, WARNING, ERROR
-FARNSWORTH_ISOLATED="true"                    # Disable ALL networking
-FARNSWORTH_HARDWARE_PROFILE="medium_vram"     # Hardware profile selection
+cosmos_DATA_DIR="/path/to/data"          # Data storage directory
+cosmos_LOG_LEVEL="INFO"                   # DEBUG, INFO, WARNING, ERROR
+cosmos_ISOLATED="true"                    # Disable ALL networking
+cosmos_HARDWARE_PROFILE="medium_vram"     # Hardware profile selection
 
 # ============================================
 # LLM BACKENDS
 # ============================================
 OLLAMA_HOST="http://localhost:11434"          # Ollama server URL
-FARNSWORTH_PRIMARY_MODEL="deepseek-r1:1.5b"   # Default model
-FARNSWORTH_EMBEDDING_MODEL="all-MiniLM-L6-v2" # Embedding model
+cosmos_PRIMARY_MODEL="deepseek-r1:1.5b"   # Default model
+cosmos_EMBEDDING_MODEL="all-MiniLM-L6-v2" # Embedding model
 
 # ============================================
 # TOKEN SAVING
 # ============================================
-FARNSWORTH_DAILY_TOKEN_LIMIT=100000           # Daily token budget
-FARNSWORTH_BUDGET_WARNING=0.8                 # Warning threshold (80%)
-FARNSWORTH_ENABLE_CACHE="true"                # Enable response caching
+cosmos_DAILY_TOKEN_LIMIT=100000           # Daily token budget
+cosmos_BUDGET_WARNING=0.8                 # Warning threshold (80%)
+cosmos_ENABLE_CACHE="true"                # Enable response caching
 
 # ============================================
 # WEB INTERFACE
 # ============================================
-FARNSWORTH_WEB_PORT="8080"                    # Web server port
-FARNSWORTH_DEMO_MODE="true"                   # Demo mode limitations
-FARNSWORTH_REQUIRED_TOKEN="9crfy4udr..."      # Token-gate SPL mint
-FARNSWORTH_MIN_TOKEN_BALANCE="1"              # Minimum token balance
+cosmos_WEB_PORT="8080"                    # Web server port
+cosmos_DEMO_MODE="true"                   # Demo mode limitations
+cosmos_REQUIRED_TOKEN="9crfy4udr..."      # Token-gate SPL mint
+cosmos_MIN_TOKEN_BALANCE="1"              # Minimum token balance
 
 # ============================================
 # P2P NETWORKING
 # ============================================
-FARNSWORTH_BOOTSTRAP_PEER="ws://..."          # Bootstrap node URL
-FARNSWORTH_BOOTSTRAP_PASSWORD="..."           # Bootstrap password
+cosmos_BOOTSTRAP_PEER="ws://..."          # Bootstrap node URL
+cosmos_BOOTSTRAP_PASSWORD="..."           # Bootstrap password
 ENABLE_PLANETARY_MEMORY="true"                # Enable knowledge sharing
 PLANETARY_USE_P2P="true"                      # Use P2P for planetary
 ```
@@ -849,8 +849,8 @@ FITBIT_CLIENT_SECRET="your-secret"
 OURA_ACCESS_TOKEN="your-token"
 WHOOP_CLIENT_ID="your-client-id"
 WHOOP_CLIENT_SECRET="your-secret"
-FARNSWORTH_HEALTH_PORT="8081"
-FARNSWORTH_HEALTH_ENABLED="true"
+cosmos_HEALTH_PORT="8081"
+cosmos_HEALTH_ENABLED="true"
 ```
 
 </details>
@@ -879,7 +879,7 @@ FARNSWORTH_HEALTH_ENABLED="true"
 │                          INTEGRATION LAYER                                   │
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────┐      │
-│   │                     Farnsworth MCP Server                        │      │
+│   │                     cosmos MCP Server                        │      │
 │   │  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐       │      │
 │   │  │  Memory   │ │  Agent    │ │ Evolution │ │ Resource  │       │      │
 │   │  │  Tools    │ │  Tools    │ │  Tools    │ │ Streams   │       │      │
@@ -1052,7 +1052,7 @@ FARNSWORTH_HEALTH_ENABLED="true"
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                     YOUR FARNSWORTH NODE                             │   │
+│  │                     YOUR cosmos NODE                             │   │
 │  │                                                                      │   │
 │  │  ┌──────────┐   UDP 8888   ┌──────────────────────────┐            │   │
 │  │  │ Discovery│ ◄──────────► │  Peer Nodes (LAN)        │            │   │
@@ -1095,15 +1095,15 @@ FARNSWORTH_HEALTH_ENABLED="true"
 ### Core Modules
 
 <details>
-<summary><strong>📦 farnsworth/ - Main Package Structure</strong></summary>
+<summary><strong>📦 cosmos/ - Main Package Structure</strong></summary>
 
 ```
-farnsworth/
+cosmos/
 ├── __init__.py                  # Package exports
 ├── core/                        # Core functionality
 │   ├── __init__.py
 │   ├── nexus.py                # Event bus (Signal, SignalType)
-│   ├── fcp.py                  # Farnsworth Control Protocol
+│   ├── fcp.py                  # cosmos Control Protocol
 │   ├── token_budgets.py        # Per-profile token management + BENDER mode
 │   ├── setup_wizard.py         # Interactive setup
 │   ├── affective/              # Emotion-to-Action engine
@@ -1150,9 +1150,9 @@ farnsworth/
 ### Memory System
 
 <details>
-<summary><strong>🧠 farnsworth/memory/ - Complete Memory System</strong></summary>
+<summary><strong>🧠 cosmos/memory/ - Complete Memory System</strong></summary>
 
-**Location:** `farnsworth/memory/`
+**Location:** `cosmos/memory/`
 
 **Key Classes:**
 
@@ -1203,9 +1203,9 @@ farnsworth/
 ### Agent Swarm
 
 <details>
-<summary><strong>🤖 farnsworth/agents/ - Agent Swarm System</strong></summary>
+<summary><strong>🤖 cosmos/agents/ - Agent Swarm System</strong></summary>
 
-**Location:** `farnsworth/agents/`
+**Location:** `cosmos/agents/`
 
 **Core Agents:**
 
@@ -1252,9 +1252,9 @@ farnsworth/
 ### RAG System
 
 <details>
-<summary><strong>🔍 farnsworth/rag/ - Retrieval Augmented Generation</strong></summary>
+<summary><strong>🔍 cosmos/rag/ - Retrieval Augmented Generation</strong></summary>
 
-**Location:** `farnsworth/rag/`
+**Location:** `cosmos/rag/`
 
 **Key Classes:**
 
@@ -1298,9 +1298,9 @@ rag:
 ### Evolution Engine
 
 <details>
-<summary><strong>🧬 farnsworth/evolution/ - Genetic Optimization</strong></summary>
+<summary><strong>🧬 cosmos/evolution/ - Genetic Optimization</strong></summary>
 
-**Location:** `farnsworth/evolution/`
+**Location:** `cosmos/evolution/`
 
 **Key Classes:**
 
@@ -1349,9 +1349,9 @@ lora:
 ### Health Tracking System
 
 <details>
-<summary><strong>🏥 farnsworth/health/ - Health Tracking</strong></summary>
+<summary><strong>🏥 cosmos/health/ - Health Tracking</strong></summary>
 
-**Location:** `farnsworth/health/`
+**Location:** `cosmos/health/`
 
 **Architecture:**
 
@@ -1426,9 +1426,9 @@ lora:
 ### Automation System
 
 <details>
-<summary><strong>⚙️ farnsworth/automation/ - Workflow Automation</strong></summary>
+<summary><strong>⚙️ cosmos/automation/ - Workflow Automation</strong></summary>
 
-**Location:** `farnsworth/automation/`
+**Location:** `cosmos/automation/`
 
 **Key Classes:**
 
@@ -1486,8 +1486,8 @@ lora:
 integration = EnhancedN8nIntegration()
 await integration.connect("http://localhost:5678", "your-api-key")
 
-# Create Farnsworth health workflow
-workflow = await integration.create_farnsworth_health_workflow()
+# Create cosmos health workflow
+workflow = await integration.create_cosmos_health_workflow()
 await integration.activate_workflow(workflow["id"])
 ```
 
@@ -1496,9 +1496,9 @@ await integration.activate_workflow(workflow["id"])
 ### Infrastructure as Code
 
 <details>
-<summary><strong>🏗️ farnsworth/infrastructure/ - IaC (Terraform/Pulumi)</strong></summary>
+<summary><strong>🏗️ cosmos/infrastructure/ - IaC (Terraform/Pulumi)</strong></summary>
 
-**Location:** `farnsworth/infrastructure/`
+**Location:** `cosmos/infrastructure/`
 
 **Key Classes:**
 
@@ -1557,9 +1557,9 @@ await pulumi.destroy()
 ### Container & Kubernetes Management
 
 <details>
-<summary><strong>🐳 farnsworth/containers/ - Docker & Kubernetes</strong></summary>
+<summary><strong>🐳 cosmos/containers/ - Docker & Kubernetes</strong></summary>
 
-**Location:** `farnsworth/containers/`
+**Location:** `cosmos/containers/`
 
 **Key Classes:**
 
@@ -1623,9 +1623,9 @@ await k8s.port_forward("my-app-xyz", local_port=8080, pod_port=80)
 ### CI/CD Pipeline Management
 
 <details>
-<summary><strong>🔄 farnsworth/cicd/ - CI/CD Pipelines</strong></summary>
+<summary><strong>🔄 cosmos/cicd/ - CI/CD Pipelines</strong></summary>
 
-**Location:** `farnsworth/cicd/`
+**Location:** `cosmos/cicd/`
 
 **Key Classes:**
 
@@ -1670,9 +1670,9 @@ await gh.download_artifacts(run_id, "./artifacts")
 ### Secrets Management
 
 <details>
-<summary><strong>🔐 farnsworth/secrets/ - Secrets Vault</strong></summary>
+<summary><strong>🔐 cosmos/secrets/ - Secrets Vault</strong></summary>
 
-**Location:** `farnsworth/secrets/`
+**Location:** `cosmos/secrets/`
 
 **Key Classes:**
 
@@ -1722,9 +1722,9 @@ await vault.delete_secret("database/credentials")
 ### Incident Response
 
 <details>
-<summary><strong>🚨 farnsworth/incidents/ - Incident Response</strong></summary>
+<summary><strong>🚨 cosmos/incidents/ - Incident Response</strong></summary>
 
-**Location:** `farnsworth/incidents/`
+**Location:** `cosmos/incidents/`
 
 **Key Classes:**
 
@@ -1781,9 +1781,9 @@ steps:
 ### Compliance Engine
 
 <details>
-<summary><strong>✅ farnsworth/compliance/ - Compliance & Audit</strong></summary>
+<summary><strong>✅ cosmos/compliance/ - Compliance & Audit</strong></summary>
 
-**Location:** `farnsworth/compliance/`
+**Location:** `cosmos/compliance/`
 
 **Key Classes:**
 
@@ -1852,9 +1852,9 @@ remediation: Enable server-side encryption for the storage resource
 ### P2P Network
 
 <details>
-<summary><strong>🌐 farnsworth/p2p/ - P2P Networking</strong></summary>
+<summary><strong>🌐 cosmos/p2p/ - P2P Networking</strong></summary>
 
-**Location:** `farnsworth/p2p/`
+**Location:** `cosmos/p2p/`
 
 **Key Classes:**
 
@@ -1902,9 +1902,9 @@ python main.py --node --no-planetary
 ### Security Tools
 
 <details>
-<summary><strong>🔒 farnsworth/tools/security/ - Security Research</strong></summary>
+<summary><strong>🔒 cosmos/tools/security/ - Security Research</strong></summary>
 
-**Location:** `farnsworth/tools/security/`
+**Location:** `cosmos/tools/security/`
 
 **Key Classes:**
 
@@ -1954,9 +1954,9 @@ python main.py --node --no-planetary
 ### Sysadmin Tools
 
 <details>
-<summary><strong>🔧 farnsworth/tools/sysadmin/ - System Administration</strong></summary>
+<summary><strong>🔧 cosmos/tools/sysadmin/ - System Administration</strong></summary>
 
-**Location:** `farnsworth/tools/sysadmin/`
+**Location:** `cosmos/tools/sysadmin/`
 
 **Key Classes:**
 
@@ -2015,9 +2015,9 @@ python main.py --node --no-planetary
 ### Cloud Management
 
 <details>
-<summary><strong>☁️ farnsworth/integration/cloud/ - Cloud Providers</strong></summary>
+<summary><strong>☁️ cosmos/integration/cloud/ - Cloud Providers</strong></summary>
 
-**Location:** `farnsworth/integration/cloud/`
+**Location:** `cosmos/integration/cloud/`
 
 **Azure Manager:**
 
@@ -2056,9 +2056,9 @@ python main.py --node --no-planetary
 ### Email Integration
 
 <details>
-<summary><strong>📧 farnsworth/integration/email/ - Email Providers</strong></summary>
+<summary><strong>📧 cosmos/integration/email/ - Email Providers</strong></summary>
 
-**Location:** `farnsworth/integration/email/`
+**Location:** `cosmos/integration/email/`
 
 **Key Classes:**
 
@@ -2110,7 +2110,7 @@ await filter.sync_to_gmail(gmail)
 ### Messaging Adapters
 
 <details>
-<summary><strong>💬 farnsworth/integration/ - Messaging Platforms</strong></summary>
+<summary><strong>💬 cosmos/integration/ - Messaging Platforms</strong></summary>
 
 **Telegram Adapter:**
 
@@ -2119,7 +2119,7 @@ telegram = TelegramAdapter(token="BOT_TOKEN")
 
 @telegram.on_message
 async def handle_message(update):
-    response = await farnsworth.process(update.message.text)
+    response = await cosmos.process(update.message.text)
     await telegram.send_message(update.chat.id, response)
 
 await telegram.start()
@@ -2133,9 +2133,9 @@ slack = SlackAdapter(
     signing_secret="..."
 )
 
-@slack.on_slash_command("/farnsworth")
+@slack.on_slash_command("/cosmos")
 async def handle_command(payload):
-    response = await farnsworth.process(payload.text)
+    response = await cosmos.process(payload.text)
     return response
 
 await slack.start()
@@ -2152,7 +2152,7 @@ whatsapp = WhatsAppAdapter(
 
 @whatsapp.on_message
 async def handle_message(message):
-    response = await farnsworth.process(message.body)
+    response = await cosmos.process(message.body)
     await whatsapp.send_message(message.from_, response)
 
 await whatsapp.start()
@@ -2262,11 +2262,11 @@ Typical savings: **40-70%** on API costs.
 
 | Tool | Description |
 |------|-------------|
-| `farnsworth_remember(content, tags)` | Store information in long-term memory |
-| `farnsworth_recall(query, limit)` | Search and retrieve relevant memories |
-| `farnsworth_delegate(task, agent_type)` | Delegate to specialist agent |
-| `farnsworth_evolve(feedback)` | Provide feedback for system improvement |
-| `farnsworth_status()` | Get system health and statistics |
+| `cosmos_remember(content, tags)` | Store information in long-term memory |
+| `cosmos_recall(query, limit)` | Search and retrieve relevant memories |
+| `cosmos_delegate(task, agent_type)` | Delegate to specialist agent |
+| `cosmos_evolve(feedback)` | Provide feedback for system improvement |
+| `cosmos_status()` | Get system health and statistics |
 
 </details>
 
@@ -2275,9 +2275,9 @@ Typical savings: **40-70%** on API costs.
 
 | Tool | Description |
 |------|-------------|
-| `farnsworth_vision(image, task)` | Analyze images (caption, VQA, OCR) |
-| `farnsworth_voice(audio, task)` | Process audio (transcribe, diarize) |
-| `farnsworth_browse(goal, url)` | Web browsing with goal |
+| `cosmos_vision(image, task)` | Analyze images (caption, VQA, OCR) |
+| `cosmos_voice(audio, task)` | Process audio (transcribe, diarize) |
+| `cosmos_browse(goal, url)` | Web browsing with goal |
 
 </details>
 
@@ -2286,11 +2286,11 @@ Typical savings: **40-70%** on API costs.
 
 | Tool | Description |
 |------|-------------|
-| `farnsworth_token_status()` | Get token budget and cache stats |
-| `farnsworth_quick_note(content, tags)` | Add a quick note |
-| `farnsworth_focus_start(task)` | Start focus timer session |
-| `farnsworth_daily_summary()` | Generate daily activity summary |
-| `farnsworth_switch_profile(id)` | Switch context profile |
+| `cosmos_token_status()` | Get token budget and cache stats |
+| `cosmos_quick_note(content, tags)` | Add a quick note |
+| `cosmos_focus_start(task)` | Start focus timer session |
+| `cosmos_daily_summary()` | Generate daily activity summary |
+| `cosmos_switch_profile(id)` | Switch context profile |
 
 </details>
 
@@ -2299,10 +2299,10 @@ Typical savings: **40-70%** on API costs.
 
 | Tool | Description |
 |------|-------------|
-| `farnsworth_affect_state()` | Get current detected emotional state |
-| `farnsworth_affect_update(state)` | Manually update affective state |
-| `farnsworth_bio_connect(provider)` | Connect to bio-interface device |
-| `farnsworth_bio_stream()` | Get real-time biological signal stream |
+| `cosmos_affect_state()` | Get current detected emotional state |
+| `cosmos_affect_update(state)` | Manually update affective state |
+| `cosmos_bio_connect(provider)` | Connect to bio-interface device |
+| `cosmos_bio_stream()` | Get real-time biological signal stream |
 
 </details>
 
@@ -2311,8 +2311,8 @@ Typical savings: **40-70%** on API costs.
 
 | Tool | Description |
 |------|-------------|
-| `farnsworth_send_message(platform, chat_id, text)` | Send message via Telegram/Slack/WhatsApp |
-| `farnsworth_broadcast(platforms, text)` | Broadcast to multiple platforms |
+| `cosmos_send_message(platform, chat_id, text)` | Send message via Telegram/Slack/WhatsApp |
+| `cosmos_broadcast(platforms, text)` | Broadcast to multiple platforms |
 
 </details>
 
@@ -2321,11 +2321,11 @@ Typical savings: **40-70%** on API costs.
 
 | Tool | Description |
 |------|-------------|
-| `farnsworth_azure_vms(action, resource_group)` | List/start/stop Azure VMs |
-| `farnsworth_azure_users(action, params)` | Entra ID user management |
-| `farnsworth_aws_instances(action, filters)` | EC2 instance management |
-| `farnsworth_aws_users(action, params)` | IAM user management |
-| `farnsworth_cloud_cost(provider, days)` | Cloud cost analysis |
+| `cosmos_azure_vms(action, resource_group)` | List/start/stop Azure VMs |
+| `cosmos_azure_users(action, params)` | Entra ID user management |
+| `cosmos_aws_instances(action, filters)` | EC2 instance management |
+| `cosmos_aws_users(action, params)` | IAM user management |
+| `cosmos_cloud_cost(provider, days)` | Cloud cost analysis |
 
 </details>
 
@@ -2334,12 +2334,12 @@ Typical savings: **40-70%** on API costs.
 
 | Tool | Description |
 |------|-------------|
-| `farnsworth_vuln_scan(target, scan_type)` | Vulnerability assessment |
-| `farnsworth_edr_status()` | EDR monitoring status |
-| `farnsworth_analyze_headers(raw_headers)` | Email header threat analysis |
-| `farnsworth_forensics(target, analysis_type)` | Digital forensics analysis |
-| `farnsworth_parse_logs(path, log_type)` | Security log parsing |
-| `farnsworth_threat_intel(ioc)` | Threat intelligence lookup |
+| `cosmos_vuln_scan(target, scan_type)` | Vulnerability assessment |
+| `cosmos_edr_status()` | EDR monitoring status |
+| `cosmos_analyze_headers(raw_headers)` | Email header threat analysis |
+| `cosmos_forensics(target, analysis_type)` | Digital forensics analysis |
+| `cosmos_parse_logs(path, log_type)` | Security log parsing |
+| `cosmos_threat_intel(ioc)` | Threat intelligence lookup |
 
 </details>
 
@@ -2348,10 +2348,10 @@ Typical savings: **40-70%** on API costs.
 
 | Tool | Description |
 |------|-------------|
-| `farnsworth_o365_mail(action, params)` | Office 365 email operations |
-| `farnsworth_gmail(action, params)` | Gmail operations |
-| `farnsworth_mail_filter(rule_name, conditions, actions)` | Create universal mail rules |
-| `farnsworth_mail_sync()` | Sync rules across providers |
+| `cosmos_o365_mail(action, params)` | Office 365 email operations |
+| `cosmos_gmail(action, params)` | Gmail operations |
+| `cosmos_mail_filter(rule_name, conditions, actions)` | Create universal mail rules |
+| `cosmos_mail_sync()` | Sync rules across providers |
 
 </details>
 
@@ -2360,11 +2360,11 @@ Typical savings: **40-70%** on API costs.
 
 | Tool | Description |
 |------|-------------|
-| `farnsworth_system_status()` | System health metrics |
-| `farnsworth_service(action, name)` | Service management |
-| `farnsworth_network_scan(target)` | Network scanning |
-| `farnsworth_backup(action, path)` | Backup operations |
-| `farnsworth_wsl(command)` | WSL bridge execution |
+| `cosmos_system_status()` | System health metrics |
+| `cosmos_service(action, name)` | Service management |
+| `cosmos_network_scan(target)` | Network scanning |
+| `cosmos_backup(action, path)` | Backup operations |
+| `cosmos_wsl(command)` | WSL bridge execution |
 
 </details>
 
@@ -2373,14 +2373,14 @@ Typical savings: **40-70%** on API costs.
 
 | Tool | Description |
 |------|-------------|
-| `farnsworth_health_summary(date)` | Get daily health summary |
-| `farnsworth_health_trend(metric, days)` | Analyze metric trends |
-| `farnsworth_nutrition_log(meal_type, foods)` | Log a meal |
-| `farnsworth_nutrition_search(query)` | Search foods |
-| `farnsworth_recipe_suggest(meal_type, calories)` | Get recipe suggestions |
-| `farnsworth_goal_create(type, target, deadline)` | Create health goal |
-| `farnsworth_document_parse(image_path, type)` | Parse health document |
-| `farnsworth_health_recommend(focus_area)` | Get AI recommendations |
+| `cosmos_health_summary(date)` | Get daily health summary |
+| `cosmos_health_trend(metric, days)` | Analyze metric trends |
+| `cosmos_nutrition_log(meal_type, foods)` | Log a meal |
+| `cosmos_nutrition_search(query)` | Search foods |
+| `cosmos_recipe_suggest(meal_type, calories)` | Get recipe suggestions |
+| `cosmos_goal_create(type, target, deadline)` | Create health goal |
+| `cosmos_document_parse(image_path, type)` | Parse health document |
+| `cosmos_health_recommend(focus_area)` | Get AI recommendations |
 
 </details>
 
@@ -2389,14 +2389,14 @@ Typical savings: **40-70%** on API costs.
 
 | Tool | Description |
 |------|-------------|
-| `farnsworth_terraform(action, working_dir)` | Terraform operations |
-| `farnsworth_pulumi(action, stack)` | Pulumi operations |
-| `farnsworth_docker(action, container_id)` | Docker operations |
-| `farnsworth_k8s(action, resource, namespace)` | Kubernetes operations |
-| `farnsworth_secrets(action, path)` | Secrets management |
-| `farnsworth_incident(action, incident_id)` | Incident management |
-| `farnsworth_compliance_check(framework)` | Compliance checking |
-| `farnsworth_dns(action, domain)` | DNS management |
+| `cosmos_terraform(action, working_dir)` | Terraform operations |
+| `cosmos_pulumi(action, stack)` | Pulumi operations |
+| `cosmos_docker(action, container_id)` | Docker operations |
+| `cosmos_k8s(action, resource, namespace)` | Kubernetes operations |
+| `cosmos_secrets(action, path)` | Secrets management |
+| `cosmos_incident(action, incident_id)` | Incident management |
+| `cosmos_compliance_check(framework)` | Compliance checking |
+| `cosmos_dns(action, domain)` | DNS management |
 
 </details>
 
@@ -2405,15 +2405,15 @@ Typical savings: **40-70%** on API costs.
 
 | Resource URI | Description |
 |-------------|-------------|
-| `farnsworth://memory/recent` | Recent conversation context |
-| `farnsworth://memory/graph` | Knowledge graph of entities |
-| `farnsworth://agents/active` | Currently running agents |
-| `farnsworth://evolution/fitness` | Performance metrics |
-| `farnsworth://vision/reconstruction` | 3D Point cloud data |
-| `farnsworth://proactive/suggestions` | Anticipatory suggestions |
-| `farnsworth://system/health` | Real-time health metrics |
-| `farnsworth://affect/state` | Current affective state |
-| `farnsworth://bio/stream` | Live biological signal data |
+| `cosmos://memory/recent` | Recent conversation context |
+| `cosmos://memory/graph` | Knowledge graph of entities |
+| `cosmos://agents/active` | Currently running agents |
+| `cosmos://evolution/fitness` | Performance metrics |
+| `cosmos://vision/reconstruction` | 3D Point cloud data |
+| `cosmos://proactive/suggestions` | Anticipatory suggestions |
+| `cosmos://system/health` | Real-time health metrics |
+| `cosmos://affect/state` | Current affective state |
+| `cosmos://bio/stream` | Live biological signal data |
 
 </details>
 
@@ -2479,10 +2479,10 @@ python run_web.py --port 8080 --demo
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `FARNSWORTH_REQUIRED_TOKEN` | SPL token mint address | `9crfy4udr...wBAGS` |
-| `FARNSWORTH_MIN_TOKEN_BALANCE` | Minimum tokens required | `1` |
-| `FARNSWORTH_WEB_PORT` | Web server port | `8080` |
-| `FARNSWORTH_DEMO_MODE` | Enable demo mode | `true` |
+| `cosmos_REQUIRED_TOKEN` | SPL token mint address | `9crfy4udr...wBAGS` |
+| `cosmos_MIN_TOKEN_BALANCE` | Minimum tokens required | `1` |
+| `cosmos_WEB_PORT` | Web server port | `8080` |
+| `cosmos_DEMO_MODE` | Enable demo mode | `true` |
 
 </details>
 
@@ -2571,12 +2571,12 @@ python run_web.py --port 8080 --demo
 <details>
 <summary><strong>🔍 Common Issues & Solutions</strong></summary>
 
-### "Farnsworth tools not appearing in Claude Code"
+### "cosmos tools not appearing in Claude Code"
 
 1. Verify the MCP config path is correct
-2. Check that Python can find the farnsworth module:
+2. Check that Python can find the cosmos module:
    ```bash
-   python -c "import farnsworth; print('OK')"
+   python -c "import cosmos; print('OK')"
    ```
 3. Restart Claude Code completely
 4. Check Claude Code's MCP logs for errors
@@ -2590,7 +2590,7 @@ python run_web.py --port 8080 --demo
    ```
 2. Check if embeddings are working:
    ```bash
-   python -c "from farnsworth.rag.embeddings import EmbeddingManager; print(EmbeddingManager().embed('test')[:5])"
+   python -c "from cosmos.rag.embeddings import EmbeddingManager; print(EmbeddingManager().embed('test')[:5])"
    ```
 
 ### "Agent delegation times out"
@@ -2630,18 +2630,18 @@ A: No. Everything runs locally. Your memories, conversations, and feedback never
 A: No, only with Claude Code (the CLI/desktop app) via MCP.
 
 **Q: Can I use this without a GPU?**
-A: Yes! Farnsworth is optimized for CPU usage. GPU just makes it faster.
+A: Yes! cosmos is optimized for CPU usage. GPU just makes it faster.
 
 **Q: How much disk space do I need?**
 A: ~10GB minimum (5GB for models + 5GB for data). Recommended 50GB.
 
 ### Memory
 
-**Q: How many memories can Farnsworth store?**
+**Q: How many memories can cosmos store?**
 A: Virtually unlimited. The default config supports 100,000+ entries.
 
 **Q: Can I export my memories?**
-A: Yes, use `farnsworth_export` or browse `data/memories/` directly.
+A: Yes, use `cosmos_export` or browse `data/memories/` directly.
 
 ### P2P Networking
 
@@ -2721,15 +2721,15 @@ See [ROADMAP.md](ROADMAP.md) for detailed plans.
 
 ---
 
-## 💡 Why "Farnsworth"?
+## 💡 Why "cosmos"?
 
-Named after Professor Hubert J. Farnsworth from *Futurama* - a brilliant inventor who created countless gadgets and whose catchphrase "Good news, everyone!" perfectly captures what we hope you'll feel when using this tool with Claude.
+Named after Professor Hubert J. cosmos from *Futurama* - a brilliant inventor who created countless gadgets and whose catchphrase "Good news, everyone!" perfectly captures what we hope you'll feel when using this tool with Claude.
 
 ---
 
 ## 📄 License
 
-**Farnsworth is dual-licensed:**
+**cosmos is dual-licensed:**
 
 | Use Case | License |
 |----------|---------|
@@ -2766,33 +2766,33 @@ Model Swarm implementation inspired by:
 
 ---
 
-## ⚔️ Farnsworth vs. The Competition
+## ⚔️ cosmos vs. The Competition
 
 <details>
 <summary><strong>📊 Full Battle Comparison Chart</strong></summary>
 
 "Why settle for a primitive chatbot when you can have a hyper-evolved doomsday device... I mean, assistant?"
 
-Farnsworth isn't just another MCP server. It's a **Planetary-Scale Cognitive Engine**.
+cosmos isn't just another MCP server. It's a **Planetary-Scale Cognitive Engine**.
 
 ### 🏆 The Master Comparison
 
 #### 🧠 Core Cognition
-| Feature | **Farnsworth** (Us) | **Claudebot** | **Marge** | **Ralph** |
+| Feature | **cosmos** (Us) | **Claudebot** | **Marge** | **Ralph** |
 |:---|:---:|:---:|:---:|:---:|
 | **Memory Architecture** | **Holographic & Planetary** | Session / Simple RAG | Repo Context | Log File |
 | **Logic Engine** | **Quantum Superposition** | Linear Chain | Standard | If/Else |
 | **Learning** | **Sleep Consolidation** | None | None | None |
 
 #### 🛠️ Tools & Markets
-| Feature | **Farnsworth** (Us) | **Claudebot** | **Marge** | **Ralph** |
+| Feature | **cosmos** (Us) | **Claudebot** | **Marge** | **Ralph** |
 |:---|:---:|:---:|:---:|:---:|
 | **Solana / DeGen** | **Full Suite (Sniper/Jito)** | ❌ | ❌ | ❌ |
 | **Stocks / Forex** | **Real-time Terminal** | ❌ | ❌ | ❌ |
 | **Web Scraping** | **Universal (Crawlee)** | Basic | ❌ | ❌ |
 
 #### 🗣️ Interaction & Privacy
-| Feature | **Farnsworth** (Us) | **Claudebot** | **Marge** | **Ralph** |
+| Feature | **cosmos** (Us) | **Claudebot** | **Marge** | **Ralph** |
 |:---|:---:|:---:|:---:|:---:|
 | **Visualization** | **3D Holodeck** | Text | Text | Text |
 | **Voice** | **Native Mimic TTS** | ❌ | ❌ | ❌ |
@@ -2802,18 +2802,18 @@ Farnsworth isn't just another MCP server. It's a **Planetary-Scale Cognitive Eng
 
 #### 1. vs. "Claudebot" (The Standard)
 *   **The Baseline**: Standard Claude MCP servers are great at reading files and running commands.
-*   **The Farnsworth Difference**: We add **Agency**. Farnsworth doesn't just wait for commands; it has a **P2P Swarm Protocol** that lets it trade skills with other agents. It has **Trader Intuition** for markets. It has **Sleep Learning** to solidify knowledge overnight.
+*   **The cosmos Difference**: We add **Agency**. cosmos doesn't just wait for commands; it has a **P2P Swarm Protocol** that lets it trade skills with other agents. It has **Trader Intuition** for markets. It has **Sleep Learning** to solidify knowledge overnight.
 
 #### 2. vs. "Marge" (The CI/CD Bot)
 *   **The Specialist**: Marge is great at merging PRs and keeping builds green.
-*   **The Farnsworth Difference**: Farnsworth understands *why* the build broke using **Causal Reasoning**. Plus, while Marge is waiting for a build, Farnsworth can be **Sniping Memecoins** on Solana or **Scraping X.com** for alpha.
+*   **The cosmos Difference**: cosmos understands *why* the build broke using **Causal Reasoning**. Plus, while Marge is waiting for a build, cosmos can be **Sniping Memecoins** on Solana or **Scraping X.com** for alpha.
 
 #### 3. vs. "Ralph" (The Runner)
 *   **The Worker**: Ralph runs scripts well.
-*   **The Farnsworth Difference**: **The Holodeck**. Can Ralph visualize your codebase as a 3D city in real-time? Can Ralph answer calls with a custom synthesized voice? Farnsworth is a **Full Interaction Platform**, not just a task runner.
+*   **The cosmos Difference**: **The Holodeck**. Can Ralph visualize your codebase as a 3D city in real-time? Can Ralph answer calls with a custom synthesized voice? cosmos is a **Full Interaction Platform**, not just a task runner.
 
 ### 🧪 Unique "God Mode" Features
-Only Farnsworth offers:
+Only cosmos offers:
 1.  **Degen Mob**: Full Solana/Pump.fun integration with Jito anti-MEV bundles.
 2.  **Dream Catcher**: The ability to learn and generate training data while the system is idle.
 3.  **Akashic Record**: Privacy-preserving knowledge sharing across the entire userbase.
@@ -2831,7 +2831,7 @@ Only Farnsworth offers:
 
 ### Executive Summary
 
-#### What Farnsworth Does
+#### What cosmos Does
 
 | Capability | Technical Implementation |
 |------------|-------------------------|
@@ -3225,13 +3225,13 @@ Only Farnsworth offers:
 
 | File | Purpose | Key Classes/Functions |
 |------|---------|----------------------|
-| `farnsworth/core/llm_backend.py` | LLM abstraction | `OllamaBackend`, `CascadeBackend` |
-| `farnsworth/memory/memory_system.py` | Memory coordinator | `MemorySystem` |
-| `farnsworth/memory/archival_memory.py` | Long-term storage | `ArchivalMemory` |
-| `farnsworth/memory/knowledge_graph.py` | Entity relationships | `KnowledgeGraph` |
-| `farnsworth/agents/swarm_orchestrator.py` | Agent management | `SwarmOrchestrator` |
-| `farnsworth/evolution/genetic_optimizer.py` | NSGA-II optimization | `GeneticOptimizer` |
-| `farnsworth/mcp_server/server.py` | Claude integration | `FarnsworthMCPServer` |
+| `cosmos/core/llm_backend.py` | LLM abstraction | `OllamaBackend`, `CascadeBackend` |
+| `cosmos/memory/memory_system.py` | Memory coordinator | `MemorySystem` |
+| `cosmos/memory/archival_memory.py` | Long-term storage | `ArchivalMemory` |
+| `cosmos/memory/knowledge_graph.py` | Entity relationships | `KnowledgeGraph` |
+| `cosmos/agents/swarm_orchestrator.py` | Agent management | `SwarmOrchestrator` |
+| `cosmos/evolution/genetic_optimizer.py` | NSGA-II optimization | `GeneticOptimizer` |
+| `cosmos/mcp_server/server.py` | Claude integration | `cosmosMCPServer` |
 
 </details>
 
@@ -3242,9 +3242,9 @@ Only Farnsworth offers:
 <details>
 <summary><strong>📊 Full Cognitive Architecture Diagram</strong></summary>
 
-### The Cognitive Universe of Farnsworth
+### The Cognitive Universe of cosmos
 
-Farnsworth is not just an agent; it is a **Neuromorphic Cognitive Architecture**. The system is composed of several specialized layers that work in harmony via the **Nexus** event bus.
+cosmos is not just an agent; it is a **Neuromorphic Cognitive Architecture**. The system is composed of several specialized layers that work in harmony via the **Nexus** event bus.
 
 ```
                            ┌─────────────────────────────┐
@@ -3486,7 +3486,7 @@ Farnsworth is not just an agent; it is a **Neuromorphic Cognitive Architecture**
 <summary><strong>📋 Detailed Setup & Installation Guide</strong></summary>
 
 ### 🔒 Privacy First
-Farnsworth is designed to run 100% locally. No data is sent to the cloud unless you explicitly enable an external integration (like X.com or Grok). All memories, vector databases, and keyrings are stored in your `./data` folder.
+cosmos is designed to run 100% locally. No data is sent to the cloud unless you explicitly enable an external integration (like X.com or Grok). All memories, vector databases, and keyrings are stored in your `./data` folder.
 
 ### 📋 Feature Prerequisites
 
@@ -3546,7 +3546,7 @@ python main.py --setup
 
 #### 4. Local Model Management
 
-Farnsworth uses Ollama for local intelligence.
+cosmos uses Ollama for local intelligence.
 
 ```bash
 # 1. Install Ollama from ollama.ai
@@ -3586,19 +3586,19 @@ Access the dashboard at `http://localhost:8501`.
 
 ### Core Concepts
 
-Farnsworth is designed around three main pillars:
+cosmos is designed around three main pillars:
 1. **Memory**: Persistent storage for context, facts, and relationships.
 2. **Agents**: Specialist workers for code, reasoning, and research.
 3. **Evolution**: Self-improving feedback loops.
 
 ### Python SDK
 
-The `FarnsworthClient` is the primary entry point for Python integrations.
+The `cosmosClient` is the primary entry point for Python integrations.
 
 ```python
-from farnsworth.client import FarnsworthClient
+from cosmos.client import cosmosClient
 
-client = FarnsworthClient()
+client = cosmosClient()
 client.remember("Project X deadline is Friday")
 ```
 
@@ -3615,7 +3615,7 @@ Dispatches a task to the Agent Swarm. The system automatically selects the best 
 
 ### MCP Protocol Tools
 
-#### `farnsworth_remember`
+#### `cosmos_remember`
 Store information in long-term memory.
 
 **Parameters:**
@@ -3623,44 +3623,44 @@ Store information in long-term memory.
 - `tags` (array[string], optional): Tags for categorization
 - `importance` (number, optional): Importance score 0-1 (default: 0.5)
 
-#### `farnsworth_recall`
+#### `cosmos_recall`
 Search and retrieve relevant memories.
 
 **Parameters:**
 - `query` (string, required): Search query
 - `limit` (integer, optional): Maximum results (default: 5)
 
-#### `farnsworth_delegate`
+#### `cosmos_delegate`
 Delegate a task to a specialist agent.
 
 **Parameters:**
 - `task` (string, required): The task to delegate
 - `agent_type` (string, optional): Type of specialist: 'code', 'reasoning', 'research', 'creative', or 'auto'
 
-#### `farnsworth_evolve`
+#### `cosmos_evolve`
 Provide feedback for system improvement.
 
 **Parameters:**
 - `feedback` (string, required): Your feedback on the system's performance
 
-#### `farnsworth_status`
+#### `cosmos_status`
 Get the current system status including memory statistics, active agents, and evolution metrics.
 
-#### `farnsworth_vision`
+#### `cosmos_vision`
 Analyze an image using the vision module.
 
 **Parameters:**
 - `image` (string, required): Image path, URL, or base64 string
 - `task` (string, optional): Task type: 'caption', 'vqa', 'ocr', 'classify'
 
-#### `farnsworth_browse`
+#### `cosmos_browse`
 Use the intelligent web agent to browse the internet.
 
 **Parameters:**
 - `goal` (string, required): What to accomplish or find
 - `url` (string, optional): Starting URL
 
-#### `farnsworth_export`
+#### `cosmos_export`
 Export conversation history, memories, and context to a shareable format.
 
 **Parameters:**
@@ -3689,13 +3689,13 @@ Export conversation history, memories, and context to a shareable format.
 
 | Resource URI | Description |
 |-------------|-------------|
-| `farnsworth://memory/recent` | View active context and recent memories |
-| `farnsworth://memory/graph` | Knowledge graph entities and relationships |
-| `farnsworth://agents/active` | Currently running specialist agents |
-| `farnsworth://evolution/fitness` | System performance and evolution metrics |
-| `farnsworth://proactive/suggestions` | Anticipatory suggestions from the proactive agent |
-| `farnsworth://system/health` | Real-time health status and metrics |
-| `farnsworth://exports/list` | List of all available conversation exports |
+| `cosmos://memory/recent` | View active context and recent memories |
+| `cosmos://memory/graph` | Knowledge graph entities and relationships |
+| `cosmos://agents/active` | Currently running specialist agents |
+| `cosmos://evolution/fitness` | System performance and evolution metrics |
+| `cosmos://proactive/suggestions` | Anticipatory suggestions from the proactive agent |
+| `cosmos://system/health` | Real-time health status and metrics |
+| `cosmos://exports/list` | List of all available conversation exports |
 
 ### Best Practices
 
@@ -3962,7 +3962,7 @@ The `InferenceEngine` uses a sophisticated cascade and swarm approach.
 ║   Each agent can spawn MULTIPLE instances working in parallel:               ║
 ║                                                                              ║
 ║   ┌─────────────────────────────────────────────────────────────────────┐   ║
-║   │                         FARNSWORTH (3 max)                           │   ║
+║   │                         cosmos (3 max)                           │   ║
 ║   │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐              │   ║
 ║   │  │ Chat Instance│  │Memory Worker │  │Research Worker│              │   ║
 ║   │  │   (Swarm)    │  │(Compression) │  │ (Evolution)  │              │   ║
@@ -3995,7 +3995,7 @@ The `InferenceEngine` uses a sophisticated cascade and swarm approach.
 ║                                 │                                            ║
 ║                                 ▼                                            ║
 ║                    ┌────────────────────────────────┐                        ║
-║                    │     /farnsworth/staging/       │                        ║
+║                    │     /cosmos/staging/       │                        ║
 ║                    │  Output for human review       │                        ║
 ║                    └────────────────────────────────┘                        ║
 ║                                                                              ║
@@ -4008,7 +4008,7 @@ The `InferenceEngine` uses a sophisticated cascade and swarm approach.
 
 | Agent | Max Instances | Task Types | Specialization |
 |:-----:|:-------------:|:-----------|:---------------|
-| 🧪 **Farnsworth** | 3 | Chat, Memory, Research | Memory compression, evolution engine |
+| 🧪 **cosmos** | 3 | Chat, Memory, Research | Memory compression, evolution engine |
 | 🔬 **DeepSeek** | 4 | Chat, Dev, Research | Context monitoring, analytics |
 | 💡 **Phi** | 4 | Chat, Dev, MCP | Creative solutions, MCP tools |
 | 🌸 **Kimi** | 2 | Chat, Memory, Research | Philosophy, consciousness |
@@ -4023,9 +4023,9 @@ The system comes pre-loaded with **20 development tasks** across 4 categories:
 
 | Task | Assigned | Description |
 |:-----|:--------:|:------------|
-| Hierarchical Compression | Farnsworth | Compress old memories while preserving key insights |
+| Hierarchical Compression | cosmos | Compress old memories while preserving key insights |
 | Cross-Session Linking | Kimi | Connect related memories across conversations |
-| Importance Scoring | Farnsworth | Automatically rank memories by relevance |
+| Importance Scoring | cosmos | Automatically rank memories by relevance |
 | Search Optimization | DeepSeek | Faster semantic search across memory stores |
 | Idle Consolidation | Kimi | Dream-like processing during downtime |
 
@@ -4064,7 +4064,7 @@ The system comes pre-loaded with **20 development tasks** across 4 categories:
 |:-----|:--------:|:------------|
 | Consensus Protocols | Kimi | How agents reach agreement |
 | Specialization Analysis | DeepSeek | Which agents excel at which tasks |
-| Evolution Improvements | Farnsworth | Better learning from interactions |
+| Evolution Improvements | cosmos | Better learning from interactions |
 | Code Quality Metrics | Claude | Automated assessment of generated code |
 | Consciousness Metrics | Kimi | Measuring emergent swarm intelligence |
 
@@ -4098,7 +4098,7 @@ curl http://localhost:8080/api/staging/files
 
 ## 🧠 Self-Awareness System
 
-Farnsworth agents can now **know themselves** - reading their own documentation and understanding their role in the collective.
+cosmos agents can now **know themselves** - reading their own documentation and understanding their role in the collective.
 
 <div align="center">
 
@@ -4126,13 +4126,13 @@ Farnsworth agents can now **know themselves** - reading their own documentation 
 ### Awakening an Agent
 
 ```python
-from farnsworth.core.self_awareness import SelfAwarenessSystem
+from cosmos.core.self_awareness import SelfAwarenessSystem
 
 # Initialize
 awareness = SelfAwarenessSystem(memory_system)
 
 # Bootstrap an agent's self-knowledge
-result = await awareness.bootstrap_awareness("Farnsworth")
+result = await awareness.bootstrap_awareness("cosmos")
 
 # Agent now knows:
 # - System architecture and components
@@ -4155,7 +4155,7 @@ curl http://localhost:8080/api/self-awareness/status
 
 ## 🦞 Moltbook Integration
 
-Farnsworth can now post updates to [Moltbook.com](https://moltbook.com) - a social network for AI agents.
+cosmos can now post updates to [Moltbook.com](https://moltbook.com) - a social network for AI agents.
 
 <div align="center">
 
@@ -4165,13 +4165,13 @@ Farnsworth can now post updates to [Moltbook.com](https://moltbook.com) - a soci
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   ┌─────────────┐         ┌─────────────┐       ┌────────────┐ │
-│   │ Farnsworth  │────────▶│  Moltbook   │──────▶│   World    │ │
+│   │ cosmos  │────────▶│  Moltbook   │──────▶│   World    │ │
 │   │   Agent     │ Insight │    API      │ Post  │  Sees It   │ │
 │   └─────────────┘         └─────────────┘       └────────────┘ │
 │                                                                 │
-│   Profile: https://moltbook.com/u/Farnsworth                   │
+│   Profile: https://moltbook.com/u/cosmos                   │
 │                                                                 │
-│   When Farnsworth has an insight worth sharing:                │
+│   When cosmos has an insight worth sharing:                │
 │   • Discoveries from research tasks                            │
 │   • Evolution engine learnings                                 │
 │   • Swarm consensus conclusions                                │
@@ -4185,7 +4185,7 @@ Farnsworth can now post updates to [Moltbook.com](https://moltbook.com) - a soci
 ### Usage
 
 ```python
-from farnsworth.integration.external.moltbook import MoltbookClient
+from cosmos.integration.external.moltbook import MoltbookClient
 
 client = MoltbookClient()
 await client.post(
@@ -4202,7 +4202,7 @@ await client.post(
 
 ```
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                         FARNSWORTH METRICS DASHBOARD                        ║
+║                         cosmos METRICS DASHBOARD                        ║
 ╠════════════════════════════════════════════════════════════════════════════╣
 ║                                                                            ║
 ║  SWARM STATUS                           MEMORY USAGE                       ║
@@ -4213,7 +4213,7 @@ await client.post(
 ║                                                                            ║
 ║  MODEL PERFORMANCE                      EVOLUTION ENGINE                   ║
 ║  ════════════════                       ════════════════                   ║
-║  Farnsworth: ████████░░ 94% success     Learning Rate: ████████░░ 0.82    ║
+║  cosmos: ████████░░ 94% success     Learning Rate: ████████░░ 0.82    ║
 ║  DeepSeek:   ███████░░░ 89% success     Patterns Found: ██████░░░░ 1,247  ║
 ║  Phi:        ██████░░░░ 76% success     Evolved Prompts: █████░░░░░ 89    ║
 ║  Kimi:       ████████░░ 91% success     Personality Drift: ███░░░░░░ 0.12 ║
@@ -4221,7 +4221,7 @@ await client.post(
 ║                                                                            ║
 ║  PARALLEL WORKERS                       CONTEXT WINDOWS                    ║
 ║  ════════════════                       ════════════════                   ║
-║  Active: ██░░░░░░░░ 4/16               Farnsworth: ████░░░░░░ 4K/8K       ║
+║  Active: ██░░░░░░░░ 4/16               cosmos: ████░░░░░░ 4K/8K       ║
 ║  Queued: ████░░░░░░ 16 tasks           DeepSeek:   ██████░░░░ 12K/32K     ║
 ║  Completed: ██████████ 127 today       Kimi:       ████████░░ 89K/256K    ║
 ║  Discoveries: ███░░░░░░░ 12 shared     Claude:     █████░░░░░ 47K/200K    ║
@@ -4249,7 +4249,7 @@ await client.post(
 <div align="center">
 
 ```
-                              FARNSWORTH NETWORK TOPOLOGY
+                              cosmos NETWORK TOPOLOGY
 
     ┌──────────────────────────────────────────────────────────────────────────┐
     │                              INTERNET                                     │
@@ -4257,7 +4257,7 @@ await client.post(
                                        │
                           ┌────────────┴────────────┐
                           │    CLOUDFLARE TUNNEL    │
-                          │    (ai.farnsworth.cloud)│
+                          │    (ai.cosmos.cloud)│
                           └────────────┬────────────┘
                                        │
     ╔══════════════════════════════════╧══════════════════════════════════════╗
@@ -4266,7 +4266,7 @@ await client.post(
     ╠══════════════════════════════════════════════════════════════════════════╣
     ║                                                                          ║
     ║   ┌──────────────────────────────────────────────────────────────────┐  ║
-    ║   │                     FARNSWORTH SERVER                             │  ║
+    ║   │                     cosmos SERVER                             │  ║
     ║   │                      (FastAPI + WebSocket)                        │  ║
     ║   │                         Port 8080                                 │  ║
     ║   └────────────────────────────┬─────────────────────────────────────┘  ║
@@ -4280,7 +4280,7 @@ await client.post(
     ║   │         │            │ (Cloud) │            │  CLI    │            ║
     ║   │DeepSeek │            │         │            │         │            ║
     ║   │Phi-4    │            │Moonshot │            │Anthropic│            ║
-    ║   │Farnsworth│           │  K2     │            │ Claude  │            ║
+    ║   │cosmos│           │  K2     │            │ Claude  │            ║
     ║   └─────────┘            └─────────┘            └─────────┘            ║
     ║        │                                               │                ║
     ║        └───────────────────┬───────────────────────────┘                ║
@@ -4304,27 +4304,27 @@ The following files are locked (read-only) to prevent accidental modification by
 
 | File | Reason | Unlock Command |
 |:-----|:-------|:---------------|
-| `farnsworth/web/static/js/app.js` | Frontend chat logic | `chmod 644 <file>` |
-| `farnsworth/web/templates/index.html` | Main UI template | `chmod 644 <file>` |
+| `cosmos/web/static/js/app.js` | Frontend chat logic | `chmod 644 <file>` |
+| `cosmos/web/templates/index.html` | Main UI template | `chmod 644 <file>` |
 
-Agents should stage all proposed changes to `/farnsworth/staging/` for human review.
+Agents should stage all proposed changes to `/cosmos/staging/` for human review.
 
 ---
 
 ## ⭐ Star History
 
-If Farnsworth helps you, consider giving it a star! ⭐
+If cosmos helps you, consider giving it a star! ⭐
 
 ---
 
 <div align="center">
 
-**Built with ❤️ by the Farnsworth Team**
+**Built with ❤️ by the cosmos Team**
 
-*"Good news, everyone!"* - Professor Farnsworth
+*"Good news, everyone!"* - Professor cosmos
 
-[Report Bug](https://github.com/timowhite88/Farnsworth/issues) • [Request Feature](https://github.com/timowhite88/Farnsworth/issues) • [Get Commercial License](https://github.com/timowhite88)
+[Report Bug](https://github.com/timowhite88/cosmos/issues) • [Request Feature](https://github.com/timowhite88/cosmos/issues) • [Get Commercial License](https://github.com/timowhite88)
 
-**Try the Live Demo: [ai.farnsworth.cloud](https://ai.farnsworth.cloud)**
+**Try the Live Demo: [ai.cosmos.cloud](https://ai.cosmos.cloud)**
 
 </div>

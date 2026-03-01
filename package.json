@@ -1,10 +1,10 @@
 {
-  "name": "farnsworth-ai",
+  "name": "cosmos-ai",
   "version": "2.1.0-alpha",
   "description": "Self-evolving companion AI",
   "repository": {
     "type": "git",
-    "url": "https://github.com/timowhite88/Farnsworth.git"
+    "url": "https://github.com/timowhite88/cosmos.git"
   },
   "module": "bridge/index.ts",
   "private": true,

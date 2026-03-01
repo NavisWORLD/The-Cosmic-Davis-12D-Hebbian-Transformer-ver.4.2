@@ -12,7 +12,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock
 
-from farnsworth.memory.project_tracking import (
+from cosmos.memory.project_tracking import (
     ProjectTracker,
     Project,
     Task,
