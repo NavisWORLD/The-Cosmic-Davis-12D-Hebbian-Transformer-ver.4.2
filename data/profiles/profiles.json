@@ -1,0 +1,105 @@
+{
+  "profiles": [
+    {
+      "id": "work",
+      "name": "Work",
+      "description": "Professional work context",
+      "color": "#4CAF50",
+      "icon": "\ud83d\udcbc",
+      "memory_pool": "work",
+      "include_shared_memory": true,
+      "personality": "formal",
+      "verbosity": "detailed",
+      "code_preference": true,
+      "temperature": 0.7,
+      "preferred_model": "",
+      "domain_keywords": [
+        "project",
+        "meeting",
+        "deadline",
+        "team",
+        "client"
+      ],
+      "excluded_topics": [],
+      "created_at": "2026-02-02T21:47:28.688964",
+      "last_used": "2026-02-11T02:43:48.987990",
+      "usage_count": 1
+    },
+    {
+      "id": "personal",
+      "name": "Personal",
+      "description": "Personal projects and learning",
+      "color": "#2196F3",
+      "icon": "\ud83c\udfe0",
+      "memory_pool": "personal",
+      "include_shared_memory": true,
+      "personality": "casual",
+      "verbosity": "normal",
+      "code_preference": true,
+      "temperature": 0.7,
+      "preferred_model": "",
+      "domain_keywords": [
+        "hobby",
+        "learn",
+        "personal",
+        "home"
+      ],
+      "excluded_topics": [],
+      "created_at": "2026-02-02T21:47:28.688964",
+      "last_used": "2026-02-02T21:47:28.688964",
+      "usage_count": 0
+    },
+    {
+      "id": "creative",
+      "name": "Creative",
+      "description": "Creative writing and brainstorming",
+      "color": "#9C27B0",
+      "icon": "\ud83c\udfa8",
+      "memory_pool": "creative",
+      "include_shared_memory": true,
+      "personality": "casual",
+      "verbosity": "detailed",
+      "code_preference": false,
+      "temperature": 0.9,
+      "preferred_model": "",
+      "domain_keywords": [
+        "story",
+        "creative",
+        "idea",
+        "brainstorm",
+        "writing"
+      ],
+      "excluded_topics": [],
+      "created_at": "2026-02-02T21:47:28.688964",
+      "last_used": "2026-02-11T02:43:48.993991",
+      "usage_count": 16
+    },
+    {
+      "id": "technical",
+      "name": "Technical",
+      "description": "Deep technical work and debugging",
+      "color": "#FF5722",
+      "icon": "\ud83d\udd27",
+      "memory_pool": "technical",
+      "include_shared_memory": true,
+      "personality": "technical",
+      "verbosity": "detailed",
+      "code_preference": true,
+      "temperature": 0.5,
+      "preferred_model": "",
+      "domain_keywords": [
+        "debug",
+        "error",
+        "code",
+        "api",
+        "architecture"
+      ],
+      "excluded_topics": [],
+      "created_at": "2026-02-02T21:47:28.688964",
+      "last_used": "2026-02-02T21:47:28.688964",
+      "usage_count": 0
+    }
+  ],
+  "active_profile_id": "creative",
+  "updated": "2026-02-11T02:43:48.993991"
+}

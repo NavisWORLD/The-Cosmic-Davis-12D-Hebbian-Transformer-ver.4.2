@@ -1,30 +1,30 @@
-# 🚀 Farnsworth Roadmap: The Spatio-Temporal Era
+# 🚀 cosmos Roadmap: The Spatio-Temporal Era
 
-> "I've invented a machine that makes you read the Roadmap in my voice!" - Professor Farnsworth
+> "I've invented a machine that makes you read the Roadmap in my voice!" - Professor cosmos
 
-This document outlines the evolutionary path of Farnsworth, from a memory-boosted assistant to a decentralized, spatio-temporal cognitive partner.
+This document outlines the evolutionary path of cosmos, from a memory-boosted assistant to a decentralized, spatio-temporal cognitive partner.
 
 ---
 
 ## 🛰️ Current Focus: Version 2.0.0 (Spatio-Temporal & Collective Intelligence)
 
-We have entered the **Vision and Social** era. Farnsworth no longer just thinks; it *sees* action over time and *collaborates* across machines.
+We have entered the **Vision and Social** era. cosmos no longer just thinks; it *sees* action over time and *collaborates* across machines.
 
-- [x] **Video v2.1: Advanced Flow Analysis** (`farnsworth/integration/video.py`)
+- [x] **Video v2.1: Advanced Flow Analysis** (`cosmos/integration/video.py`)
   - [x] Farneback Optical Flow Action Detection
   - [x] Motion Magnitude Peak Keyframe Extraction
-- [x] **P2P Swarm Fabric v2.5** (`farnsworth/core/swarm/p2p.py`)
+- [x] **P2P Swarm Fabric v2.5** (`cosmos/core/swarm/p2p.py`)
   - [x] Multiplexed TCP Streams (The "Professorial" gossip protocol)
   - [x] Gossipsub & DHT-Lite for knowledge fragments
-- [x] **Decentralized Knowledge Graph** (`farnsworth/core/swarm/dkg.py`)
+- [x] **Decentralized Knowledge Graph** (`cosmos/core/swarm/dkg.py`)
   - [x] Federated edge updates between trust pools
   - [x] CRDT-based Last-Writer-Wins (LWW) conflict resolution
-- [x] **Planetary Memory** (`farnsworth/core/memory/planetary/akashic.py`)
+- [x] **Planetary Memory** (`cosmos/core/memory/planetary/akashic.py`)
   - [x] Global shared vector cache (encrypted & anonymized)
   - [x] Skill Vector exchange protocol
-- [x] **Quantum-Inspired Search** (`farnsworth/core/quantum/search.py`)
+- [x] **Quantum-Inspired Search** (`cosmos/core/quantum/search.py`)
   - [x] Schrödinger's Query (Superposition-based reasoning path exploration)
-- [x] **3D Scene Reconstruction** (`farnsworth/integration/vision/reconstruction.py`)
+- [x] **3D Scene Reconstruction** (`cosmos/integration/vision/reconstruction.py`)
   - [x] Sparse Point Cloud generation via SfM (OpenCV)
   - [x] Fundamental Matrix & Trifocal Tensor estimation logic
 - [ ] **Emotion-to-Action**: Directly mapping affective states into system priorities

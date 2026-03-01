@@ -1,8 +1,8 @@
 import streamlit as st
 import time
-from core.farnsworth import Farnsworth
+from core.cosmos import cosmos
 
-st.set_page_config(page_title="Farnsworth AI", layout="wide", page_icon="⚡")
+st.set_page_config(page_title="cosmos AI", layout="wide", page_icon="⚡")
 
 # Custom CSS for "Premium Aesthetics"
 st.markdown("""
@@ -27,10 +27,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 @st.cache_resource
-def get_farnsworth():
-    return Farnsworth()
+def get_cosmos():
+    return cosmos()
 
-ai = get_farnsworth()
+ai = get_cosmos()
 
 # Sidebar: System Status
 with st.sidebar:
@@ -59,7 +59,7 @@ with st.sidebar:
         st.success(status)
 
 # Main Chat
-st.title("Farnsworth AI v1.0")
+st.title("cosmos AI v1.0")
 st.caption("Autonomous • Recursive • Evolving")
 
 if "messages" not in st.session_state:

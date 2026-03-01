@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Farnsworth Installation Script
+cosmos Installation Script
 
 Handles:
 - Dependency installation
@@ -153,9 +153,9 @@ def configure_claude_code():
 
     mcp_config = {
         "mcpServers": {
-            "farnsworth": {
+            "cosmos": {
                 "command": "python",
-                "args": ["-m", "farnsworth.mcp_server"],
+                "args": ["-m", "cosmos.mcp_server"],
                 "cwd": str(project_root)
             }
         }
@@ -192,35 +192,35 @@ def configure_claude_code():
 
 
 def verify_installation():
-    """Verify Farnsworth installation."""
+    """Verify cosmos installation."""
     print_header("Verifying Installation")
 
     checks_passed = True
 
     # Check imports
     try:
-        from farnsworth.memory.memory_system import MemorySystem
+        from cosmos.memory.memory_system import MemorySystem
         print_success("Memory system module OK")
     except ImportError as e:
         print_error(f"Memory system import failed: {e}")
         checks_passed = False
 
     try:
-        from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
+        from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
         print_success("Agent swarm module OK")
     except ImportError as e:
         print_error(f"Agent swarm import failed: {e}")
         checks_passed = False
 
     try:
-        from farnsworth.evolution.fitness_tracker import FitnessTracker
+        from cosmos.evolution.fitness_tracker import FitnessTracker
         print_success("Evolution module OK")
     except ImportError as e:
         print_error(f"Evolution import failed: {e}")
         checks_passed = False
 
     try:
-        from farnsworth.mcp_server.server import FarnsworthMCPServer
+        from cosmos.mcp_server.server import cosmosMCPServer
         print_success("MCP server module OK")
     except ImportError as e:
         print_warning(f"MCP server import warning: {e}")
@@ -238,7 +238,7 @@ def print_next_steps():
    - Install Ollama: https://ollama.ai
    - Pull a model: ollama pull deepseek-r1:1.5b
 
-2. Start Farnsworth:
+2. Start cosmos:
    python main.py --setup    # First-time GRANULAR configuration (Privacy, Swarm, Engines)
    python main.py            # Start all services
 
@@ -260,7 +260,7 @@ def main():
     """Run the setup process."""
     print(f"""
 {Colors.BOLD}╔═══════════════════════════════════════════╗
-║     Farnsworth Installation Script        ║
+║     cosmos Installation Script        ║
 ║     Your Claude Companion AI              ║
 ╚═══════════════════════════════════════════╝{Colors.END}
     """)

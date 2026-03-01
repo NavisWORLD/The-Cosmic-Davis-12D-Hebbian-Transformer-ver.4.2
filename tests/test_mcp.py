@@ -1,5 +1,5 @@
 """
-Farnsworth MCP Server Tests
+cosmos MCP Server Tests
 
 Tests for Claude Code integration via MCP:
 - Tool registration and execution
@@ -30,20 +30,20 @@ class TestMCPServerCreation:
         """Test creating the MCP server."""
         # Mock the MCP library
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer(data_dir="./test_data")
+            server = cosmosMCPServer(data_dir="./test_data")
 
             assert server is not None
             assert server.data_dir.exists() or True  # May not create in test
 
     @pytest.mark.asyncio
     async def test_server_initialization(self):
-        """Test initializing Farnsworth components."""
+        """Test initializing cosmos components."""
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer()
+            server = cosmosMCPServer()
 
             # Mock the component initialization
             server._memory_system = MagicMock()
@@ -58,11 +58,11 @@ class TestMCPTools:
 
     @pytest.mark.asyncio
     async def test_remember_tool(self):
-        """Test the farnsworth_remember tool."""
+        """Test the cosmos_remember tool."""
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer()
+            server = cosmosMCPServer()
 
             # Mock memory system
             server._memory_system = AsyncMock()
@@ -79,11 +79,11 @@ class TestMCPTools:
 
     @pytest.mark.asyncio
     async def test_recall_tool(self):
-        """Test the farnsworth_recall tool."""
+        """Test the cosmos_recall tool."""
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer()
+            server = cosmosMCPServer()
 
             # Mock memory system with results
             mock_result = MagicMock()
@@ -105,11 +105,11 @@ class TestMCPTools:
 
     @pytest.mark.asyncio
     async def test_delegate_tool(self):
-        """Test the farnsworth_delegate tool."""
+        """Test the cosmos_delegate tool."""
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer()
+            server = cosmosMCPServer()
 
             # Mock swarm orchestrator
             mock_result = MagicMock()
@@ -136,11 +136,11 @@ class TestMCPTools:
 
     @pytest.mark.asyncio
     async def test_evolve_tool(self):
-        """Test the farnsworth_evolve tool."""
+        """Test the cosmos_evolve tool."""
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer()
+            server = cosmosMCPServer()
 
             server._fitness_tracker = MagicMock()
             server._fitness_tracker.record = MagicMock()
@@ -157,11 +157,11 @@ class TestMCPTools:
 
     @pytest.mark.asyncio
     async def test_status_tool(self):
-        """Test the farnsworth_status tool."""
+        """Test the cosmos_status tool."""
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer()
+            server = cosmosMCPServer()
 
             server._memory_system = MagicMock()
             server._memory_system.get_stats = MagicMock(return_value={"memories": 100})
@@ -185,11 +185,11 @@ class TestMCPResources:
 
     @pytest.mark.asyncio
     async def test_recent_memories_resource(self):
-        """Test the farnsworth://memory/recent resource."""
+        """Test the cosmos://memory/recent resource."""
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer()
+            server = cosmosMCPServer()
 
             server._memory_system = MagicMock()
             server._memory_system.get_context = MagicMock(return_value="Recent context...")
@@ -201,11 +201,11 @@ class TestMCPResources:
 
     @pytest.mark.asyncio
     async def test_knowledge_graph_resource(self):
-        """Test the farnsworth://memory/graph resource."""
+        """Test the cosmos://memory/graph resource."""
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer()
+            server = cosmosMCPServer()
 
             server._memory_system = MagicMock()
             server._memory_system.knowledge_graph = MagicMock()
@@ -221,11 +221,11 @@ class TestMCPResources:
 
     @pytest.mark.asyncio
     async def test_active_agents_resource(self):
-        """Test the farnsworth://agents/active resource."""
+        """Test the cosmos://agents/active resource."""
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer()
+            server = cosmosMCPServer()
 
             server._swarm_orchestrator = MagicMock()
             server._swarm_orchestrator.get_swarm_status = MagicMock(
@@ -240,11 +240,11 @@ class TestMCPResources:
 
     @pytest.mark.asyncio
     async def test_fitness_metrics_resource(self):
-        """Test the farnsworth://evolution/fitness resource."""
+        """Test the cosmos://evolution/fitness resource."""
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer()
+            server = cosmosMCPServer()
 
             server._fitness_tracker = MagicMock()
             server._fitness_tracker.get_stats = MagicMock(
@@ -264,7 +264,7 @@ class TestMemoryTools:
     @pytest.mark.asyncio
     async def test_remember_with_context(self):
         """Test remembering with additional context."""
-        from farnsworth.mcp_server.memory_tools import MemoryTools
+        from cosmos.mcp_server.memory_tools import MemoryTools
 
         mock_memory = AsyncMock()
         mock_memory.remember = AsyncMock(return_value="mem_123")
@@ -285,7 +285,7 @@ class TestMemoryTools:
     @pytest.mark.asyncio
     async def test_advanced_recall(self):
         """Test advanced memory search with filters."""
-        from farnsworth.mcp_server.memory_tools import MemoryTools
+        from cosmos.mcp_server.memory_tools import MemoryTools
 
         mock_result = MagicMock()
         mock_result.content = "Test content"
@@ -311,7 +311,7 @@ class TestMemoryTools:
     @pytest.mark.asyncio
     async def test_knowledge_graph_query(self):
         """Test querying the knowledge graph."""
-        from farnsworth.mcp_server.memory_tools import MemoryTools
+        from cosmos.mcp_server.memory_tools import MemoryTools
 
         mock_query_result = MagicMock()
         mock_query_result.entities = []
@@ -339,7 +339,7 @@ class TestAgentTools:
     @pytest.mark.asyncio
     async def test_delegate_task(self):
         """Test delegating a task to an agent."""
-        from farnsworth.mcp_server.agent_tools import AgentTools
+        from cosmos.mcp_server.agent_tools import AgentTools
 
         mock_agent = AsyncMock()
         mock_agent.execute = AsyncMock(return_value=MagicMock(
@@ -368,7 +368,7 @@ class TestAgentTools:
     @pytest.mark.asyncio
     async def test_list_available_agents(self):
         """Test listing available agents."""
-        from farnsworth.mcp_server.agent_tools import AgentTools
+        from cosmos.mcp_server.agent_tools import AgentTools
 
         mock_swarm = MagicMock()
         mock_swarm.state = MagicMock()
@@ -389,7 +389,7 @@ class TestEvolutionTools:
     @pytest.mark.asyncio
     async def test_record_feedback(self):
         """Test recording user feedback."""
-        from farnsworth.mcp_server.evolution_tools import EvolutionTools
+        from cosmos.mcp_server.evolution_tools import EvolutionTools
 
         mock_fitness = MagicMock()
         mock_fitness.record = MagicMock()
@@ -409,7 +409,7 @@ class TestEvolutionTools:
     @pytest.mark.asyncio
     async def test_get_fitness_metrics(self):
         """Test getting fitness metrics."""
-        from farnsworth.mcp_server.evolution_tools import EvolutionTools
+        from cosmos.mcp_server.evolution_tools import EvolutionTools
 
         mock_fitness = MagicMock()
         mock_fitness.get_current_fitness = MagicMock(return_value={"task_success": 0.9})
@@ -430,7 +430,7 @@ class TestEvolutionTools:
     @pytest.mark.asyncio
     async def test_get_improvement_suggestions(self):
         """Test getting improvement suggestions."""
-        from farnsworth.mcp_server.evolution_tools import EvolutionTools
+        from cosmos.mcp_server.evolution_tools import EvolutionTools
 
         mock_fitness = MagicMock()
         mock_fitness.get_current_fitness = MagicMock(return_value={
@@ -455,9 +455,9 @@ class TestClaudeIntegration:
     async def test_session_memory_persistence(self):
         """Test that memories persist across 'sessions' (tool calls)."""
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer()
+            server = cosmosMCPServer()
 
             # Simulate a memory store
             stored_memories = {}
@@ -496,9 +496,9 @@ class TestClaudeIntegration:
     async def test_context_augmentation_flow(self):
         """Test the flow of augmenting Claude's context with memories."""
         with patch.dict("sys.modules", {"mcp": MagicMock(), "mcp.server": MagicMock(), "mcp.types": MagicMock()}):
-            from farnsworth.mcp_server.server import FarnsworthMCPServer
+            from cosmos.mcp_server.server import cosmosMCPServer
 
-            server = FarnsworthMCPServer()
+            server = cosmosMCPServer()
 
             server._memory_system = MagicMock()
             server._memory_system.get_context = MagicMock(return_value="""

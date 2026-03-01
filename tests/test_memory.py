@@ -1,5 +1,5 @@
 """
-Farnsworth Memory System Tests
+cosmos Memory System Tests
 
 Comprehensive tests for:
 - Virtual context paging
@@ -36,7 +36,7 @@ class TestVirtualContext:
 
     def test_context_window_creation(self):
         """Test context window initialization."""
-        from farnsworth.memory.virtual_context import ContextWindow
+        from cosmos.memory.virtual_context import ContextWindow
 
         window = ContextWindow(max_tokens=4096)
         assert window.max_tokens == 4096
@@ -45,7 +45,7 @@ class TestVirtualContext:
 
     def test_context_add_content(self):
         """Test adding content to context window."""
-        from farnsworth.memory.virtual_context import ContextWindow
+        from cosmos.memory.virtual_context import ContextWindow
 
         window = ContextWindow(max_tokens=4096)
         window.add("Hello, world!", source="test", importance=0.8)
@@ -56,7 +56,7 @@ class TestVirtualContext:
 
     def test_context_overflow_eviction(self):
         """Test that low-importance content is evicted on overflow."""
-        from farnsworth.memory.virtual_context import ContextWindow
+        from cosmos.memory.virtual_context import ContextWindow
 
         window = ContextWindow(max_tokens=100)
 
@@ -71,7 +71,7 @@ class TestVirtualContext:
 
     def test_page_manager_tiers(self):
         """Test page manager tier-based caching."""
-        from farnsworth.memory.virtual_context import PageManager
+        from cosmos.memory.virtual_context import PageManager
 
         manager = PageManager(
             hot_capacity=100,
@@ -94,7 +94,7 @@ class TestArchivalMemory:
     @pytest.mark.asyncio
     async def test_archival_storage(self, temp_data_dir):
         """Test storing memories in archival storage."""
-        from farnsworth.memory.archival_memory import ArchivalMemory
+        from cosmos.memory.archival_memory import ArchivalMemory
 
         memory = ArchivalMemory(data_dir=temp_data_dir)
         await memory.initialize()
@@ -112,7 +112,7 @@ class TestArchivalMemory:
     @pytest.mark.asyncio
     async def test_archival_search(self, temp_data_dir):
         """Test semantic search in archival memory."""
-        from farnsworth.memory.archival_memory import ArchivalMemory
+        from cosmos.memory.archival_memory import ArchivalMemory
 
         memory = ArchivalMemory(data_dir=temp_data_dir)
         await memory.initialize()
@@ -131,7 +131,7 @@ class TestArchivalMemory:
     @pytest.mark.asyncio
     async def test_archival_hybrid_search(self, temp_data_dir):
         """Test hybrid semantic + keyword search."""
-        from farnsworth.memory.archival_memory import ArchivalMemory
+        from cosmos.memory.archival_memory import ArchivalMemory
 
         memory = ArchivalMemory(data_dir=temp_data_dir)
         await memory.initialize()
@@ -156,7 +156,7 @@ class TestKnowledgeGraph:
 
     def test_entity_creation(self):
         """Test creating entities in knowledge graph."""
-        from farnsworth.memory.knowledge_graph import KnowledgeGraph
+        from cosmos.memory.knowledge_graph import KnowledgeGraph
 
         graph = KnowledgeGraph()
 
@@ -172,7 +172,7 @@ class TestKnowledgeGraph:
 
     def test_relationship_creation(self):
         """Test creating relationships between entities."""
-        from farnsworth.memory.knowledge_graph import KnowledgeGraph
+        from cosmos.memory.knowledge_graph import KnowledgeGraph
 
         graph = KnowledgeGraph()
 
@@ -191,26 +191,26 @@ class TestKnowledgeGraph:
 
     def test_graph_query(self):
         """Test querying the knowledge graph."""
-        from farnsworth.memory.knowledge_graph import KnowledgeGraph
+        from cosmos.memory.knowledge_graph import KnowledgeGraph
 
         graph = KnowledgeGraph()
 
         # Build a small graph
-        farnsworth = graph.add_entity("Farnsworth", "Project")
+        cosmos = graph.add_entity("cosmos", "Project")
         memory = graph.add_entity("Memory System", "Component")
         evolution = graph.add_entity("Evolution", "Feature")
 
-        graph.add_relationship(farnsworth, memory, "contains")
-        graph.add_relationship(farnsworth, evolution, "contains")
+        graph.add_relationship(cosmos, memory, "contains")
+        graph.add_relationship(cosmos, evolution, "contains")
 
         # Query
-        results = graph.query("Farnsworth components", max_hops=1)
+        results = graph.query("cosmos components", max_hops=1)
 
         assert len(results.entities) >= 1
 
     def test_entity_extraction(self):
         """Test automatic entity extraction from text."""
-        from farnsworth.memory.knowledge_graph import KnowledgeGraph
+        from cosmos.memory.knowledge_graph import KnowledgeGraph
 
         graph = KnowledgeGraph()
 
@@ -227,7 +227,7 @@ class TestRecallMemory:
 
     def test_conversation_storage(self):
         """Test storing conversation turns."""
-        from farnsworth.memory.recall_memory import RecallMemory
+        from cosmos.memory.recall_memory import RecallMemory
 
         memory = RecallMemory()
 
@@ -239,7 +239,7 @@ class TestRecallMemory:
 
     def test_conversation_search(self):
         """Test searching conversation history."""
-        from farnsworth.memory.recall_memory import RecallMemory
+        from cosmos.memory.recall_memory import RecallMemory
 
         memory = RecallMemory()
 
@@ -254,7 +254,7 @@ class TestRecallMemory:
 
     def test_topic_threading(self):
         """Test topic-based conversation threading."""
-        from farnsworth.memory.recall_memory import RecallMemory
+        from cosmos.memory.recall_memory import RecallMemory
 
         memory = RecallMemory()
 
@@ -271,7 +271,7 @@ class TestWorkingMemory:
 
     def test_slot_creation(self):
         """Test creating working memory slots."""
-        from farnsworth.memory.working_memory import WorkingMemory, SlotType
+        from cosmos.memory.working_memory import WorkingMemory, SlotType
 
         wm = WorkingMemory()
 
@@ -284,7 +284,7 @@ class TestWorkingMemory:
     def test_slot_ttl(self):
         """Test slot TTL expiration."""
         import time
-        from farnsworth.memory.working_memory import WorkingMemory, SlotType
+        from cosmos.memory.working_memory import WorkingMemory, SlotType
 
         wm = WorkingMemory()
 
@@ -296,7 +296,7 @@ class TestWorkingMemory:
 
     def test_slot_cross_references(self):
         """Test cross-references between slots."""
-        from farnsworth.memory.working_memory import WorkingMemory, SlotType
+        from cosmos.memory.working_memory import WorkingMemory, SlotType
 
         wm = WorkingMemory()
 
@@ -314,8 +314,8 @@ class TestMemoryDreaming:
     @pytest.mark.asyncio
     async def test_dream_cycle(self, temp_data_dir):
         """Test a complete dream cycle."""
-        from farnsworth.memory.memory_dreaming import MemoryDreaming
-        from farnsworth.memory.archival_memory import ArchivalMemory
+        from cosmos.memory.memory_dreaming import MemoryDreaming
+        from cosmos.memory.archival_memory import ArchivalMemory
 
         archival = ArchivalMemory(data_dir=temp_data_dir)
         await archival.initialize()
@@ -333,7 +333,7 @@ class TestMemoryDreaming:
 
     def test_cluster_formation(self):
         """Test memory clustering during dreaming."""
-        from farnsworth.memory.memory_dreaming import MemoryDreaming
+        from cosmos.memory.memory_dreaming import MemoryDreaming
 
         dreaming = MemoryDreaming()
 
@@ -353,7 +353,7 @@ class TestMemoryDreaming:
 
     def test_forgetting_selection(self):
         """Test intelligent forgetting of low-utility memories."""
-        from farnsworth.memory.memory_dreaming import MemoryDreaming
+        from cosmos.memory.memory_dreaming import MemoryDreaming
 
         dreaming = MemoryDreaming()
 
@@ -375,7 +375,7 @@ class TestMemorySystem:
     @pytest.mark.asyncio
     async def test_full_memory_cycle(self, temp_data_dir):
         """Test complete remember -> recall -> consolidate cycle."""
-        from farnsworth.memory.memory_system import MemorySystem
+        from cosmos.memory.memory_system import MemorySystem
 
         system = MemorySystem(data_dir=temp_data_dir)
         await system.initialize()
@@ -400,7 +400,7 @@ class TestMemorySystem:
     @pytest.mark.asyncio
     async def test_memory_summary(self, temp_data_dir):
         """Test memory summary generation."""
-        from farnsworth.memory.memory_system import MemorySystem
+        from cosmos.memory.memory_system import MemorySystem
 
         system = MemorySystem(data_dir=temp_data_dir)
         await system.initialize()

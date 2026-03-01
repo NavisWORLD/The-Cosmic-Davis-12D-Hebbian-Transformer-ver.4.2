@@ -1,6 +1,6 @@
-# Contributing to Farnsworth
+# Contributing to cosmos
 
-Thank you for your interest in contributing to Farnsworth! This document provides guidelines for contributing.
+Thank you for your interest in contributing to cosmos! This document provides guidelines for contributing.
 
 ---
 
@@ -16,7 +16,7 @@ Thank you for your interest in contributing to Farnsworth! This document provide
 
 ### Reporting Bugs
 
-1. Check existing [GitHub Issues](https://github.com/timowhite88/Farnsworth/issues)
+1. Check existing [GitHub Issues](https://github.com/timowhite88/cosmos/issues)
 2. Include: OS, Python version, steps to reproduce, error messages
 
 ### Suggesting Features
@@ -28,8 +28,8 @@ Thank you for your interest in contributing to Farnsworth! This document provide
 
 ```bash
 # 1. Fork and clone
-git clone https://github.com/YOUR_USERNAME/Farnsworth.git
-cd Farnsworth
+git clone https://github.com/YOUR_USERNAME/cosmos.git
+cd cosmos
 
 # 2. Create a virtual environment
 python -m venv venv
@@ -81,7 +81,7 @@ Types:
 
 ```bash
 pytest tests/ -v                    # Run all tests
-pytest tests/ --cov=farnsworth     # With coverage
+pytest tests/ --cov=cosmos     # With coverage
 ```
 
 ---
@@ -92,4 +92,4 @@ By contributing, you agree to the project's [LICENSE](LICENSE) terms.
 
 ---
 
-*Thank you for helping make Farnsworth better!*
+*Thank you for helping make cosmos better!*

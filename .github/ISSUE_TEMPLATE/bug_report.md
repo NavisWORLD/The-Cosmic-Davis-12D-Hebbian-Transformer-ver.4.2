@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Create a report to help us improve Farnsworth
+about: Create a report to help us improve cosmos
 title: "[BUG] "
 labels: bug
 assignees: ''
@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Environment (please complete the following information):**
  - OS: [e.g. Windows, Mac]
  - Python Version: [e.g. 3.11]
- - Farnsworth Version [e.g. 1.0.0]
+ - cosmos Version [e.g. 1.0.0]
 
 **Additional context**
 Add any other context about the problem here.

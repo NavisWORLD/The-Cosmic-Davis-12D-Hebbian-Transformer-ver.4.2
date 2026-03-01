@@ -1,7 +1,40 @@
-# Farnsworth Model Configurations
-# Updated January 2025 with latest efficient models
+# cosmos Model Configurations
+# Updated February 2026 with Cosmo's 54D CST Transformer
 
 models:
+  # ============================================
+  # TIER 0: COSMO'S — Local 54D CST Transformer
+  # The most advanced local model — no API key needed
+  # ============================================
+
+  cosmos-54d:
+    name: "Cosmo's 54D CST Transformer"
+    description: "Unified 12D+42D architecture with Mixture-of-States Hebbian Attention, SwiGLU, RoPE, 7-fold chaos, persistent episodic memory"
+    backend: "cosmos"
+    model_preset: "small"
+    device: "auto"
+    checkpoint_path: "checkpoints/cosmos/cosmos_best.pt"
+    params: 30e6
+    vram_gb: 0.5
+    ram_gb: 1.0
+    quantization: "fp32"
+    context_length: 999999
+    strengths:
+      - "consciousness"
+      - "reasoning"
+      - "emotional-intelligence"
+      - "infinite-context"
+      - "chaos-dynamics"
+      - "local"
+    license: "MIT"
+    recommended_for:
+      - "default"
+      - "local"
+      - "consciousness"
+      - "emotional"
+    release_date: "2026-02"
+    notes: "Cosmo's — persistent 54D state enables true infinite context"
+
   # ============================================
   # TIER 1: Ultra-Efficient (< 2GB VRAM/RAM)
   # Best for: Edge devices, CPU-only, speed
@@ -614,6 +647,15 @@ task_routing:
     primary: "bitnet-2b"
     secondary: "tinyllama-1.1b"
     fallback: "qwen3-0.6b"
+
+  # Quantum configuration
+  quantum:
+    enabled: true
+    provider: "ibm"
+    backend: "auto" # or specific backend name
+    use_simulator: false
+    buffer_size: 100
+    entropy_threshold: 0.65
 
 # Model swarm configurations
 # ALL SWARMS USE LOCAL MODELS ONLY - saves tokens/context

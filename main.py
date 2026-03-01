@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Farnsworth - Your Claude Companion AI
+cosmos - Your Claude Companion AI
 
 A self-evolving AI companion that integrates with Claude Code to provide:
 - Persistent memory across sessions
@@ -40,7 +40,7 @@ load_dotenv(PROJECT_ROOT / ".env")
 
 
 def print_banner():
-    """Print the Farnsworth banner."""
+    """Print the cosmos banner."""
     banner = """
     ╔═══════════════════════════════════════════════════════════════╗
     ║                                                               ║
@@ -74,7 +74,7 @@ def print_status(component: str, status: str, details: str = ""):
 
 async def run_setup_wizard():
     """Run granular setup wizard."""
-    from farnsworth.core.setup_wizard import SetupWizard
+    from cosmos.core.setup_wizard import SetupWizard
     wizard = SetupWizard(PROJECT_ROOT)
     await wizard.run()
 
@@ -84,7 +84,7 @@ async def run_mcp_server():
     print_status("MCP Server", "loading", "Starting...")
 
     try:
-        from farnsworth.mcp_server.server import run_server
+        from cosmos.mcp_server.server import run_server
         await run_server()
     except ImportError as e:
         print_status("MCP Server", "error", f"Import error: {e}")
@@ -100,7 +100,7 @@ def run_streamlit_ui():
 
     try:
         import subprocess
-        ui_path = PROJECT_ROOT / "farnsworth" / "ui" / "streamlit_app.py"
+        ui_path = PROJECT_ROOT / "cosmos" / "ui" / "streamlit_app.py"
         subprocess.run(["streamlit", "run", str(ui_path)], check=True)
     except FileNotFoundError:
         print_status("Streamlit UI", "error", "Streamlit not installed")
@@ -111,13 +111,13 @@ def run_streamlit_ui():
 
 async def run_cli_mode():
     """Run interactive CLI mode."""
-    print("\n🖥️  Farnsworth CLI Mode")
+    print("\n🖥️  cosmos CLI Mode")
     print("Type 'help' for commands, 'exit' to quit.\n")
 
     # Initialize components
-    from farnsworth.memory.memory_system import MemorySystem
-    from farnsworth.evolution.fitness_tracker import FitnessTracker
-    from farnsworth.evolution.genetic_optimizer import GeneticOptimizer
+    from cosmos.memory.memory_system import MemorySystem
+    from cosmos.evolution.fitness_tracker import FitnessTracker
+    from cosmos.evolution.genetic_optimizer import GeneticOptimizer
 
     memory = MemorySystem(data_dir=str(PROJECT_ROOT / "data"))
     await memory.initialize()
@@ -150,7 +150,7 @@ async def run_cli_mode():
 
     while True:
         try:
-            cmd = input("\nfarnsworth> ").strip()
+            cmd = input("\ncosmos> ").strip()
 
             if not cmd:
                 continue
@@ -261,7 +261,7 @@ Available Commands:
             elif cmd == "backup":
                 print("Creating backup...")
                 try:
-                    from farnsworth.core.resilience import BackupManager
+                    from cosmos.core.resilience import BackupManager
                     backup_mgr = BackupManager(
                         data_dir=str(PROJECT_ROOT / "data"),
                         backup_dir=str(PROJECT_ROOT / "backups")
@@ -278,11 +278,11 @@ Available Commands:
                 print("Starting P2P node in background...")
                 try:
                     import os
-                    if os.getenv("FARNSWORTH_ISOLATED", "").lower() == "true":
-                        print("❌ Cannot start: FARNSWORTH_ISOLATED=true")
-                        print("   Set FARNSWORTH_ISOLATED=false in .env to enable P2P")
+                    if os.getenv("cosmos_ISOLATED", "").lower() == "true":
+                        print("❌ Cannot start: cosmos_ISOLATED=true")
+                        print("   Set cosmos_ISOLATED=false in .env to enable P2P")
                     else:
-                        from farnsworth.core.swarm.p2p import swarm_fabric
+                        from cosmos.core.swarm.p2p import swarm_fabric
                         if not hasattr(run_cli_mode, '_node_task') or run_cli_mode._node_task is None:
                             run_cli_mode._node_task = asyncio.create_task(swarm_fabric.start())
                             print(f"✅ P2P Node started: {swarm_fabric.node_id}")
@@ -306,7 +306,7 @@ Available Commands:
 
             elif cmd == "node status":
                 try:
-                    from farnsworth.core.swarm.p2p import swarm_fabric
+                    from cosmos.core.swarm.p2p import swarm_fabric
                     print(f"\n🌐 P2P Node Status")
                     print(f"   Node ID: {swarm_fabric.node_id}")
                     print(f"   Port: {swarm_fabric.port}")
@@ -327,7 +327,7 @@ Available Commands:
 
             elif cmd == "planetary":
                 try:
-                    from farnsworth.core.memory.planetary.akashic import PlanetaryMemory
+                    from cosmos.core.memory.planetary.akashic import PlanetaryMemory
                     pm = PlanetaryMemory(use_p2p=True)
                     print(f"\n🌍 Planetary Memory (Akashic Record)")
                     print(f"   Local Skills: {len(pm.local_skills)}")
@@ -343,7 +343,7 @@ Available Commands:
 
             elif cmd == "tokens":
                 try:
-                    from farnsworth.core.token_saver import token_saver
+                    from cosmos.core.token_saver import token_saver
                     status = token_saver.get_status()
                     budget = status["budget"]
                     print(f"\n💰 Token Budget Status")
@@ -367,7 +367,7 @@ Available Commands:
 
             elif cmd == "cache":
                 try:
-                    from farnsworth.core.token_saver import token_saver
+                    from cosmos.core.token_saver import token_saver
                     stats = token_saver.cache.stats()
                     print(f"\n📦 Response Cache")
                     print(f"   Entries: {stats['entries']} / {stats['max_size']}")
@@ -377,7 +377,7 @@ Available Commands:
 
             elif cmd == "notes":
                 try:
-                    from farnsworth.tools.productivity.quick_notes import quick_notes
+                    from cosmos.tools.productivity.quick_notes import quick_notes
                     recent = quick_notes.list_recent(10)
                     stats = quick_notes.stats()
                     print(f"\n📝 Quick Notes ({stats['active']} active, {stats['pinned']} pinned)")
@@ -393,7 +393,7 @@ Available Commands:
 
             elif cmd.startswith("note "):
                 try:
-                    from farnsworth.tools.productivity.quick_notes import quick_notes
+                    from cosmos.tools.productivity.quick_notes import quick_notes
                     content = cmd[5:]
                     # Extract tags from #hashtags
                     import re
@@ -406,7 +406,7 @@ Available Commands:
 
             elif cmd == "snippets":
                 try:
-                    from farnsworth.tools.productivity.snippet_manager import snippet_manager
+                    from cosmos.tools.productivity.snippet_manager import snippet_manager
                     popular = snippet_manager.list_popular(10)
                     stats = snippet_manager.stats()
                     print(f"\n📋 Code Snippets ({stats['total']} total, {stats['favorites']} favorites)")
@@ -421,7 +421,7 @@ Available Commands:
 
             elif cmd == "focus start":
                 try:
-                    from farnsworth.tools.productivity.focus_timer import focus_timer
+                    from cosmos.tools.productivity.focus_timer import focus_timer
                     asyncio.create_task(focus_timer.start_work())
                     print(f"🍅 Focus session started ({focus_timer.config.work_minutes} min)")
                 except Exception as e:
@@ -429,7 +429,7 @@ Available Commands:
 
             elif cmd == "focus stop":
                 try:
-                    from farnsworth.tools.productivity.focus_timer import focus_timer
+                    from cosmos.tools.productivity.focus_timer import focus_timer
                     asyncio.create_task(focus_timer.stop())
                     print("⏹️ Focus session stopped")
                 except Exception as e:
@@ -437,7 +437,7 @@ Available Commands:
 
             elif cmd == "focus" or cmd == "focus status":
                 try:
-                    from farnsworth.tools.productivity.focus_timer import focus_timer
+                    from cosmos.tools.productivity.focus_timer import focus_timer
                     status = focus_timer.get_status()
                     today = focus_timer.get_today_stats()
                     print(f"\n🍅 Focus Timer")
@@ -451,7 +451,7 @@ Available Commands:
 
             elif cmd == "summary":
                 try:
-                    from farnsworth.tools.productivity.daily_summary import daily_summary
+                    from cosmos.tools.productivity.daily_summary import daily_summary
                     print("Generating daily summary...")
                     s = await daily_summary.generate_summary(memory_system=memory)
                     print(daily_summary.format_summary(s))
@@ -460,7 +460,7 @@ Available Commands:
 
             elif cmd == "profile":
                 try:
-                    from farnsworth.core.context_profiles import context_profiles
+                    from cosmos.core.context_profiles import context_profiles
                     active = context_profiles.get_active_profile()
                     if active:
                         print(f"\n{active.icon} Active Profile: {active.name}")
@@ -475,7 +475,7 @@ Available Commands:
 
             elif cmd == "profiles":
                 try:
-                    from farnsworth.core.context_profiles import context_profiles
+                    from cosmos.core.context_profiles import context_profiles
                     profiles = context_profiles.list_profiles()
                     active_id = context_profiles.active_profile_id
                     print(f"\n📋 Context Profiles")
@@ -488,7 +488,7 @@ Available Commands:
 
             elif cmd.startswith("switch "):
                 try:
-                    from farnsworth.core.context_profiles import context_profiles
+                    from cosmos.core.context_profiles import context_profiles
                     profile_id = cmd[7:].strip()
                     profile = context_profiles.switch_profile(profile_id)
                     if profile:
@@ -515,28 +515,28 @@ async def run_p2p_node(port: int = 9999, enable_planetary: bool = True):
     """
     Spin up as a P2P network node.
 
-    This allows your Farnsworth instance to:
+    This allows your cosmos instance to:
     - Discover other nodes on the local network
     - Share knowledge via the Decentralized Knowledge Graph (DKG)
     - Contribute to and benefit from Planetary Memory
     - Participate in distributed task auctions
     """
-    print("\n🌐 Farnsworth P2P Node")
+    print("\n🌐 cosmos P2P Node")
     print("=" * 50)
 
     import os
 
     # Check if isolated mode is enabled
-    if os.getenv("FARNSWORTH_ISOLATED", "").lower() == "true":
-        print_status("P2P Node", "error", "Cannot start: FARNSWORTH_ISOLATED=true")
-        print("\n⚠️  To enable P2P networking, set FARNSWORTH_ISOLATED=false in your .env")
+    if os.getenv("cosmos_ISOLATED", "").lower() == "true":
+        print_status("P2P Node", "error", "Cannot start: cosmos_ISOLATED=true")
+        print("\n⚠️  To enable P2P networking, set cosmos_ISOLATED=false in your .env")
         return
 
     try:
-        from farnsworth.core.swarm.p2p import SwarmFabric
-        from farnsworth.core.swarm.dkg import DecentralizedKnowledgeGraph
-        from farnsworth.core.memory.planetary.akashic import PlanetaryMemory
-        from farnsworth.memory.memory_system import MemorySystem
+        from cosmos.core.swarm.p2p import SwarmFabric
+        from cosmos.core.swarm.dkg import DecentralizedKnowledgeGraph
+        from cosmos.core.memory.planetary.akashic import PlanetaryMemory
+        from cosmos.memory.memory_system import MemorySystem
 
         # Initialize memory system for planetary integration
         memory = MemorySystem(data_dir=str(PROJECT_ROOT / "data"))
@@ -584,16 +584,16 @@ async def run_node_with_dashboard(port: int = 9999):
     """Run P2P node with live status dashboard."""
     import os
 
-    if os.getenv("FARNSWORTH_ISOLATED", "").lower() == "true":
-        print_status("P2P Node", "error", "Cannot start: FARNSWORTH_ISOLATED=true")
+    if os.getenv("cosmos_ISOLATED", "").lower() == "true":
+        print_status("P2P Node", "error", "Cannot start: cosmos_ISOLATED=true")
         return
 
     try:
-        from farnsworth.core.swarm.p2p import SwarmFabric
+        from cosmos.core.swarm.p2p import SwarmFabric
 
         fabric = SwarmFabric(port=port)
 
-        print("\n🌐 Farnsworth P2P Node Dashboard")
+        print("\n🌐 cosmos P2P Node Dashboard")
         print("=" * 60)
         print(f"  Node ID:    {fabric.node_id}")
         print(f"  TCP Port:   {port}")
@@ -626,7 +626,7 @@ async def run_user_cli_mode():
     print("\n User-Friendly CLI Mode")
 
     try:
-        from farnsworth.cli.user_cli import run_user_cli
+        from cosmos.cli.user_cli import run_user_cli
         await run_user_cli(data_dir=str(PROJECT_ROOT / "data"))
     except ImportError as e:
         print_status("User CLI", "error", f"Import error: {e}")
@@ -640,7 +640,7 @@ async def run_health_dashboard():
     print_status("Health Dashboard", "loading", "Starting on port 8081...")
 
     try:
-        from farnsworth.health.dashboard.server import app
+        from cosmos.health.dashboard.server import app
         import uvicorn
 
         config = uvicorn.Config(
@@ -659,7 +659,7 @@ async def run_health_dashboard():
 
 
 async def run_all_services():
-    """Run all Farnsworth services."""
+    """Run all cosmos services."""
     print_status("Starting Services", "info", "")
 
     # Start MCP server in background
@@ -672,7 +672,7 @@ async def run_all_services():
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Farnsworth - Your Claude Companion AI",
+        description="cosmos - Your Claude Companion AI",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -690,7 +690,7 @@ P2P Node Options:
   --no-planetary              Disable Planetary Memory sharing
   --dashboard                 Show live node status updates
 
-For more info: https://github.com/timowhite88/Farnsworth
+For more info: https://github.com/timowhite88/cosmos
         """
     )
 

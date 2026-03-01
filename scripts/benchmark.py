@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Farnsworth Benchmark Suite
+cosmos Benchmark Suite
 
 Benchmarks system performance:
 - Memory operations (store, recall, search)
@@ -100,7 +100,7 @@ def print_result(result: BenchmarkResult):
 
 async def benchmark_memory_store(data_dir: str, iterations: int = 100) -> BenchmarkResult:
     """Benchmark memory storage operations."""
-    from farnsworth.memory.memory_system import MemorySystem
+    from cosmos.memory.memory_system import MemorySystem
 
     result = BenchmarkResult("Memory Store")
 
@@ -125,7 +125,7 @@ async def benchmark_memory_store(data_dir: str, iterations: int = 100) -> Benchm
 
 async def benchmark_memory_recall(data_dir: str, iterations: int = 50) -> BenchmarkResult:
     """Benchmark memory recall operations."""
-    from farnsworth.memory.memory_system import MemorySystem
+    from cosmos.memory.memory_system import MemorySystem
 
     result = BenchmarkResult("Memory Recall")
 
@@ -164,7 +164,7 @@ async def benchmark_embedding_generation(iterations: int = 100) -> BenchmarkResu
     result = BenchmarkResult("Embedding Generation")
 
     try:
-        from farnsworth.rag.embeddings import EmbeddingManager
+        from cosmos.rag.embeddings import EmbeddingManager
 
         embedder = EmbeddingManager()
 
@@ -199,7 +199,7 @@ async def benchmark_llm_inference(iterations: int = 10) -> BenchmarkResult:
     result = BenchmarkResult("LLM Inference")
 
     try:
-        from farnsworth.core.llm_backend import OllamaBackend
+        from cosmos.core.llm_backend import OllamaBackend
 
         backend = OllamaBackend(model="deepseek-r1:1.5b")
 
@@ -230,7 +230,7 @@ async def benchmark_llm_inference(iterations: int = 10) -> BenchmarkResult:
 
 async def benchmark_knowledge_graph(iterations: int = 100) -> BenchmarkResult:
     """Benchmark knowledge graph operations."""
-    from farnsworth.memory.knowledge_graph import KnowledgeGraph
+    from cosmos.memory.knowledge_graph import KnowledgeGraph
 
     result = BenchmarkResult("Knowledge Graph")
 
@@ -257,7 +257,7 @@ async def benchmark_knowledge_graph(iterations: int = 100) -> BenchmarkResult:
 
 async def benchmark_fitness_tracking(iterations: int = 1000) -> BenchmarkResult:
     """Benchmark fitness tracking operations."""
-    from farnsworth.evolution.fitness_tracker import FitnessTracker
+    from cosmos.evolution.fitness_tracker import FitnessTracker
 
     result = BenchmarkResult("Fitness Tracking")
 
@@ -281,7 +281,7 @@ async def benchmark_fitness_tracking(iterations: int = 1000) -> BenchmarkResult:
 
 async def run_all_benchmarks(data_dir: str, output_file: Optional[str] = None):
     """Run all benchmarks."""
-    print_header("Farnsworth Benchmark Suite")
+    print_header("cosmos Benchmark Suite")
     print(f"\nStarted at: {datetime.now().isoformat()}")
 
     results = []
@@ -356,7 +356,7 @@ async def run_all_benchmarks(data_dir: str, output_file: Optional[str] = None):
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Farnsworth Benchmark Suite"
+        description="cosmos Benchmark Suite"
     )
 
     parser.add_argument(

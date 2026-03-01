@@ -12,7 +12,7 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-We take security seriously. If you discover a security vulnerability within Farnsworth, please do NOT create a public GitHub issue.
+We take security seriously. If you discover a security vulnerability within cosmos, please do NOT create a public GitHub issue.
 
 ### How to Report
 

@@ -53,7 +53,7 @@ class EvolutionEngine:
 
     def memory_dreaming(self):
         """Unsupervised recombination of memory nodes during idle time."""
-        print("Farnsworth is dreaming...")
+        print("cosmos is dreaming...")
         params = self.evolve_hyperparameters()
         # Simulate linking random nodes in memory graph
         if self.memory.graph.number_of_nodes() > 5:

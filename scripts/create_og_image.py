@@ -64,7 +64,7 @@ def create_og_image():
         pass
 
     # Title
-    title = 'FARNSWORTH AI'
+    title = 'cosmos AI'
     bbox = draw.textbbox((0, 0), title, font=title_font)
     tw = bbox[2] - bbox[0]
     draw.text((width//2 - tw//2, 280), title, fill=(255, 255, 255), font=title_font)
@@ -82,13 +82,13 @@ def create_og_image():
     draw.text((width//2 - tw//2, 430), features, fill=(150, 150, 180), font=small_font)
 
     # URL
-    url = 'ai.farnsworth.cloud'
+    url = 'ai.cosmos.cloud'
     bbox = draw.textbbox((0, 0), url, font=sub_font)
     tw = bbox[2] - bbox[0]
     draw.text((width//2 - tw//2, 550), url, fill=(99, 102, 241), font=sub_font)
 
     # Save
-    output_dir = os.path.join(os.path.dirname(__file__), '..', 'farnsworth', 'web', 'static', 'images')
+    output_dir = os.path.join(os.path.dirname(__file__), '..', 'cosmos', 'web', 'static', 'images')
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, 'og-image.png')
     img.save(output_path, 'PNG')

@@ -1,4 +1,4 @@
-# Farnsworth User Guide
+# cosmos User Guide
 
 > Your complete guide to supercharging Claude with persistent memory, specialist agents, and self-evolution.
 
@@ -26,11 +26,11 @@
 
 ## Introduction
 
-### What is Farnsworth?
+### What is cosmos?
 
-Farnsworth is a **companion system** that integrates with Claude Code to give Claude capabilities it doesn't have on its own:
+cosmos is a **companion system** that integrates with Claude Code to give Claude capabilities it doesn't have on its own:
 
-| Without Farnsworth | With Farnsworth |
+| Without cosmos | With cosmos |
 |-------------------|-----------------|
 | Claude forgets everything between sessions | Claude remembers your preferences, projects, and context forever |
 | Claude is a single model | Claude can delegate to specialist agents (code, reasoning, research, creative) |
@@ -39,12 +39,12 @@ Farnsworth is a **companion system** that integrates with Claude Code to give Cl
 
 ### How Does It Work?
 
-Farnsworth runs locally on your machine and connects to Claude Code via the **Model Context Protocol (MCP)**. When you chat with Claude in Claude Code, it can now:
+cosmos runs locally on your machine and connects to Claude Code via the **Model Context Protocol (MCP)**. When you chat with Claude in Claude Code, it can now:
 
-1. **Store memories** using `farnsworth_remember`
-2. **Retrieve context** using `farnsworth_recall`
-3. **Delegate tasks** using `farnsworth_delegate`
-4. **Learn from feedback** using `farnsworth_evolve`
+1. **Store memories** using `cosmos_remember`
+2. **Retrieve context** using `cosmos_recall`
+3. **Delegate tasks** using `cosmos_delegate`
+4. **Learn from feedback** using `cosmos_evolve`
 
 All processing happens locally - your data never leaves your machine.
 
@@ -64,7 +64,7 @@ All processing happens locally - your data never leaves your machine.
 Just paste this to Claude Code:
 
 ```
-Clone and set up Farnsworth from https://github.com/timowhite88/Farnsworth -
+Clone and set up cosmos from https://github.com/timowhite88/cosmos -
 it's a companion AI system with persistent memory and P2P networking.
 Run the setup wizard after cloning.
 ```
@@ -72,7 +72,7 @@ Run the setup wizard after cloning.
 Or give Claude a direct command:
 
 ```bash
-git clone https://github.com/timowhite88/Farnsworth.git && cd Farnsworth && pip install -r requirements.txt && python main.py --setup
+git clone https://github.com/timowhite88/cosmos.git && cd cosmos && pip install -r requirements.txt && python main.py --setup
 ```
 
 Claude will handle the entire installation process.
@@ -82,8 +82,8 @@ Claude will handle the entire installation process.
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/timowhite88/Farnsworth.git
-cd Farnsworth
+git clone https://github.com/timowhite88/cosmos.git
+cd cosmos
 ```
 
 ### Step 2: Install Dependencies
@@ -98,7 +98,7 @@ python scripts/setup.py
 
 ### Step 3: Install a Local LLM
 
-Farnsworth needs a local language model. The easiest option is Ollama:
+cosmos needs a local language model. The easiest option is Ollama:
 
 ```bash
 # Install Ollama from https://ollama.ai
@@ -116,7 +116,7 @@ ollama pull deepseek-r1:1.5b
 | `llama3.2:1b` | 700MB | Balanced performance |
 
 ### Step 4: Run the Granular Setup Wizard (NEW)
-Farnsworth v2.0+ includes a granular setup wizard to give you full control over privacy and active features.
+cosmos v2.0+ includes a granular setup wizard to give you full control over privacy and active features.
 
 ```bash
 python main.py --setup
@@ -131,7 +131,7 @@ The wizard will guide you through:
 Settings are saved to a `.env` file in your root directory.
 
 ### Step 5: Configure Claude Code
-Add Farnsworth to your Claude Code MCP settings:
+Add cosmos to your Claude Code MCP settings:
 
 **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
@@ -140,19 +140,19 @@ Add Farnsworth to your Claude Code MCP settings:
 ```json
 {
   "mcpServers": {
-    "farnsworth": {
+    "cosmos": {
       "command": "python",
-      "args": ["-m", "farnsworth.mcp_server"],
-      "cwd": "C:\\Farnsworth"
+      "args": ["-m", "cosmos.mcp_server"],
+      "cwd": "C:\\cosmos"
     }
   }
 }
 ```
 
-> **Note:** Replace `C:\\Farnsworth` with your actual installation path.
+> **Note:** Replace `C:\\cosmos` with your actual installation path.
 
 ### Step 6: Restart Claude Code
-Close and reopen Claude Code. You should see Farnsworth tools available.
+Close and reopen Claude Code. You should see cosmos tools available.
 
 ---
 
@@ -166,7 +166,7 @@ Open Claude Code and try:
 "Hey Claude, please remember that my name is Alex and I'm working on a Python web scraper project."
 ```
 
-Claude will use `farnsworth_remember` to store this permanently.
+Claude will use `cosmos_remember` to store this permanently.
 
 ### Recalling Information
 
@@ -176,7 +176,7 @@ Later, in a new session:
 "What project am I working on?"
 ```
 
-Claude will use `farnsworth_recall` and respond:
+Claude will use `cosmos_recall` and respond:
 
 ```
 "You're working on a Python web scraper project, Alex!"
@@ -190,7 +190,7 @@ For complex tasks:
 "Can you delegate this algorithm optimization to your reasoning specialist?"
 ```
 
-Claude will use `farnsworth_delegate` to hand off to the reasoning agent.
+Claude will use `cosmos_delegate` to hand off to the reasoning agent.
 
 ### Providing Feedback
 
@@ -206,7 +206,7 @@ Or:
 "That wasn't quite what I needed - I wanted more detail."
 ```
 
-Claude uses `farnsworth_evolve` to record your feedback and improve.
+Claude uses `cosmos_evolve` to record your feedback and improve.
 
 ---
 
@@ -214,9 +214,9 @@ Claude uses `farnsworth_evolve` to record your feedback and improve.
 
 ### Available Tools
 
-When Farnsworth is connected, Claude has access to these tools:
+When cosmos is connected, Claude has access to these tools:
 
-#### `farnsworth_remember`
+#### `cosmos_remember`
 
 Store information in long-term memory.
 
@@ -230,10 +230,10 @@ Parameters:
 **Example usage by Claude:**
 ```
 "I'll remember that for you."
-[Claude calls farnsworth_remember with your preference]
+[Claude calls cosmos_remember with your preference]
 ```
 
-#### `farnsworth_recall`
+#### `cosmos_recall`
 
 Search and retrieve memories.
 
@@ -246,10 +246,10 @@ Parameters:
 **Example usage by Claude:**
 ```
 "Let me check what I know about that..."
-[Claude calls farnsworth_recall and uses the context]
+[Claude calls cosmos_recall and uses the context]
 ```
 
-#### `farnsworth_delegate`
+#### `cosmos_delegate`
 
 Delegate tasks to specialist agents.
 
@@ -267,9 +267,9 @@ Parameters:
 | `reasoning` | Logic, math, analysis, step-by-step thinking |
 | `research` | Information gathering, summarization |
 | `creative` | Writing, brainstorming, ideation |
-| `auto` | Let Farnsworth choose the best agent |
+| `auto` | Let cosmos choose the best agent |
 
-#### `farnsworth_evolve`
+#### `cosmos_evolve`
 
 Provide feedback for system improvement.
 
@@ -278,7 +278,7 @@ Parameters:
 - feedback (required): Your feedback text
 ```
 
-#### `farnsworth_status`
+#### `cosmos_status`
 
 Get system health and statistics.
 
@@ -292,17 +292,17 @@ Claude can also access these data streams:
 
 | Resource URI | Description |
 |-------------|-------------|
-| `farnsworth://memory/recent` | Recent conversation context |
-| `farnsworth://memory/graph` | Knowledge graph of entities |
-| `farnsworth://agents/active` | Currently running agents |
-| `farnsworth://evolution/fitness` | Performance metrics |
-| `farnsworth://vision/reconstruction` | 3D Point cloud data |
+| `cosmos://memory/recent` | Recent conversation context |
+| `cosmos://memory/graph` | Knowledge graph of entities |
+| `cosmos://agents/active` | Currently running agents |
+| `cosmos://evolution/fitness` | Performance metrics |
+| `cosmos://vision/reconstruction` | 3D Point cloud data |
 
 ---
 
 ## Spatio-Temporal Intelligence (v2.0+)
 
-Farnsworth can now understand action over time and spatial depth.
+cosmos can now understand action over time and spatial depth.
 
 ### Video v2.1: Flow Analysis
 Unlike basic frame captions, Video v2.1 uses **Dense Optical Flow (Farneback)** to track movement.
@@ -310,16 +310,16 @@ Unlike basic frame captions, Video v2.1 uses **Dense Optical Flow (Farneback)** 
 - **Narrative Synthesis**: It correlates what it SEES with what it HEARS to understand the goal of a video.
 
 ### 🧊 3D Scene Reconstruction
-Farnsworth can build a **Sparse Point Cloud** from video keyframes using Structure from Motion (SfM). This allows the agent to have a spatial mental model of an environment or object.
+cosmos can build a **Sparse Point Cloud** from video keyframes using Structure from Motion (SfM). This allows the agent to have a spatial mental model of an environment or object.
 
 ---
 
 ## Swarm Collaboration (v2.5)
 
-The **Swarm Fabric** allows multiple Farnsworth nodes to collaborate securely over a local network.
+The **Swarm Fabric** allows multiple cosmos nodes to collaborate securely over a local network.
 
 - **TCP Gossip**: Scalable knowledge dissemination via a gossip protocol.
-- **Task Auctions (DTA)**: If your machine is busy, Farnsworth can auction a heavy task to another node in the swarm.
+- **Task Auctions (DTA)**: If your machine is busy, cosmos can auction a heavy task to another node in the swarm.
 
 ### 🛡️ Isolated Mode (Offline/Private)
 If you do not want your agent to communicate with others:
@@ -333,7 +333,7 @@ If you do not want your agent to communicate with others:
 
 ### Running as a Node
 
-Transform your Farnsworth instance into a P2P network participant:
+Transform your cosmos instance into a P2P network participant:
 
 ```bash
 # Basic node startup
@@ -360,17 +360,17 @@ python main.py --node --no-planetary
 Once in CLI mode (`python main.py --cli`):
 
 ```
-farnsworth> node start     # Start P2P node in background
-farnsworth> node status    # Show peers, DKG stats
-farnsworth> node stop      # Stop the node
-farnsworth> planetary      # Show Planetary Memory stats
+cosmos> node start     # Start P2P node in background
+cosmos> node status    # Show peers, DKG stats
+cosmos> node stop      # Stop the node
+cosmos> planetary      # Show Planetary Memory stats
 ```
 
 ### Network Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Your Farnsworth Node                      │
+│                    Your cosmos Node                      │
 │                                                             │
 │  ┌──────────┐   UDP 8888   ┌──────────────────────────┐    │
 │  │ Discovery│ ◄──────────► │  Peer Nodes (LAN/WAN)    │    │
@@ -402,8 +402,8 @@ Reduce API costs by up to 70% with intelligent token management:
 ### CLI Commands
 
 ```
-farnsworth> tokens    # Show budget status and usage
-farnsworth> cache     # Show response cache stats
+cosmos> tokens    # Show budget status and usage
+cosmos> cache     # Show response cache stats
 ```
 
 ### Budget Tracking
@@ -411,11 +411,11 @@ farnsworth> cache     # Show response cache stats
 Set daily token limits in your `.env`:
 
 ```bash
-FARNSWORTH_DAILY_TOKEN_LIMIT=100000
-FARNSWORTH_BUDGET_WARNING=0.8  # Warn at 80%
+cosmos_DAILY_TOKEN_LIMIT=100000
+cosmos_BUDGET_WARNING=0.8  # Warn at 80%
 ```
 
-When you approach limits, Farnsworth will:
+When you approach limits, cosmos will:
 1. Warn you at 80% and 90% thresholds
 2. Automatically enable compression
 3. Prefer cached responses
@@ -453,11 +453,11 @@ Capture ideas instantly with tagging:
 
 ```bash
 # CLI
-farnsworth> note "Meeting notes from standup #work #team"
-farnsworth> notes        # List recent notes
+cosmos> note "Meeting notes from standup #work #team"
+cosmos> notes        # List recent notes
 
 # Tags are extracted from #hashtags
-farnsworth> note "Great API design idea #api #architecture"
+cosmos> note "Great API design idea #api #architecture"
 ```
 
 Notes are stored locally and searchable via memory recall.
@@ -467,7 +467,7 @@ Notes are stored locally and searchable via memory recall.
 Store and reuse code snippets:
 
 ```bash
-farnsworth> snippets     # List all snippets
+cosmos> snippets     # List all snippets
 
 # Snippets support template variables:
 # {{ name }}, {{ date }}, etc.
@@ -480,9 +480,9 @@ Create snippets through the dashboard or by asking Claude.
 Built-in Pomodoro-style productivity timer:
 
 ```bash
-farnsworth> focus start     # Start 25-minute work session
-farnsworth> focus stop      # Stop current session
-farnsworth> focus           # Show timer status
+cosmos> focus start     # Start 25-minute work session
+cosmos> focus stop      # Stop current session
+cosmos> focus           # Show timer status
 ```
 
 Timer features:
@@ -497,7 +497,7 @@ Timer features:
 Auto-generated productivity reports:
 
 ```bash
-farnsworth> summary    # Generate today's summary
+cosmos> summary    # Generate today's summary
 ```
 
 Summaries include:
@@ -532,10 +532,10 @@ Context profiles let you switch between different working modes, each with its o
 ### CLI Commands
 
 ```bash
-farnsworth> profiles       # List all profiles
-farnsworth> profile        # Show current active profile
-farnsworth> switch work    # Switch to Work profile
-farnsworth> switch creative # Switch to Creative profile
+cosmos> profiles       # List all profiles
+cosmos> profile        # Show current active profile
+cosmos> switch work    # Switch to Work profile
+cosmos> switch creative # Switch to Creative profile
 ```
 
 ### Profile Settings
@@ -573,7 +573,7 @@ Profiles can auto-activate based on keywords in your messages:
 
 ### How Memory Works
 
-Farnsworth uses a **hierarchical memory system** inspired by human cognition:
+cosmos uses a **hierarchical memory system** inspired by human cognition:
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -628,7 +628,7 @@ Farnsworth uses a **hierarchical memory system** inspired by human cognition:
 
 ### Memory Dreaming
 
-During idle time, Farnsworth performs **memory consolidation**:
+During idle time, cosmos performs **memory consolidation**:
 
 1. **Clustering:** Groups related memories together
 2. **Pattern Discovery:** Finds recurring themes
@@ -684,7 +684,7 @@ Agents are **specialist AI workers** that Claude can delegate to. Each agent has
 You: "Can you analyze this algorithm's complexity?"
 
 Claude: [Recognizes this needs reasoning]
-        [Calls farnsworth_delegate with agent_type="reasoning"]
+        [Calls cosmos_delegate with agent_type="reasoning"]
 
 Reasoning Agent: [Receives task]
                  [Performs step-by-step analysis]
@@ -714,9 +714,9 @@ Results are combined and presented to you.
 
 ## Evolution & Learning
 
-### How Farnsworth Learns
+### How cosmos Learns
 
-Farnsworth uses **genetic algorithms** to improve over time:
+cosmos uses **genetic algorithms** to improve over time:
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -745,7 +745,7 @@ Farnsworth uses **genetic algorithms** to improve over time:
 
 ### Fitness Metrics
 
-Farnsworth tracks these performance metrics:
+cosmos tracks these performance metrics:
 
 | Metric | Description | Weight |
 |--------|-------------|--------|
@@ -756,7 +756,7 @@ Farnsworth tracks these performance metrics:
 
 ### Providing Good Feedback
 
-The more feedback you provide, the faster Farnsworth learns:
+The more feedback you provide, the faster cosmos learns:
 
 **Positive Feedback:**
 - "That was exactly what I needed!"
@@ -789,11 +789,11 @@ In the Streamlit dashboard, you can see:
 ### Starting the Dashboard
 
 ```bash
-# From the Farnsworth directory:
+# From the cosmos directory:
 python main.py --ui
 
 # Or directly with Streamlit:
-streamlit run farnsworth/ui/streamlit_app.py
+streamlit run cosmos/ui/streamlit_app.py
 ```
 
 The dashboard opens at `http://localhost:8501`
@@ -890,8 +890,8 @@ models:
 
 ```bash
 # Optional overrides
-export FARNSWORTH_DATA_DIR="/path/to/data"
-export FARNSWORTH_LOG_LEVEL="DEBUG"
+export cosmos_DATA_DIR="/path/to/data"
+export cosmos_LOG_LEVEL="DEBUG"
 export OLLAMA_HOST="http://localhost:11434"
 ```
 
@@ -901,12 +901,12 @@ export OLLAMA_HOST="http://localhost:11434"
 
 ### Common Issues
 
-#### "Farnsworth tools not appearing in Claude Code"
+#### "cosmos tools not appearing in Claude Code"
 
 1. Verify the MCP config path is correct
-2. Check that Python can find the farnsworth module:
+2. Check that Python can find the cosmos module:
    ```bash
-   python -c "import farnsworth; print('OK')"
+   python -c "import cosmos; print('OK')"
    ```
 3. Restart Claude Code completely
 4. Check Claude Code's MCP logs for errors
@@ -920,7 +920,7 @@ export OLLAMA_HOST="http://localhost:11434"
    ```
 2. Check if embeddings are working:
    ```bash
-   python -c "from farnsworth.rag.embeddings import EmbeddingManager; print(EmbeddingManager().embed('test')[:5])"
+   python -c "from cosmos.rag.embeddings import EmbeddingManager; print(EmbeddingManager().embed('test')[:5])"
    ```
 
 #### "Agent delegation times out"
@@ -945,7 +945,7 @@ export OLLAMA_HOST="http://localhost:11434"
 ### Getting Help
 
 1. Check the [FAQ](#faq) below
-2. Search [GitHub Issues](https://github.com/timowhite88/Farnsworth/issues)
+2. Search [GitHub Issues](https://github.com/timowhite88/cosmos/issues)
 3. Open a new issue with:
    - Your OS and Python version
    - Error messages
@@ -964,14 +964,14 @@ A: No. Everything runs locally. Your memories, conversations, and feedback never
 A: No, only with Claude Code (the CLI/desktop app) via MCP.
 
 **Q: Can I use this without a GPU?**
-A: Yes! Farnsworth is optimized for CPU usage. GPU just makes it faster.
+A: Yes! cosmos is optimized for CPU usage. GPU just makes it faster.
 
 **Q: How much disk space do I need?**
 A: ~10GB minimum (5GB for models + 5GB for data). Recommended 50GB.
 
 ### Memory
 
-**Q: How many memories can Farnsworth store?**
+**Q: How many memories can cosmos store?**
 A: Virtually unlimited. The default config supports 100,000+ entries.
 
 **Q: Can I export my memories?**
@@ -1043,4 +1043,4 @@ A: Not automatically, but you can export/import profiles via the CLI or copy the
 
 ---
 
-*"Good news, everyone!" - Professor Farnsworth*
+*"Good news, everyone!" - Professor cosmos*

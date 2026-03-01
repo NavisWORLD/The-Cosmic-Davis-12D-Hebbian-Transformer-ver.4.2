@@ -1,12 +1,12 @@
 """
-Integration tests for Farnsworth Financial Scanners.
+Integration tests for cosmos Financial Scanners.
 """
 
 import pytest
 import asyncio
-from farnsworth.integration.financial.dexscreener import dex_screener
-from farnsworth.integration.financial.market_sentiment import market_sentiment
-from farnsworth.integration.financial.memecoin_tracker import memecoin_tracker
+from cosmos.integration.financial.dexscreener import dex_screener
+from cosmos.integration.financial.market_sentiment import market_sentiment
+from cosmos.integration.financial.memecoin_tracker import memecoin_tracker
 
 @pytest.mark.asyncio
 async def test_dexscreener_search():

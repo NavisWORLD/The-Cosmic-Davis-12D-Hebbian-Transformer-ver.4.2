@@ -1,4 +1,4 @@
-# Farnsworth System Architecture
+# cosmos System Architecture
 
 ## 1. High-Level Architecture
 The system follows a modular, event-driven architecture centered around the **Nexus** event bus.
@@ -91,7 +91,7 @@ flowchart TD
 ```
 
 ## 4. Evolutionary Feedback Loop
-How Farnsworth improves over time.
+How cosmos improves over time.
 
 ```mermaid
 stateDiagram-v2

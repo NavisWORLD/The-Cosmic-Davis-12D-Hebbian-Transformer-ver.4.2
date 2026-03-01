@@ -1,10 +1,10 @@
 """
-Farnsworth Bootstrap Node (Relay Server)
+cosmos Bootstrap Node (Relay Server)
 ----------------------------------------
 
 "The intergalactic phone switchboard!"
 
-This script runs a lightweight specialized server that introduces Farnsworth nodes
+This script runs a lightweight specialized server that introduces cosmos nodes
 to each other across the internet (WAN), enabling Planetary Memory sharing
 outside of a local network.
 
@@ -12,8 +12,8 @@ Usage:
     python network/bootstrap_node.py --port 8888 --password YOUR_SECRET
 
 Clients connect by setting:
-    FARNSWORTH_BOOTSTRAP_PEER=ws://<YOUR_SERVER_IP>:8888
-    FARNSWORTH_BOOTSTRAP_PASSWORD=YOUR_SECRET
+    cosmos_BOOTSTRAP_PEER=ws://<YOUR_SERVER_IP>:8888
+    cosmos_BOOTSTRAP_PASSWORD=YOUR_SECRET
 """
 
 import asyncio
@@ -95,7 +95,7 @@ class BootstrapServer:
                     logger.warning(f"Auth failed for {sender.remote_address} - invalid password")
                     await sender.send(json.dumps({
                         "type": "AUTH_FAILED",
-                        "message": "Invalid password. Access denied to Farnsworth Planetary Memory."
+                        "message": "Invalid password. Access denied to cosmos Planetary Memory."
                     }))
                     await sender.close()
                     return
@@ -179,16 +179,16 @@ class BootstrapServer:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Farnsworth Relay Node")
+    parser = argparse.ArgumentParser(description="cosmos Relay Node")
     parser.add_argument("--port", type=int, default=8888, help="Port to listen on")
     parser.add_argument("--host", type=str, default="0.0.0.0", help="Host address")
     parser.add_argument("--password", type=str, default=None,
-                        help="Password for node authentication (or set FARNSWORTH_BOOTSTRAP_PASSWORD)")
+                        help="Password for node authentication (or set cosmos_BOOTSTRAP_PASSWORD)")
 
     args = parser.parse_args()
 
     # Get password from args or environment
-    password = args.password or os.getenv("FARNSWORTH_BOOTSTRAP_PASSWORD")
+    password = args.password or os.getenv("cosmos_BOOTSTRAP_PASSWORD")
 
     try:
         asyncio.run(BootstrapServer(host=args.host, port=args.port, password=password).start())

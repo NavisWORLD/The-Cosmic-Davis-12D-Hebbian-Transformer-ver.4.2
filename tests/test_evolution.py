@@ -1,5 +1,5 @@
 """
-Farnsworth Evolution System Tests
+cosmos Evolution System Tests
 
 Comprehensive tests for:
 - Genetic optimization
@@ -35,7 +35,7 @@ class TestFitnessTracker:
 
     def test_tracker_creation(self):
         """Test fitness tracker initialization."""
-        from farnsworth.evolution.fitness_tracker import FitnessTracker
+        from cosmos.evolution.fitness_tracker import FitnessTracker
 
         tracker = FitnessTracker()
 
@@ -44,7 +44,7 @@ class TestFitnessTracker:
 
     def test_metric_recording(self):
         """Test recording fitness metrics."""
-        from farnsworth.evolution.fitness_tracker import FitnessTracker
+        from cosmos.evolution.fitness_tracker import FitnessTracker
 
         tracker = FitnessTracker()
 
@@ -58,7 +58,7 @@ class TestFitnessTracker:
 
     def test_weighted_fitness(self):
         """Test weighted fitness calculation."""
-        from farnsworth.evolution.fitness_tracker import FitnessTracker
+        from cosmos.evolution.fitness_tracker import FitnessTracker
 
         tracker = FitnessTracker()
 
@@ -71,7 +71,7 @@ class TestFitnessTracker:
 
     def test_task_outcome_recording(self):
         """Test recording complete task outcomes."""
-        from farnsworth.evolution.fitness_tracker import FitnessTracker
+        from cosmos.evolution.fitness_tracker import FitnessTracker
 
         tracker = FitnessTracker()
 
@@ -88,7 +88,7 @@ class TestFitnessTracker:
 
     def test_trend_calculation(self):
         """Test fitness trend calculation."""
-        from farnsworth.evolution.fitness_tracker import FitnessTracker
+        from cosmos.evolution.fitness_tracker import FitnessTracker
 
         tracker = FitnessTracker()
 
@@ -101,7 +101,7 @@ class TestFitnessTracker:
 
     def test_leaderboard(self):
         """Test genome leaderboard."""
-        from farnsworth.evolution.fitness_tracker import FitnessTracker
+        from cosmos.evolution.fitness_tracker import FitnessTracker
 
         tracker = FitnessTracker()
 
@@ -121,7 +121,7 @@ class TestGeneticOptimizer:
 
     def test_optimizer_creation(self):
         """Test genetic optimizer initialization."""
-        from farnsworth.evolution.genetic_optimizer import GeneticOptimizer
+        from cosmos.evolution.genetic_optimizer import GeneticOptimizer
 
         optimizer = GeneticOptimizer(
             population_size=20,
@@ -133,7 +133,7 @@ class TestGeneticOptimizer:
 
     def test_genome_creation(self):
         """Test creating genomes."""
-        from farnsworth.evolution.genetic_optimizer import GeneticOptimizer, Genome
+        from cosmos.evolution.genetic_optimizer import GeneticOptimizer, Genome
 
         optimizer = GeneticOptimizer()
 
@@ -145,7 +145,7 @@ class TestGeneticOptimizer:
 
     def test_mutation(self):
         """Test genome mutation."""
-        from farnsworth.evolution.genetic_optimizer import GeneticOptimizer
+        from cosmos.evolution.genetic_optimizer import GeneticOptimizer
 
         optimizer = GeneticOptimizer(mutation_rate=0.5)
 
@@ -159,7 +159,7 @@ class TestGeneticOptimizer:
 
     def test_crossover(self):
         """Test genome crossover."""
-        from farnsworth.evolution.genetic_optimizer import GeneticOptimizer
+        from cosmos.evolution.genetic_optimizer import GeneticOptimizer
 
         optimizer = GeneticOptimizer()
 
@@ -173,7 +173,7 @@ class TestGeneticOptimizer:
 
     def test_selection(self):
         """Test selection mechanism."""
-        from farnsworth.evolution.genetic_optimizer import GeneticOptimizer
+        from cosmos.evolution.genetic_optimizer import GeneticOptimizer
 
         optimizer = GeneticOptimizer(population_size=10)
 
@@ -194,7 +194,7 @@ class TestGeneticOptimizer:
     @pytest.mark.asyncio
     async def test_evolution_run(self):
         """Test running evolution."""
-        from farnsworth.evolution.genetic_optimizer import GeneticOptimizer
+        from cosmos.evolution.genetic_optimizer import GeneticOptimizer
 
         optimizer = GeneticOptimizer(
             population_size=10,
@@ -216,7 +216,7 @@ class TestGeneticOptimizer:
 
     def test_nsga2_sorting(self):
         """Test NSGA-II non-dominated sorting."""
-        from farnsworth.evolution.genetic_optimizer import GeneticOptimizer
+        from cosmos.evolution.genetic_optimizer import GeneticOptimizer
 
         optimizer = GeneticOptimizer()
 
@@ -241,7 +241,7 @@ class TestLoRAEvolver:
 
     def test_evolver_creation(self):
         """Test LoRA evolver initialization."""
-        from farnsworth.evolution.lora_evolver import LoRAEvolver
+        from cosmos.evolution.lora_evolver import LoRAEvolver
 
         evolver = LoRAEvolver()
         assert evolver is not None
@@ -249,7 +249,7 @@ class TestLoRAEvolver:
     @pytest.mark.asyncio
     async def test_adapter_creation(self, temp_data_dir):
         """Test creating a LoRA adapter."""
-        from farnsworth.evolution.lora_evolver import LoRAEvolver
+        from cosmos.evolution.lora_evolver import LoRAEvolver
 
         evolver = LoRAEvolver(output_dir=temp_data_dir)
 
@@ -266,7 +266,7 @@ class TestLoRAEvolver:
     @pytest.mark.asyncio
     async def test_adapter_breeding(self, temp_data_dir):
         """Test breeding two adapters."""
-        from farnsworth.evolution.lora_evolver import LoRAEvolver
+        from cosmos.evolution.lora_evolver import LoRAEvolver
 
         evolver = LoRAEvolver(output_dir=temp_data_dir)
 
@@ -280,7 +280,7 @@ class TestLoRAEvolver:
 
     def test_adapter_registry(self, temp_data_dir):
         """Test adapter registry operations."""
-        from farnsworth.evolution.lora_evolver import LoRAEvolver
+        from cosmos.evolution.lora_evolver import LoRAEvolver
 
         evolver = LoRAEvolver(output_dir=temp_data_dir)
 
@@ -298,7 +298,7 @@ class TestBehaviorMutation:
 
     def test_mutator_creation(self):
         """Test behavior mutator initialization."""
-        from farnsworth.evolution.behavior_mutation import BehaviorMutator
+        from cosmos.evolution.behavior_mutation import BehaviorMutator
 
         mutator = BehaviorMutator()
         assert mutator is not None
@@ -306,7 +306,7 @@ class TestBehaviorMutation:
 
     def test_behavior_params(self):
         """Test getting behavior parameters."""
-        from farnsworth.evolution.behavior_mutation import BehaviorMutator
+        from cosmos.evolution.behavior_mutation import BehaviorMutator
 
         mutator = BehaviorMutator()
         params = mutator.get_behavior_params()
@@ -317,7 +317,7 @@ class TestBehaviorMutation:
 
     def test_team_config(self):
         """Test getting team configuration."""
-        from farnsworth.evolution.behavior_mutation import BehaviorMutator
+        from cosmos.evolution.behavior_mutation import BehaviorMutator
 
         mutator = BehaviorMutator()
         config = mutator.get_team_config()
@@ -327,7 +327,7 @@ class TestBehaviorMutation:
 
     def test_generation_evolution(self):
         """Test evolving to next generation."""
-        from farnsworth.evolution.behavior_mutation import BehaviorMutator
+        from cosmos.evolution.behavior_mutation import BehaviorMutator
 
         mutator = BehaviorMutator()
         initial_gen = mutator.generation
@@ -340,7 +340,7 @@ class TestBehaviorMutation:
 
     def test_fitness_based_evolution(self):
         """Test evolution based on fitness feedback."""
-        from farnsworth.evolution.behavior_mutation import BehaviorMutator
+        from cosmos.evolution.behavior_mutation import BehaviorMutator
 
         mutator = BehaviorMutator()
 
@@ -362,7 +362,7 @@ class TestBehaviorMutation:
 
     def test_genome_encoding(self):
         """Test encoding/decoding behavior genome."""
-        from farnsworth.evolution.behavior_mutation import BehaviorMutator
+        from cosmos.evolution.behavior_mutation import BehaviorMutator
 
         mutator = BehaviorMutator()
 
@@ -386,9 +386,9 @@ class TestEvolutionIntegration:
     @pytest.mark.asyncio
     async def test_full_evolution_cycle(self, temp_data_dir):
         """Test complete evolution cycle."""
-        from farnsworth.evolution.fitness_tracker import FitnessTracker
-        from farnsworth.evolution.genetic_optimizer import GeneticOptimizer
-        from farnsworth.evolution.behavior_mutation import BehaviorMutator
+        from cosmos.evolution.fitness_tracker import FitnessTracker
+        from cosmos.evolution.genetic_optimizer import GeneticOptimizer
+        from cosmos.evolution.behavior_mutation import BehaviorMutator
 
         # Initialize components
         tracker = FitnessTracker()
@@ -418,7 +418,7 @@ class TestEvolutionIntegration:
 
     def test_hash_chain_logging(self, temp_data_dir):
         """Test tamper-proof evolution logging."""
-        from farnsworth.evolution.fitness_tracker import FitnessTracker
+        from cosmos.evolution.fitness_tracker import FitnessTracker
 
         tracker = FitnessTracker(log_dir=temp_data_dir)
 

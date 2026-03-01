@@ -1,7 +1,7 @@
-# Farnsworth v1.9 Complete Feature Map
+# cosmos v1.9 Complete Feature Map
 
-## 🌌 The Cognitive Universe of Farnsworth
-Farnsworth is not just an agent; it is a **Neuromorphic Cognitive Architecture**. The system is composed of several specialized layers that work in harmony via the **Nexus** event bus.
+## 🌌 The Cognitive Universe of cosmos
+cosmos is not just an agent; it is a **Neuromorphic Cognitive Architecture**. The system is composed of several specialized layers that work in harmony via the **Nexus** event bus.
 
 ```mermaid
 graph TD
@@ -115,7 +115,7 @@ classDiagram
 ```
 
 ### 2. 🧠 Advanced Reasoners & Specialized Engines
-Farnsworth includes experimental cognitive engines that go beyond standard LLM calls.
+cosmos includes experimental cognitive engines that go beyond standard LLM calls.
 
 ```mermaid
 graph LR
@@ -173,11 +173,11 @@ graph TD
 ```
 
 ### 4. 🌐 P2P & OS Integration
-Farnsworth breaks the sandbox with P2P Swarming and OS-level bridging.
+cosmos breaks the sandbox with P2P Swarming and OS-level bridging.
 
 ```mermaid
 sequenceDiagram
-    participant Local as Local Farnsworth
+    participant Local as Local cosmos
     participant OS as OS Bridge
     participant P2P as Swarm Fabric
     participant Remote as Remote Node
@@ -195,7 +195,7 @@ sequenceDiagram
 ```
 
 ### 5. 🧬 Evolution & Self-Improvement
-The machinery that allows Farnsworth to rewrite its own behaviors.
+The machinery that allows cosmos to rewrite its own behaviors.
 
 ```mermaid
 flowchart TD
