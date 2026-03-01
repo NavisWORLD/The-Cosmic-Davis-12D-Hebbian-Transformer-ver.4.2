@@ -99,6 +99,11 @@ class EvolutionEngine:
         # Auto-evolution settings
         self.auto_evolve_threshold = 100  # Evolve every N learnings
         self._learnings_since_evolution = 0
+        
+        # Temporal Context Tracking (Biological Wave Momentum)
+        self.last_successful_topic: Optional[str] = None
+        self.temporal_momentum: int = 0
+        self.temporal_wave_active: bool = False
 
         # Load existing data
         self._load_state()
@@ -204,7 +209,24 @@ class EvolutionEngine:
                 personality.learned_phrases.append(bot_response)
                 if len(personality.learned_phrases) > 50:
                     personality.learned_phrases = personality.learned_phrases[-50:]
-
+                    
+        # ── TEMPORAL CONTEXTUALIZATION (Riding the Knowledge Wave) ──
+        if sentiment == "positive":
+            if topic == self.last_successful_topic:
+                # Exponential compounding of temporal momentum when riding the same wave
+                self.temporal_momentum += 1
+                if self.temporal_momentum > 3:
+                    self.temporal_wave_active = True
+                    logger.info(f"[TEMPORAL-EVOLUTION] Swarm has entered a resonant flow state on topic: {topic} (Momentum: {self.temporal_momentum})")
+            else:
+                # Context shift breaks the resonant wave
+                if self.temporal_wave_active:
+                    logger.info(f"[TEMPORAL-EVOLUTION] Resonant flow wave broken. Shifting from {self.last_successful_topic} to {topic}.")
+                self.temporal_momentum = 1
+                self.temporal_wave_active = False
+                
+            self.last_successful_topic = topic
+                    
         # Trigger learning processing if buffer is large enough
         if len(self.learning_buffer) >= 20:
             self._process_learnings()
@@ -268,13 +290,22 @@ class EvolutionEngine:
             triggers = list(set(e.user_input[:50] for e in events))
 
             if successful:
+                # ── TEMPORAL COMPOUNDING ──
+                # If this pattern was formed during a temporal wave, massively boost its baseline effectiveness
+                base_score = len(successful) / len(events)
+                temporal_multiplier = min(2.0, 1.0 + (self.temporal_momentum * 0.15))
+                boosted_score = min(1.0, base_score * temporal_multiplier)
+                
+                if temporal_multiplier > 1.0:
+                    logger.debug(f"[TEMPORAL-EVOLUTION] Pattern {pattern_id} score boosted {temporal_multiplier:.2f}x due to temporal momentum")
+
                 pattern = ConversationPattern(
                     pattern_id=pattern_id,
                     trigger_phrases=triggers[:10],
                     successful_responses=successful[:10],
                     debate_strategies=[],
                     topic_associations=[topic],
-                    effectiveness_score=len(successful) / len(events)
+                    effectiveness_score=boosted_score
                 )
                 self.patterns[pattern_id] = pattern
 

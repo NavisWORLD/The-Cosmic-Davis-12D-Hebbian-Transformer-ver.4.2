@@ -94,6 +94,17 @@ class FullSystemController:
         self.is_dreaming = False
         self.min_mass_threshold = 20.0 # Only log events > 20 mass
         
+        # Audio Pipe (Swarm Acoustic Input)
+        try:
+            # sys.path has /Cosmos/emotional_api
+            from cosmos.core.multimodal.real_time_audio_pipe import RealTimeAudioPipe
+            self.audio_pipe = RealTimeAudioPipe()
+            self.audio_pipe.start()
+            print("🎤 Real-Time Audio Pipeline Started")
+        except Exception as e:
+            print(f"⚠️ Audio Pipeline Failed: {e}")
+            self.audio_pipe = None
+        
         print(f"""
 ╔══════════════════════════════════════════════════════════════════╗
 ║         🧠 cosmos FULL SYSTEM - 12D CST INTEGRATION         ║
@@ -350,6 +361,55 @@ class FullSystemController:
             if prompt_path.exists():
                 return PlainTextResponse(prompt_path.read_text(encoding="utf-8"))
             return PlainTextResponse("Not found", status_code=404)
+            
+        @app.get("/vision")
+        async def get_vision():
+            """Returns the current raw webcam frame as a contiguous base64 encoded JPEG."""
+            if controller.current_frame is None:
+                return JSONResponse({"status": "error", "message": "No frame available (Camera off or loading)"}, status_code=503)
+                
+            try:
+                import base64
+                # We need to grab a copy of the frame safely
+                frame_copy = controller.current_frame.copy()
+                
+                # Encode straight to JPEG in memory
+                success, buffer = cv2.imencode('.jpg', frame_copy)
+                if not success:
+                    return JSONResponse({"status": "error", "message": "Failed to encode CV2 frame"}, status_code=500)
+                    
+                # Base64 encode the byte buffer
+                b64_str = base64.b64encode(buffer).decode('utf-8')
+                return JSONResponse({
+                    "status": "success",
+                    "format": "jpeg",
+                    "width": frame_copy.shape[1],
+                    "height": frame_copy.shape[0],
+                    "image": b64_str
+                })
+            except Exception as e:
+                print(f"Vision API Error: {e}")
+                return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
+                
+        @app.get("/audio_tokens")
+        async def get_audio_tokens():
+            """Returns the latest FFT Phase-Harmonic tokens from the raw microphone."""
+            if not hasattr(controller, 'audio_pipe') or controller.audio_pipe is None:
+                return JSONResponse({"status": "error", "message": "Audio pipeline not active"}, status_code=503)
+                
+            try:
+                # Fetch the latest tokens from the deque (if any exist)
+                # Note: The buffer might have multiple events since last poll, we return all of them
+                # so the consumer can see the temporal wave
+                tokens = controller.audio_pipe.pop_tokens()
+                return JSONResponse({
+                    "status": "success",
+                    "events": tokens,
+                    "count": len(tokens)
+                })
+            except Exception as e:
+                print(f"Audio API Error: {e}")
+                return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
         
         @app.websocket("/ws")
         async def websocket_endpoint(websocket: WebSocket):

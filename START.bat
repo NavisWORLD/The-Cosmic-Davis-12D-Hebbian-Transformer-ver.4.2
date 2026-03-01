@@ -41,6 +41,7 @@ echo  *** NEW: DIGITAL ORGANISM ***
 echo   14. CNS MODE (Bio-Digital Central Nervous System)
 echo.
 echo  UTILITIES:
+echo   15. Host Web Server via Ngrok (Internet Access)
 echo   10. Run All Tests
 echo   11. First-Time Setup
 echo    0. Exit
@@ -62,10 +63,24 @@ if "%choice%"=="11" goto setup
 if "%choice%"=="12" goto emotional_server
 if "%choice%"=="13" goto full_system
 if "%choice%"=="14" goto cns_mode
+if "%choice%"=="15" goto ngrok_host
 if "%choice%"=="0" exit
 
 echo Invalid option. Press any key to try again.
 pause >nul
+goto menu
+
+:ngrok_host
+cls
+echo.
+echo  ============================================
+echo    COSMOS INTERNET TUNNEL (NGROK)
+echo  ============================================
+echo.
+echo  Installing dependencies and initializing secure tunnel...
+python -m pip install -q pyngrok python-dotenv
+python scripts\start_ngrok.py
+pause
 goto menu
 
 :cns_mode
@@ -109,8 +124,8 @@ echo    COSMOS WEB + FULL SENSORY SYSTEM
 echo  ============================================
 echo.
 echo  Cleaning up any lingering processes...
-for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8081 ^| findstr LISTENING') do taskkill /F /PID %%a >nul 2>&1
-for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8765 ^| findstr LISTENING') do taskkill /F /PID %%a >nul 2>&1
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8081 ^| findstr LISTENING') do taskkill /F /T /PID %%a >nul 2>&1
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr :8765 ^| findstr LISTENING') do taskkill /F /T /PID %%a >nul 2>&1
 echo.
 echo  Starting Full Sensory System (Camera + Mic + Audio)...
 start "Emotional API + Sensors" cmd /c "cd emotional_api && python full_system.py"
@@ -135,9 +150,16 @@ echo.
 echo  ========================================
 echo    SERVERS RUNNING:
 echo  ========================================
-echo    Web Interface:    http://localhost:8081
-echo    Emotional API:    http://localhost:8765
-echo    Matrix Console:   [Running in separate window]
+echo    Web Interface (PC):    http://localhost:8081
+echo    Emotional API:         http://localhost:8765
+echo    Matrix Console:        [Running in separate window]
+echo.
+echo  ========================================
+echo    📱 PHONE UI CONNECTION
+echo  ========================================
+for /f "tokens=4" %%a in ('route print ^| find " 0.0.0.0 "') do set LOCAL_IP=%%a
+echo    Open Safari/Chrome on your phone and go to:
+echo    http://%LOCAL_IP%:8081
 echo.
 echo    Sensory Features:
 echo      [x] Camera - Face tracking (MediaPipe 468-landmarks)
