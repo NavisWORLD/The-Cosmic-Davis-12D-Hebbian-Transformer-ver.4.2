@@ -64,10 +64,10 @@ class CosmosMediaGenerator:
     }
 
     # Image generation model (FREE tier - native Gemini image gen)
-    IMAGE_MODEL = "gemini-2.0-flash-exp"
+    IMAGE_MODEL = "gemini-2.5-flash"
 
     # Text model for prompt enrichment
-    TEXT_MODEL = "gemini-2.0-flash"
+    TEXT_MODEL = "gemini-2.5-flash"
 
     def __init__(self, api_key: str = None, output_dir: str = None):
         self.api_key = api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
@@ -214,13 +214,20 @@ RULES:
         # Try 1: Use Gemini via NEW google-genai SDK for enrichment
         if self.client:
             try:
+                # Dynamically scale the output depth and creativity based on the current Quantum Entropy
+                entropy_val = float(cst.get('quantum_entropy', 0.5))
+                max_tokens = int(300 * (1.0 + (entropy_val * 4.0))) # Scale 300 up to 1500 tokens for wildly detailed visual prompts
+                temperature = 0.5 + (entropy_val * 0.5) # Scale temp from 0.5 to 1.0 based on chaos
+                
+                logger.info(f"[QUANTUM-MEDIA] Token Limit: {max_tokens} | Creativity Temp: {temperature:.2f} | Entropy: {entropy_val:.4f}")
+
                 response = await asyncio.to_thread(
                     self.client.models.generate_content,
                     model=self.TEXT_MODEL,
                     contents=enrichment_prompt,
                     config=types.GenerateContentConfig(
-                        max_output_tokens=300,
-                        temperature=0.8,
+                        max_output_tokens=max_tokens,
+                        temperature=temperature,
                     )
                 )
                 if response and response.text:

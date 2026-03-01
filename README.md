@@ -163,9 +163,17 @@ cosmos is a **companion AI system** that integrates with [Claude Code](https://c
 
 ---
 
-## ✨ What's New in v2.9.3 (The "Multi-Model Swarm" Release)
+## ✨ What's New in v2.9.4 (The "Swarm Sensory" Release)
 
 <details open>
+<summary><strong>👁️ Real-Time Swarm Perception (v2.9.4)</strong></summary>
+
+- 👁️ **Native Swarm Vision** - The AI Swarm can now actively request live Base64 web-camera frames to visually analyze your environment, bridged directly into Gemini Multimodal.
+- 📡 **Acoustic FFT Ingestion** - Replaced direct audio files with a live `real_time_audio_pipe.py` connection. The Swarm now constantly absorbs your ambient volume (RMS Energy), dominant frequencies, and Spectral Centroid mapped as `Phi-Harmonic Tokens`.
+
+</details>
+
+<details>
 <summary><strong>🤖 Multi-Model Orchestration (v2.9.3)</strong></summary>
 
 - 🧪 **Unified Swarm Router** - Automatic routing to Ollama, Kimi, or Claude based on speaker
@@ -362,6 +370,10 @@ Claude will:
 2. Install dependencies
 3. Run the setup wizard (`python main.py --setup`)
 4. Help you configure Claude Desktop's MCP settings
+
+### 📱 Host Your Own Local Server
+Want to run the models on your PC but interact with the Neural UI on your iPhone or Android?
+See the [Local Hosting Guide](docs/HOSTING_GUIDE.md) to instantly connect your phone to your PC's Cosmos instance.
 
 ---
 

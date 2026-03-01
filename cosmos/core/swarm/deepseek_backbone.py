@@ -31,12 +31,12 @@ class DeepSeekBackbone:
     Handles the unique <think> tags and reasoning extraction.
     """
     
-    def __init__(self, model_name: str = "deepseek-r1:8b"):
+    def __init__(self, model_name: str = "llama3.1:8b"):
         self.model_name = model_name
         # Regex to extract content between <think> tags
         self.thought_pattern = re.compile(r'<think>(.*?)</think>', re.DOTALL)
         
-    async def query_reasoning(self, prompt: str, system_context: str = "") -> ReasoningResult:
+    async def query_reasoning(self, prompt: str, system_context: str = "", quantum_entropy: Optional[float] = None) -> ReasoningResult:
         """
         Query DeepSeek and separate reasoning from final answer.
         NOTE: R1 models do NOT support the 'system' role — merging context into user message.
@@ -44,8 +44,33 @@ class DeepSeekBackbone:
         import ollama
         
         try:
+            # Prevent 400 Bad Request by discarding empty prompts
+            if not prompt or not prompt.strip():
+                return ReasoningResult(content="", thought_process="", confidence=0.0, model_used=self.model_name)
+                
             logger.info(f"[DeepSeek] Reasoning on: {prompt[:50]}...")
             start_time = time.time()
+            
+            # Formulate options based on Quantum Entropy (The heavier the quantum computing required, the deeper the token allowance)
+            ollama_options = {}
+            if quantum_entropy is not None:
+                # 0.0 entropy -> standard processing. 1.0 entropy -> massive deep computing
+                base_tokens = 512
+                # Exponentially scale reasoning depth based on entropy
+                max_tokens = int(base_tokens * (1.0 + (quantum_entropy * 5.0))) # Scale up to ~3000 tokens
+                
+                # Temperature: Low entropy = Strict logic (0.1), High entropy = Creative logic (0.8)
+                temp = 0.1 + (quantum_entropy * 0.7)
+                
+                ollama_options = {
+                    "num_predict": max_tokens,
+                    "temperature": temp,
+                    "top_p": 0.9 + (quantum_entropy * 0.05)
+                }
+                logger.info(f"[QUANTUM-SCALING] Depth: {max_tokens} tokens | Temp: {temp:.2f} | Entropy: {quantum_entropy:.4f}")
+            else:
+                # Default safety limit if not in quantum mode
+                ollama_options = {"num_predict": 1024, "temperature": 0.6}
             
             # Build messages for chat API
             # IMPORTANT: DeepSeek R1 does NOT support system messages (returns 400)
@@ -62,7 +87,7 @@ class DeepSeekBackbone:
             loop = asyncio.get_running_loop()
             response = await loop.run_in_executor(
                 None,
-                lambda: ollama.chat(model=self.model_name, messages=messages)
+                lambda: ollama.chat(model=self.model_name, messages=messages, options=ollama_options)
             )
             
             raw_text = response.get('message', {}).get('content', '')

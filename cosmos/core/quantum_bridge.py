@@ -76,7 +76,8 @@ class QuantumEntanglementBridge:
                 f.write(f"[CONNECT] Failed: {error_msg}\n")
             return
             
-        print(f"[QUANTUM] Attempting connection with token: {self.api_token[:5]}...{self.api_token[-5:] if self.api_token else 'None'}")
+        token_str = f"{self.api_token[:5]}...{self.api_token[-5:]}" if self.api_token else "None"
+        print(f"[QUANTUM] Attempting connection with token: {token_str}")
         
         try:
             # 1. Initialize Service

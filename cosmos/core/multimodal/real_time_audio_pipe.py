@@ -114,21 +114,71 @@ class RealTimeAudioPipe:
     # Internal: worker thread – consumes raw frames, computes FFT, emits tokens
     # ---------------------------------------------------------------------
     def _worker(self):
+        phi = 1.618033988749895
+        
         while self._running.is_set():
             if not self._buffer:
                 time.sleep(0.01)
                 continue
             # Pull the oldest chunk
             chunk = self._buffer.popleft()
+            
+            # --- 1. TIME DOMAIN METRICS ---
+            # Calculate RMS energy (normalized)
+            rms_energy = float(np.sqrt(np.mean(chunk**2))) if len(chunk) > 0 else 0.0
+            
+            # --- 2. FREQUENCY DOMAIN (FFT) ---
             # Apply a Hann window to reduce spectral leakage
             windowed = chunk * np.hanning(len(chunk))
-            # Compute magnitude spectrum (real FFT is enough for mono audio)
+            # Compute magnitude spectrum
             spectrum = np.abs(np.fft.rfft(windowed))
-            # Convert magnitudes to tokens
-            tokens = magnitudes_to_tokens(spectrum)
-            # Push tokens into the public token buffer
-            self._token_buffer.extend(tokens)
-            # Sleep a tiny bit to keep CPU usage low (processing is fast)
+            # Frequency resolution: bin = (i * sample_rate) / N
+            freqs = np.fft.rfftfreq(len(chunk), d=1/SAMPLE_RATE)
+            
+            # --- 3. SPECTRAL CENTROID ---
+            weighted_sum = np.sum(freqs * spectrum)
+            magnitude_sum = np.sum(spectrum)
+            centroid = float(weighted_sum / magnitude_sum) if magnitude_sum > 0 else 0.0
+            
+            # --- 4. TOP 10 FREQUENCIES ---
+            num_bins = min(10, len(spectrum))
+            if num_bins > 0:
+                top_idx = np.argpartition(spectrum, -num_bins)[-num_bins:]
+                top_idx = top_idx[np.argsort(-spectrum[top_idx])] # sort descending
+                
+                top_freqs = []
+                for idx in top_idx:
+                    mag = float(spectrum[idx])
+                    if mag > 0.05: # Noise floor filter
+                        top_freqs.append({
+                            "frequency": float(freqs[idx]),
+                            "magnitude": mag
+                        })
+                
+                # --- 5. PHI-HARMONICS (Golden Ratio Resonance) ---
+                harmonics = []
+                if len(top_freqs) > 0:
+                    fundamental = top_freqs[0]["frequency"]
+                    if fundamental > 0:
+                        for n in range(1, 9): # Generate 8 harmonics
+                            # f_n = f_0 * phi^(n/2)
+                            h_freq = fundamental * math.pow(phi, n / 2.0)
+                            harmonics.append(float(h_freq))
+                
+                # --- 6. TOKEN GENERATION ---
+                # Bundle the full acoustic state into a structured payload
+                token_payload = {
+                    "timestamp": time.time(),
+                    "rms_energy": rms_energy,
+                    "spectral_centroid": centroid,
+                    "top_frequencies": top_freqs,
+                    "phi_harmonics": harmonics
+                }
+                
+                # Push the structured token state instead of raw strings
+                self._token_buffer.append(token_payload)
+            
+            # Sleep a tiny bit to keep CPU usage low
             time.sleep(0.001)
 
 # ---------------------------------------------------------------------------

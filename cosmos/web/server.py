@@ -575,7 +575,7 @@ logger = logging.getLogger(__name__)
 # Configuration
 SOLANA_RPC_URL = os.getenv("SOLANA_RPC_URL", "https://api.mainnet-beta.solana.com")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-PRIMARY_MODEL = os.getenv("cosmos_PRIMARY_MODEL", "llama3.1:8b")
+PRIMARY_MODEL = os.getenv("cosmos_PRIMARY_MODEL", "llama3.2:3b")
 DEMO_MODE = os.getenv("cosmos_DEMO_MODE", "false").lower() == "true"
 
 
@@ -1389,10 +1389,10 @@ class SwarmLearningEngine:
                         # Link user to concept
                         if hasattr(self._knowledge_graph, 'add_relationship'):
                             await self._knowledge_graph.add_relationship(
-                                f"user:{user}",
-                                f"concept:{concept}",
+                                user,
+                                concept,
                                 "discussed",
-                                {"timestamp": datetime.now().isoformat()}
+                                evidence=f"Timestamp: {datetime.now().isoformat()}"
                             )
         except Exception as e:
             logger.error(f"Swarm Learning: Knowledge graph update failed: {e}")
