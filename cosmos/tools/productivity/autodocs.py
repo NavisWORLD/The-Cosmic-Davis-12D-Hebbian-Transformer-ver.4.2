@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/tools/productivity/autodocs.py
 cosmos Auto-Docs
+=======
+Farnsworth Auto-Docs
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/productivity/autodocs.py
 --------------------
 
 "I'm documenting it as fast as I'm inventing it!"

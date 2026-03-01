@@ -1,8 +1,15 @@
 """
+<<<<<<< HEAD:cosmos/interfaces/messaging/base.py
 Messaging Bridge Interface for cosmos.
 
 This module defines the abstract base classes for the "Omni-Channel" messaging system,
 allowing cosmos to connect to Discord, Slack, Telegram, etc.
+=======
+Messaging Bridge Interface for Farnsworth.
+
+This module defines the abstract base classes for the "Omni-Channel" messaging system,
+allowing Farnsworth to connect to Discord, Slack, Telegram, etc.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/base.py
 """
 
 from abc import ABC, abstractmethod

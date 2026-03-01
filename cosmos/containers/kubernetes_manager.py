@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/containers/kubernetes_manager.py
 cosmos Kubernetes Manager
+=======
+Farnsworth Kubernetes Manager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/containers/kubernetes_manager.py
 
 "I've orchestrated a symphony of containers! Kubernetes is my conductor's baton!"
 
@@ -130,7 +134,11 @@ class K8sNamespace:
 
 class KubernetesManager:
     """
+<<<<<<< HEAD:cosmos/containers/kubernetes_manager.py
     Comprehensive Kubernetes management for cosmos.
+=======
+    Comprehensive Kubernetes management for Farnsworth.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/containers/kubernetes_manager.py
 
     Features:
     - Multi-cluster support

@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/health/swarm_advisor.py
 cosmos Swarm Health Advisor
+=======
+Farnsworth Swarm Health Advisor
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/swarm_advisor.py
 
 Multi-agent health advisory system using specialist agents for
 nutrition, fitness, sleep, and stress management.

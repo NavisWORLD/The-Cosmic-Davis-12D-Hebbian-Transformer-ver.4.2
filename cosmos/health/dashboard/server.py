@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/health/dashboard/server.py
 cosmos Health Dashboard Server
+=======
+Farnsworth Health Dashboard Server
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/dashboard/server.py
 
 FastAPI server for health tracking dashboard with WebSocket support
 for real-time metric streaming.
@@ -39,8 +43,13 @@ from ..analysis import HealthAnalysisEngine
 logger = logging.getLogger(__name__)
 
 # Configuration
+<<<<<<< HEAD:cosmos/health/dashboard/server.py
 HEALTH_PORT = int(os.getenv("cosmos_HEALTH_PORT", "8081"))
 HEALTH_ENABLED = os.getenv("cosmos_HEALTH_ENABLED", "true").lower() == "true"
+=======
+HEALTH_PORT = int(os.getenv("FARNSWORTH_HEALTH_PORT", "8081"))
+HEALTH_ENABLED = os.getenv("FARNSWORTH_HEALTH_ENABLED", "true").lower() == "true"
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/dashboard/server.py
 
 # Paths
 DASHBOARD_DIR = Path(__file__).parent
@@ -49,7 +58,11 @@ STATIC_DIR = DASHBOARD_DIR / "static"
 
 # Initialize FastAPI
 app = FastAPI(
+<<<<<<< HEAD:cosmos/health/dashboard/server.py
     title="cosmos Health Dashboard",
+=======
+    title="Farnsworth Health Dashboard",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/dashboard/server.py
     description="Comprehensive health tracking with AI-powered insights",
     version="1.0.0",
 )
@@ -798,12 +811,21 @@ def main():
         logger.warning("Health dashboard is disabled")
         return
 
+<<<<<<< HEAD:cosmos/health/dashboard/server.py
     host = os.getenv("cosmos_HEALTH_HOST", "0.0.0.0")
 
     logger.info(f"Starting cosmos Health Dashboard on {host}:{HEALTH_PORT}")
 
     uvicorn.run(
         "cosmos.health.dashboard.server:app",
+=======
+    host = os.getenv("FARNSWORTH_HEALTH_HOST", "0.0.0.0")
+
+    logger.info(f"Starting Farnsworth Health Dashboard on {host}:{HEALTH_PORT}")
+
+    uvicorn.run(
+        "farnsworth.health.dashboard.server:app",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/dashboard/server.py
         host=host,
         port=HEALTH_PORT,
         reload=False,

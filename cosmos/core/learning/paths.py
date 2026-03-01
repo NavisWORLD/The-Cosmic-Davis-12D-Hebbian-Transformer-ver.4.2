@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/core/learning/paths.py
 cosmos Learning Co-Pilot.
+=======
+Farnsworth Learning Co-Pilot.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/learning/paths.py
 
 "I'm learning at a geometric rate!"
 

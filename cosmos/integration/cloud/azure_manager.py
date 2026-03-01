@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/integration/cloud/azure_manager.py
 cosmos Azure Manager
+=======
+Farnsworth Azure Manager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/cloud/azure_manager.py
 
 "Good news, everyone! I can manage your entire Azure estate!"
 
@@ -745,7 +749,11 @@ class AzureManager:
 2. Navigate to "Azure Active Directory" (Entra ID) > "App registrations"
 3. Click "New registration"
 4. Fill in details:
+<<<<<<< HEAD:cosmos/integration/cloud/azure_manager.py
    - Name: "cosmos Azure Manager"
+=======
+   - Name: "Farnsworth Azure Manager"
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/cloud/azure_manager.py
    - Supported account types: Single tenant
    - Redirect URI: Leave blank (for service principal)
 5. Click "Register"
@@ -789,7 +797,11 @@ class AzureManager:
    - Virtual Machine Contributor (for VM operations)
    - Storage Account Contributor (for storage)
 
+<<<<<<< HEAD:cosmos/integration/cloud/azure_manager.py
 ## Step 5: Configure cosmos
+=======
+## Step 5: Configure Farnsworth
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/cloud/azure_manager.py
 
 Add to your environment:
 
@@ -803,7 +815,11 @@ AZURE_SUBSCRIPTION_ID=your-subscription-id
 ## Step 6: Test Connection
 
 ```python
+<<<<<<< HEAD:cosmos/integration/cloud/azure_manager.py
 from cosmos.integration.cloud.azure_manager import AzureManager, AzureConfig
+=======
+from farnsworth.integration.cloud.azure_manager import AzureManager, AzureConfig
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/cloud/azure_manager.py
 
 config = AzureConfig(
     tenant_id="your-tenant-id",

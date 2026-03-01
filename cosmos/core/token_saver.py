@@ -1,7 +1,13 @@
 """
+<<<<<<< HEAD:cosmos/core/token_saver.py
 cosmos Token Saver - Claude/API Token Optimization
 
 "Why waste tokens when you can recycle them? - Professor cosmos"
+=======
+Farnsworth Token Saver - Claude/API Token Optimization
+
+"Why waste tokens when you can recycle them? - Professor Farnsworth"
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/token_saver.py
 
 This module provides intelligent token management to reduce API costs:
 1. Context Window Compression - Summarize old context
@@ -472,7 +478,12 @@ class TokenSaver:
         result["final_tokens"] = self._estimate_tokens(result["optimized_prompt"])
         return result
 
+<<<<<<< HEAD:cosmos/core/token_saver.py
     def record_response(self, prompt: str, response: str, tokens_used: int):
+=======
+    def record_response(self, prompt: str, response: str, tokens_used: int,
+                        agent_id: str = "", task_type: str = "chat"):
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/token_saver.py
         """Record a response for caching and budget tracking."""
         # Update budget
         self.budget.add_usage(tokens_used)
@@ -489,6 +500,29 @@ class TokenSaver:
                 f"Used: {self.budget.tokens_used_today:,} / {self.budget.daily_budget:,}"
             )
 
+<<<<<<< HEAD:cosmos/core/token_saver.py
+=======
+        # Report to token orchestrator (if available and agent specified)
+        if agent_id:
+            try:
+                from farnsworth.core.token_orchestrator import get_token_orchestrator
+                orchestrator = get_token_orchestrator()
+                import asyncio
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        asyncio.ensure_future(orchestrator.report_usage(
+                            agent_id=agent_id,
+                            input_tokens=tokens_used // 3,
+                            output_tokens=tokens_used * 2 // 3,
+                            task_type=task_type,
+                        ))
+                except RuntimeError:
+                    pass
+            except Exception:
+                pass
+
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/token_saver.py
     def _estimate_tokens(self, text: str) -> int:
         """Rough token estimation."""
         return len(text) // 4

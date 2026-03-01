@@ -52,13 +52,21 @@ from cosmos.memory.knowledge_graph_v2 import (
     EntityCluster,
     EntityResolutionCandidate,
 )
+<<<<<<< HEAD:cosmos/memory/__init__.py
 from cosmos.memory.conversation_export import (
+=======
+from farnsworth.memory.conversation_export import (
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/__init__.py
     ConversationExporter,
     ConversationExportFormat,
     ExportOptions,
     ExportResult,
 )
+<<<<<<< HEAD:cosmos/memory/__init__.py
 from cosmos.memory.project_tracking import (
+=======
+from farnsworth.memory.project_tracking import (
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/__init__.py
     ProjectTracker,
     Project,
     Task,
@@ -69,7 +77,11 @@ from cosmos.memory.project_tracking import (
     MilestoneType,
     LinkType,
 )
+<<<<<<< HEAD:cosmos/memory/__init__.py
 from cosmos.memory.dream_consolidation import (
+=======
+from farnsworth.memory.dream_consolidation import (
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/__init__.py
     DreamConsolidator,
     DreamPhase,
     ConsolidationStrategy,

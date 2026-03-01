@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/cli/quick_actions.py
 cosmos Quick Actions
+=======
+Farnsworth Quick Actions
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/quick_actions.py
 
 One-liner commands for common tasks, perfect for power users.
 """
@@ -12,7 +16,11 @@ import json
 
 class QuickActions:
     """
+<<<<<<< HEAD:cosmos/cli/quick_actions.py
     Quick action shortcuts for common cosmos operations.
+=======
+    Quick action shortcuts for common Farnsworth operations.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/quick_actions.py
 
     Provides simple, single-command interfaces for:
     - Health tracking
@@ -31,7 +39,11 @@ class QuickActions:
         """Ensure memory system is initialized."""
         if not self._memory:
             try:
+<<<<<<< HEAD:cosmos/cli/quick_actions.py
                 from cosmos.memory.memory_system import MemorySystem
+=======
+                from farnsworth.memory.memory_system import MemorySystem
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/quick_actions.py
                 self._memory = MemorySystem(data_dir=self.data_dir)
                 await self._memory.initialize()
             except Exception:
@@ -42,7 +54,11 @@ class QuickActions:
         """Ensure health system is initialized."""
         if not self._health:
             try:
+<<<<<<< HEAD:cosmos/cli/quick_actions.py
                 from cosmos.health.providers import HealthProviderManager
+=======
+                from farnsworth.health.providers import HealthProviderManager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/quick_actions.py
                 self._health = HealthProviderManager()
             except Exception:
                 pass
@@ -58,7 +74,11 @@ class QuickActions:
         """
         memory = await self._ensure_memory()
         if memory:
+<<<<<<< HEAD:cosmos/cli/quick_actions.py
             mem_id = await memory.remember(content, metadata={"tags": tags or []})
+=======
+            mem_id = await memory.remember(content, tags=tags or [])
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/quick_actions.py
             return f"Saved: {mem_id[:8]}"
         return "Memory system unavailable"
 
@@ -124,7 +144,11 @@ class QuickActions:
         Usage: await quick.log_food("Apple", 95, "snack")
         """
         try:
+<<<<<<< HEAD:cosmos/cli/quick_actions.py
             from cosmos.health.nutrition import NutritionManager
+=======
+            from farnsworth.health.nutrition import NutritionManager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/quick_actions.py
 
             nutrition = NutritionManager(f"{self.data_dir}/nutrition")
             nutrition.log_meal(
@@ -168,7 +192,11 @@ class QuickActions:
         Usage: answer = await quick.ask("What is Python?")
         """
         try:
+<<<<<<< HEAD:cosmos/cli/quick_actions.py
             from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
+=======
+            from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/quick_actions.py
 
             orchestrator = SwarmOrchestrator()
             result = await orchestrator.process(query=question, task_type=expert)
@@ -201,7 +229,11 @@ class QuickActions:
         Usage: await quick.trigger_workflow("daily_backup")
         """
         try:
+<<<<<<< HEAD:cosmos/cli/quick_actions.py
             from cosmos.automation.workflow_builder import WorkflowBuilder
+=======
+            from farnsworth.automation.workflow_builder import WorkflowBuilder
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/quick_actions.py
 
             builder = WorkflowBuilder(f"{self.data_dir}/workflows")
             workflows = builder.list_workflows()
@@ -221,7 +253,11 @@ class QuickActions:
         Usage: result = await quick.trigger_n8n("123", {"key": "value"})
         """
         try:
+<<<<<<< HEAD:cosmos/cli/quick_actions.py
             from cosmos.automation.n8n_enhanced import EnhancedN8nIntegration
+=======
+            from farnsworth.automation.n8n_enhanced import EnhancedN8nIntegration
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/quick_actions.py
             import os
 
             n8n = EnhancedN8nIntegration(
@@ -244,7 +280,11 @@ class QuickActions:
         Usage: await quick.backup()
         """
         try:
+<<<<<<< HEAD:cosmos/cli/quick_actions.py
             from cosmos.core.resilience import BackupManager
+=======
+            from farnsworth.core.resilience import BackupManager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cli/quick_actions.py
 
             backup_mgr = BackupManager(
                 data_dir=self.data_dir,

@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/core/reasoning/causal.py
 cosmos Causal Reasoning Engine.
+=======
+Farnsworth Causal Reasoning Engine.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/reasoning/causal.py
 
 "You changed the outcome by measuring it!"
 
@@ -18,7 +22,11 @@ from dataclasses import dataclass, field
 from loguru import logger
 import networkx as nx
 
+<<<<<<< HEAD:cosmos/core/reasoning/causal.py
 from cosmos.core.nexus import nexus, Signal, SignalType
+=======
+from farnsworth.core.nexus import nexus, Signal, SignalType
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/reasoning/causal.py
 
 @dataclass
 class CausalNode:

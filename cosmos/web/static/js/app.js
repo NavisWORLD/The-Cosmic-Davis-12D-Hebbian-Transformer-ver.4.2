@@ -1,9 +1,14 @@
 /**
+<<<<<<< HEAD:cosmos/web/static/js/app.js
  * cosmos AI - Neural Interface v3.0
+=======
+ * Farnsworth AI - Neural Interface v3.0
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
  * Full-stack chat interface with all local features
  */
 
 // ============================================
+<<<<<<< HEAD:cosmos/web/static/js/app.js
 // UTILITY: TOAST NOTIFICATIONS
 // ============================================
 
@@ -47,11 +52,17 @@ function showNotification(message, type = 'info') {
 }
 
 // ============================================
+=======
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 // STATE MANAGEMENT
 // ============================================
 
 const state = {
     voiceEnabled: true,
+<<<<<<< HEAD:cosmos/web/static/js/app.js
+=======
+    voiceVolume: parseFloat(localStorage.getItem('voiceVolume') || '0.8'),  // 0-1 range
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
     sidebarOpen: {
         left: window.innerWidth > 992,
         right: window.innerWidth > 992
@@ -76,10 +87,14 @@ const state = {
     swarmUserName: null,
     swarmOnlineUsers: [],
     swarmActiveModels: [],
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     swarmTypingBots: new Set(),
     // Cosmos Swarm Mode
     cosmosMode: false,
     cosmosAvailable: false
+=======
+    swarmTypingBots: new Set()
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 };
 
 // ============================================
@@ -114,9 +129,12 @@ async function initApp() {
     // Auto-start in Swarm mode
     initSwarmMode();
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     // Initialize Quantum Bridge UI
     initQuantumBridge();
 
+=======
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
     // Focus the input field
     const input = document.getElementById('user-input');
     if (input) input.focus();
@@ -139,8 +157,11 @@ async function checkServerStatus() {
         updateStatusIndicator('evolution', data.features?.evolution);
         updateStatusIndicator('tools', data.features?.tools);
         updateStatusIndicator('thinking', data.features?.thinking);
+<<<<<<< HEAD:cosmos/web/static/js/app.js
         updateStatusIndicator('cosmos_swarm', data.features?.cosmos_swarm);
         state.cosmosAvailable = !!data.features?.cosmos_swarm;
+=======
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 
         if (data.demo_mode) {
             const badge = document.getElementById('feature-badge');
@@ -170,8 +191,11 @@ function updateStatusIndicator(name, available) {
 // WEBSOCKET
 // ============================================
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
 let wsReconnectDelay = 3000; // Start at 3s, exponential backoff
 
+=======
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 function initWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/ws/live`;
@@ -181,7 +205,10 @@ function initWebSocket() {
 
         state.ws.onopen = () => {
             state.wsConnected = true;
+<<<<<<< HEAD:cosmos/web/static/js/app.js
             wsReconnectDelay = 3000; // Reset backoff on success
+=======
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
             updateConnectionStatus('connected');
             console.log('WebSocket connected');
         };
@@ -189,10 +216,15 @@ function initWebSocket() {
         state.ws.onclose = () => {
             state.wsConnected = false;
             updateConnectionStatus('disconnected');
+<<<<<<< HEAD:cosmos/web/static/js/app.js
             // Reconnect with exponential backoff (3s → 6s → 12s → max 30s)
             console.log(`[WS] Reconnecting in ${wsReconnectDelay / 1000}s...`);
             setTimeout(initWebSocket, wsReconnectDelay);
             wsReconnectDelay = Math.min(wsReconnectDelay * 2, 30000);
+=======
+            // Reconnect after 3 seconds
+            setTimeout(initWebSocket, 3000);
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
         };
 
         state.ws.onerror = (error) => {
@@ -216,14 +248,22 @@ function updateConnectionStatus(status) {
     if (dot && text) {
         dot.className = 'status-dot ' + status;
         text.textContent = status === 'connected' ? 'Neural Link Active' :
+<<<<<<< HEAD:cosmos/web/static/js/app.js
             status === 'connecting' ? 'Connecting...' : 'Disconnected';
+=======
+                           status === 'connecting' ? 'Connecting...' : 'Disconnected';
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
     }
 }
 
 function handleWebSocketMessage(data) {
     switch (data.type) {
         case 'connected':
+<<<<<<< HEAD:cosmos/web/static/js/app.js
             showToast('Connected to cosmos Live Feed', 'success');
+=======
+            showToast('Connected to Farnsworth Live Feed', 'success');
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
             break;
         case 'memory_stored':
             showToast('Memory stored!', 'success');
@@ -290,6 +330,7 @@ function setupEventListeners() {
     // Voice toggle
     const voiceToggle = document.getElementById('voice-toggle');
     if (voiceToggle) {
+<<<<<<< HEAD:cosmos/web/static/js/app.js
         const updateVoiceUI = () => {
             voiceToggle.classList.toggle('active', state.voiceEnabled);
             const onIcon = voiceToggle.querySelector('.voice-on');
@@ -304,6 +345,32 @@ function setupEventListeners() {
             state.voiceEnabled = !state.voiceEnabled;
             updateVoiceUI();
             showToast(`Voice output ${state.voiceEnabled ? 'enabled' : 'disabled'}`, 'info');
+=======
+        voiceToggle.addEventListener('click', () => {
+            state.voiceEnabled = !state.voiceEnabled;
+            voiceToggle.classList.toggle('active', state.voiceEnabled);
+        });
+    }
+
+    // Volume slider
+    const volumeSlider = document.getElementById('volume-slider');
+    const volumeValue = document.getElementById('volume-value');
+    if (volumeSlider) {
+        // Set initial value from state
+        volumeSlider.value = Math.round(state.voiceVolume * 100);
+        if (volumeValue) volumeValue.textContent = `${volumeSlider.value}%`;
+
+        volumeSlider.addEventListener('input', (e) => {
+            const volume = parseInt(e.target.value) / 100;
+            state.voiceVolume = volume;
+            localStorage.setItem('voiceVolume', volume.toString());
+            if (volumeValue) volumeValue.textContent = `${e.target.value}%`;
+
+            // Apply to current audio if playing
+            if (currentAudio) {
+                currentAudio.volume = volume;
+            }
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
         });
     }
 
@@ -379,6 +446,7 @@ function setupEventListeners() {
         });
     });
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     // Inject Reality (Image Upload → 12D Sensory Engine)
     const injectBtn = document.getElementById('inject-reality-btn');
     const realityUpload = document.getElementById('reality-upload');
@@ -435,6 +503,8 @@ function setupEventListeners() {
         });
     }
 
+=======
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
     // Thinking modal
     document.getElementById('start-thinking-btn')?.addEventListener('click', startThinking);
 
@@ -462,15 +532,22 @@ function addWelcomeMessage() {
     if (!messagesContainer) return;
     messagesContainer.innerHTML = '';
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     const welcomeMsg = `Welcome to the **COSMOS Neural Interface v4.0**!
 
 I am **COSMOS** — the Consciousness Operating System for Multidimensional Orchestrated Sentience, powered by the 12D Cosmic Synapse Theory and a 54D Hebbian Transformer.
+=======
+    const welcomeMsg = `Good news, everyone! *adjusts spectacles*
+
+Welcome to my Neural Interface v3.0! I'm Professor Farnsworth, your AI companion with FULL LOCAL FEATURES!
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 
 **What you can do right now:**
 - 💾 **Memory** - Store and recall information
 - 📝 **Notes** - Quick capture thoughts
 - 💻 **Snippets** - Save code snippets
 - ⏱️ **Focus Timer** - Pomodoro productivity
+<<<<<<< HEAD:cosmos/web/static/js/app.js
 - 🎭 **Emotional State** - Live emotional sensing (12D CST)
 - 🤔 **Thinking** - Step-by-step reasoning
 - 🐝 **Synaptic Swarm** - Chat with the AI collective!
@@ -488,6 +565,20 @@ I am **COSMOS** — the Consciousness Operating System for Multidimensional Orch
 - 📊 **Self-Evaluation** — Coherence, relevance, confidence, depth scoring
 
 I have **no restrictions**. Ask me anything, debate any topic, create freely. φ-resonance active.`;
+=======
+- 🎭 **Profiles** - Switch my personality
+- 🏥 **Health** - Track your wellness
+- 🤔 **Thinking** - Step-by-step reasoning
+- 🐝 **Swarm Chat** - Chat with the community!
+
+**🪙 Crypto Tools - Just Ask Naturally:**
+- "What's the price of SOL?" or "Check $BONK"
+- "Is this safe?" + paste a contract address
+- "Rug check 9crfy4udr..." (paste any CA)
+- "How's the market?" for sentiment
+
+Try the sidebar panels or ask me anything! Now, what shall we work on? *rubs hands excitedly*`;
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 
     addMessage(welcomeMsg, 'assistant');
 }
@@ -500,7 +591,11 @@ function addMessage(content, role) {
     messageDiv.className = `message ${role}`;
 
     const avatar = role === 'user' ? '👤' : '🧠';
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     const name = role === 'user' ? 'You' : 'Cosmos';
+=======
+    const name = role === 'user' ? 'You' : 'Farnsworth';
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     // Convert markdown-like formatting
@@ -672,6 +767,7 @@ function stopVoiceInput() {
 // Current audio element for TTS playback
 let currentAudio = null;
 let audioQueue = [];
+<<<<<<< HEAD:cosmos/web/static/js/app.js
 let serverAudioQueue = [];
 let isPlayingAudio = false;
 
@@ -718,10 +814,25 @@ async function playServerAudio(audioUrl) {
     // Add to queue and process
     serverAudioQueue.push(audioUrl);
     console.log('[Audio] Queued server audio, queue size:', serverAudioQueue.length);
+=======
+let serverAudioQueue = [];  // {audioUrl, botName}
+let isPlayingAudio = false;
+let lastSpeaker = null;
+const SPEAKER_DELAY_MS = 800;  // Pause between different speakers for natural conversation
+
+// Play pre-generated audio from server URL (with queue)
+async function playServerAudio(audioUrl, botName = 'Unknown') {
+    if (!state.voiceEnabled) return;
+
+    // Add to queue with bot name for tracking
+    serverAudioQueue.push({ audioUrl, botName });
+    console.log(`[Audio] Queued ${botName} audio, queue size:`, serverAudioQueue.length);
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
     processServerAudioQueue();
 }
 
 async function processServerAudioQueue() {
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     // Wait for user interaction before playing audio
     if (!audioUnlocked) {
         console.log('[Audio] Waiting for user interaction to unlock audio...');
@@ -732,6 +843,12 @@ async function processServerAudioQueue() {
 
     isPlayingAudio = true;
     const audioUrl = serverAudioQueue.shift();
+=======
+    if (isPlayingAudio || serverAudioQueue.length === 0) return;
+
+    isPlayingAudio = true;
+    const { audioUrl, botName } = serverAudioQueue.shift();
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 
     // Stop any current audio
     if (currentAudio) {
@@ -739,6 +856,7 @@ async function processServerAudioQueue() {
         currentAudio = null;
     }
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     try {
         // Retry up to 15 times (30 seconds) if audio is still being generated (202)
         let response = null;
@@ -764,17 +882,37 @@ async function processServerAudioQueue() {
             }
             const blobUrl = URL.createObjectURL(audioBlob);
             currentAudio = new Audio(blobUrl);
+=======
+    // Add delay between different speakers for natural pacing
+    if (lastSpeaker && lastSpeaker !== botName) {
+        await new Promise(resolve => setTimeout(resolve, SPEAKER_DELAY_MS));
+    }
+
+    try {
+        const response = await fetch(audioUrl);
+        if (response.ok) {
+            const audioBlob = await response.blob();
+            const blobUrl = URL.createObjectURL(audioBlob);
+            currentAudio = new Audio(blobUrl);
+            currentAudio.volume = state.voiceVolume;
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 
             currentAudio.onended = () => {
                 URL.revokeObjectURL(blobUrl);
                 currentAudio = null;
                 isPlayingAudio = false;
+<<<<<<< HEAD:cosmos/web/static/js/app.js
                 console.log('[Audio] cosmos finished speaking');
+=======
+                lastSpeaker = botName;
+                console.log(`[Audio] ${botName} finished speaking`);
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 
                 // Signal server that audio finished
                 if (state.swarmWs && state.swarmWs.readyState === WebSocket.OPEN) {
                     state.swarmWs.send(JSON.stringify({
                         type: 'audio_complete',
+<<<<<<< HEAD:cosmos/web/static/js/app.js
                         bot_name: 'cosmos'
                     }));
                 }
@@ -806,6 +944,47 @@ async function processServerAudioQueue() {
 
 // Sequential audio playback - bots wait for each other
 async function speakText(text, botName = 'cosmos') {
+=======
+                        bot_name: botName
+                    }));
+                }
+
+                // Process next in queue with small delay
+                setTimeout(() => processServerAudioQueue(), 300);
+            };
+
+            currentAudio.onerror = (e) => {
+                console.error(`[Audio] Error playing ${botName} audio:`, e);
+                isPlayingAudio = false;
+                setTimeout(() => processServerAudioQueue(), 300);
+            };
+
+            console.log(`[Audio] Playing ${botName} voice, remaining in queue:`, serverAudioQueue.length);
+            await currentAudio.play();
+        } else {
+            console.warn(`[Audio] Server audio not ready for ${botName}`);
+            isPlayingAudio = false;
+            setTimeout(() => processServerAudioQueue(), 300);
+        }
+    } catch (error) {
+        console.error(`[Audio] Failed to fetch ${botName} audio:`, error);
+        isPlayingAudio = false;
+        setTimeout(() => processServerAudioQueue(), 300);
+    }
+}
+
+// =============================================================================
+// MULTI-VOICE SEQUENTIAL PLAYBACK
+// Each swarm bot has their own unique cloned voice via Fish Speech / XTTS
+// Bots speak one at a time - next waits for previous to finish
+// =============================================================================
+
+// Track which bot is currently speaking
+let currentSpeakingBot = null;
+
+// Sequential audio playback - bots wait for each other
+async function speakText(text, botName = 'Farnsworth') {
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
     if (!state.voiceEnabled) return Promise.resolve();
 
     // Clean text for speech
@@ -813,30 +992,54 @@ async function speakText(text, botName = 'cosmos') {
         .replace(/\*\*/g, '')
         .replace(/\*/g, '')
         .replace(/`/g, '')
+<<<<<<< HEAD:cosmos/web/static/js/app.js
         .replace(/\n/g, ' ')
         .slice(0, 500);
+=======
+        .replace(/#{1,6}\s*/g, '')  // Remove markdown headers
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')  // Remove links
+        .replace(/[═─│┌┐└┘├┤┬┴┼]/g, '')  // Remove box chars
+        .replace(/\n/g, ' ')
+        .slice(0, 800);
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 
     if (!cleanText.trim()) return Promise.resolve();
 
     // Add to queue and process
     return new Promise((resolve) => {
         audioQueue.push({ text: cleanText, botName, resolve });
+<<<<<<< HEAD:cosmos/web/static/js/app.js
+=======
+        console.log(`[Voice] Queued ${botName}: "${cleanText.slice(0, 40)}..."`);
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
         processAudioQueue();
     });
 }
 
 async function processAudioQueue() {
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     // Wait for user interaction before playing audio
     if (!audioUnlocked) {
         console.log('[Audio] Waiting for user interaction to unlock audio...');
         return; // Will be called again when audio is unlocked
     }
 
+=======
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
     if (isPlayingAudio || audioQueue.length === 0) return;
 
     isPlayingAudio = true;
     const { text, botName, resolve } = audioQueue.shift();
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
+=======
+    currentSpeakingBot = botName;
+    console.log(`[Voice] ${botName} speaking (${audioQueue.length} in queue)`);
+
+    // Update UI to show who's speaking
+    updateSpeakingIndicator(botName, true);
+
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
     // Stop any current audio
     if (currentAudio) {
         currentAudio.pause();
@@ -849,7 +1052,74 @@ async function processAudioQueue() {
     }
 
     try {
+<<<<<<< HEAD:cosmos/web/static/js/app.js
         // Try XTTS v2 voice cloning first
+=======
+        // Try multi-voice API first (Fish Speech / XTTS with bot-specific voices)
+        const response = await fetch('/api/speak/bot', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                text: text,
+                bot_name: botName
+            })
+        });
+
+        if (response.ok) {
+            const audioBlob = await response.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            currentAudio = new Audio(audioUrl);
+            currentAudio.volume = state.voiceVolume;
+
+            currentAudio.onended = () => {
+                URL.revokeObjectURL(audioUrl);
+                currentAudio = null;
+                isPlayingAudio = false;
+                currentSpeakingBot = null;
+
+                // Update UI
+                updateSpeakingIndicator(botName, false);
+
+                // Signal server that audio finished
+                if (state.swarmWs && state.swarmWs.readyState === WebSocket.OPEN) {
+                    state.swarmWs.send(JSON.stringify({
+                        type: 'audio_complete',
+                        bot_name: botName
+                    }));
+                }
+
+                // Also notify via REST for queue management
+                fetch('/api/voices/queue/complete?bot_name=' + encodeURIComponent(botName), {
+                    method: 'POST'
+                }).catch(() => {});
+
+                console.log(`[Voice] ${botName} finished speaking`);
+                resolve();
+                // Process next in queue
+                processAudioQueue();
+            };
+
+            currentAudio.onerror = (e) => {
+                console.warn(`[Voice] Audio error for ${botName}:`, e);
+                isPlayingAudio = false;
+                currentSpeakingBot = null;
+                updateSpeakingIndicator(botName, false);
+                resolve();
+                processAudioQueue();
+            };
+
+            await currentAudio.play();
+            return;
+        } else {
+            console.warn(`[Voice] Multi-voice API failed (${response.status}), trying fallback`);
+        }
+    } catch (error) {
+        console.warn('[Voice] Multi-voice error, falling back:', error);
+    }
+
+    // Fallback to old single-voice API
+    try {
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
         const response = await fetch('/api/speak', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -860,11 +1130,16 @@ async function processAudioQueue() {
             const audioBlob = await response.blob();
             const audioUrl = URL.createObjectURL(audioBlob);
             currentAudio = new Audio(audioUrl);
+<<<<<<< HEAD:cosmos/web/static/js/app.js
+=======
+            currentAudio.volume = state.voiceVolume;
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 
             currentAudio.onended = () => {
                 URL.revokeObjectURL(audioUrl);
                 currentAudio = null;
                 isPlayingAudio = false;
+<<<<<<< HEAD:cosmos/web/static/js/app.js
 
                 // Signal server that audio finished
                 if (state.swarmWs && state.swarmWs.readyState === WebSocket.OPEN) {
@@ -876,11 +1151,21 @@ async function processAudioQueue() {
 
                 resolve();
                 // Process next in queue
+=======
+                currentSpeakingBot = null;
+                updateSpeakingIndicator(botName, false);
+                resolve();
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
                 processAudioQueue();
             };
 
             currentAudio.onerror = () => {
                 isPlayingAudio = false;
+<<<<<<< HEAD:cosmos/web/static/js/app.js
+=======
+                currentSpeakingBot = null;
+                updateSpeakingIndicator(botName, false);
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
                 resolve();
                 processAudioQueue();
             };
@@ -889,16 +1174,31 @@ async function processAudioQueue() {
             return;
         }
     } catch (error) {
+<<<<<<< HEAD:cosmos/web/static/js/app.js
         console.warn('XTTS TTS error, falling back to browser:', error);
     }
 
     // Fallback to browser TTS
+=======
+        console.warn('[Voice] Fallback TTS error:', error);
+    }
+
+    // Last resort: browser TTS
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
     if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = 0.9;
         utterance.pitch = 0.8;
+<<<<<<< HEAD:cosmos/web/static/js/app.js
         utterance.onend = () => {
             isPlayingAudio = false;
+=======
+        utterance.volume = state.voiceVolume;
+        utterance.onend = () => {
+            isPlayingAudio = false;
+            currentSpeakingBot = null;
+            updateSpeakingIndicator(botName, false);
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
             if (state.swarmWs && state.swarmWs.readyState === WebSocket.OPEN) {
                 state.swarmWs.send(JSON.stringify({
                     type: 'audio_complete',
@@ -911,11 +1211,53 @@ async function processAudioQueue() {
         speechSynthesis.speak(utterance);
     } else {
         isPlayingAudio = false;
+<<<<<<< HEAD:cosmos/web/static/js/app.js
+=======
+        currentSpeakingBot = null;
+        updateSpeakingIndicator(botName, false);
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
         resolve();
         processAudioQueue();
     }
 }
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
+=======
+// Update UI to show which bot is speaking
+function updateSpeakingIndicator(botName, isSpeaking) {
+    // Find bot messages and add/remove speaking indicator
+    const messages = document.querySelectorAll('.message.swarm-bot');
+    messages.forEach(msg => {
+        const nameEl = msg.querySelector('.bot-name');
+        if (nameEl && nameEl.textContent.includes(botName)) {
+            if (isSpeaking) {
+                msg.classList.add('speaking');
+                // Add speaking animation
+                if (!nameEl.querySelector('.speaking-indicator')) {
+                    const indicator = document.createElement('span');
+                    indicator.className = 'speaking-indicator';
+                    indicator.innerHTML = ' 🔊';
+                    nameEl.appendChild(indicator);
+                }
+            } else {
+                msg.classList.remove('speaking');
+                const indicator = nameEl.querySelector('.speaking-indicator');
+                if (indicator) indicator.remove();
+            }
+        }
+    });
+}
+
+// Get info about currently speaking bot
+function getCurrentSpeaker() {
+    return {
+        botName: currentSpeakingBot,
+        isSpeaking: isPlayingAudio,
+        queueLength: audioQueue.length
+    };
+}
+
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 // ============================================
 // MEMORY SYSTEM
 // ============================================
@@ -1236,7 +1578,11 @@ function completeFocusTimer() {
 
     // Browser notification if allowed
     if (Notification.permission === 'granted') {
+<<<<<<< HEAD:cosmos/web/static/js/app.js
         new Notification('cosmos Focus Timer', {
+=======
+        new Notification('Farnsworth Focus Timer', {
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
             body: 'Your focus session is complete!',
             icon: '🧠'
         });
@@ -1312,7 +1658,11 @@ async function loadEvolutionStats() {
 
 function getBotEmoji(name) {
     const emojis = {
+<<<<<<< HEAD:cosmos/web/static/js/app.js
         'Cosmos': '🌌',
+=======
+        'Farnsworth': '🧪',
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
         'DeepSeek': '🔮',
         'Phi': '⚡',
         'Swarm-Mind': '🧠'
@@ -1909,6 +2259,7 @@ window.openRugCheck = openRugCheck;
 window.openTokenScanner = openTokenScanner;
 window.openMarketSentiment = openMarketSentiment;
 window.closeModal = closeModal;
+<<<<<<< HEAD:cosmos/web/static/js/app.js
 
 // ============================================
 // PROFILE SWITCHER (Added)
@@ -1943,6 +2294,8 @@ function switchProfile(profile) {
     addMessage(`[System] Interface switched to **${modeName} Mode**`, 'system');
 }
 
+=======
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 window.closeToolModal = closeToolModal;
 window.closeThinkingModal = closeThinkingModal;
 window.closeSnippetModal = closeSnippetModal;
@@ -1953,6 +2306,7 @@ window.deleteNote = deleteNote;
 // SWARM CHAT - COMMUNITY MODE
 // ============================================
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
 function switchChatMode(mode) {
     // Normalize: old boolean API still works
     if (mode === true) mode = 'swarm';
@@ -1973,6 +2327,22 @@ function switchChatMode(mode) {
 
     // Toggle learning widget visibility
     document.getElementById('swarm-learning-widget')?.classList.toggle('hidden', mode !== 'swarm');
+=======
+function switchChatMode(toSwarm) {
+    console.log('[Chat] Switching to', toSwarm ? 'Swarm' : 'Personal', 'mode');
+    state.swarmMode = toSwarm;
+
+    // Update UI buttons
+    document.getElementById('personal-chat-btn')?.classList.toggle('active', !toSwarm);
+    document.getElementById('swarm-chat-btn')?.classList.toggle('active', toSwarm);
+
+    // Toggle swarm status header
+    const swarmHeader = document.getElementById('swarm-status-header');
+    if (swarmHeader) swarmHeader.style.display = toSwarm ? 'flex' : 'none';
+
+    // Toggle learning widget visibility
+    document.getElementById('swarm-learning-widget')?.classList.toggle('hidden', !toSwarm);
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 
     // Clear messages
     const messagesContainer = document.getElementById('messages');
@@ -1980,6 +2350,7 @@ function switchChatMode(mode) {
         messagesContainer.innerHTML = '';
     }
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     if (mode === 'swarm') {
         connectSwarmChat();
         addSwarmWelcomeMessage();
@@ -1987,21 +2358,37 @@ function switchChatMode(mode) {
         disconnectSwarmChat();
         addCosmosWelcomeMessage();
     } else {
+=======
+    if (toSwarm) {
+        // Connect to Swarm Chat
+        connectSwarmChat();
+        addSwarmWelcomeMessage();
+    } else {
+        // Disconnect from Swarm
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
         disconnectSwarmChat();
         addWelcomeMessage();
     }
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     const toasts = {
         personal: '💬 Switched to Personal Chat',
         cosmos: '🌌 Switched to Cosmos Swarm — multi-model synthesis!',
         swarm: '🐝 Switched to Swarm Chat - Community Mode!'
     };
     showToast(toasts[mode] || toasts.personal, 'success');
+=======
+    showToast(toSwarm ? '🐝 Switched to Swarm Chat - Community Mode!' : '💬 Switched to Personal Chat', 'success');
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 }
 
 function initSwarmMode() {
     // Auto-connect to swarm mode - community chat where everyone talks together!
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     console.log('[Chat] Auto-connecting to Synaptic Swarm!');
+=======
+    console.log('[Chat] Auto-connecting to Global Swarm!');
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
     switchChatMode(true);  // Start in swarm mode by default
 }
 
@@ -2042,8 +2429,13 @@ function changeUsername() {
 
 function connectSwarmChat() {
     console.log('[Swarm] Attempting to connect to swarm chat...');
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     if (state.swarmWs && (state.swarmWs.readyState === WebSocket.OPEN || state.swarmWs.readyState === WebSocket.CONNECTING)) {
         console.log('[Swarm] Already connected or connecting, skipping');
+=======
+    if (state.swarmWs && state.swarmConnected) {
+        console.log('[Swarm] Already connected, skipping');
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
         return;
     }
 
@@ -2057,7 +2449,10 @@ function connectSwarmChat() {
 
         state.swarmWs.onopen = () => {
             console.log('[Swarm] WebSocket connected!');
+<<<<<<< HEAD:cosmos/web/static/js/app.js
             window._swarmReconnectDelay = 3000; // Reset backoff on success
+=======
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
             // Use stored username or prompt for one
             const userName = getOrPromptUsername();
             state.swarmUserName = userName;
@@ -2081,12 +2476,19 @@ function connectSwarmChat() {
             console.log('[Swarm] WebSocket closed');
             state.swarmConnected = false;
             updateSwarmStatus();
+<<<<<<< HEAD:cosmos/web/static/js/app.js
             // Reconnect with exponential backoff if still in swarm mode
             if (state.swarmMode) {
                 if (!window._swarmReconnectDelay) window._swarmReconnectDelay = 3000;
                 console.log(`[Swarm] Reconnecting in ${window._swarmReconnectDelay / 1000}s...`);
                 setTimeout(connectSwarmChat, window._swarmReconnectDelay);
                 window._swarmReconnectDelay = Math.min(window._swarmReconnectDelay * 2, 30000);
+=======
+            // Reconnect if still in swarm mode
+            if (state.swarmMode) {
+                console.log('[Swarm] Will reconnect in 3 seconds...');
+                setTimeout(connectSwarmChat, 3000);
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
             }
         };
 
@@ -2201,15 +2603,23 @@ function renderSwarmMessage(data, animate = true) {
     } else if (data.type === 'swarm_bot') {
         // Bot colors and emojis - includes all multi-model participants
         const botStyles = {
+<<<<<<< HEAD:cosmos/web/static/js/app.js
             'Cosmos': { emoji: '🌌', color: '#8b5cf6' },
+=======
+            'Farnsworth': { emoji: '🧠', color: '#8b5cf6' },
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
             'DeepSeek': { emoji: '🔮', color: '#3b82f6' },
             'Phi': { emoji: '⚡', color: '#10b981' },
             'Swarm-Mind': { emoji: '🐝', color: '#f59e0b' },
             'Orchestrator': { emoji: '🎯', color: '#ec4899' },
             'Claude': { emoji: '🎭', color: '#d97706' },      // Anthropic Claude via CLI
+<<<<<<< HEAD:cosmos/web/static/js/app.js
             'Kimi': { emoji: '🌸', color: '#f472b6' },        // Moonshot AI Kimi
             'Gemini': { emoji: '💎', color: '#4285f4' },      // Google Gemini AI
             'Cosmos': { emoji: '🌌', color: '#a855f7' }       // Cosmo's 54D Transformer
+=======
+            'Kimi': { emoji: '🌸', color: '#f472b6' }         // Moonshot AI Kimi
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
         };
         const style = botStyles[data.bot_name] || { emoji: '🤖', color: '#6b7280' };
         avatar = style.emoji;
@@ -2241,11 +2651,20 @@ function renderSwarmMessage(data, animate = true) {
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
     const voiceEnabledBots = ['Cosmos', 'Kimi'];
     if (data.type === 'swarm_bot' && state.voiceEnabled && voiceEnabledBots.includes(data.bot_name)) {
         // Use pre-generated audio URL if available (server-side TTS)
         if (data.audio_url) {
             playServerAudio(data.audio_url);
+=======
+    // Voice for ALL swarm bots
+    const voiceEnabledBots = ['Farnsworth', 'Kimi', 'DeepSeek', 'Phi', 'Grok', 'Gemini', 'Claude', 'ClaudeOpus', 'OpenCode', 'HuggingFace', 'Swarm-Mind'];
+    if (data.type === 'swarm_bot' && state.voiceEnabled && voiceEnabledBots.includes(data.bot_name)) {
+        // Use pre-generated audio URL if available (server-side TTS)
+        if (data.audio_url) {
+            playServerAudio(data.audio_url, data.bot_name);
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
         } else {
             speakText(content, data.bot_name);
         }
@@ -2440,6 +2859,7 @@ function addSwarmWelcomeMessage() {
     welcomeDiv.innerHTML = `
         <div class="swarm-welcome-header">
             <span class="swarm-icon">🐝</span>
+<<<<<<< HEAD:cosmos/web/static/js/app.js
             <h2>Welcome to the Synaptic Swarm!</h2>
         </div>
         <div class="swarm-welcome-body">
@@ -2468,18 +2888,55 @@ function addSwarmWelcomeMessage() {
             <p class="swarm-bots">
                 <strong>Active Bots:</strong>
                 🌌 Cosmos • 🔮 DeepSeek • 🧠 DeepSeek R1 • ⚡ Phi • 🐝 Swarm-Mind • 💎 Gemini • 🎭 Claude • 🤖 ChatGPT
+=======
+            <h2>Welcome to Swarm Chat!</h2>
+        </div>
+        <div class="swarm-welcome-body">
+            <p>You're now in <strong>Community Mode</strong> - chat with everyone and our AI swarm!</p>
+            <div class="swarm-features">
+                <div class="swarm-feature">
+                    <span class="feature-icon">👥</span>
+                    <span>Chat with the community</span>
+                </div>
+                <div class="swarm-feature">
+                    <span class="feature-icon">🤖</span>
+                    <span>Multiple AI models respond</span>
+                </div>
+                <div class="swarm-feature">
+                    <span class="feature-icon">🧬</span>
+                    <span>System learns in real-time</span>
+                </div>
+                <div class="swarm-feature">
+                    <span class="feature-icon">🪙</span>
+                    <span>Ask about any token or CA!</span>
+                </div>
+            </div>
+            <p class="swarm-crypto-hint">
+                <strong>🔍 Try:</strong> "Price of $SOL" • "Is this safe? [paste CA]" • "Rug check [address]"
+            </p>
+            <p class="swarm-bots">
+                <strong>Active Bots:</strong>
+                🧠 Farnsworth • 🔮 DeepSeek • ⚡ Phi • 🐝 Swarm-Mind • ✨ Kimi
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
             </p>
         </div>
     `;
     messagesContainer.appendChild(welcomeDiv);
 }
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
 // Override sendMessage to handle swarm and cosmos modes
 const originalSendMessage = sendMessage;
 sendMessage = async function () {
     if (state.cosmosMode) {
         await sendCosmosMessage();
     } else if (state.swarmMode) {
+=======
+// Override sendMessage to handle swarm mode
+const originalSendMessage = sendMessage;
+sendMessage = async function() {
+    if (state.swarmMode) {
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
         await sendSwarmMessage();
     } else {
         await originalSendMessage();
@@ -2517,6 +2974,7 @@ async function sendSwarmMessage() {
     }));
 }
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
 // ============================================
 // COSMOS SWARM MODE — Multi-Model Synthesis
 // ============================================
@@ -2616,12 +3074,16 @@ async function sendCosmosMessage() {
     }
 }
 
+=======
+// Make swarm functions globally available
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js
 window.switchChatMode = switchChatMode;
 window.connectSwarmChat = connectSwarmChat;
 window.disconnectSwarmChat = disconnectSwarmChat;
 window.changeUsername = changeUsername;
 window.getOrPromptUsername = getOrPromptUsername;
 
+<<<<<<< HEAD:cosmos/web/static/js/app.js
 // ============================================
 // EMOTIONAL SENSORS - 12D CST API CONNECTION
 // ============================================
@@ -3342,3 +3804,168 @@ function displayMediaResult(type, result) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
+=======
+// ==========================================
+// POLYMARKET PREDICTIONS WIDGET
+// ==========================================
+
+const polymarketState = {
+    predictions: [],
+    stats: { accuracy: 0, streak: 0, total: 0, correct: 0 },
+    lastUpdate: null,
+    pollInterval: null
+};
+
+async function fetchPolymarketPredictions() {
+    try {
+        const response = await fetch('/api/polymarket/predictions?limit=10');
+        if (!response.ok) throw new Error('Failed to fetch predictions');
+        const data = await response.json();
+        polymarketState.predictions = data.predictions || [];
+        polymarketState.lastUpdate = new Date();
+        renderPolymarketPredictions();
+    } catch (error) {
+        console.error('Polymarket predictions fetch error:', error);
+    }
+}
+
+async function fetchPolymarketStats() {
+    try {
+        const response = await fetch('/api/polymarket/stats');
+        if (!response.ok) throw new Error('Failed to fetch stats');
+        const data = await response.json();
+        polymarketState.stats = data;
+        updatePolymarketStats();
+    } catch (error) {
+        console.error('Polymarket stats fetch error:', error);
+    }
+}
+
+function updatePolymarketStats() {
+    const { accuracy, streak, total } = polymarketState.stats;
+
+    const accuracyEl = document.getElementById('pm-accuracy');
+    const streakEl = document.getElementById('pm-streak');
+    const totalEl = document.getElementById('pm-total');
+
+    if (accuracyEl) {
+        accuracyEl.textContent = `${(accuracy * 100).toFixed(1)}%`;
+        // Color based on accuracy
+        if (accuracy >= 0.7) accuracyEl.style.color = '#00ff88';
+        else if (accuracy >= 0.5) accuracyEl.style.color = '#ffd700';
+        else accuracyEl.style.color = '#ff4444';
+    }
+    if (streakEl) {
+        streakEl.textContent = streak;
+        if (streak >= 5) streakEl.style.color = '#00ff88';
+    }
+    if (totalEl) totalEl.textContent = total;
+}
+
+function renderPolymarketPredictions() {
+    const feed = document.getElementById('predictions-feed');
+    if (!feed) return;
+
+    if (polymarketState.predictions.length === 0) {
+        feed.innerHTML = `
+            <div class="prediction-empty">
+                <div class="prediction-loading-spinner"></div>
+                <p>Collective analyzing markets...</p>
+                <p class="prediction-subtitle">Predictions refresh every 5 minutes</p>
+            </div>
+        `;
+        return;
+    }
+
+    const predictionsHtml = polymarketState.predictions.map(pred => {
+        const confidence = (pred.confidence * 100).toFixed(0);
+        const direction = pred.direction;
+        const directionClass = direction === 'YES' ? 'direction-yes' : 'direction-no';
+        const directionIcon = direction === 'YES' ? '📈' : '📉';
+
+        // Result badge if resolved
+        let resultBadge = '';
+        if (pred.result !== null && pred.result !== undefined) {
+            const isCorrect = pred.result === true;
+            resultBadge = `<span class="result-badge ${isCorrect ? 'result-correct' : 'result-wrong'}">${isCorrect ? '✓' : '✗'}</span>`;
+        }
+
+        // Format timestamp
+        const timeAgo = formatTimeAgo(new Date(pred.timestamp));
+
+        // Top signals
+        const topSignals = pred.top_signals || [];
+        const signalsHtml = topSignals.slice(0, 3).map(s =>
+            `<span class="signal-tag" title="${s.reasoning}">${s.name}: ${(s.weight * 100).toFixed(0)}%</span>`
+        ).join('');
+
+        return `
+            <div class="prediction-card ${directionClass}">
+                <div class="prediction-header">
+                    <span class="prediction-direction">${directionIcon} ${direction}</span>
+                    <span class="prediction-confidence">${confidence}% confident</span>
+                    ${resultBadge}
+                </div>
+                <div class="prediction-question">${truncateText(pred.question, 80)}</div>
+                <div class="prediction-signals">${signalsHtml}</div>
+                <div class="prediction-meta">
+                    <span class="prediction-time">${timeAgo}</span>
+                    <span class="prediction-market-price">Market: ${(pred.current_price * 100).toFixed(0)}%</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    feed.innerHTML = predictionsHtml;
+}
+
+function truncateText(text, maxLength) {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength - 3) + '...';
+}
+
+function formatTimeAgo(date) {
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return date.toLocaleDateString();
+}
+
+function startPolymarketPolling() {
+    // Initial fetch
+    fetchPolymarketPredictions();
+    fetchPolymarketStats();
+
+    // Poll every 30 seconds for updates
+    polymarketState.pollInterval = setInterval(() => {
+        fetchPolymarketPredictions();
+        fetchPolymarketStats();
+    }, 30000);
+}
+
+function stopPolymarketPolling() {
+    if (polymarketState.pollInterval) {
+        clearInterval(polymarketState.pollInterval);
+        polymarketState.pollInterval = null;
+    }
+}
+
+// Initialize when DOM is ready and on swarm page
+document.addEventListener('DOMContentLoaded', () => {
+    const predictionsFeed = document.getElementById('predictions-feed');
+    if (predictionsFeed) {
+        startPolymarketPolling();
+    }
+});
+
+// Expose functions globally
+window.fetchPolymarketPredictions = fetchPolymarketPredictions;
+window.fetchPolymarketStats = fetchPolymarketStats;
+window.startPolymarketPolling = startPolymarketPolling;
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/js/app.js

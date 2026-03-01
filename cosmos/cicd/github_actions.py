@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/cicd/github_actions.py
 cosmos GitHub Actions Integration
+=======
+Farnsworth GitHub Actions Integration
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cicd/github_actions.py
 
 "Version control? I invented that! I just forgot which version..."
 
@@ -22,7 +26,11 @@ try:
 except ImportError:
     HAS_HTTPX = False
 
+<<<<<<< HEAD:cosmos/cicd/github_actions.py
 from cosmos.cicd.pipeline_manager import (
+=======
+from farnsworth.cicd.pipeline_manager import (
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cicd/github_actions.py
     CICDProvider,
     Pipeline,
     PipelineRun,

@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/integration/external/twitter.py
 cosmos X (Twitter) Integration.
+=======
+Farnsworth X (Twitter) Integration.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/twitter.py
 
 "Good news everyone! I'm trending!"
 

@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/plugins/loader.py
 cosmos Plugin Loader
+=======
+Farnsworth Plugin Loader
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/plugins/loader.py
 
 Discovers and loads plugins from the filesystem.
 """
@@ -143,7 +147,11 @@ class PluginLoader:
 
     def _load_file_plugin(self, path: Path) -> Optional[Plugin]:
         """Load a single-file plugin."""
+<<<<<<< HEAD:cosmos/plugins/loader.py
         module_name = f"cosmos_plugin_{path.stem}"
+=======
+        module_name = f"farnsworth_plugin_{path.stem}"
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/plugins/loader.py
 
         try:
             spec = importlib.util.spec_from_file_location(module_name, path)
@@ -170,7 +178,11 @@ class PluginLoader:
 
     def _load_package_plugin(self, path: Path) -> Optional[Plugin]:
         """Load a package plugin."""
+<<<<<<< HEAD:cosmos/plugins/loader.py
         module_name = f"cosmos_plugin_{path.name}"
+=======
+        module_name = f"farnsworth_plugin_{path.name}"
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/plugins/loader.py
 
         try:
             # Add to sys.path temporarily
@@ -249,13 +261,21 @@ def create_plugin_template(
     caps_enum = ", ".join([f"PluginCapability.{c.upper()}" for c in caps_list])
 
     template = f'''"""
+<<<<<<< HEAD:cosmos/plugins/loader.py
 {name} Plugin for cosmos
+=======
+{name} Plugin for Farnsworth
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/plugins/loader.py
 
 Description: A custom plugin that...
 """
 
 from typing import Dict, Any
+<<<<<<< HEAD:cosmos/plugins/loader.py
 from cosmos.plugins.base import (
+=======
+from farnsworth.plugins.base import (
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/plugins/loader.py
     Plugin,
     PluginMetadata,
     PluginCapability,

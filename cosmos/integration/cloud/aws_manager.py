@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/integration/cloud/aws_manager.py
 cosmos AWS Manager
+=======
+Farnsworth AWS Manager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/cloud/aws_manager.py
 
 "Good news, everyone! I can manage your AWS infrastructure!"
 
@@ -515,11 +519,19 @@ class AWSManager:
 - IAM user or role with appropriate permissions
 - AWS CLI configured (optional, for profile auth)
 
+<<<<<<< HEAD:cosmos/integration/cloud/aws_manager.py
 ## Step 1: Create IAM User for cosmos
 
 1. Go to AWS Console > IAM > Users
 2. Click "Add users"
 3. User name: "cosmos-manager"
+=======
+## Step 1: Create IAM User for Farnsworth
+
+1. Go to AWS Console > IAM > Users
+2. Click "Add users"
+3. User name: "farnsworth-manager"
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/cloud/aws_manager.py
 4. Select "Access key - Programmatic access"
 5. Click "Next: Permissions"
 
@@ -544,7 +556,11 @@ Or create a custom policy with least-privilege.
 4. Select "Application running outside AWS"
 5. Download the CSV with your keys
 
+<<<<<<< HEAD:cosmos/integration/cloud/aws_manager.py
 ## Step 4: Configure cosmos
+=======
+## Step 4: Configure Farnsworth
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/cloud/aws_manager.py
 
 ### Option A: Environment Variables
 
@@ -558,14 +574,22 @@ export AWS_DEFAULT_REGION=us-east-1
 
 Create `~/.aws/credentials`:
 ```ini
+<<<<<<< HEAD:cosmos/integration/cloud/aws_manager.py
 [cosmos]
+=======
+[farnsworth]
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/cloud/aws_manager.py
 aws_access_key_id = your-access-key
 aws_secret_access_key = your-secret-key
 ```
 
 Create `~/.aws/config`:
 ```ini
+<<<<<<< HEAD:cosmos/integration/cloud/aws_manager.py
 [profile cosmos]
+=======
+[profile farnsworth]
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/cloud/aws_manager.py
 region = us-east-1
 output = json
 ```
@@ -573,7 +597,11 @@ output = json
 ### Option C: Direct Configuration
 
 ```python
+<<<<<<< HEAD:cosmos/integration/cloud/aws_manager.py
 from cosmos.integration.cloud.aws_manager import AWSManager, AWSConfig
+=======
+from farnsworth.integration.cloud.aws_manager import AWSManager, AWSConfig
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/cloud/aws_manager.py
 
 config = AWSConfig(
     access_key_id="your-access-key",
@@ -598,7 +626,11 @@ if manager.authenticate():
 ```python
 config = AWSConfig(
     auth_method=AWSAuthMethod.PROFILE,
+<<<<<<< HEAD:cosmos/integration/cloud/aws_manager.py
     profile="cosmos",
+=======
+    profile="farnsworth",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/cloud/aws_manager.py
     region="us-east-1",
 )
 manager = AWSManager(config)

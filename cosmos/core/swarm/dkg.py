@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/core/swarm/dkg.py
 cosmos Decentralized Knowledge Graph (DKG).
+=======
+Farnsworth Decentralized Knowledge Graph (DKG).
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/swarm/dkg.py
 
 "Our thoughts are not just ours; they belong to the Collective."
 

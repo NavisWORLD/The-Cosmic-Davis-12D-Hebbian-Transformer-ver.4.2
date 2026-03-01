@@ -1,11 +1,19 @@
 """
+<<<<<<< HEAD:cosmos/core/memory/planetary/audio_shard.py
 cosmos Planetary Audio Shard - Distributed TTS Cache
+=======
+Farnsworth Planetary Audio Shard - Distributed TTS Cache
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/audio_shard.py
 --------------------------------------------------------
 
 "Good news, everyone! My voice can now echo across the planetary network!"
 
 This module implements distributed caching for TTS audio files, allowing
+<<<<<<< HEAD:cosmos/core/memory/planetary/audio_shard.py
 cosmos instances to share pre-generated audio across the P2P network.
+=======
+Farnsworth instances to share pre-generated audio across the P2P network.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/audio_shard.py
 
 Features:
 - **Audio Sharding**: Distributed storage using consistent hashing
@@ -29,14 +37,22 @@ from loguru import logger
 
 # Try to import Nexus for signal handling
 try:
+<<<<<<< HEAD:cosmos/core/memory/planetary/audio_shard.py
     from cosmos.core.nexus import nexus, Signal, SignalType
+=======
+    from farnsworth.core.nexus import nexus, Signal, SignalType
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/audio_shard.py
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False
 
 # Try to import sharding
 try:
+<<<<<<< HEAD:cosmos/core/memory/planetary/audio_shard.py
     from cosmos.memory.sharding import ShardManager
+=======
+    from farnsworth.memory.sharding import ShardManager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/audio_shard.py
     SHARDING_AVAILABLE = True
 except ImportError:
     SHARDING_AVAILABLE = False
@@ -54,7 +70,11 @@ class AudioMetadata:
     audio_hash: str             # SHA256 hash of audio file (for verification)
     file_size: int              # Size in bytes
     duration_ms: int            # Estimated duration
+<<<<<<< HEAD:cosmos/core/memory/planetary/audio_shard.py
     voice_id: str               # Voice identifier (e.g., "cosmos")
+=======
+    voice_id: str               # Voice identifier (e.g., "farnsworth")
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/audio_shard.py
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
     author_node: str = ""       # Node that generated this audio
     scope: str = "planetary"    # Sharing scope
@@ -78,7 +98,11 @@ class AudioMetadata:
             audio_hash=data["audio_hash"],
             file_size=data.get("file_size", 0),
             duration_ms=data.get("duration_ms", 0),
+<<<<<<< HEAD:cosmos/core/memory/planetary/audio_shard.py
             voice_id=data.get("voice_id", "cosmos"),
+=======
+            voice_id=data.get("voice_id", "farnsworth"),
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/audio_shard.py
             created_at=data.get("created_at", ""),
             author_node=data.get("author_node", ""),
             scope=data.get("scope", "planetary")
@@ -249,7 +273,11 @@ class PlanetaryAudioShard:
         self,
         text_hash: str,
         audio_data: bytes,
+<<<<<<< HEAD:cosmos/core/memory/planetary/audio_shard.py
         voice_id: str = "cosmos",
+=======
+        voice_id: str = "farnsworth",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/audio_shard.py
         duration_ms: int = 0,
         scope: AudioScope = AudioScope.PLANETARY
     ) -> Path:
@@ -302,7 +330,11 @@ class PlanetaryAudioShard:
     async def _broadcast_metadata(self, metadata: AudioMetadata):
         """Broadcast audio metadata to P2P network."""
         try:
+<<<<<<< HEAD:cosmos/core/memory/planetary/audio_shard.py
             from cosmos.core.swarm.p2p import swarm_fabric
+=======
+            from farnsworth.core.swarm.p2p import swarm_fabric
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/audio_shard.py
 
             # Send via P2P fabric
             message = {
@@ -340,7 +372,11 @@ class PlanetaryAudioShard:
             return None
 
         try:
+<<<<<<< HEAD:cosmos/core/memory/planetary/audio_shard.py
             from cosmos.core.swarm.p2p import swarm_fabric
+=======
+            from farnsworth.core.swarm.p2p import swarm_fabric
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/audio_shard.py
 
             # Create future for response
             future = asyncio.Future()
@@ -387,7 +423,11 @@ class PlanetaryAudioShard:
     async def _respond_to_audio_request(self, text_hash: str, requester_id: str):
         """Send audio file to requesting peer."""
         try:
+<<<<<<< HEAD:cosmos/core/memory/planetary/audio_shard.py
             from cosmos.core.swarm.p2p import swarm_fabric
+=======
+            from farnsworth.core.swarm.p2p import swarm_fabric
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/audio_shard.py
 
             audio_path = self.get_audio_path(text_hash)
             if not audio_path.exists():

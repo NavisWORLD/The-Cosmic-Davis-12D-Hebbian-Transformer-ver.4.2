@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/incidents/pagerduty_integration.py
 cosmos PagerDuty Integration
+=======
+Farnsworth PagerDuty Integration
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/pagerduty_integration.py
 
 "When the pager goes off, everyone runs away...
  except Zoidberg, he runs toward food."

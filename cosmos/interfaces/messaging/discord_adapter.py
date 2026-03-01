@@ -1,6 +1,11 @@
 """
+<<<<<<< HEAD:cosmos/interfaces/messaging/discord_adapter.py
 Discord Adapter for cosmos ChatOps.
 Connects cosmos to Discord using discord.py patterns.
+=======
+Discord Adapter for Farnsworth ChatOps.
+Connects Farnsworth to Discord using discord.py patterns.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/discord_adapter.py
 """
 
 import asyncio
@@ -11,7 +16,11 @@ from .base import MessagingProvider, IncomingMessage, OutgoingMessage, MessageSo
 class DiscordAdapter(MessagingProvider):
     """
     Adapter for Discord integration.
+<<<<<<< HEAD:cosmos/interfaces/messaging/discord_adapter.py
     Allows cosmos to Act as a Discord Bot (Clawdbot style).
+=======
+    Allows Farnsworth to Act as a Discord Bot (Clawdbot style).
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/discord_adapter.py
     """
 
     def __init__(self, token: str):
@@ -65,7 +74,11 @@ class DiscordAdapter(MessagingProvider):
             sender_id="user_1",
             sender_name="User",
             channel_id="general",
+<<<<<<< HEAD:cosmos/interfaces/messaging/discord_adapter.py
             content="Hello cosmos, are you online?",
+=======
+            content="Hello Farnsworth, are you online?",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/discord_adapter.py
             timestamp=datetime.now()
         )
         

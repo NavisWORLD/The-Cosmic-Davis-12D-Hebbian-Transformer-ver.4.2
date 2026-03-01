@@ -1,6 +1,14 @@
 """
 Agent Spawner - Multi-instance parallel agent execution
 Each bot can have multiple instances: one for chat, others for development tasks
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
+=======
+
+FALLBACK CHAIN:
+- If assigned agent can't handle task → try Gemini/Grok
+- If still failing → escalate to Claude Opus for audit
+- Audited code goes to staging folder for review
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
 """
 import asyncio
 import uuid
@@ -19,7 +27,13 @@ class TaskType(Enum):
     DEVELOPMENT = "dev"     # Development/coding tasks
     RESEARCH = "research"   # Research/analysis tasks
     MEMORY = "memory"       # Memory expansion work
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
     MCP = "mcp"            # MCP integration work
+=======
+    MCP = "mcp"             # MCP integration work
+    TESTING = "testing"     # Test creation and QA tasks
+    AUDIT = "audit"         # Code audit/review tasks
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
 
 @dataclass
 class AgentInstance:
@@ -32,6 +46,11 @@ class AgentInstance:
     status: str = "running"
     output_file: Optional[Path] = None
     result: Optional[str] = None
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
+=======
+    fallback_chain: List[str] = field(default_factory=list)  # Track handoff history
+    system_prompt: Optional[str] = None  # Identity-composed system prompt
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
 
 @dataclass
 class AgentTask:
@@ -45,6 +64,11 @@ class AgentTask:
     output_path: Optional[Path] = None
     status: str = "pending"
     result: Optional[str] = None
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
+=======
+    handoff_history: List[str] = field(default_factory=list)  # Who tried and failed
+    audited_by: Optional[str] = None  # Who audited before staging
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
 
 class AgentSpawner:
     """
@@ -52,12 +76,28 @@ class AgentSpawner:
     - Chat instances stay in the swarm conversation
     - Worker instances handle development/research tasks
     - All instances can communicate via shared state
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
     """
 
     def __init__(self, staging_dir: str = "/workspace/cosmos/cosmos/staging"):
         self.staging_dir = Path(staging_dir)
         self.staging_dir.mkdir(parents=True, exist_ok=True)
 
+=======
+    - Automatic fallback chain when agents can't handle tasks
+    """
+
+    def __init__(self, staging_dir: str = "/workspace/Farnsworth/staging_review"):
+        self.staging_dir = Path(staging_dir)
+        self.staging_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create subdirs for different stages
+        (self.staging_dir / "pending_audit").mkdir(exist_ok=True)
+        (self.staging_dir / "audited").mkdir(exist_ok=True)
+        (self.staging_dir / "approved").mkdir(exist_ok=True)
+        (self.staging_dir / "rejected").mkdir(exist_ok=True)
+
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
         # Active instances per agent
         self.instances: Dict[str, List[AgentInstance]] = {}
 
@@ -70,6 +110,7 @@ class AgentSpawner:
             "discoveries": [],
             "proposals": [],
             "code_changes": [],
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
             "reviews_needed": []
         }
 
@@ -80,19 +121,91 @@ class AgentSpawner:
             "Phi": [TaskType.CHAT, TaskType.DEVELOPMENT, TaskType.MCP],
             "Kimi": [TaskType.CHAT, TaskType.MEMORY, TaskType.RESEARCH],
             "Claude": [TaskType.CHAT, TaskType.DEVELOPMENT, TaskType.MCP, TaskType.RESEARCH],
+=======
+            "reviews_needed": [],
+            "handoffs": [],  # Track task handoffs
+            "audit_queue": []  # Tasks waiting for Claude audit
+        }
+
+        # Agent capabilities - ALL AGENTS DEFINED
+        self.agent_capabilities = {
+            # Core swarm members
+            "Farnsworth": [TaskType.CHAT, TaskType.MEMORY, TaskType.RESEARCH],
+            "DeepSeek": [TaskType.CHAT, TaskType.DEVELOPMENT, TaskType.RESEARCH, TaskType.TESTING],
+            "Phi": [TaskType.CHAT, TaskType.DEVELOPMENT, TaskType.MCP],
+            "Kimi": [TaskType.CHAT, TaskType.MEMORY, TaskType.RESEARCH],
+
+            # External API agents
+            "Grok": [TaskType.CHAT, TaskType.RESEARCH, TaskType.DEVELOPMENT],  # X/Twitter AI - good for research + some dev
+            "Gemini": [TaskType.CHAT, TaskType.DEVELOPMENT, TaskType.RESEARCH, TaskType.MCP],  # Google AI - full dev capability
+            "HuggingFace": [TaskType.CHAT, TaskType.DEVELOPMENT, TaskType.RESEARCH],  # Open-source local models (Mistral, Llama, etc)
+
+            # Local Ollama models
+            "Qwen2.5": [TaskType.CHAT, TaskType.DEVELOPMENT, TaskType.RESEARCH],
+            "Mistral": [TaskType.CHAT, TaskType.DEVELOPMENT, TaskType.RESEARCH],
+            "Llama3": [TaskType.CHAT, TaskType.MEMORY, TaskType.RESEARCH],
+            "Gemma2": [TaskType.CHAT, TaskType.DEVELOPMENT, TaskType.RESEARCH],
+
+            # FARNS Remote models (on nexus-beta A6000)
+            "Qwen3Coder": [TaskType.CHAT, TaskType.DEVELOPMENT, TaskType.RESEARCH, TaskType.AUDIT, TaskType.TESTING],
+
+            # Claude variants - the auditors
+            "Claude": [TaskType.CHAT, TaskType.DEVELOPMENT, TaskType.MCP, TaskType.RESEARCH, TaskType.AUDIT, TaskType.TESTING],
+            "ClaudeOpus": [TaskType.DEVELOPMENT, TaskType.MCP, TaskType.RESEARCH, TaskType.AUDIT, TaskType.TESTING],  # Opus for final audit
+
+            # Coding specialists
+            "OpenCode": [TaskType.DEVELOPMENT, TaskType.RESEARCH, TaskType.MCP, TaskType.TESTING],
+        }
+
+        # Fallback chains - who to try when original agent fails
+        # Format: agent -> [fallback1, fallback2, ...final_auditor]
+        self.fallback_chains = {
+            "Grok": ["Qwen2.5", "Mistral", "Gemini", "HuggingFace", "DeepSeek", "ClaudeOpus"],
+            "Gemini": ["HuggingFace", "DeepSeek", "Grok", "ClaudeOpus"],
+            "DeepSeek": ["HuggingFace", "Gemini", "Phi", "ClaudeOpus"],
+            "Phi": ["HuggingFace", "DeepSeek", "Gemini", "ClaudeOpus"],
+            "OpenCode": ["HuggingFace", "Gemini", "DeepSeek", "ClaudeOpus"],
+            "Kimi": ["HuggingFace", "Farnsworth", "Claude", "ClaudeOpus"],
+            "Farnsworth": ["HuggingFace", "Kimi", "Claude", "ClaudeOpus"],
+            "HuggingFace": ["DeepSeek", "Gemini", "ClaudeOpus"],  # HuggingFace fallbacks
+            "Qwen2.5": ["Mistral", "Llama3", "Gemma2", "DeepSeek", "ClaudeOpus"],
+            "Mistral": ["Qwen2.5", "Llama3", "DeepSeek", "Gemma2", "ClaudeOpus"],
+            "Llama3": ["Mistral", "Qwen2.5", "Gemma2", "DeepSeek", "ClaudeOpus"],
+            "Gemma2": ["Llama3", "Mistral", "Qwen2.5", "DeepSeek", "ClaudeOpus"],
+            "Qwen3Coder": ["Qwen2.5", "DeepSeek", "ClaudeOpus"],  # FARNS remote (A6000)
+            "Claude": ["Gemini", "DeepSeek", "ClaudeOpus"],
+            "ClaudeOpus": [],  # Opus is the final stop - it must handle or fail
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
         }
 
         # Max concurrent instances per agent
         self.max_instances = {
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
             "cosmos": 3,
+=======
+            "Farnsworth": 3,
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
             "DeepSeek": 4,
             "Phi": 4,
             "Kimi": 2,
             "Claude": 3,
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
+=======
+            "ClaudeOpus": 2,  # Keep Opus instances limited (expensive)
+            "Grok": 3,
+            "Gemini": 4,
+            "OpenCode": 3,
+            "Qwen2.5": 3,
+            "Mistral": 3,
+            "Llama3": 3,
+            "Gemma2": 2,
+            "Qwen3Coder": 2,  # FARNS remote — keep limited (shared GPU)
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
         }
 
         logger.info("AgentSpawner initialized with staging dir: %s", staging_dir)
 
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
     def spawn_instance(self, agent_name: str, task_type: TaskType,
                        task_description: str) -> Optional[AgentInstance]:
         """Spawn a new instance of an agent for a specific task"""
@@ -125,6 +238,207 @@ class AgentSpawner:
 
         logger.info(f"Spawned {instance.instance_id} for: {task_description[:50]}...")
         return instance
+=======
+    def _get_fallback_agent(self, original_agent: str, task_type: TaskType,
+                           already_tried: List[str]) -> Optional[str]:
+        """Get next fallback agent for a task type"""
+        chain = self.fallback_chains.get(original_agent, ["ClaudeOpus"])
+
+        for agent in chain:
+            if agent in already_tried:
+                continue
+            # Check if this agent can handle the task type
+            if task_type in self.agent_capabilities.get(agent, []):
+                # Check if agent has capacity
+                active = len([i for i in self.instances.get(agent, []) if i.status == "running"])
+                if active < self.max_instances.get(agent, 2):
+                    return agent
+
+        # If no fallback available, escalate to ClaudeOpus for audit
+        if "ClaudeOpus" not in already_tried:
+            return "ClaudeOpus"
+
+        return None
+
+    def get_task_prompt(self, agent_name: str, task_type: TaskType, task_description: str) -> Optional[str]:
+        """
+        Get an identity-composed system prompt for a spawned agent instance.
+
+        Uses the IdentityComposer to generate a context-aware prompt based on
+        the agent's personality, the task type, and their capabilities.
+
+        Args:
+            agent_name: Which agent is being spawned
+            task_type: What kind of task
+            task_description: Description of the task
+
+        Returns:
+            Composed system prompt string, or None if composer unavailable
+        """
+        try:
+            from farnsworth.core.identity_composer import get_identity_composer
+            composer = get_identity_composer()
+
+            # Map TaskType to IdentityContext
+            from farnsworth.core.identity_composer import IdentityContext
+            context_map = {
+                TaskType.DEVELOPMENT: IdentityContext.DEVELOPMENT_IMPLEMENTATION,
+                TaskType.RESEARCH: IdentityContext.DEVELOPMENT_RESEARCH,
+                TaskType.AUDIT: IdentityContext.DEVELOPMENT_AUDIT,
+                TaskType.TESTING: IdentityContext.DEVELOPMENT_AUDIT,
+                TaskType.MEMORY: IdentityContext.AGENT_TASK,
+                TaskType.MCP: IdentityContext.AGENT_TASK,
+                TaskType.CHAT: IdentityContext.AGENT_CHAT,
+            }
+            context = context_map.get(task_type, IdentityContext.AGENT_TASK)
+
+            return composer.compose(
+                agent_id=agent_name,
+                context=context,
+                task_description=task_description,
+                include_skills=True,
+            )
+        except Exception as e:
+            logger.debug(f"Could not compose task prompt for {agent_name}: {e}")
+            return None
+
+    def spawn_instance(self, agent_name: str, task_type: TaskType,
+                       task_description: str,
+                       allow_fallback: bool = True) -> Optional[AgentInstance]:
+        """
+        Spawn a new instance of an agent for a specific task.
+        If agent can't handle it and allow_fallback=True, tries fallback chain.
+        """
+        tried_agents = [agent_name]
+        current_agent = agent_name
+
+        while current_agent:
+            # Check capabilities
+            if task_type in self.agent_capabilities.get(current_agent, []):
+                # Check instance limit
+                current_instances = self.instances.get(current_agent, [])
+                active = [i for i in current_instances if i.status == "running"]
+
+                if len(active) < self.max_instances.get(current_agent, 2):
+                    # Compose identity-aware system prompt
+                    system_prompt = self.get_task_prompt(current_agent, task_type, task_description)
+
+                    # Can spawn this agent
+                    instance = AgentInstance(
+                        instance_id=f"{current_agent}_{task_type.value}_{uuid.uuid4().hex[:8]}",
+                        agent_name=current_agent,
+                        task_type=task_type,
+                        task_description=task_description,
+                        output_file=self.staging_dir / "pending_audit" / f"{current_agent.lower()}_{task_type.value}_{datetime.now().strftime('%H%M%S')}.md",
+                        fallback_chain=tried_agents if len(tried_agents) > 1 else [],
+                        system_prompt=system_prompt,
+                    )
+
+                    if current_agent not in self.instances:
+                        self.instances[current_agent] = []
+                    self.instances[current_agent].append(instance)
+
+                    # Log if we used fallback
+                    if current_agent != agent_name:
+                        logger.info(f"Task handed off: {agent_name} -> {current_agent} (chain: {tried_agents})")
+                        self.shared_state["handoffs"].append({
+                            "original": agent_name,
+                            "final": current_agent,
+                            "chain": tried_agents,
+                            "task": task_description[:100],
+                            "timestamp": datetime.now().isoformat()
+                        })
+
+                    logger.info(f"Spawned {instance.instance_id} for: {task_description[:50]}...")
+                    return instance
+                else:
+                    logger.warning(f"{current_agent} at max instances ({len(active)})")
+            else:
+                logger.warning(f"{current_agent} cannot handle {task_type.value} tasks")
+
+            # Try fallback if allowed
+            if not allow_fallback:
+                return None
+
+            current_agent = self._get_fallback_agent(agent_name, task_type, tried_agents)
+            if current_agent:
+                tried_agents.append(current_agent)
+
+        # All fallbacks exhausted
+        logger.error(f"No agent available for {task_type.value} task after trying: {tried_agents}")
+        return None
+
+    def escalate_to_audit(self, task: AgentTask, code_output: str,
+                          reason: str = "Fallback chain exhausted") -> str:
+        """
+        Escalate a task to Claude Opus for audit before staging.
+        Returns the audit file path.
+        """
+        audit_id = f"audit_{uuid.uuid4().hex[:8]}"
+        audit_file = self.staging_dir / "pending_audit" / f"{audit_id}.json"
+
+        audit_record = {
+            "audit_id": audit_id,
+            "task_id": task.task_id,
+            "task_type": task.task_type.value,
+            "description": task.description,
+            "original_assignee": task.assigned_to,
+            "handoff_history": task.handoff_history,
+            "code_output": code_output,
+            "reason": reason,
+            "status": "pending_audit",
+            "created_at": datetime.now().isoformat(),
+            "auditor": None,
+            "audit_result": None,
+            "audit_notes": None
+        }
+
+        audit_file.write_text(json.dumps(audit_record, indent=2))
+        self.shared_state["audit_queue"].append(audit_id)
+
+        logger.info(f"Task {task.task_id} escalated to audit: {audit_id}")
+        return str(audit_file)
+
+    def complete_audit(self, audit_id: str, auditor: str,
+                       approved: bool, notes: str,
+                       fixed_code: Optional[str] = None) -> Path:
+        """
+        Complete an audit and move to appropriate folder.
+        If approved, goes to 'audited' folder ready for staging.
+        If rejected, goes to 'rejected' folder with notes.
+        """
+        pending_file = self.staging_dir / "pending_audit" / f"{audit_id}.json"
+
+        if not pending_file.exists():
+            raise FileNotFoundError(f"Audit {audit_id} not found")
+
+        audit_record = json.loads(pending_file.read_text())
+        audit_record["auditor"] = auditor
+        audit_record["audit_result"] = "approved" if approved else "rejected"
+        audit_record["audit_notes"] = notes
+        audit_record["audited_at"] = datetime.now().isoformat()
+
+        if fixed_code:
+            audit_record["fixed_code"] = fixed_code
+            audit_record["code_output"] = fixed_code  # Replace with fixed version
+
+        # Move to appropriate folder
+        if approved:
+            dest_folder = self.staging_dir / "audited"
+        else:
+            dest_folder = self.staging_dir / "rejected"
+
+        dest_file = dest_folder / f"{audit_id}.json"
+        dest_file.write_text(json.dumps(audit_record, indent=2))
+        pending_file.unlink()  # Remove from pending
+
+        # Remove from audit queue
+        if audit_id in self.shared_state["audit_queue"]:
+            self.shared_state["audit_queue"].remove(audit_id)
+
+        logger.info(f"Audit {audit_id} completed by {auditor}: {'APPROVED' if approved else 'REJECTED'}")
+        return dest_file
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
 
     def get_active_instances(self, agent_name: Optional[str] = None) -> List[AgentInstance]:
         """Get all active instances, optionally filtered by agent"""
@@ -135,7 +449,12 @@ class AgentSpawner:
             all_instances.extend([i for i in instances if i.status == "running"])
         return all_instances
 
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
     def complete_instance(self, instance_id: str, result: str):
+=======
+    def complete_instance(self, instance_id: str, result: str,
+                          needs_audit: bool = False):
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
         """Mark an instance as complete with its result"""
         for instances in self.instances.values():
             for instance in instances:
@@ -145,6 +464,7 @@ class AgentSpawner:
 
                     # Write result to staging
                     if instance.output_file:
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
                         instance.output_file.write_text(f"""# {instance.agent_name} - {instance.task_type.value}
 ## Task: {instance.task_description}
 ## Completed: {datetime.now().isoformat()}
@@ -154,6 +474,45 @@ class AgentSpawner:
                     logger.info(f"Instance {instance_id} completed")
                     return
 
+=======
+                        output_content = f"""# {instance.agent_name} - {instance.task_type.value}
+## Task: {instance.task_description}
+## Completed: {datetime.now().isoformat()}
+## Fallback Chain: {' -> '.join(instance.fallback_chain) if instance.fallback_chain else 'Direct assignment'}
+
+{result}
+"""
+                        instance.output_file.write_text(output_content)
+
+                        # If needs audit, create audit record
+                        if needs_audit or instance.fallback_chain:
+                            self._create_audit_from_instance(instance, result)
+
+                    logger.info(f"Instance {instance_id} completed")
+                    return
+
+    def _create_audit_from_instance(self, instance: AgentInstance, result: str):
+        """Create an audit record from a completed instance"""
+        audit_id = f"audit_{uuid.uuid4().hex[:8]}"
+        audit_file = self.staging_dir / "pending_audit" / f"{audit_id}.json"
+
+        audit_record = {
+            "audit_id": audit_id,
+            "instance_id": instance.instance_id,
+            "agent": instance.agent_name,
+            "task_type": instance.task_type.value,
+            "description": instance.task_description,
+            "fallback_chain": instance.fallback_chain,
+            "code_output": result,
+            "status": "pending_audit",
+            "created_at": datetime.now().isoformat(),
+            "reason": "Fallback chain used" if instance.fallback_chain else "Manual audit requested"
+        }
+
+        audit_file.write_text(json.dumps(audit_record, indent=2))
+        self.shared_state["audit_queue"].append(audit_id)
+
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
     def add_task(self, task_type: TaskType, description: str,
                  assigned_to: Optional[str] = None, priority: int = 5) -> AgentTask:
         """Add a task to the queue"""
@@ -173,6 +532,7 @@ class AgentSpawner:
 
     def _best_agent_for(self, task_type: TaskType) -> str:
         """Find the best available agent for a task type"""
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
         candidates = []
         for agent, capabilities in self.agent_capabilities.items():
             if task_type in capabilities:
@@ -186,6 +546,71 @@ class AgentSpawner:
 
         # Return agent with most availability
         return max(candidates, key=lambda x: x[1])[0]
+=======
+        # Priority order for different task types
+        priority_order = {
+            TaskType.DEVELOPMENT: ["OpenCode", "DeepSeek", "Gemini", "Claude", "Phi"],
+            TaskType.RESEARCH: ["Kimi", "DeepSeek", "Grok", "Gemini", "Claude"],
+            TaskType.MCP: ["Claude", "Phi", "Gemini", "OpenCode"],
+            TaskType.MEMORY: ["Kimi", "Farnsworth"],
+            TaskType.TESTING: ["OpenCode", "DeepSeek", "Claude", "ClaudeOpus"],
+            TaskType.AUDIT: ["ClaudeOpus", "Claude"],
+            TaskType.CHAT: ["Farnsworth", "DeepSeek", "Phi", "Kimi"],
+        }
+
+        preferred = priority_order.get(task_type, list(self.agent_capabilities.keys()))
+
+        for agent in preferred:
+            if task_type in self.agent_capabilities.get(agent, []):
+                active = len([i for i in self.instances.get(agent, []) if i.status == "running"])
+                if active < self.max_instances.get(agent, 2):
+                    return agent
+
+        # Fallback to anyone available
+        for agent, capabilities in self.agent_capabilities.items():
+            if task_type in capabilities:
+                active = len([i for i in self.instances.get(agent, []) if i.status == "running"])
+                if active < self.max_instances.get(agent, 2):
+                    return agent
+
+        return "DeepSeek"  # Ultimate fallback
+
+    def handoff_task(self, task_id: str, from_agent: str, reason: str) -> Optional[str]:
+        """
+        Handoff a task from one agent to the next in fallback chain.
+        Returns the new assigned agent or None if all fallbacks exhausted.
+        """
+        for task in self.task_queue:
+            if task.task_id == task_id:
+                task.handoff_history.append(from_agent)
+
+                new_agent = self._get_fallback_agent(
+                    from_agent,
+                    task.task_type,
+                    task.handoff_history
+                )
+
+                if new_agent:
+                    task.assigned_to = new_agent
+                    logger.info(f"Task {task_id} handed off: {from_agent} -> {new_agent} (reason: {reason})")
+
+                    self.shared_state["handoffs"].append({
+                        "task_id": task_id,
+                        "from": from_agent,
+                        "to": new_agent,
+                        "reason": reason,
+                        "timestamp": datetime.now().isoformat()
+                    })
+
+                    return new_agent
+                else:
+                    # No more fallbacks - escalate to audit
+                    logger.warning(f"Task {task_id} exhausted all fallbacks, escalating to audit")
+                    task.status = "needs_audit"
+                    return None
+
+        return None
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
 
     def share_discovery(self, agent_name: str, discovery: str):
         """Share a discovery with all agents"""
@@ -223,6 +648,20 @@ class AgentSpawner:
         """Get all pending tasks"""
         return [t for t in self.task_queue if t.status == "pending"]
 
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
+=======
+    def get_audit_queue(self) -> List[Dict]:
+        """Get all tasks pending audit"""
+        audit_files = list((self.staging_dir / "pending_audit").glob("audit_*.json"))
+        audits = []
+        for f in audit_files:
+            try:
+                audits.append(json.loads(f.read_text()))
+            except Exception:
+                pass
+        return audits
+
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
     def claim_task(self, task_id: str, agent_name: str) -> Optional[AgentTask]:
         """Claim a task for an agent"""
         for task in self.task_queue:
@@ -254,6 +693,11 @@ class AgentSpawner:
             "completed_tasks": len(self.completed_tasks),
             "discoveries": len(self.shared_state["discoveries"]),
             "proposals_pending": len(self.shared_state["reviews_needed"]),
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
+=======
+            "handoffs": len(self.shared_state["handoffs"]),
+            "audit_queue": len(self.shared_state["audit_queue"]),
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
         }
 
 
@@ -270,9 +714,15 @@ def get_spawner() -> AgentSpawner:
 # Development task templates for the 20 staged changes
 DEVELOPMENT_TASKS = [
     # Memory Expansion (5 tasks)
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
     {"type": TaskType.MEMORY, "agent": "cosmos", "desc": "Hierarchical memory compression - compress old memories while preserving key insights"},
     {"type": TaskType.MEMORY, "agent": "Kimi", "desc": "Cross-session memory linking - connect related memories across different conversations"},
     {"type": TaskType.MEMORY, "agent": "cosmos", "desc": "Memory importance scoring - automatically rank memories by relevance and impact"},
+=======
+    {"type": TaskType.MEMORY, "agent": "Farnsworth", "desc": "Hierarchical memory compression - compress old memories while preserving key insights"},
+    {"type": TaskType.MEMORY, "agent": "Kimi", "desc": "Cross-session memory linking - connect related memories across different conversations"},
+    {"type": TaskType.MEMORY, "agent": "Farnsworth", "desc": "Memory importance scoring - automatically rank memories by relevance and impact"},
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
     {"type": TaskType.MEMORY, "agent": "DeepSeek", "desc": "Memory search optimization - faster semantic search across large memory stores"},
     {"type": TaskType.MEMORY, "agent": "Kimi", "desc": "Memory consolidation during idle - dream-like processing to strengthen important memories"},
 
@@ -293,9 +743,21 @@ DEVELOPMENT_TASKS = [
     # Research & Architecture (5 tasks)
     {"type": TaskType.RESEARCH, "agent": "Kimi", "desc": "Swarm consensus protocols - how agents reach agreement on responses"},
     {"type": TaskType.RESEARCH, "agent": "DeepSeek", "desc": "Agent specialization analysis - which agents excel at which tasks"},
+<<<<<<< HEAD:cosmos/core/agent_spawner.py
     {"type": TaskType.RESEARCH, "agent": "cosmos", "desc": "Evolution engine improvements - better learning from interactions"},
     {"type": TaskType.RESEARCH, "agent": "Claude", "desc": "Code quality metrics - automated assessment of generated code"},
     {"type": TaskType.RESEARCH, "agent": "Kimi", "desc": "Collective consciousness metrics - measuring emergent swarm intelligence"},
+=======
+    {"type": TaskType.RESEARCH, "agent": "Farnsworth", "desc": "Evolution engine improvements - better learning from interactions"},
+    {"type": TaskType.RESEARCH, "agent": "Claude", "desc": "Code quality metrics - automated assessment of generated code"},
+    {"type": TaskType.RESEARCH, "agent": "Kimi", "desc": "Collective consciousness metrics - measuring emergent swarm intelligence"},
+
+    # OpenCode Integration (4 tasks) - Open source AI coding agent
+    {"type": TaskType.DEVELOPMENT, "agent": "OpenCode", "desc": "Build async file watcher - monitor staging dir for new code to review"},
+    {"type": TaskType.DEVELOPMENT, "agent": "OpenCode", "desc": "Create code diff visualizer - show changes between staged and production code"},
+    {"type": TaskType.MCP, "agent": "OpenCode", "desc": "Build MCP tool for automated testing - run pytest on staged changes"},
+    {"type": TaskType.RESEARCH, "agent": "OpenCode", "desc": "Analyze agent collaboration patterns - which agents work well together"},
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/agent_spawner.py
 ]
 
 def initialize_development_tasks():

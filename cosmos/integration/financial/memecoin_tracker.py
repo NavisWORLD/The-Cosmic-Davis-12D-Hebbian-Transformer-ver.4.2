@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/integration/financial/memecoin_tracker.py
 cosmos Memecoin Tracker - Pump.fun & Bags.fm.
+=======
+Farnsworth Memecoin Tracker - Pump.fun & Bags.fm.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/financial/memecoin_tracker.py
 
 "Tracking the degens, one bonding curve at a time."
 """

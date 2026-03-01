@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/incidents/incident_manager.py
 cosmos Incident Manager
+=======
+Farnsworth Incident Manager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/incident_manager.py
 
 "When disaster strikes, which it frequently does in my lab,
  always blame the mutant sea bass!"

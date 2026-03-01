@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/core/environment.py
 cosmos Environment Awareness
+=======
+Farnsworth Environment Awareness
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/environment.py
 
 "Good news, everyone! I now know exactly where and what I'm running on!"
 
@@ -641,7 +645,11 @@ class EnvironmentDetector:
     def _get_relevant_env_vars(self) -> Dict[str, str]:
         """Get relevant environment variables."""
         relevant_prefixes = [
+<<<<<<< HEAD:cosmos/core/environment.py
             "cosmos_", "PATH", "HOME", "USER", "SHELL",
+=======
+            "FARNSWORTH_", "PATH", "HOME", "USER", "SHELL",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/environment.py
             "TERM", "LANG", "LC_", "DISPLAY", "SSH_",
             "DOCKER_", "KUBERNETES_", "AWS_", "AZURE_", "GOOGLE_",
             "HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY",
@@ -673,7 +681,11 @@ class EnvironmentDetector:
 
         lines = [
             "=" * 50,
+<<<<<<< HEAD:cosmos/core/environment.py
             "cosmos ENVIRONMENT SUMMARY",
+=======
+            "FARNSWORTH ENVIRONMENT SUMMARY",
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/environment.py
             "=" * 50,
             "",
             "SYSTEM",

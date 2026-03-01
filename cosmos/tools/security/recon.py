@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/tools/security/recon.py
 cosmos Reconnaissance Engine
+=======
+Farnsworth Reconnaissance Engine
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/security/recon.py
 
 "Good news, everyone! I've built a reconnaissance tool for authorized security testing!"
 

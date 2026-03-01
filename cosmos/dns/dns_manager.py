@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD:cosmos/dns/dns_manager.py
 cosmos DNS Manager
+=======
+Farnsworth DNS Manager
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/dns/dns_manager.py
 
 "I've conquered DNS! Now I control what names mean what!"
 
@@ -485,7 +489,11 @@ class Route53DNSProvider(DNSProvider):
 
 class DNSManager:
     """
+<<<<<<< HEAD:cosmos/dns/dns_manager.py
     Multi-provider DNS management for cosmos.
+=======
+    Multi-provider DNS management for Farnsworth.
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/dns/dns_manager.py
 
     Features:
     - Cloudflare, Route 53, Azure DNS support

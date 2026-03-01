@@ -101,7 +101,11 @@ async def get_status():
     try:
         r = requests.get("http://localhost:8080/api/workers/status", timeout=5)
         return r.json()
+<<<<<<< HEAD:cosmos/core/auto_broadcaster.py
     except:
+=======
+    except Exception:
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/auto_broadcaster.py
         return None
 
 async def send_update(agent, task_type, desc, done, building, queued, discoveries):
@@ -116,7 +120,11 @@ Building: **{desc[:60]}...**
 ```
 
 📊 Progress: {done} done | {building} building | {queued} queued | {discoveries} discoveries
+<<<<<<< HEAD:cosmos/core/auto_broadcaster.py
 Staged at /cosmos/staging/ for review!"""
+=======
+Staged at /farnsworth/staging/ for review!"""
+>>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/auto_broadcaster.py
 
     try:
         async with websockets.connect("ws://localhost:8080/ws/swarm", ping_interval=20) as ws:
