@@ -17,15 +17,13 @@ description: |
 
   All processing runs locally on your machine. Your data never leaves your computer.
 
-  Live Demo: https://ai.cosmos.cloud
+  Live Demo:
 
   "COSMOS: The Symbiotic Mirror - 12D Neural Symbiosis"
 
-author: timowhite88
+author: cory davis 
 license: Dual (Free + Commercial)
-repository: https://github.com/timowhite88/cosmos
-homepage: https://ai.cosmos.cloud
-documentation: https://github.com/timowhite88/cosmos/blob/main/docs/USER_GUIDE.md
+repository: https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2.git
 
 # Server configuration
 startCommand:
