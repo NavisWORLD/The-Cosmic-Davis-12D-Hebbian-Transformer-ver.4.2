@@ -67,12 +67,13 @@ class QuantumEntanglementBridge:
         print(f"[QUANTUM] Attempting connection with token: {token_str}")
         
         try:
-            # 1. Initialize Service
             try:
-                self.service = QiskitRuntimeService(channel="ibm_quantum_platform", token=self.api_token)
+                # 1. Save and Initialize Service
+                QiskitRuntimeService.save_account(channel="ibm_quantum", token=self.api_token, overwrite=True, set_as_default=True)
+                self.service = QiskitRuntimeService(channel="ibm_quantum")
             except Exception as e:
-                # Fallback: Try 'ibm_cloud' channel or just default if token implies it
-                print(f"[QUANTUM] 'ibm_quantum_platform' channel failed ({e}). Trying default...")
+                # Fallback: Try token directly
+                print(f"[QUANTUM] 'ibm_quantum' channel failed ({e}). Trying default...")
                 self.service = QiskitRuntimeService(token=self.api_token)
 
             print(f"[QUANTUM] Service initialized. Finding backend...")

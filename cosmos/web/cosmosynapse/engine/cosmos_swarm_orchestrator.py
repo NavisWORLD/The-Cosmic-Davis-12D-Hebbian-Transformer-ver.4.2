@@ -762,22 +762,14 @@ class CosmosSwarmOrchestrator:
         # Build messages for chat API
         messages = []
         if system:
-            messages.append({"role": "system", "content": system})
-        messages.append({"role": "user", "content": prompt})
-
-        # Dynamically scale compute parameters based on quantum state
-        options = {"num_predict": 400}  # Baseline
-        if quantum_entropy is not None:
-             base = 1000
-             # Scale exponentially (0.0 to 1.0 = ~1k to ~4k max tokens)
-             max_compute = int(base * (1.0 + (quantum_entropy * 3.0)))
-             options["num_predict"] = max_compute
-             options["temperature"] = 0.4 + (quantum_entropy * 0.4)
-             logger.info(f"[{model_name.upper()} COMPUTE] Scale: {max_compute} tokens | Temp: {options['temperature']:.2f}")
+            combined_prompt = f"{system}\n\n{prompt}"
+            messages.append({"role": "user", "content": combined_prompt})
+        else:
+            messages.append({"role": "user", "content": prompt})
 
         response = await loop.run_in_executor(
             None,
-            lambda: ollama.chat(model=model_name, messages=messages, options=options)
+            lambda: ollama.chat(model=model_name, messages=messages)
         )
 
         if isinstance(response, dict):
