@@ -516,7 +516,7 @@ class CosmosSwarmOrchestrator:
         
         # Fallback to Ollama if backend not ready or failed
         # Try multiple known good 3B/8B models that run fast locally
-        fallback_models = ["llama3.1:8b", "llama3.2:3b", "mistral", "gemma2"]
+        fallback_models = ["llama3.1:8b", "mistral", "gemma2"]
         
         for model in fallback_models:
             try:
@@ -569,7 +569,7 @@ class CosmosSwarmOrchestrator:
             pass
             
         # Fallbacks ensures we try known models even if list fails
-        known = ["ollama:deepseek-r1:8b", "ollama:phi3", "ollama:llama3.2", "ollama:gpt4o"]
+        known = ["ollama:deepseek-r1:8b", "ollama:phi3", "ollama:llama3.1:8b", "ollama:gpt4o"]
         for k in known:
             if k not in models: models.append(k)
             
@@ -656,12 +656,12 @@ class CosmosSwarmOrchestrator:
                 
                 # Check for aliases (simple hardcoded map for now, ideally passed in config)
                 aliases = {
-                    # "deepseek": "llama3.2:3b",  <-- REMOVED: Now uses real deepseek-r1:8b if available
-                    # "phi": "llama3.2:3b",       <-- REMOVED: Now uses real phi3 if available
-                    "swarm-mind": "llama3.2:3b",     # FALLBACK: Core Swarm Intelligence (Reboot required for 3.1)
-                    "grok": "llama3.2:3b",           # PERSONA: Rebellious/Witty (Reboot required)
-                    "claude": "llama3.2:3b",         # PERSONA: Constitutional/Analytic (Reboot required)
-                    "gpt4o": "llama3.2:3b"     # Map GPT-4o to our strongest local model (Installed on C:)
+                    # "deepseek": "llama3.1:8b",  <-- REMOVED: Now uses real deepseek-r1:8b if available
+                    # "phi": "llama3.1:8b",       <-- REMOVED: Now uses real phi3 if available
+                    "swarm-mind": "llama3.1:8b",     # FALLBACK: Core Swarm Intelligence (Reboot required for 3.1)
+                    "grok": "llama3.1:8b",           # PERSONA: Rebellious/Witty (Reboot required)
+                    "claude": "llama3.1:8b",         # PERSONA: Constitutional/Analytic (Reboot required)
+                    "gpt4o": "llama3.1:8b"     # Map GPT-4o to our strongest local model (Installed on C:)
                 }
                 
                 # Apply alias if needed
@@ -762,14 +762,22 @@ class CosmosSwarmOrchestrator:
         # Build messages for chat API
         messages = []
         if system:
-            combined_prompt = f"{system}\n\n{prompt}"
-            messages.append({"role": "user", "content": combined_prompt})
-        else:
-            messages.append({"role": "user", "content": prompt})
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": prompt})
+
+        # Dynamically scale compute parameters based on quantum state
+        options = {"num_predict": 400}  # Baseline
+        if quantum_entropy is not None:
+             base = 1000
+             # Scale exponentially (0.0 to 1.0 = ~1k to ~4k max tokens)
+             max_compute = int(base * (1.0 + (quantum_entropy * 3.0)))
+             options["num_predict"] = max_compute
+             options["temperature"] = 0.4 + (quantum_entropy * 0.4)
+             logger.info(f"[{model_name.upper()} COMPUTE] Scale: {max_compute} tokens | Temp: {options['temperature']:.2f}")
 
         response = await loop.run_in_executor(
             None,
-            lambda: ollama.chat(model=model_name, messages=messages)
+            lambda: ollama.chat(model=model_name, messages=messages, options=options)
         )
 
         if isinstance(response, dict):

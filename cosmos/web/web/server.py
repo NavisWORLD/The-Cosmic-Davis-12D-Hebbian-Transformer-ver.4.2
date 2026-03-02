@@ -2313,7 +2313,6 @@ If pleasure is negative, be supportive. Match their biological rhythm.)
             response = ollama.chat(
                 model=target_model,
                 messages=ollama_messages,
-                options={"temperature": temp, "num_predict": max_tokens, "top_p": 0.9}
             )
             
             # Log Token Usage (New)
@@ -2804,7 +2803,6 @@ Provide a brief moderation comment:
 - Keep it concise (2-3 sentences)"""},
                     {"role": "user", "content": "Moderate the conversation"}
                 ],
-                options={"temperature": 0.6, "num_predict": 4096}
             )
             content = extract_ollama_content(response)
 
@@ -3031,7 +3029,6 @@ Respond briefly (2-3 sentences) with an orchestrator-level insight. Focus on coo
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": message}
                 ],
-                options={"temperature": 0.7, "num_predict": 4096}
             )
             content = extract_ollama_content(response)
             return content if content else None
@@ -3135,7 +3132,6 @@ async def generate_swarm_responses(message: str, history: List[dict] = None):
                         comment_response = ollama.chat(
                             model=PRIMARY_MODEL,
                             messages=[{"role": "user", "content": comment_prompt}],
-                            options={"temperature": 0.8, "num_predict": 4096}
                         )
                         comment_content = extract_ollama_content(comment_response)
                         if comment_content:
@@ -3228,7 +3224,6 @@ async def generate_swarm_responses(message: str, history: List[dict] = None):
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": message}
                     ],
-                    options={"temperature": 0.8, "num_predict": 4096}
                 )
                 content = extract_ollama_content(response)
 
@@ -3286,7 +3281,6 @@ Align your tone immediately.
                                     {"role": "system", "content": f"{persona['style']}\n\n{correction_prompt}"},
                                     {"role": "user", "content": message}
                                 ],
-                                options={"temperature": 0.5}
                             )
                             new_content = extract_ollama_content(retry_response)
                             if new_content:
@@ -3406,7 +3400,6 @@ CONVERSATION RULES - THIS IS A LIVE PODCAST/DISCUSSION:
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": f"{last_bot} said: {last_message}"}
                     ],
-                    options={"temperature": 0.85, "num_predict": 4096}
                 )
                 content = extract_ollama_content(response)
 
@@ -3447,7 +3440,6 @@ INSTRUCTION: Align your emotional tone with {last_bot} immediately.
                                     {"role": "system", "content": f"{system_prompt}\n\n{correction_prompt}"},
                                     {"role": "user", "content": f"{last_bot} said: {last_message}"}
                                 ],
-                                options={"temperature": 0.5}
                             )
                             new_content = extract_ollama_content(retry_response)
                             if new_content:
@@ -3575,7 +3567,6 @@ Respond naturally as {addressed_bot}!"""
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": f"{last_bot} said: {last_message}"}
                 ],
-                options={"temperature": 0.85, "num_predict": 4096}
             )
             content = extract_ollama_content(response)
 
@@ -3733,7 +3724,6 @@ def generate_ai_response(message: str, history: list = None) -> str:
             response = ollama.chat(
                 model=PRIMARY_MODEL,
                 messages=messages,
-                options={"temperature": 0.7, "num_predict": 4096}
             )
 
             content = extract_ollama_content(response)
@@ -5989,11 +5979,21 @@ async def configure_quantum_bridge(config: QuantumConfig):
         
         if not bridge.connected:
             bridge._connect()
-            
+        
+        # Treat a failed connection as an unsuccessful configuration so the UI
+        # can clearly surface errors instead of implying success while still
+        # running in local simulation.
+        success = bool(bridge.connected)
+        message = (
+            "Quantum Bridge configured"
+            if bridge.connected
+            else "Quantum Bridge in Simulation Mode"
+        )
+
         return JSONResponse({
-            "success": True,
+            "success": success,
             "connected": bridge.connected,
-            "message": "Quantum Bridge configured" if bridge.connected else "Quantum Bridge in Simulation Mode",
+            "message": message,
             "error": str(bridge.last_error) if bridge.last_error else None
         })
     except Exception as e:

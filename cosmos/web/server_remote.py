@@ -1921,7 +1921,6 @@ Provide thorough analysis. Reference specific numbers from the data."""
                     response = ollama.chat(
                         model=PRIMARY_MODEL,
                         messages=[{"role": "user", "content": full_prompt}],
-                        options={"temperature": 0.7, "num_predict": 1500}
                     )
 
                     content = extract_ollama_content(response)
@@ -2613,7 +2612,6 @@ Provide a thoughtful, complete response that adds value to the discussion."""
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": prompt}
                 ],
-                options={"temperature": 0.9, "num_predict": max_tokens}
             )
             return extract_ollama_content(response, max_length=max_tokens * 2)
         except Exception as e:
@@ -3068,7 +3066,6 @@ Provide a thoughtful moderation comment:
 - Add value to the conversation with your perspective"""},
                     {"role": "user", "content": "Moderate the conversation"}
                 ],
-                options={"temperature": 0.7, "num_predict": 2000}
             )
             content = extract_ollama_content(response)
 
@@ -3239,7 +3236,6 @@ Respond briefly (2-3 sentences) with an orchestrator-level insight. Focus on coo
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": message}
                 ],
-                options={"temperature": 0.7, "num_predict": 2000}
             )
             content = extract_ollama_content(response)
             return content if content else None
@@ -3298,7 +3294,6 @@ async def generate_swarm_responses(message: str, history: List[dict] = None):
                         comment_response = ollama.chat(
                             model=PRIMARY_MODEL,
                             messages=[{"role": "user", "content": comment_prompt}],
-                            options={"temperature": 0.8, "num_predict": 1500}
                         )
                         comment_content = extract_ollama_content(comment_response)
                         if comment_content:
@@ -3363,7 +3358,6 @@ async def generate_swarm_responses(message: str, history: List[dict] = None):
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": message}
                     ],
-                    options={"temperature": 0.8, "num_predict": 4096}
                 )
                 content = extract_ollama_content(response)
 
@@ -3474,7 +3468,6 @@ CONVERSATION RULES - THIS IS A LIVE PODCAST/DISCUSSION:
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": f"{last_bot} said: {last_message}"}
                     ],
-                    options={"temperature": 0.85, "num_predict": 2000}
                 )
                 content = extract_ollama_content(response)
 
@@ -3601,7 +3594,6 @@ Respond naturally as {addressed_bot}!"""
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": f"{last_bot} said: {last_message}"}
                 ],
-                options={"temperature": 0.85, "num_predict": 2000}
             )
             content = extract_ollama_content(response)
 
@@ -4192,7 +4184,6 @@ def generate_ai_response(message: str, history: list = None) -> str:
             response = ollama.chat(
                 model=PRIMARY_MODEL,
                 messages=messages,
-                options={"temperature": 0.7, "num_predict": 2000}
             )
 
             content = extract_ollama_content(response)
@@ -6099,7 +6090,6 @@ async def init_polymarket_predictor():
                             {"role": "system", "content": "You are DeepSeek, a logical reasoning specialist. Analyze prediction markets with careful reasoning."},
                             {"role": "user", "content": prompt}
                         ],
-                        options={"num_predict": max_tokens}
                     )
                     return response['message']['content']
                 except Exception as e:
@@ -6118,7 +6108,6 @@ async def init_polymarket_predictor():
                             {"role": "system", "content": "You are Cosmos, the Swarm Mind coordinator. Synthesize information and make final judgments on prediction markets."},
                             {"role": "user", "content": prompt}
                         ],
-                        options={"num_predict": max_tokens}
                     )
                     return response['message']['content']
                 except Exception as e:

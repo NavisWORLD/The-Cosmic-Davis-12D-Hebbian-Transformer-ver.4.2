@@ -44,6 +44,11 @@ class QuantumEntanglementBridge:
         """Public method to trigger connection or return status."""
         if self.connected:
             return True
+        # If there's still no token, don't attempt a remote connection.
+        if not self.api_token:
+            print("[QUANTUM] connect() called with no API token; remaining in simulation mode.")
+            self.connected = False
+            return False
         self._connect()
         return self.connected
 
@@ -53,7 +58,19 @@ class QuantumEntanglementBridge:
         
         with open("quantum_debug.log", "a") as f:
             f.write(f"[CONNECT] Attempting connection with token (First 5): {self.api_token[:5] if self.api_token else 'None'}...\n")
-        
+
+        # If no token is configured, stay in simulation mode and DO NOT
+        # attempt any remote connection. This prevents noisy stack traces
+        # when users haven't set up an IBM Quantum account.
+        if not self.api_token:
+            msg = "No IBM Quantum API token configured; staying in simulation mode."
+            print(f"[QUANTUM] {msg}")
+            self.last_error = msg
+            self.connected = False
+            with open("quantum_debug.log", "a") as f:
+                f.write(f"[CONNECT] Skipped: {msg}\n")
+            return
+
         if not QISKIT_AVAILABLE:
             error_msg = f"Qiskit libraries missing: {QISKIT_ERROR}"
             print(f"[QUANTUM] {error_msg}")
@@ -67,13 +84,12 @@ class QuantumEntanglementBridge:
         print(f"[QUANTUM] Attempting connection with token: {token_str}")
         
         try:
+            # 1. Initialize Service
             try:
-                # 1. Save and Initialize Service
-                QiskitRuntimeService.save_account(channel="ibm_quantum", token=self.api_token, overwrite=True, set_as_default=True)
-                self.service = QiskitRuntimeService(channel="ibm_quantum")
+                self.service = QiskitRuntimeService(channel="ibm_quantum_platform", token=self.api_token)
             except Exception as e:
-                # Fallback: Try token directly
-                print(f"[QUANTUM] 'ibm_quantum' channel failed ({e}). Trying default...")
+                # Fallback: Try 'ibm_cloud' channel or just default if token implies it
+                print(f"[QUANTUM] 'ibm_quantum_platform' channel failed ({e}). Trying default...")
                 self.service = QiskitRuntimeService(token=self.api_token)
 
             print(f"[QUANTUM] Service initialized. Finding backend...")
