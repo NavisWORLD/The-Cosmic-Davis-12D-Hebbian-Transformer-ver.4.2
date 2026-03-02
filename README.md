@@ -1,6 +1,6 @@
 # 🧠 cosmos: Your Claude Companion AI
 
-<div align="center">](https://zenodo.org/records/17574447)
+<div align="center">(https://zenodo.org/records/17574447)
 
 **Give Claude superpowers: persistent memory, model swarms, multimodal understanding, and self-evolution.**
 
