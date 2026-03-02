@@ -13,7 +13,8 @@
 [![Smithery](https://img.shields.io/badge/Smithery-MCP%20Server-blueviolet.svg)](https://smithery.ai/server/cosmos)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-ai.cosmos.cloud-ff69b4.svg)](https://ai.cosmos.cloud)
 
-[**Live Demo**](https://ai.cosmos.cloud) • [**Documentation**](docs/USER_GUIDE.md) • [**Smithery**](https://smithery.ai/server/cosmos) • [**Roadmap**](ROADMAP.md) • [**Setup Wizard**](cosmos/core/setup_wizard.py) • [**Isolated Mode**](README.md#isolated-mode)
+
+[**Documentation**](docs/USER_GUIDE.md) • [**Smithery**](https://smithery.ai/server/cosmos) • [**Roadmap**](ROADMAP.md) • [**Setup Wizard**](cosmos/core/setup_wizard.py) • [**Isolated Mode**](README.md#isolated-mode)
 
 </div>
 
@@ -4345,8 +4346,7 @@ If cosmos helps you, consider giving it a star! ⭐
 
 *"Good news, everyone!"* - Professor cosmos
 
-[Report Bug](https://github.com/timowhite88/cosmos/issues) • [Request Feature](https://github.com/timowhite88/cosmos/issues) • [Get Commercial License](https://github.com/timowhite88)
 
-**Try the Live Demo: [ai.cosmos.cloud](https://ai.cosmos.cloud)**
+
 
 </div>
