@@ -1,16 +1,3 @@
-"""
-Quantum  Entanglement Bridge
-============================
-Connects the cosmos/Cosmos system to IBM Quantum Processors.
-Uses Qiskit to generate true quantum entropy for the swarm's decision making.
-
-Key Features:
-- Connects to IBM Quantum via API Token.
-- Runs a simple H-gate circuit to generate true randomness.
-- Caches quantum bits to avoid QPU latency (Quantum Buffer).
-- Fallback to pseudo-randomness if QPU is unavailable.
-"""
-
 import asyncio
 import time
 import numpy as np
@@ -82,16 +69,11 @@ class QuantumEntanglementBridge:
         try:
             # 1. Initialize Service
             try:
-                self.service = QiskitRuntimeService(channel="ibm_quantum", token=self.api_token)
+                self.service = QiskitRuntimeService(channel="ibm_quantum_platform", token=self.api_token)
             except Exception as e:
                 # Fallback: Try 'ibm_cloud' channel or just default if token implies it
-                print(f"[QUANTUM] 'ibm_quantum' channel failed. Trying default...")
-                try:
-                    self.service = QiskitRuntimeService(token=self.api_token)
-                except Exception as inner_e:
-                    raise Exception(f"Failed default connection: {inner_e}")
-
-            print(f"[QUANTUM] Service initialized. Finding backend...")
+                print(f"[QUANTUM] 'ibm_quantum_platform' channel failed ({e}). Trying default...")
+                self.service = QiskitRuntimeService(token=self.api_token)
 
             print(f"[QUANTUM] Service initialized. Finding backend...")
 
@@ -118,6 +100,7 @@ class QuantumEntanglementBridge:
             
         except Exception as e:
             print(f"[QUANTUM] Connection failed: {e}")
+            traceback.print_exc()
             self.last_error = str(e)
             self.connected = False
             with open("quantum_debug.log", "a") as f:
@@ -137,14 +120,6 @@ class QuantumEntanglementBridge:
         if 'cst_physics' in user_physics:
             phase = user_physics['cst_physics'].get('geometric_phase_rad', 0.0)
             
-        # Extract Dark Matter (passed separately usually, but maybe in physics dict?)
-        # For now assume 0.0 if not found, or maybe it's passed differently.
-        # The prompt says: q_verdict = self.quantum.collapse(self.field.user_physics)
-        # Ideally the field passes a combined dict. 
-        # But SynapticField has user_physics AND dark_matter_state.
-        # In cns_core.py, user_physics is just the user part.
-        
-        # Let's assume w is 0.1 default
         w = 0.1 
         
         return self.collapse_state_vector(phase, w)
@@ -152,36 +127,13 @@ class QuantumEntanglementBridge:
     def collapse_state_vector(self, phase: float, dark_matter_w: float, threshold: float = 0.65) -> int:
         """
         Collapse the wave function to decide: SPEAK (1) or WAIT (0).
-
         This is the system's "Free Will" mechanism.
-
-        Logic:
-            activation = (phase_signal * w_signal) + quantum_entropy
-            If activation > threshold → ACT (1)
-            Else → WAIT (0)
-
-        Args:
-            phase: The user's current Geometric Phase (radians). ~0.78 = sync.
-            dark_matter_w: The accumulated "Unspoken" potential from the Lorenz attractor.
-            threshold: Activation threshold (default 0.65). Higher = more selective.
-
-        Returns:
-            1 (SPEAK) or 0 (WAIT)
         """
-        # Get quantum entropy (true or pseudo-random)
         q = self.get_entropy()
-
-        # Normalize phase to 0-1 range (0.0 = dead calm, 1.0+ = manic)
         phase_signal = min(1.0, abs(phase) / 1.5)
-
-        # Normalize dark matter w (clamp to 0-1, w can grow unbounded)
         w_signal = min(1.0, max(0.0, dark_matter_w / 10.0))
 
-        # The Collapse Equation:
-        # - phase_signal * w_signal: both must be elevated for auto-speech
-        # - q: quantum noise breaks ties and introduces true indeterminacy
         activation = (phase_signal * w_signal * 0.6) + (q * 0.4)
-
         return 1 if activation > threshold else 0
 
     def get_entropy(self) -> float:
@@ -195,13 +147,11 @@ class QuantumEntanglementBridge:
         with self.buffer_lock:
             if self.entropy_buffer:
                 val = self.entropy_buffer.pop(0)
-                # Refill if getting low
                 if len(self.entropy_buffer) < self.min_buffer_size and not self.is_refilling:
                     self._trigger_refill()
                 print(f"[QUANTUM] Entropy Consumed: {val:.4f} (Buffer: {len(self.entropy_buffer)})") 
                 return val
             else:
-                # Buffer empty, trigger refill and return pseudo
                 if not self.is_refilling:
                     self._trigger_refill()
                 return np.random.random()
@@ -209,7 +159,7 @@ class QuantumEntanglementBridge:
     def _trigger_refill(self):
         """Start async refill of entropy buffer."""
         if not self.backend:
-            return # Simulation mode handled by get_entropy direct return
+            return 
             
         thread = threading.Thread(target=self._refill_buffer)
         thread.daemon = True
@@ -227,33 +177,23 @@ class QuantumEntanglementBridge:
             # Run on backend
             pm = generate_preset_pass_manager(backend=self.backend, optimization_level=1)
             isa_circuit = pm.run(qc)
-            # SamplerV2 takes mode (backend) as positional or keyword 'mode'
             sampler = Sampler(mode=self.backend)
             job = sampler.run([isa_circuit])
             result = job.result()
             
-            # Extract counts (measurement dictionary)
-            # SamplerV2 returns PubResult, need to navigate it
-            # Simplified: just use whatever keys we got to seed entropy
             pub_result = result[0]
             counts = pub_result.data.meas.get_counts()
             
-            # Process counts into floats
             new_entropy = []
             for bitstring, count in counts.items():
-                # Convert bitstring to float 0-1
-                # e.g. "10101" -> int(21) / 2^5
                 val = int(bitstring, 2) / (2**5)
-                # Add copies proportional to observation count (weighted probability)
-                # Cap to avoid massive buffers if count is high
                 n_adds = min(count, 5) 
                 new_entropy.extend([val] * n_adds)
                 
-            np.random.shuffle(new_entropy) # Shuffle purely to break order artifacts
+            np.random.shuffle(new_entropy)
             
             with self.buffer_lock:
                 self.entropy_buffer.extend(new_entropy)
-                # Cap buffer
                 if len(self.entropy_buffer) > 100:
                     self.entropy_buffer = self.entropy_buffer[:100]
                     
@@ -272,6 +212,5 @@ def get_quantum_bridge(api_token: Optional[str] = None):
     if _bridge_instance is None:
         _bridge_instance = QuantumEntanglementBridge(api_token)
     elif api_token and api_token != _bridge_instance.api_token:
-        # Token changed — update it so reconnect uses the new one
         _bridge_instance.api_token = api_token
     return _bridge_instance

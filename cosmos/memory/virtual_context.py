@@ -144,7 +144,7 @@ class ContextWindow:
 
     def __init__(
         self,
-        max_tokens: int = 4096,
+        max_tokens: int = 1_000_000_000,
         reserve_tokens: int = 512,  # Reserved for generation
     ):
         self.max_tokens = max_tokens
@@ -795,7 +795,7 @@ class VirtualContext:
 
     def __init__(
         self,
-        context_window_size: int = 4096,
+        context_window_size: int = 1_000_000_000,
         data_dir: str = "./data/memory",
     ):
         self.context_window = ContextWindow(max_tokens=context_window_size)
