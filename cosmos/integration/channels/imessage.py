@@ -1,8 +1,8 @@
 """
-Farnsworth iMessage Channel Adapter
+Cosmos iMessage Channel Adapter
 ====================================
 
-iMessage integration for the Farnsworth swarm (macOS only).
+iMessage integration for the Cosmos swarm (macOS only).
 
 Features:
 - Direct messages

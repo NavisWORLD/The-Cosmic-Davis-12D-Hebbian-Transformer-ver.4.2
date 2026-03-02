@@ -3,7 +3,7 @@ FARNS Client — Async client for querying remote bots via the FARNS mesh.
 
 Simple API for the rest of the codebase:
 
-    from farnsworth.network.farns_client import FARNSClient
+    from Cosmos.network.farns_client import FARNSClient
 
     client = FARNSClient()
     await client.connect()

@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/health/analysis.py
 cosmos Health Analysis Engine
-=======
-Farnsworth Health Analysis Engine
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/analysis.py
 
 Advanced health data analysis including trend detection, anomaly detection,
 correlation analysis, and wellness score calculation.

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Token Scanner - Farnsworth AI</title>
+    <title>Token Scanner - Cosmos AI</title>
     <meta name="description" content="Real-time token detection with AI swarm consensus analysis.">
     <meta name="theme-color" content="#8b5cf6">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -392,7 +392,7 @@
 
 <!-- Top Nav -->
 <nav class="top-nav">
-    <div class="nav-logo"><a href="/pro">FARNSWORTH</a></div>
+    <div class="nav-logo"><a href="/pro">COSMOS</a></div>
     <div class="nav-links">
         <a href="/pro/chat">Chat</a>
         <a href="/chat">Swarm</a>
@@ -552,23 +552,23 @@
     'use strict';
 
     // -- Auth Check --
-    const token = localStorage.getItem('farnsworth_token');
+    const token = localStorage.getItem('cosmos_token');
     if (!token) { window.location.href = '/pro/login'; return; }
-    const user = JSON.parse(localStorage.getItem('farnsworth_user') || '{}');
+    const user = JSON.parse(localStorage.getItem('cosmos_user') || '{}');
     const navUserName = document.getElementById('navUserName');
     if (user.email) navUserName.textContent = user.email;
     else if (user.wallet) navUserName.textContent = user.wallet.slice(0,6) + '...' + user.wallet.slice(-4);
     document.getElementById('logoutBtn').addEventListener('click', function(e) {
         e.preventDefault();
-        localStorage.removeItem('farnsworth_token');
-        localStorage.removeItem('farnsworth_user');
+        localStorage.removeItem('cosmos_token');
+        localStorage.removeItem('cosmos_user');
         window.location.href = '/pro/login';
     });
 
     // -- State --
     let liveMode = true;
     let liveInterval = null;
-    let activeAlerts = JSON.parse(localStorage.getItem('farnsworth_alerts') || '[]');
+    let activeAlerts = JSON.parse(localStorage.getItem('cosmos_alerts') || '[]');
     let currentChain = 'solana';
     let minLiq = 5000;
     let minScore = 0;
@@ -884,7 +884,7 @@
         document.querySelectorAll('.alert-item-remove').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 activeAlerts.splice(parseInt(this.dataset.idx), 1);
-                localStorage.setItem('farnsworth_alerts', JSON.stringify(activeAlerts));
+                localStorage.setItem('cosmos_alerts', JSON.stringify(activeAlerts));
                 renderAlerts();
             });
         });
@@ -892,7 +892,7 @@
 
     function addAlert(score, liq) {
         activeAlerts.push({ score: parseInt(score), liq: parseInt(liq) });
-        localStorage.setItem('farnsworth_alerts', JSON.stringify(activeAlerts));
+        localStorage.setItem('cosmos_alerts', JSON.stringify(activeAlerts));
         renderAlerts();
     }
 
@@ -919,7 +919,7 @@
         activeAlerts.forEach(function(alert) {
             if (token.score >= alert.score && token.liquidity >= alert.liq) {
                 if ('Notification' in window && Notification.permission === 'granted') {
-                    new Notification('Farnsworth Scanner Alert', {
+                    new Notification('Cosmos Scanner Alert', {
                         body: token.symbol + ' scored ' + token.score + '/100 with ' + formatNum(token.liquidity) + ' liquidity',
                         icon: '/static/favicon.png'
                     });

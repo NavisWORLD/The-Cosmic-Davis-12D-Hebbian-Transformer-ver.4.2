@@ -17,7 +17,7 @@ router = APIRouter()
 
 def _get_templates():
     try:
-        from farnsworth.web.server import templates
+        from Cosmos.web.server import templates
         return templates
     except Exception:
         from fastapi.templating import Jinja2Templates
@@ -27,7 +27,7 @@ def _get_templates():
 def _get_node():
     """Get the running FARNS node, if available."""
     try:
-        from farnsworth.network.farns_node import get_farns_node
+        from Cosmos.network.farns_node import get_farns_node
         return get_farns_node()
     except Exception:
         return None

@@ -1,5 +1,5 @@
 """
-Farnsworth Voice Interface - OpenClaw Voice Compatibility
+Cosmos Voice Interface - OpenClaw Voice Compatibility
 ==========================================================
 
 Provides voice interaction capabilities matching OpenClaw's Voice Wake + Talk Mode:
@@ -121,7 +121,7 @@ class VoiceConfig:
     tts_volume: float = 1.0
 
     # Voice wake settings
-    wake_word: str = "hey farnsworth"
+    wake_word: str = "hey cosmos"
     wake_sensitivity: float = 0.5
     continuous_listen: bool = False
 
@@ -147,7 +147,7 @@ class VoiceInterface:
             output_dir: Directory for audio output
         """
         self.config = config or VoiceConfig()
-        self.output_dir = Path(output_dir or os.path.expanduser("~/.farnsworth/voice"))
+        self.output_dir = Path(output_dir or os.path.expanduser("~/.cosmos/voice"))
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
         # Initialize recognizer
@@ -399,7 +399,7 @@ class VoiceInterface:
             from vosk import Model, KaldiRecognizer
 
             # This requires a Vosk model to be downloaded
-            model_path = os.path.expanduser("~/.farnsworth/vosk-model")
+            model_path = os.path.expanduser("~/.cosmos/vosk-model")
             if not Path(model_path).exists():
                 raise FileNotFoundError(f"Vosk model not found at {model_path}")
 

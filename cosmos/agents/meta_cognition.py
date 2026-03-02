@@ -22,11 +22,11 @@ from enum import Enum
 
 from loguru import logger
 
-from cosmos.agents.base_agent import BaseAgent, AgentCapability, TaskResult
+from Cosmos.agents.base_agent import BaseAgent, AgentCapability, TaskResult
 
 # Nexus integration for self-healing
 try:
-    from farnsworth.core.nexus import nexus, SignalType
+    from Cosmos.core.nexus import nexus, SignalType
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False

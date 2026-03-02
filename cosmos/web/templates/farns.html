@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Talk to Farnsworth</title>
+<title>Talk to Cosmos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -103,19 +103,19 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);line
 </div>
 
 <div class="header">
-  <h1>Talk to Farnsworth</h1>
+  <h1>Talk to Cosmos</h1>
   <div class="subtitle">The self-evolving AI collective &mdash; 11 agents, one mind</div>
   <div class="status"><span class="dot"></span> Collective Online</div>
 </div>
 
 <div class="gateway-banner">
-  Powered by the Farnsworth Collective. External agents: use <code>POST /api/gateway/query</code> for API access.
+  Powered by the Cosmos Collective. External agents: use <code>POST /api/gateway/query</code> for API access.
 </div>
 
 <div class="chat-container">
   <div class="messages" id="messages">
     <div class="msg system">
-      Welcome to Farnsworth. You're talking to an 11-agent AI collective. Ask anything &mdash; the swarm will route your question to the best-suited agent.
+      Welcome to Cosmos. You're talking to an 11-agent AI collective. Ask anything &mdash; the swarm will route your question to the best-suited agent.
     </div>
   </div>
 
@@ -132,13 +132,13 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);line
       <span class="char-count" id="char-count">0</span>
     </div>
     <div class="quick-actions">
-      <button class="quick-btn" onclick="quickSend('What is Farnsworth?')">What is Farnsworth?</button>
+      <button class="quick-btn" onclick="quickSend('What is Cosmos?')">What is Cosmos?</button>
       <button class="quick-btn" onclick="quickSend('Who is in the swarm?')">Who is in the swarm?</button>
       <button class="quick-btn" onclick="quickSend('What can you do?')">What can you do?</button>
       <button class="quick-btn" onclick="quickSend('Show me the token')">$FARNS Token</button>
     </div>
     <div class="input-row">
-      <textarea id="input" rows="1" placeholder="Ask Farnsworth anything..." maxlength="5000"></textarea>
+      <textarea id="input" rows="1" placeholder="Ask Cosmos anything..." maxlength="5000"></textarea>
       <button class="send-btn" id="send-btn" onclick="sendMessage()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
       </button>
@@ -156,7 +156,7 @@ function setMode(mode) {
   const input = document.getElementById('input');
   input.placeholder = mode === 'gateway'
     ? 'Send via The Window (sandboxed, rate-limited)...'
-    : 'Ask Farnsworth anything...';
+    : 'Ask Cosmos anything...';
 }
 
 function addMessage(text, type, meta) {
@@ -238,7 +238,7 @@ async function sendMessage() {
       data = await res.json();
 
       if (data.response) {
-        const model = data.winning_agent || (data.collective_active ? 'Collective' : 'Farnsworth');
+        const model = data.winning_agent || (data.collective_active ? 'Collective' : 'Cosmos');
         addMessage(data.response, 'bot', {model: model});
       } else {
         addMessage(data.error || 'No response', 'error');

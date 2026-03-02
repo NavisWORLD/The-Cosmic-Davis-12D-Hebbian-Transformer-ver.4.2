@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/automation/n8n_templates.py
 cosmos n8n Workflow Templates
-=======
-Farnsworth n8n Workflow Templates
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_templates.py
 
 "I've created over 6000 workflow templates! ...Actually, I lost count after 12."
 
@@ -320,13 +316,8 @@ class N8nTemplateLibrary:
     def _gen_health_daily_summary(self, config: Dict) -> N8nWorkflow:
         """Generate health daily summary workflow."""
         workflow = N8nWorkflow(
-<<<<<<< HEAD:cosmos/automation/n8n_templates.py
             name=config.get("name", "cosmos Health Daily Summary"),
             tags=["cosmos", "health"],
-=======
-            name=config.get("name", "Farnsworth Health Daily Summary"),
-            tags=["farnsworth", "health"],
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_templates.py
         )
 
         # Cron trigger - 8 AM daily
@@ -348,11 +339,7 @@ class N8nTemplateLibrary:
             type=N8nNodeType.HTTP_REQUEST.value,
             position=[450, 300],
             parameters={
-<<<<<<< HEAD:cosmos/automation/n8n_templates.py
                 "url": config.get("cosmos_url", "http://localhost:8080") + "/api/health/summary",
-=======
-                "url": config.get("farnsworth_url", "http://localhost:8080") + "/api/health/summary",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_templates.py
                 "method": "GET",
             },
         )
@@ -407,13 +394,8 @@ return [{json: {message: summary, ...data}}];
     def _gen_health_anomaly_alert(self, config: Dict) -> N8nWorkflow:
         """Generate health anomaly alert workflow."""
         workflow = N8nWorkflow(
-<<<<<<< HEAD:cosmos/automation/n8n_templates.py
             name=config.get("name", "cosmos Health Anomaly Alert"),
             tags=["cosmos", "health", "alert"],
-=======
-            name=config.get("name", "Farnsworth Health Anomaly Alert"),
-            tags=["farnsworth", "health", "alert"],
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_templates.py
         )
 
         # Webhook trigger
@@ -423,11 +405,7 @@ return [{json: {message: summary, ...data}}];
             type=N8nNodeType.WEBHOOK.value,
             position=[250, 300],
             parameters={
-<<<<<<< HEAD:cosmos/automation/n8n_templates.py
                 "path": config.get("webhook_path", "cosmos-health-anomaly"),
-=======
-                "path": config.get("webhook_path", "farnsworth-health-anomaly"),
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_templates.py
                 "httpMethod": "POST",
             },
         )
@@ -489,11 +467,7 @@ return [{json: {message: summary, ...data}}];
         """Generate system health check workflow."""
         workflow = N8nWorkflow(
             name=config.get("name", "System Health Check"),
-<<<<<<< HEAD:cosmos/automation/n8n_templates.py
             tags=["cosmos", "monitoring"],
-=======
-            tags=["farnsworth", "monitoring"],
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_templates.py
         )
 
         # Cron trigger - every 5 minutes
@@ -810,11 +784,7 @@ return targets.map(t => ({{json: {{host: t.host, ports: t.ports, status: 'checke
             type=N8nNodeType.HTTP_REQUEST.value,
             position=[450, 300],
             parameters={
-<<<<<<< HEAD:cosmos/automation/n8n_templates.py
                 "url": config.get("cosmos_url", "http://localhost:8080") + "/api/security/scan",
-=======
-                "url": config.get("farnsworth_url", "http://localhost:8080") + "/api/security/scan",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_templates.py
                 "method": "POST",
             },
         )
@@ -891,11 +861,7 @@ return targets.map(t => ({{json: {{host: t.host, ports: t.ports, status: 'checke
         """Generate AI agent task queue workflow."""
         workflow = N8nWorkflow(
             name=config.get("name", "AI Agent Task Queue"),
-<<<<<<< HEAD:cosmos/automation/n8n_templates.py
             tags=["cosmos", "ai", "agent"],
-=======
-            tags=["farnsworth", "ai", "agent"],
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_templates.py
         )
 
         webhook = N8nNode(
@@ -936,11 +902,7 @@ return targets.map(t => ({{json: {{host: t.host, ports: t.ports, status: 'checke
         """Generate agent response handler workflow."""
         workflow = N8nWorkflow(
             name=config.get("name", "Agent Response Handler"),
-<<<<<<< HEAD:cosmos/automation/n8n_templates.py
             tags=["cosmos", "ai", "agent"],
-=======
-            tags=["farnsworth", "ai", "agent"],
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_templates.py
         )
 
         webhook = N8nNode(

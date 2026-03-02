@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/cicd/pipeline_manager.py
 cosmos CI/CD Pipeline Manager
-=======
-Farnsworth CI/CD Pipeline Manager
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cicd/pipeline_manager.py
 
 "I've automated the automation! It's automation all the way down!"
 

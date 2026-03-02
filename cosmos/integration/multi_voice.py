@@ -1,5 +1,5 @@
 """
-Farnsworth Multi-Voice System - Distinct Voices for Each Swarm Member
+Cosmos Multi-Voice System - Distinct Voices for Each Swarm Member
 
 "We are many. We sound like many. Each voice is unique."
 
@@ -30,7 +30,7 @@ from loguru import logger
 # Load environment variables early
 try:
     from dotenv import load_dotenv
-    load_dotenv("/workspace/Farnsworth/.env")
+    load_dotenv("/workspace/Cosmos/.env")
 except Exception:
     pass
 
@@ -145,12 +145,12 @@ class VoiceConfig:
 # - WAV format, 22050Hz+ sample rate
 # - Emotionally neutral to slightly expressive
 #
-# Place files in: /workspace/Farnsworth/farnsworth/web/static/audio/voices/
+# Place files in: /workspace/Cosmos/cosmos/web/static/audio/voices/
 # =============================================================================
 
 # Voice sample sources (for finding good reference audio)
 VOICE_SAMPLE_SOURCES = {
-    "Farnsworth": {
+    "Cosmos": {
         "description": "Elderly male, eccentric, wavering, enthusiastic",
         "sample_source": "Futurama clips, Billy West voice acting",
         "characteristics": "Slightly higher pitch, occasional wavering, excitement bursts",
@@ -204,16 +204,16 @@ VOICE_SAMPLE_SOURCES = {
 
 SWARM_VOICES: Dict[str, VoiceConfig] = {
     # =========================================================================
-    # FARNSWORTH - Eccentric old professor (VOICE CLONE from Futurama clips)
+    # COSMOS - Eccentric old professor (VOICE CLONE from Futurama clips)
     # =========================================================================
-    "Farnsworth": VoiceConfig(
-        bot_name="Farnsworth",
+    "Cosmos": VoiceConfig(
+        bot_name="Cosmos",
         provider=VoiceProvider.QWEN3_TTS,
-        voice_id="farnsworth",
+        voice_id="cosmos",
         rate=0.92,
-        reference_audio="voices/farnsworth_reference.wav",
+        reference_audio="voices/cosmos_reference.wav",
         reference_text="Bad news everyone! Any more ridiculous ideas? Are you alright? Have you ever dissected a yeti before? Damn!",
-        display_name="Professor Farnsworth",
+        display_name="Professor Cosmos",
         description="Eccentric, elderly, wavering voice with enthusiasm",
         emotion="excited",
         speaking_style="elderly professor, occasional wavering, enthusiastic about inventions"
@@ -383,7 +383,7 @@ class MultiVoiceSystem:
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
         # Voice reference audio directory
-        self.voices_dir = voices_dir or Path("/workspace/Farnsworth/farnsworth/web/static/audio/voices")
+        self.voices_dir = voices_dir or Path("/workspace/Cosmos/cosmos/web/static/audio/voices")
         self.voices_dir.mkdir(parents=True, exist_ok=True)
 
         # Audio playback queue
@@ -418,10 +418,10 @@ class MultiVoiceSystem:
         # Check multiple possible locations
         search_paths = [
             self.voices_dir,
-            Path("/workspace/Farnsworth/farnsworth/web/static/audio/voices"),
-            Path("/workspace/Farnsworth/farnsworth/web/static/audio"),
-            Path("C:/Fawnsworth/farnsworth/web/static/audio/voices"),
-            Path("C:/Fawnsworth/farnsworth/web/static/audio"),
+            Path("/workspace/Cosmos/cosmos/web/static/audio/voices"),
+            Path("/workspace/Cosmos/cosmos/web/static/audio"),
+            Path("C:/Fawnsworth/cosmos/web/static/audio/voices"),
+            Path("C:/Fawnsworth/cosmos/web/static/audio"),
         ]
 
         for search_dir in search_paths:
@@ -450,8 +450,8 @@ class MultiVoiceSystem:
         ref_name = config.reference_audio
         search_paths = [
             self.voices_dir / ref_name,
-            Path("/workspace/Farnsworth/farnsworth/web/static/audio") / ref_name,
-            Path("C:/Fawnsworth/farnsworth/web/static/audio") / ref_name,
+            Path("/workspace/Cosmos/cosmos/web/static/audio") / ref_name,
+            Path("C:/Fawnsworth/cosmos/web/static/audio") / ref_name,
             Path(ref_name),
         ]
 
@@ -473,9 +473,9 @@ class MultiVoiceSystem:
             if name.lower() == bot_name.lower():
                 return config
 
-        # Default to Farnsworth voice
-        logger.warning(f"No voice config for {bot_name}, using Farnsworth")
-        return SWARM_VOICES["Farnsworth"]
+        # Default to Cosmos voice
+        logger.warning(f"No voice config for {bot_name}, using Cosmos")
+        return SWARM_VOICES["Cosmos"]
 
     def _get_cache_path(self, text: str, bot_name: str) -> Path:
         """Get cache file path for text/bot combo."""
@@ -617,7 +617,7 @@ class MultiVoiceSystem:
     def _get_edge_voice_for_bot(self, bot_name: str) -> str:
         """Get appropriate Edge TTS voice for a bot (fallback)."""
         edge_voice_map = {
-            "Farnsworth": "en-US-GuyNeural",
+            "Cosmos": "en-US-GuyNeural",
             "DeepSeek": "en-US-GuyNeural",
             "Phi": "en-US-DavisNeural",
             "Grok": "en-US-ChristopherNeural",
@@ -716,7 +716,7 @@ class MultiVoiceSystem:
 
             self._qwen3_tts_model = await loop.run_in_executor(None, load_model)
 
-            # Also load Base model for voice cloning (Farnsworth)
+            # Also load Base model for voice cloning (Cosmos)
             logger.info("Loading Qwen3-TTS Base model for voice cloning...")
 
             def load_base_model():
@@ -756,7 +756,7 @@ class MultiVoiceSystem:
         Generate speech using Qwen3-TTS (BEST quality 2026 model).
 
         Modes:
-        1. Voice Clone - Uses reference audio (Farnsworth)
+        1. Voice Clone - Uses reference audio (Cosmos)
         2. CustomVoice - Uses premium speaker + instruct (DeepSeek, Grok, etc.)
         3. VoiceDesign - Creates voice from description (Gemini, Kimi, etc.)
 
@@ -783,7 +783,7 @@ class MultiVoiceSystem:
                     wavs = None
                     sr = None
 
-                    # MODE 1: Voice cloning from reference audio (Farnsworth)
+                    # MODE 1: Voice cloning from reference audio (Cosmos)
                     if reference_audio and reference_audio.exists():
                         # Use Base model for voice cloning
                         if self._qwen3_tts_base_model is None:
@@ -895,7 +895,7 @@ class MultiVoiceSystem:
 
         # Voice ID mapping - use env vars or defaults
         voice_map = {
-            "farnsworth": os.getenv("ELEVENLABS_VOICE_FARNSWORTH", "dxvY1G6UilzEKgCy370m"),
+            "cosmos": os.getenv("ELEVENLABS_VOICE_COSMOS", "dxvY1G6UilzEKgCy370m"),
             "grok": os.getenv("ELEVENLABS_VOICE_GROK", "dxvY1G6UilzEKgCy370m"),
             "deepseek": os.getenv("ELEVENLABS_VOICE_DEEPSEEK", "dxvY1G6UilzEKgCy370m"),
             "gemini": os.getenv("ELEVENLABS_VOICE_GEMINI", "dxvY1G6UilzEKgCy370m"),
@@ -905,8 +905,8 @@ class MultiVoiceSystem:
         }
 
         # Get voice ID for this bot
-        bot_lower = config.bot_name.lower() if config.bot_name else "farnsworth"
-        voice = voice_id or voice_map.get(bot_lower, voice_map["farnsworth"])
+        bot_lower = config.bot_name.lower() if config.bot_name else "cosmos"
+        voice = voice_id or voice_map.get(bot_lower, voice_map["cosmos"])
 
         url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice}"
 

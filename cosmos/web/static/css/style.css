@@ -1,52 +1,35 @@
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 /* cosmos Neural Interface - Cosmic Glassmorphism Theme */
-=======
-/* Farnsworth Neural Interface - Cosmic Glassmorphism Theme */
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 /* Premium token-gated chat interface */
 
 :root {
-    --primary: #8b5cf6;
-    --primary-glow: rgba(139, 92, 246, 0.5);
-    --accent: #06b6d4;
-    --accent-glow: rgba(6, 182, 212, 0.5);
-<<<<<<< HEAD:cosmos/web/static/css/style.css
-    --success: hsl(155, 85%, 50%);
-    --warning: #f59e0b;
-    --error: #ef4444;
+    --primary: #00e5ff;
+    --primary-glow: rgba(0, 229, 255, 0.5);
+    --accent: #ffd700;
+    --accent-glow: rgba(255, 215, 0, 0.5);
+    --success: #00ffaa;
+    --warning: #ffaa00;
+    --error: #ff3366;
 
     /* COSMOS: The Symbiotic Mirror - CST Palette */
     --phi-gold: hsl(45, 100%, 65%);
-    --phi-gold-glow: hsla(45, 100%, 65%, 0.4);
+    --phi-gold-glow: hsla(45, 100%, 65%, 0.6);
     --quantum-cyan: hsl(185, 100%, 60%);
-    --quantum-cyan-glow: hsla(185, 100%, 60%, 0.4);
-    --lorenz-rose: hsl(330, 80%, 55%);
+    --quantum-cyan-glow: hsla(185, 100%, 60%, 0.6);
+    --lorenz-rose: hsl(330, 100%, 65%);
     --lorenz-rose-glow: hsla(330, 80%, 55%, 0.4);
-    --emerald-resonance: hsl(155, 85%, 50%);
+    --emerald-resonance: #00ffaa;
 
-    --bg-void: #0d0221;
-    --bg-deep: #0a0a2e;
-    --bg-mid: #1a0533;
-    --glass-bg: rgba(10, 10, 46, 0.6);
-    --glass-bg-hover: rgba(10, 10, 46, 0.8);
-    --glass-border: rgba(139, 92, 246, 0.15);
-    --glass-border-hover: rgba(139, 92, 246, 0.35);
-=======
-    --success: #10b981;
-    --warning: #f59e0b;
-    --error: #ef4444;
+    --bg-void: #030508;
+    --bg-deep: #060913;
+    --bg-mid: #0a0f1c;
+    --glass-bg: rgba(6, 9, 19, 0.75);
+    --glass-bg-hover: rgba(10, 15, 28, 0.85);
+    --glass-border: rgba(0, 229, 255, 0.2);
+    --glass-border-hover: rgba(0, 229, 255, 0.5);
 
-    --bg-void: #030014;
-    --bg-deep: #0a0a1f;
-    --glass-bg: rgba(255, 255, 255, 0.03);
-    --glass-bg-hover: rgba(255, 255, 255, 0.06);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-border-hover: rgba(139, 92, 246, 0.3);
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
-
-    --text-primary: #f8fafc;
-    --text-secondary: rgba(248, 250, 252, 0.7);
-    --text-muted: rgba(248, 250, 252, 0.4);
+    --text-primary: #ecf3f9;
+    --text-secondary: rgba(236, 243, 249, 0.75);
+    --text-muted: rgba(236, 243, 249, 0.45);
 
     --font-display: 'Outfit', sans-serif;
     --font-mono: 'Space Mono', monospace;
@@ -55,13 +38,9 @@
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 *,
 *::before,
 *::after {
-=======
-*, *::before, *::after {
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -88,29 +67,21 @@ body {
     inset: 0;
     z-index: -1;
     overflow: hidden;
-<<<<<<< HEAD:cosmos/web/static/css/style.css
-    background: linear-gradient(180deg, #0a0a2e 0%, #1a0533 40%, #0d0221 100%);
-=======
-    background: radial-gradient(ellipse at 50% 0%, #1a0a2e 0%, var(--bg-void) 70%);
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
+    background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 40%, var(--bg-void) 100%);
 }
 
 .nebula {
     position: absolute;
     border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.4;
-    animation: drift 30s infinite ease-in-out;
+    filter: blur(120px);
+    opacity: 0.25;
+    animation: drift 40s infinite ease-in-out;
 }
 
 .nebula-1 {
     width: 800px;
     height: 800px;
-<<<<<<< HEAD:cosmos/web/static/css/style.css
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.6) 0%, transparent 70%);
-=======
-    background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.4) 0%, transparent 70%);
     top: -300px;
     left: -200px;
 }
@@ -118,11 +89,7 @@ body {
 .nebula-2 {
     width: 600px;
     height: 600px;
-<<<<<<< HEAD:cosmos/web/static/css/style.css
-    background: radial-gradient(circle, var(--quantum-cyan) 0%, transparent 70%);
-=======
-    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
     bottom: -200px;
     right: -150px;
     animation-delay: -10s;
@@ -131,11 +98,7 @@ body {
 .nebula-3 {
     width: 400px;
     height: 400px;
-<<<<<<< HEAD:cosmos/web/static/css/style.css
-    background: radial-gradient(circle, var(--lorenz-rose) 0%, transparent 70%);
-=======
-    background: radial-gradient(circle, #ec4899 0%, transparent 70%);
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
+    background: radial-gradient(circle, rgba(0, 255, 170, 0.2) 0%, transparent 70%);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -143,7 +106,6 @@ body {
 }
 
 @keyframes drift {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 
     0%,
     100% {
@@ -161,12 +123,6 @@ body {
     75% {
         transform: translate(-30px, -10px) scale(1.02);
     }
-=======
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    25% { transform: translate(30px, -20px) scale(1.05); }
-    50% { transform: translate(-20px, 30px) scale(0.95); }
-    75% { transform: translate(-30px, -10px) scale(1.02); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .stars {
@@ -174,24 +130,16 @@ body {
     inset: 0;
     background-image:
         radial-gradient(1px 1px at 20px 30px, white, transparent),
-<<<<<<< HEAD:cosmos/web/static/css/style.css
         radial-gradient(1px 1px at 40px 70px, rgba(255, 255, 255, 0.8), transparent),
         radial-gradient(1px 1px at 50px 160px, rgba(255, 255, 255, 0.6), transparent),
         radial-gradient(1px 1px at 90px 40px, white, transparent),
         radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.7), transparent),
-=======
-        radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), transparent),
-        radial-gradient(1px 1px at 50px 160px, rgba(255,255,255,0.6), transparent),
-        radial-gradient(1px 1px at 90px 40px, white, transparent),
-        radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.7), transparent),
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
         radial-gradient(1px 1px at 160px 120px, white, transparent);
     background-size: 200px 200px;
     animation: twinkle 8s infinite;
 }
 
 @keyframes twinkle {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 
     0%,
     100% {
@@ -201,10 +149,6 @@ body {
     50% {
         opacity: 1;
     }
-=======
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 /* Glass Panel */
@@ -213,11 +157,8 @@ body {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
-    border-radius: 20px;
-<<<<<<< HEAD:cosmos/web/static/css/style.css
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 40px rgba(139, 92, 246, 0.05);
-=======
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
+    border-radius: 8px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02), 0 0 30px rgba(0, 0, 0, 0.6);
 }
 
 /* Token Gate Section */
@@ -257,16 +198,11 @@ body {
     box-shadow:
         0 0 30px var(--primary-glow),
         0 0 60px var(--primary-glow),
-<<<<<<< HEAD:cosmos/web/static/css/style.css
         inset 0 0 20px rgba(255, 255, 255, 0.3);
-=======
-        inset 0 0 20px rgba(255,255,255,0.3);
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
     animation: pulse 2s infinite ease-in-out;
 }
 
 @keyframes pulse {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 
     0%,
     100% {
@@ -275,13 +211,9 @@ body {
     }
 
     50% {
-        transform: translate(-50%, -50%) scale(1.1);
-        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1.05);
+        opacity: 0.9;
     }
-=======
-    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .orb-ring {
@@ -294,7 +226,6 @@ body {
     animation: expand 3s infinite ease-out;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .ring-1 {
     width: 60px;
     height: 60px;
@@ -325,15 +256,6 @@ body {
         transform: scale(1.5);
         opacity: 0;
     }
-=======
-.ring-1 { width: 60px; height: 60px; margin: -30px 0 0 -30px; }
-.ring-2 { width: 80px; height: 80px; margin: -40px 0 0 -40px; animation-delay: 1s; }
-.ring-3 { width: 100px; height: 100px; margin: -50px 0 0 -50px; animation-delay: 2s; }
-
-@keyframes expand {
-    0% { transform: scale(0.8); opacity: 0.8; }
-    100% { transform: scale(1.5); opacity: 0; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 /* Gate Content */
@@ -344,7 +266,6 @@ body {
 }
 
 @keyframes slideUp {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     from {
         opacity: 0;
         transform: translateY(40px);
@@ -354,10 +275,6 @@ body {
         opacity: 1;
         transform: translateY(0);
     }
-=======
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .gate-label {
@@ -471,7 +388,6 @@ body {
     transition: color 0.2s;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .copy-btn:hover {
     color: var(--text-primary);
 }
@@ -480,10 +396,6 @@ body {
     width: 16px;
     height: 16px;
 }
-=======
-.copy-btn:hover { color: var(--text-primary); }
-.copy-btn svg { width: 16px; height: 16px; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 /* Connect Button */
 .connect-button {
@@ -516,13 +428,9 @@ body {
     z-index: 1;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .phantom-icon {
     font-size: 1.2rem;
 }
-=======
-.phantom-icon { font-size: 1.2rem; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .btn-shimmer {
     position: absolute;
@@ -530,22 +438,14 @@ body {
     left: -100%;
     width: 100%;
     height: 100%;
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-=======
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
     animation: shimmer 2s infinite;
 }
 
 @keyframes shimmer {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     100% {
         left: 100%;
     }
-=======
-    100% { left: 100%; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 /* Wallet Status */
@@ -560,13 +460,9 @@ body {
     border-radius: 12px;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .wallet-status.hidden {
     display: none;
 }
-=======
-.wallet-status.hidden { display: none; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .status-spinner {
     width: 20px;
@@ -577,15 +473,11 @@ body {
     animation: spin 0.8s linear infinite;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 @keyframes spin {
     to {
         transform: rotate(360deg);
     }
 }
-=======
-@keyframes spin { to { transform: rotate(360deg); } }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .status-text {
     font-size: 0.9rem;
@@ -605,13 +497,9 @@ body {
     margin-top: 24px;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .notice-icon {
     font-size: 1.2rem;
 }
-=======
-.notice-icon { font-size: 1.2rem; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .demo-notice p {
     font-size: 0.85rem;
@@ -619,26 +507,18 @@ body {
     line-height: 1.5;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .demo-notice strong {
     color: var(--warning);
 }
-=======
-.demo-notice strong { color: var(--warning); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .demo-notice a {
     color: var(--accent);
     text-decoration: none;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .demo-notice a:hover {
     text-decoration: underline;
 }
-=======
-.demo-notice a:hover { text-decoration: underline; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 /* Chat Section */
 .chat-section {
@@ -647,13 +527,9 @@ body {
     height: 100vh;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .chat-section.hidden {
     display: none;
 }
-=======
-.chat-section.hidden { display: none; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 /* App Header */
 .app-header {
@@ -663,19 +539,12 @@ body {
     padding: 12px 24px;
     border-radius: 0;
     border-bottom: 1px solid var(--glass-border);
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     background: rgba(10, 10, 46, 0.85);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
 .header-left,
 .header-right {
-=======
-    background: rgba(3, 0, 20, 0.8);
-}
-
-.header-left, .header-right {
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
     display: flex;
     align-items: center;
     gap: 16px;
@@ -691,7 +560,6 @@ body {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     background: linear-gradient(135deg, var(--phi-gold), var(--primary), var(--quantum-cyan));
     display: flex;
     align-items: center;
@@ -700,13 +568,6 @@ body {
     animation: phi-pulse 2.618s ease-in-out infinite;
     position: relative;
     overflow: hidden;
-=======
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 20px var(--primary-glow);
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .mini-orb {
@@ -720,17 +581,11 @@ body {
 .brand-name {
     font-size: 1.25rem;
     font-weight: 700;
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     letter-spacing: 0.3em;
     background: linear-gradient(135deg, var(--phi-gold), var(--primary), var(--quantum-cyan));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-=======
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .brand-status {
@@ -750,7 +605,6 @@ body {
 }
 
 @keyframes blink {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 
     0%,
     50%,
@@ -762,10 +616,6 @@ body {
     75% {
         opacity: 0.5;
     }
-=======
-    0%, 50%, 100% { opacity: 1; }
-    25%, 75% { opacity: 0.5; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 /* Wallet Badge */
@@ -795,13 +645,9 @@ body {
     transition: color 0.2s;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .disconnect-btn:hover {
     color: var(--error);
 }
-=======
-.disconnect-btn:hover { color: var(--error); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 /* Control Buttons */
 .control-btn {
@@ -831,7 +677,6 @@ body {
     color: var(--primary);
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .control-btn .voice-off {
     display: none;
 }
@@ -842,83 +687,6 @@ body {
 
 .control-btn:not(.active) .voice-off {
     display: inline;
-=======
-.control-btn .voice-off { display: none; }
-.control-btn:not(.active) .voice-on { display: none; }
-.control-btn:not(.active) .voice-off { display: inline; }
-
-/* Volume Control */
-.volume-control {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 10px;
-    transition: all 0.2s ease;
-}
-
-.volume-control:hover {
-    background: var(--glass-bg-hover);
-    border-color: var(--glass-border-hover);
-}
-
-.volume-icon {
-    font-size: 1rem;
-    opacity: 0.8;
-}
-
-.volume-slider {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 80px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
-}
-
-.volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    background: var(--primary);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.volume-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-    box-shadow: 0 0 10px var(--primary-glow);
-}
-
-.volume-slider::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    background: var(--primary);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.volume-value {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    min-width: 32px;
-    text-align: right;
-    font-family: var(--font-mono);
-}
-
-/* Hide volume control on small screens */
-@media (max-width: 768px) {
-    .volume-control {
-        display: none;
-    }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 /* Chat Main */
@@ -950,7 +718,6 @@ body {
 }
 
 @keyframes messageIn {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     from {
         opacity: 0;
         transform: translateY(20px);
@@ -965,13 +732,6 @@ body {
 .message.user {
     flex-direction: row-reverse;
 }
-=======
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.message.user { flex-direction: row-reverse; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .message-avatar {
     width: 40px;
@@ -992,13 +752,9 @@ body {
     font-size: 1rem;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .message-body {
     max-width: 70%;
 }
-=======
-.message-body { max-width: 70%; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .message-meta {
     display: flex;
@@ -1020,16 +776,17 @@ body {
 }
 
 .message-bubble {
-    padding: 16px 20px;
-    border-radius: 16px;
-    border-top-left-radius: 4px;
+    padding: 14px 18px;
+    border-radius: 2px 12px 12px 12px;
+    border-left: 3px solid var(--primary);
 }
 
 .message.user .message-bubble {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.1));
-    border-color: rgba(139, 92, 246, 0.3);
-    border-top-left-radius: 16px;
-    border-top-right-radius: 4px;
+    background: linear-gradient(135deg, rgba(0, 229, 255, 0.1), rgba(6, 9, 19, 0.6));
+    border-color: var(--glass-border);
+    border-left: 1px solid var(--glass-border);
+    border-right: 3px solid var(--accent);
+    border-radius: 12px 2px 12px 12px;
 }
 
 .message-bubble p {
@@ -1037,7 +794,6 @@ body {
     line-height: 1.7;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .message-bubble p:last-child {
     margin-bottom: 0;
 }
@@ -1050,12 +806,6 @@ body {
     color: var(--primary);
     font-style: italic;
 }
-=======
-.message-bubble p:last-child { margin-bottom: 0; }
-
-.message-bubble strong { color: var(--accent); }
-.message-bubble em { color: var(--primary); font-style: italic; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .message-bubble pre {
     background: rgba(0, 0, 0, 0.4);
@@ -1070,10 +820,11 @@ body {
 
 .message-bubble code {
     font-family: var(--font-mono);
-    background: rgba(139, 92, 246, 0.2);
+    background: rgba(0, 229, 255, 0.15);
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.9em;
+    color: var(--primary);
 }
 
 /* Quick Actions */
@@ -1093,9 +844,9 @@ body {
     font-size: 0.8rem;
     font-weight: 500;
     color: var(--text-primary);
-    background: rgba(139, 92, 246, 0.15);
-    border: 1px solid rgba(139, 92, 246, 0.3);
-    border-radius: 100px;
+    background: rgba(0, 229, 255, 0.1);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -1106,13 +857,9 @@ body {
     transform: translateY(-2px);
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .quick-icon {
     font-size: 0.9rem;
 }
-=======
-.quick-icon { font-size: 0.9rem; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 /* Typing Indicator */
 .typing-indicator {
@@ -1122,13 +869,9 @@ body {
     padding: 12px 0;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .typing-indicator.hidden {
     display: none;
 }
-=======
-.typing-indicator.hidden { display: none; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .typing-avatar {
     width: 32px;
@@ -1165,7 +908,6 @@ body {
     animation: typingBounce 1.4s infinite ease-in-out;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .typing-dots span:nth-child(2) {
     animation-delay: 0.2s;
 }
@@ -1312,14 +1054,6 @@ body {
     font-size: 0.8rem;
     color: var(--text-secondary);
     font-style: italic;
-=======
-.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes typingBounce {
-    0%, 60%, 100% { transform: translateY(0); }
-    30% { transform: translateY(-6px); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 /* Chat Footer */
@@ -1371,10 +1105,10 @@ body {
     font-family: var(--font-display);
     font-size: 0.9rem;
     font-weight: 600;
-    color: white;
-    background: linear-gradient(135deg, var(--primary), #7c3aed);
+    color: var(--bg-void);
+    background: linear-gradient(135deg, var(--primary), var(--accent));
     border: none;
-    border-radius: 12px;
+    border-radius: 4px 8px 8px 4px;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -1389,13 +1123,9 @@ body {
     cursor: not-allowed;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .send-arrow {
     font-size: 1rem;
 }
-=======
-.send-arrow { font-size: 1rem; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 /* Mic Button for Voice Input */
 .mic-button {
@@ -1404,9 +1134,9 @@ body {
     justify-content: center;
     width: 52px;
     height: 52px;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 229, 255, 0.05);
     border: 1px solid var(--glass-border);
-    border-radius: 12px;
+    border-radius: 8px 4px 4px 8px;
     cursor: pointer;
     transition: all 0.2s;
     position: relative;
@@ -1442,7 +1172,6 @@ body {
 }
 
 @keyframes pulse-mic {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 
     0%,
     100% {
@@ -1464,15 +1193,6 @@ body {
     50% {
         opacity: 0.3;
     }
-=======
-    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-    50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .input-meta {
@@ -1511,7 +1231,6 @@ body {
     z-index: 100;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .tools-sidebar.active {
     transform: translateX(0);
 }
@@ -1519,10 +1238,6 @@ body {
 .tools-sidebar.hidden {
     display: none;
 }
-=======
-.tools-sidebar.active { transform: translateX(0); }
-.tools-sidebar.hidden { display: none; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .sidebar-header {
     display: flex;
@@ -1546,13 +1261,9 @@ body {
     transition: color 0.2s;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .close-sidebar:hover {
     color: var(--text-primary);
 }
-=======
-.close-sidebar:hover { color: var(--text-primary); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .sidebar-body {
     flex: 1;
@@ -1588,7 +1299,7 @@ body {
     padding: 16px 12px;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
-    border-radius: 12px;
+    border-radius: 6px;
     text-align: center;
     transition: all 0.2s;
 }
@@ -1598,7 +1309,6 @@ body {
     border-color: var(--glass-border-hover);
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .tool-card.available {
     border-color: rgba(16, 185, 129, 0.3);
 }
@@ -1610,11 +1320,6 @@ body {
 .tool-card.locked {
     opacity: 0.6;
 }
-=======
-.tool-card.available { border-color: rgba(16, 185, 129, 0.3); }
-.tool-card.limited { border-color: rgba(245, 158, 11, 0.3); }
-.tool-card.locked { opacity: 0.6; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .tool-card.clickable {
     cursor: pointer;
@@ -1631,13 +1336,9 @@ body {
     transform: translateY(0);
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .tool-icon {
     font-size: 1.5rem;
 }
-=======
-.tool-icon { font-size: 1.5rem; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .tool-info {
     display: flex;
@@ -1661,7 +1362,6 @@ body {
     border-radius: 4px;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 .tool-badge.available {
     color: var(--success);
 }
@@ -1673,11 +1373,6 @@ body {
 .tool-badge.locked {
     color: var(--text-muted);
 }
-=======
-.tool-badge.available { color: var(--success); }
-.tool-badge.limited { color: var(--warning); }
-.tool-badge.locked { color: var(--text-muted); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 .sidebar-footer {
     padding: 20px;
@@ -1733,7 +1428,6 @@ body {
 }
 
 @keyframes toastIn {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     from {
         opacity: 0;
         transform: translateX(100px);
@@ -1769,31 +1463,14 @@ body {
     background: transparent;
 }
 
-=======
-    from { opacity: 0; transform: translateX(100px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-.toast.success { border-color: var(--success); color: var(--success); }
-.toast.error { border-color: var(--error); color: var(--error); }
-.toast.warning { border-color: var(--warning); color: var(--warning); }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 ::-webkit-scrollbar-thumb {
     background: var(--glass-border);
     border-radius: 3px;
 }
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary);
 }
-=======
-::-webkit-scrollbar-thumb:hover { background: var(--primary); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
 /* ============================================
    FULL-STACK INTERFACE ADDITIONS v3.0
@@ -1815,11 +1492,7 @@ body {
     flex-direction: column;
     overflow-y: auto;
     border-radius: 0;
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     background: rgba(10, 10, 46, 0.7);
-=======
-    background: rgba(3, 0, 20, 0.9);
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .left-sidebar {
@@ -2370,7 +2043,6 @@ body {
 }
 
 @keyframes pulse-live {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 
     0%,
     100% {
@@ -2380,10 +2052,6 @@ body {
     50% {
         opacity: 0.6;
     }
-=======
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .evolution-cycle {
@@ -2627,7 +2295,6 @@ body {
 }
 
 @keyframes fadeIn {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     from {
         opacity: 0;
     }
@@ -2635,10 +2302,6 @@ body {
     to {
         opacity: 1;
     }
-=======
-    from { opacity: 0; }
-    to { opacity: 1; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .modal-container {
@@ -2651,7 +2314,6 @@ body {
 }
 
 @keyframes modalIn {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     from {
         opacity: 0;
         transform: scale(0.95) translateY(20px);
@@ -2661,10 +2323,6 @@ body {
         opacity: 1;
         transform: scale(1) translateY(0);
     }
-=======
-    from { opacity: 0; transform: scale(0.95) translateY(20px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .modal-header {
@@ -2757,7 +2415,6 @@ body {
 }
 
 @keyframes stepIn {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     from {
         opacity: 0;
         transform: translateX(-20px);
@@ -2767,10 +2424,6 @@ body {
         opacity: 1;
         transform: translateX(0);
     }
-=======
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .step-number {
@@ -3071,7 +2724,6 @@ body {
 }
 
 @media (max-width: 768px) {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     .gate-content {
         padding: 28px 20px;
     }
@@ -3099,18 +2751,6 @@ body {
     .brand-status {
         display: none;
     }
-=======
-    .gate-content { padding: 28px 20px; }
-    .title-glow { font-size: 2rem; }
-
-    .chat-footer { padding: 12px; }
-
-    .message-body { max-width: 85%; }
-
-    .app-header { padding: 12px 16px; }
-    .brand-name { font-size: 1.1rem; }
-    .brand-status { display: none; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 
     .modal-container {
         width: 95%;
@@ -3179,7 +2819,6 @@ body {
 }
 
 @keyframes dnaRotate {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
     0% {
         transform: rotateY(0deg);
     }
@@ -3187,10 +2826,6 @@ body {
     100% {
         transform: rotateY(360deg);
     }
-=======
-    0% { transform: rotateY(0deg); }
-    100% { transform: rotateY(360deg); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .training-text {
@@ -3221,7 +2856,6 @@ body {
 }
 
 @keyframes trainingPulse {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 
     0%,
     100% {
@@ -3229,12 +2863,6 @@ body {
         opacity: 1;
     }
 
-=======
-    0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-    }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
     50% {
         transform: scale(1.5);
         opacity: 0.5;
@@ -3269,7 +2897,6 @@ body:has(.training-banner.active) .chat-section {
 }
 
 @keyframes pulse-bee {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 
     0%,
     100% {
@@ -3279,10 +2906,6 @@ body:has(.training-banner.active) .chat-section {
     50% {
         transform: scale(1.1);
     }
-=======
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .swarm-title {
@@ -3380,7 +3003,6 @@ body:has(.training-banner.active) .chat-section {
 }
 
 @keyframes swarmPulse {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 
     0%,
     100% {
@@ -3390,10 +3012,6 @@ body:has(.training-banner.active) .chat-section {
     50% {
         transform: scale(1.1);
     }
-=======
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .swarm-welcome-header h2 {
@@ -3486,10 +3104,7 @@ body:has(.training-banner.active) .chat-section {
         opacity: 0;
         transform: translateY(20px) scale(0.95);
     }
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 
-=======
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -3653,7 +3268,6 @@ body:has(.training-banner.active) .chat-section {
 }
 
 @keyframes dotPulse {
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 
     0%,
     100% {
@@ -3663,10 +3277,6 @@ body:has(.training-banner.active) .chat-section {
     50% {
         opacity: 0.5;
     }
-=======
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css
 }
 
 .swarm-user-item .user-name {
@@ -4046,7 +3656,6 @@ body:has(.training-banner.active) .chat-section {
     font-size: 0.65rem;
 }
 
-<<<<<<< HEAD:cosmos/web/static/css/style.css
 /* ============================================
    EMOTIONAL SENSORS WIDGET (12D CST)
    ============================================ */
@@ -5678,7 +5287,7 @@ body:has(.training-banner.active) .chat-section {
         gap: 12px;
         text-align: center;
     }
-    
+
     .header-right {
         width: 100%;
         justify-content: center;
@@ -5715,430 +5324,31 @@ body:has(.training-banner.active) .chat-section {
     }
 
     #user-input {
-        font-size: 16px; /* Prevents iOS auto-zoom */
+        font-size: 16px;
+        /* Prevents iOS auto-zoom */
         padding: 12px;
         border-radius: 12px;
     }
 
-    .control-btn, .mic-button, .send-button {
-        width: 44px; /* Better touch target */
+    .control-btn,
+    .mic-button,
+    .send-button {
+        width: 44px;
+        /* Better touch target */
         height: 44px;
         padding: 0;
         justify-content: center;
     }
 
     .send-button span:first-child {
-        display: none; /* Hide "Send" text, show icon only */
+        display: none;
+        /* Hide "Send" text, show icon only */
     }
 
     /* Sidebars collapse */
-    .swarm-sidebar, .tools-sidebar {
-        display: none; /* Hide advanced sidebars on mobile to focus on chat */
+    .swarm-sidebar,
+    .tools-sidebar {
+        display: none;
+        /* Hide advanced sidebars on mobile to focus on chat */
     }
 }
-
-=======
-/* =============================================================================
-   POLYMARKET PREDICTIONS WIDGET
-   ============================================================================= */
-
-.polymarket-section {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
-}
-
-.polymarket-section .sidebar-title {
-    position: relative;
-}
-
-.prediction-live-dot {
-    width: 8px;
-    height: 8px;
-    background: #10b981;
-    border-radius: 50%;
-    margin-left: auto;
-    animation: predictionPulse 2s ease-in-out infinite;
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
-}
-
-@keyframes predictionPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(0.9); }
-}
-
-.prediction-stats-bar {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 12px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    margin-bottom: 12px;
-    border: 1px solid var(--glass-border);
-}
-
-.stat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-}
-
-.stat-item .stat-value {
-    font-size: 1.1rem;
-    font-weight: 700;
-    font-family: 'Space Mono', monospace;
-}
-
-.stat-item.accuracy .stat-value {
-    color: #10b981;
-}
-
-.stat-item.streak .stat-value {
-    color: #f59e0b;
-}
-
-.stat-item.total .stat-value {
-    color: #8b5cf6;
-}
-
-.stat-item .stat-label {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.predictions-feed {
-    max-height: 280px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary) transparent;
-}
-
-.predictions-feed::-webkit-scrollbar {
-    width: 4px;
-}
-
-.predictions-feed::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 4px;
-}
-
-.prediction-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 30px;
-    color: var(--text-muted);
-    gap: 12px;
-}
-
-.prediction-spinner {
-    width: 24px;
-    height: 24px;
-    border: 2px solid var(--glass-border);
-    border-top-color: var(--primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.prediction-card {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--glass-border);
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 10px;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.prediction-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    border-radius: 4px 0 0 4px;
-}
-
-.prediction-card.bullish::before {
-    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
-}
-
-.prediction-card.bearish::before {
-    background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
-}
-
-.prediction-card.pending::before {
-    background: linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%);
-}
-
-.prediction-card.correct {
-    border-color: rgba(16, 185, 129, 0.3);
-    background: rgba(16, 185, 129, 0.05);
-}
-
-.prediction-card.incorrect {
-    border-color: rgba(239, 68, 68, 0.3);
-    background: rgba(239, 68, 68, 0.05);
-}
-
-.prediction-card:hover {
-    border-color: var(--primary);
-    transform: translateX(2px);
-}
-
-.prediction-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-}
-
-.prediction-outcome {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.prediction-direction {
-    font-size: 1.1rem;
-}
-
-.prediction-pick {
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-}
-
-.prediction-confidence {
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-family: 'Space Mono', monospace;
-}
-
-.prediction-confidence.high {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
-}
-
-.prediction-confidence.medium {
-    background: rgba(245, 158, 11, 0.2);
-    color: #f59e0b;
-}
-
-.prediction-confidence.low {
-    background: rgba(107, 114, 128, 0.2);
-    color: #9ca3af;
-}
-
-.prediction-question {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    line-height: 1.4;
-    margin-bottom: 8px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.prediction-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-}
-
-.prediction-agents {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.agent-badge {
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
-.prediction-time {
-    font-family: 'Space Mono', monospace;
-}
-
-.prediction-result-badge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    font-size: 0.65rem;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 6px;
-    text-transform: uppercase;
-}
-
-.prediction-result-badge.correct {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
-}
-
-.prediction-result-badge.incorrect {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-}
-
-.prediction-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 10px;
-    margin-top: 8px;
-    border-top: 1px solid var(--glass-border);
-    font-size: 0.7rem;
-    color: var(--text-muted);
-}
-
-.prediction-update-time {
-    font-family: 'Space Mono', monospace;
-}
-
-.prediction-interval {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.prediction-interval::before {
-    content: '⏱️';
-    font-size: 0.8rem;
-}
-
-/* Empty state */
-.predictions-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 20px;
-    text-align: center;
-    color: var(--text-muted);
-}
-
-.predictions-empty-icon {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    opacity: 0.5;
-}
-
-.predictions-empty-text {
-    font-size: 0.85rem;
-}
-
-/* New prediction animation */
-@keyframes newPrediction {
-    0% {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.prediction-card.new {
-    animation: newPrediction 0.4s ease-out;
-}
-
-/* Glow effect for high confidence */
-.prediction-card.high-confidence {
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
-}
-
-/* Direction styles */
-.prediction-card.direction-yes::before {
-    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
-}
-
-.prediction-card.direction-no::before {
-    background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
-}
-
-/* Signal tags */
-.prediction-signals {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-bottom: 8px;
-}
-
-.signal-tag {
-    font-size: 0.65rem;
-    padding: 2px 6px;
-    background: rgba(139, 92, 246, 0.15);
-    color: #a78bfa;
-    border-radius: 4px;
-    font-family: 'Space Mono', monospace;
-    cursor: help;
-}
-
-/* Result badges */
-.result-badge {
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 6px;
-    margin-left: auto;
-}
-
-.result-badge.result-correct {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
-}
-
-.result-badge.result-wrong {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-}
-
-/* Empty/loading states */
-.prediction-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 20px;
-    text-align: center;
-    color: var(--text-muted);
-}
-
-.prediction-loading-spinner {
-    width: 28px;
-    height: 28px;
-    border: 2px solid var(--glass-border);
-    border-top-color: var(--primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 12px;
-}
-
-.prediction-subtitle {
-    font-size: 0.75rem;
-    opacity: 0.7;
-    margin-top: 4px;
-}
-
-.prediction-market-price {
-    font-family: 'Space Mono', monospace;
-    color: var(--text-muted);
-}
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/static/css/style.css

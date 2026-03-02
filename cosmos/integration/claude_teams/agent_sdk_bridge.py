@@ -375,13 +375,13 @@ class AgentSDKBridge:
         Spawn a quick subagent for a specific task.
         Uses Haiku by default for speed/cost efficiency.
 
-        Falls back to Farnsworth's shadow agents if Claude is unavailable.
+        Falls back to Cosmos's shadow agents if Claude is unavailable.
         """
         if not self.is_available():
-            # Fallback: use Farnsworth's shadow agents instead
+            # Fallback: use Cosmos's shadow agents instead
             logger.info("Claude SDK/CLI/API unavailable, falling back to shadow agents")
             try:
-                from farnsworth.core.collective.persistent_agent import call_shadow_agent
+                from Cosmos.core.collective.persistent_agent import call_shadow_agent
                 result = await call_shadow_agent("grok", task, timeout=timeout)
                 if result:
                     agent_name, response_text = result

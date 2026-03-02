@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/integration/email/office365.py
 cosmos Office 365 Integration
-=======
-Farnsworth Office 365 Integration
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/office365.py
 
 "Good news, everyone! I can manage your Microsoft 365 email!"
 
@@ -100,11 +96,7 @@ class Office365Integration:
     Setup Guide:
     1. Go to Azure Portal > Azure Active Directory > App registrations
     2. Click "New registration"
-<<<<<<< HEAD:cosmos/integration/email/office365.py
     3. Name your app (e.g., "cosmos Email Integration")
-=======
-    3. Name your app (e.g., "Farnsworth Email Integration")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/office365.py
     4. Select account type (single tenant or multi-tenant)
     5. Set redirect URI to http://localhost:8400/callback
     6. Under "API Permissions", add Microsoft Graph permissions:
@@ -161,11 +153,7 @@ class Office365Integration:
             "redirect_uri": self.config.redirect_uri,
             "response_mode": "query",
             "scope": scope_str + " offline_access",
-<<<<<<< HEAD:cosmos/integration/email/office365.py
             "state": "cosmos_o365",
-=======
-            "state": "farnsworth_o365",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/office365.py
         }
 
         query = "&".join(f"{k}={v}" for k, v in params.items())
@@ -603,11 +591,7 @@ class Office365Integration:
 2. Navigate to "Azure Active Directory" > "App registrations"
 3. Click "New registration"
 4. Fill in details:
-<<<<<<< HEAD:cosmos/integration/email/office365.py
    - Name: "cosmos Email Integration"
-=======
-   - Name: "Farnsworth Email Integration"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/office365.py
    - Supported account types: Single tenant (or multi-tenant if needed)
    - Redirect URI: Web - http://localhost:8400/callback
 5. Click "Register"
@@ -643,11 +627,7 @@ class Office365Integration:
 3. Add description and expiration
 4. Copy the secret value immediately (shown only once)
 
-<<<<<<< HEAD:cosmos/integration/email/office365.py
 ## Step 4: Configure cosmos
-=======
-## Step 4: Configure Farnsworth
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/office365.py
 
 Add to your environment or config:
 
@@ -664,11 +644,7 @@ O365_REDIRECT_URI=http://localhost:8400/callback
 ## Step 5: Test Connection
 
 ```python
-<<<<<<< HEAD:cosmos/integration/email/office365.py
-from cosmos.integration.email.office365 import Office365Integration, O365Config
-=======
-from farnsworth.integration.email.office365 import Office365Integration, O365Config
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/email/office365.py
+from Cosmos.integration.email.office365 import Office365Integration, O365Config
 
 config = O365Config(
     tenant_id="your-tenant-id",

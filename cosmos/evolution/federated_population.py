@@ -1,8 +1,8 @@
 """
-Farnsworth Federated Population Manager - Distributed Evolution
+Cosmos Federated Population Manager - Distributed Evolution
 
 Integrates genetic_optimizer.py with p2p.py for planetary-scale
-distributed evolution across Farnsworth instances.
+distributed evolution across Cosmos instances.
 
 AGI Cohesion Features:
 - Island model evolution with P2P migration
@@ -145,8 +145,8 @@ class FederatedPopulationManager:
         self._quantum_available = False
         self._quantum_optimizer = None
         try:
-            from farnsworth.integration.quantum import QISKIT_AVAILABLE, get_quantum_provider
-            from farnsworth.integration.quantum.ibm_quantum import QuantumGeneticOptimizer
+            from Cosmos.integration.quantum import QISKIT_AVAILABLE, get_quantum_provider
+            from Cosmos.integration.quantum.ibm_quantum import QuantumGeneticOptimizer
             self._quantum_available = QISKIT_AVAILABLE
             if QISKIT_AVAILABLE:
                 provider = get_quantum_provider()
@@ -259,7 +259,7 @@ class FederatedPopulationManager:
         if not self.optimizer:
             return
 
-        from farnsworth.evolution.genetic_optimizer import Genome, Gene
+        from Cosmos.evolution.genetic_optimizer import Genome, Gene
 
         # Create new Genome from migrant data
         genes = {}
@@ -601,7 +601,7 @@ class FederatedPopulationManager:
 
             # Integrate improved quantum genomes into local population
             improved_count = 0
-            from farnsworth.evolution.genetic_optimizer import Genome, Gene
+            from Cosmos.evolution.genetic_optimizer import Genome, Gene
 
             for bitstring, qfitness in quantum_population:
                 # Convert bitstring to gene values
@@ -746,7 +746,7 @@ async def setup_federated_evolution(
 
     # Set up Nexus event handlers if available
     if nexus:
-        from farnsworth.core.nexus import SignalType
+        from Cosmos.core.nexus import SignalType
 
         async def on_genome_migration(signal):
             """Handle incoming genome migration via Nexus."""

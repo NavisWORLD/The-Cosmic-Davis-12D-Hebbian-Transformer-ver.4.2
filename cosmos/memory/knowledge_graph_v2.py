@@ -21,7 +21,7 @@ import numpy as np
 from loguru import logger
 
 # Import base classes from existing knowledge graph
-from cosmos.memory.knowledge_graph import (
+from Cosmos.memory.knowledge_graph import (
     Entity, Relationship, GraphQuery, KnowledgeGraph
 )
 

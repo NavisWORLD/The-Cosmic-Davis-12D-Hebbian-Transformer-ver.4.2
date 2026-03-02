@@ -1,5 +1,5 @@
 """
-Farnsworth Claude Persistence Manager
+Cosmos Claude Persistence Manager
 =====================================
 
 Manage Claude Code in a persistent tmux session with MCP tools.
@@ -32,8 +32,8 @@ class ClaudeTmuxManager:
     - Keep-alive heartbeat
     """
 
-    TMUX_SESSION = "farnsworth_claude"
-    WORKSPACE = "/workspace/Farnsworth"
+    TMUX_SESSION = "cosmos_claude"
+    WORKSPACE = "/workspace/Cosmos"
 
     # Response markers for parsing output
     RESPONSE_START = "<<<RESPONSE_START>>>"
@@ -205,7 +205,7 @@ class ClaudeTmuxManager:
                 return
 
         # Load the session memory file
-        memory_file = Path(self.WORKSPACE) / "farnsworth" / "memory" / "claude_session.json"
+        memory_file = Path(self.WORKSPACE) / "cosmos" / "memory" / "claude_session.json"
         if memory_file.exists():
             # Send memory load command (if MCP memory is available)
             self._send_keys("/memory load")

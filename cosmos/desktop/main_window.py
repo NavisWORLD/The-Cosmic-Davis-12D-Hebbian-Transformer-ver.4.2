@@ -1,5 +1,5 @@
 """
-Farnsworth Main Window.
+Cosmos Main Window.
 """
 
 import logging
@@ -43,7 +43,7 @@ class MainWindow(QMainWindow if PYSIDE_AVAILABLE else object):
         super().__init__()
         self.app = app
 
-        self.setWindowTitle("Farnsworth AI")
+        self.setWindowTitle("Cosmos AI")
         self.setMinimumSize(900, 600)
         self.resize(1200, 800)
 
@@ -171,8 +171,8 @@ class MainWindow(QMainWindow if PYSIDE_AVAILABLE else object):
         from PySide6.QtWidgets import QMessageBox
         QMessageBox.about(
             self,
-            "About Farnsworth",
-            "Farnsworth AI Desktop\n\n"
+            "About Cosmos",
+            "Cosmos AI Desktop\n\n"
             "Your intelligent AI companion.\n\n"
             "Version 2.9.4"
         )
@@ -183,7 +183,7 @@ class MainWindow(QMainWindow if PYSIDE_AVAILABLE else object):
             event.ignore()
             self.hide()
             self.app.tray.showMessage(
-                "Farnsworth",
+                "Cosmos",
                 "Running in background. Click tray icon to reopen.",
                 1000
             )

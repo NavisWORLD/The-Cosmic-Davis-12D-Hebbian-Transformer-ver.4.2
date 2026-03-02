@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/tools/security/edr.py
 cosmos EDR (Endpoint Detection and Response)
-=======
-Farnsworth EDR (Endpoint Detection and Response)
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/security/edr.py
 
 "Good news, everyone! I've built an endpoint protection system!"
 

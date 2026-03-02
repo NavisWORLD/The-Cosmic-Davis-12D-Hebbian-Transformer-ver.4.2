@@ -108,7 +108,7 @@ class CLIBridge(ABC):
         self.executable = executable
         self.max_concurrent = max_concurrent
         self.default_timeout = default_timeout
-        self.working_dir = working_dir or "/workspace/Farnsworth"
+        self.working_dir = working_dir or "/workspace/Cosmos"
         self._semaphore = asyncio.Semaphore(max_concurrent)
         self.health = CLIHealth()
 

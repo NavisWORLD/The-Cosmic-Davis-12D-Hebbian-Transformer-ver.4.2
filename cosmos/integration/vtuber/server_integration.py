@@ -1,6 +1,6 @@
 """
 Server Integration - API endpoints for VTuber control
-Integrates with Farnsworth web server for remote control and monitoring
+Integrates with Cosmos web server for remote control and monitoring
 """
 
 import asyncio
@@ -14,7 +14,7 @@ from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisco
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from .vtuber_core import FarnsworthVTuber, VTuberConfig, VTuberState
+from .vtuber_core import CosmosVTuber, VTuberConfig, VTuberState
 from .stream_manager import StreamQuality
 from .avatar_controller import AvatarBackend
 
@@ -30,7 +30,7 @@ class StartStreamRequest(BaseModel):
 
 class SpeakRequest(BaseModel):
     text: str
-    agent: str = "Farnsworth"
+    agent: str = "Cosmos"
     emotion: str = "neutral"
 
 
@@ -63,10 +63,10 @@ async def verify_api_key(authorization: Optional[str] = Header(None)):
 router = APIRouter(prefix="/api/vtuber", tags=["vtuber"])
 
 # Global VTuber instance
-_vtuber_instance: Optional[FarnsworthVTuber] = None
+_vtuber_instance: Optional[CosmosVTuber] = None
 
 
-def get_vtuber() -> Optional[FarnsworthVTuber]:
+def get_vtuber() -> Optional[CosmosVTuber]:
     """Get the current VTuber instance"""
     return _vtuber_instance
 
@@ -98,7 +98,7 @@ async def start_stream(request: StartStreamRequest):
         )
 
         # Create and start VTuber
-        _vtuber_instance = FarnsworthVTuber(config)
+        _vtuber_instance = CosmosVTuber(config)
         success = await _vtuber_instance.start()
 
         if success:
@@ -286,7 +286,7 @@ async def vtuber_websocket(websocket: WebSocket):
 async def control_panel():
     """Return control panel configuration"""
     return {
-        "title": "Farnsworth VTuber Control",
+        "title": "Cosmos VTuber Control",
         "endpoints": {
             "start": "/api/vtuber/start",
             "stop": "/api/vtuber/stop",
@@ -300,7 +300,7 @@ async def control_panel():
             "thinking", "excited", "confused", "smug", "curious"
         ],
         "agents": [
-            "Farnsworth", "Grok", "DeepSeek", "Gemini",
+            "Cosmos", "Grok", "DeepSeek", "Gemini",
             "Claude", "Kimi", "Phi", "Swarm-Mind"
         ],
     }
@@ -321,7 +321,7 @@ async def run_standalone_vtuber(stream_key: str, simulate: bool = True):
         debug_mode=True,
     )
 
-    vtuber = FarnsworthVTuber(config)
+    vtuber = CosmosVTuber(config)
 
     try:
         await vtuber.start()

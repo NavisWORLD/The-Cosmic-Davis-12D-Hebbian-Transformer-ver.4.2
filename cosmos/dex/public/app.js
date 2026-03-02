@@ -1,5 +1,5 @@
 /**
- * DEXAI - Farnsworth Collective AI-Powered DEX Screener
+ * DEXAI - Cosmos Collective AI-Powered DEX Screener
  * Complete Frontend Application
  */
 

@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/health/nutrition.py
 cosmos Nutrition Manager
-=======
-Farnsworth Nutrition Manager
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/nutrition.py
 
 Comprehensive nutrition tracking with food database, meal logging,
 recipe management, and swarm-powered meal planning.
@@ -94,11 +90,7 @@ class NutritionManager:
             data_dir: Directory for storing nutrition data
             user_profile: User's health profile for personalization
         """
-<<<<<<< HEAD:cosmos/health/nutrition.py
         self.data_dir = data_dir or Path.home() / ".cosmos" / "health" / "nutrition"
-=======
-        self.data_dir = data_dir or Path.home() / ".farnsworth" / "health" / "nutrition"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/nutrition.py
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
         self.user_profile = user_profile or UserHealthProfile()

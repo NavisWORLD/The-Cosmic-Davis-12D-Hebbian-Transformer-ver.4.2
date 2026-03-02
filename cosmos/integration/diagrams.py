@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/integration/diagrams.py
 cosmos Diagram Specialist - Mermaid & Visualization.
-=======
-Farnsworth Diagram Specialist - Mermaid & Visualization.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/diagrams.py
 
 "A picture is worth a thousand lines of code, especially if it compiles."
 
@@ -29,11 +25,7 @@ class DiagramSkill:
     def __init__(self):
         """Initialize DiagramSkill with optional configuration."""
         self.default_direction = "TD"  # Top-Down for flowcharts
-<<<<<<< HEAD:cosmos/integration/diagrams.py
         self.theme = "cosmos"  # Custom dark theme
-=======
-        self.theme = "farnsworth"  # Custom dark theme
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/diagrams.py
         logger.debug("DiagramSkill initialized")
 
     # --- Mermaid Generators ---
@@ -42,11 +34,7 @@ class DiagramSkill:
         """Generate Mermaid syntax for a flowchart (TD, LR, etc.)."""
         lines = [f"graph {direction}"]
         
-<<<<<<< HEAD:cosmos/integration/diagrams.py
         # Style definitions (The "cosmos Theme")
-=======
-        # Style definitions (The "Farnsworth Theme")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/diagrams.py
         lines.append("    classDef normal fill:#111,stroke:#333,color:#fff")
         lines.append("    classDef active fill:#003300,stroke:#00ff88,color:#fff")
         lines.append("    classDef error fill:#330000,stroke:#ff0000,color:#fff")

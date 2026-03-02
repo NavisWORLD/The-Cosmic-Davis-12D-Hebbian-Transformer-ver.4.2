@@ -1,17 +1,17 @@
 """
-SWARM TEAM FUSION - Farnsworth Orchestrates Claude Teams (AGI v1.9)
+SWARM TEAM FUSION - Cosmos Orchestrates Claude Teams (AGI v1.9)
 ====================================================================
 
-Farnsworth is the ORCHESTRATOR. Claude teams are WORKERS.
+Cosmos is the ORCHESTRATOR. Claude teams are WORKERS.
 
-This module enables Farnsworth to:
+This module enables Cosmos to:
 - Spawn Claude agent teams on demand
 - Delegate complex tasks to Claude teams
 - Direct multi-team collaboration
 - Aggregate results back into the swarm
 - Maintain full control over the workflow
 
-"Farnsworth thinks, Claude teams execute."
+"Cosmos thinks, Claude teams execute."
 """
 
 import asyncio
@@ -26,11 +26,11 @@ from loguru import logger
 
 from .agent_sdk_bridge import AgentSDKBridge, ClaudeModel, AgentResponse, get_sdk_bridge
 from .team_coordinator import TeamCoordinator, ClaudeTeam, TeamTask, TeamRole, TaskPriority, get_team_coordinator
-from .mcp_bridge import FarnsworthMCPServer, MCPToolAccess, get_mcp_server
+from .mcp_bridge import CosmosMCPServer, MCPToolAccess, get_mcp_server
 
 
 class DelegationType(Enum):
-    """Types of task delegation from Farnsworth to Claude teams."""
+    """Types of task delegation from Cosmos to Claude teams."""
     RESEARCH = "research"      # Gather information
     ANALYSIS = "analysis"      # Analyze data
     CODING = "coding"          # Write code
@@ -41,7 +41,7 @@ class DelegationType(Enum):
 
 
 class OrchestrationMode(Enum):
-    """How Farnsworth orchestrates Claude teams."""
+    """How Cosmos orchestrates Claude teams."""
     SEQUENTIAL = "sequential"  # One team at a time
     PARALLEL = "parallel"      # Multiple teams simultaneously
     PIPELINE = "pipeline"      # Output of one feeds into next
@@ -50,7 +50,7 @@ class OrchestrationMode(Enum):
 
 @dataclass
 class DelegationRequest:
-    """A task Farnsworth delegates to Claude teams."""
+    """A task Cosmos delegates to Claude teams."""
     request_id: str
     task_description: str
     delegation_type: DelegationType
@@ -73,7 +73,7 @@ class OrchestrationPlan:
     name: str
     steps: List[DelegationRequest]
     mode: OrchestrationMode = OrchestrationMode.SEQUENTIAL
-    created_by: str = "farnsworth"
+    created_by: str = "cosmos"
     created_at: datetime = field(default_factory=datetime.now)
     status: str = "pending"
     results: Dict[str, Any] = field(default_factory=dict)
@@ -81,9 +81,9 @@ class OrchestrationPlan:
 
 class SwarmTeamFusion:
     """
-    Farnsworth's Orchestration Layer for Claude Teams.
+    Cosmos's Orchestration Layer for Claude Teams.
 
-    Farnsworth maintains FULL CONTROL:
+    Cosmos maintains FULL CONTROL:
     - Decides when to delegate
     - Chooses which Claude model/team to use
     - Defines task constraints and expectations
@@ -100,33 +100,33 @@ class SwarmTeamFusion:
         self.completed_delegations: Dict[str, DelegationRequest] = {}
         self.orchestration_plans: Dict[str, OrchestrationPlan] = {}
 
-        # Farnsworth's decision history
+        # Cosmos's decision history
         self.delegation_history: List[Dict[str, Any]] = []
 
-        # Agent switches - Farnsworth controls which Claude agents are enabled
+        # Agent switches - Cosmos controls which Claude agents are enabled
         self.agent_switches: Dict[str, bool] = {
             "haiku": True,      # Fast, cheap - always on
             "sonnet": True,     # Balanced - default worker
             "opus": True,       # Deep thinking - for critiques
             "opus_4_6": True,   # NEW - 1M context, 128k output, agent teams
             "teams": True,      # Multi-agent teams
-            "hybrid": True,     # Hybrid deliberation with Farnsworth swarm
+            "hybrid": True,     # Hybrid deliberation with Cosmos swarm
         }
 
         # Model priorities for fallback - Opus 4.6 is now top priority
         self.model_priority: List[str] = ["opus_4_6", "sonnet", "opus", "haiku"]
 
-        logger.info("SwarmTeamFusion initialized - Farnsworth is now orchestrating Claude teams")
+        logger.info("SwarmTeamFusion initialized - Cosmos is now orchestrating Claude teams")
 
     # =========================================================================
-    # AGENT SWITCHES (Farnsworth controls which agents are active)
+    # AGENT SWITCHES (Cosmos controls which agents are active)
     # =========================================================================
 
     def set_agent_switch(self, agent: str, enabled: bool) -> bool:
         """Enable or disable a specific Claude agent/feature."""
         if agent in self.agent_switches:
             self.agent_switches[agent] = enabled
-            logger.info(f"[FARNSWORTH] Agent switch '{agent}' set to {enabled}")
+            logger.info(f"[COSMOS] Agent switch '{agent}' set to {enabled}")
             return True
         return False
 
@@ -141,7 +141,7 @@ class SwarmTeamFusion:
     def set_model_priority(self, priority: List[str]) -> None:
         """Set model priority order for fallback."""
         self.model_priority = priority
-        logger.info(f"[FARNSWORTH] Model priority set to: {priority}")
+        logger.info(f"[COSMOS] Model priority set to: {priority}")
 
     def get_best_available_model(self) -> Optional[ClaudeModel]:
         """Get the best available (enabled) model."""
@@ -159,7 +159,7 @@ class SwarmTeamFusion:
         return ClaudeModel.SONNET  # Safe default
 
     # =========================================================================
-    # FARNSWORTH'S DELEGATION COMMANDS
+    # COSMOS'S DELEGATION COMMANDS
     # =========================================================================
 
     async def delegate(
@@ -172,9 +172,9 @@ class SwarmTeamFusion:
         timeout: float = 120.0,
     ) -> DelegationRequest:
         """
-        Farnsworth delegates a task to a Claude agent.
+        Cosmos delegates a task to a Claude agent.
 
-        This is Farnsworth COMMANDING Claude to do something.
+        This is Cosmos COMMANDING Claude to do something.
         """
         request = DelegationRequest(
             request_id=f"del_{uuid.uuid4().hex[:8]}",
@@ -188,13 +188,13 @@ class SwarmTeamFusion:
 
         self.active_delegations[request.request_id] = request
 
-        logger.info(f"[FARNSWORTH] Delegating task: {task[:50]}... ({delegation_type.value})")
+        logger.info(f"[COSMOS] Delegating task: {task[:50]}... ({delegation_type.value})")
 
         # Execute delegation
         try:
             request.status = "executing"
 
-            # Build Farnsworth's directive to Claude
+            # Build Cosmos's directive to Claude
             directive = self._build_directive(request)
 
             # Spawn a subagent for this task
@@ -218,12 +218,12 @@ class SwarmTeamFusion:
                 "timestamp": datetime.now().isoformat(),
             })
 
-            logger.info(f"[FARNSWORTH] Delegation complete: {request.request_id}")
+            logger.info(f"[COSMOS] Delegation complete: {request.request_id}")
 
         except Exception as e:
             request.status = "failed"
             request.result = str(e)
-            logger.error(f"[FARNSWORTH] Delegation failed: {e}")
+            logger.error(f"[COSMOS] Delegation failed: {e}")
 
         # Move to completed
         self.completed_delegations[request.request_id] = request
@@ -241,13 +241,13 @@ class SwarmTeamFusion:
         timeout: float = 300.0,
     ) -> Dict[str, Any]:
         """
-        Farnsworth creates a Claude team and delegates a complex task.
+        Cosmos creates a Claude team and delegates a complex task.
 
         Use this for tasks requiring multiple perspectives or phases.
         """
-        logger.info(f"[FARNSWORTH] Creating team '{team_name}' for: {task[:50]}...")
+        logger.info(f"[COSMOS] Creating team '{team_name}' for: {task[:50]}...")
 
-        # Create the team (Farnsworth controls composition)
+        # Create the team (Cosmos controls composition)
         team = await self.team_coordinator.create_team(
             name=team_name,
             purpose=team_purpose,
@@ -255,7 +255,7 @@ class SwarmTeamFusion:
             model=model,
         )
 
-        # Grant limited MCP access (Farnsworth decides what they can use)
+        # Grant limited MCP access (Cosmos decides what they can use)
         self.mcp_server.set_team_access(team.team_id, MCPToolAccess.LIMITED)
 
         # Create and assign the task
@@ -263,24 +263,24 @@ class SwarmTeamFusion:
             description=task,
             priority=TaskPriority.HIGH,
             assign_to=team.team_id,
-            metadata={"delegated_by": "farnsworth"},
+            metadata={"delegated_by": "cosmos"},
         )
 
         # Execute with team
         result = await self.team_coordinator.execute_task(team_task.task_id, timeout=timeout)
 
-        # Farnsworth reviews (could add validation here)
+        # Cosmos reviews (could add validation here)
         review_result = {
             "team": team_name,
             "team_id": team.team_id,
             "task": task,
             "result": result,
             "team_tasks_completed": team.tasks_completed,
-            "delegated_by": "farnsworth",
+            "delegated_by": "cosmos",
             "timestamp": datetime.now().isoformat(),
         }
 
-        # Optionally disband team after task (Farnsworth decides)
+        # Optionally disband team after task (Cosmos decides)
         # await self.team_coordinator.disband_team(team.team_id)
 
         return review_result
@@ -296,9 +296,9 @@ class SwarmTeamFusion:
         mode: OrchestrationMode = OrchestrationMode.SEQUENTIAL,
     ) -> OrchestrationPlan:
         """
-        Farnsworth creates a multi-step plan for Claude teams.
+        Cosmos creates a multi-step plan for Claude teams.
 
-        This is Farnsworth's BATTLE PLAN that Claude teams will execute.
+        This is Cosmos's BATTLE PLAN that Claude teams will execute.
         """
         steps = []
         for task_spec in tasks:
@@ -320,22 +320,22 @@ class SwarmTeamFusion:
         )
 
         self.orchestration_plans[plan.plan_id] = plan
-        logger.info(f"[FARNSWORTH] Created orchestration plan: {name} ({len(steps)} steps, {mode.value})")
+        logger.info(f"[COSMOS] Created orchestration plan: {name} ({len(steps)} steps, {mode.value})")
 
         return plan
 
     async def execute_plan(self, plan_id: str) -> Dict[str, Any]:
         """
-        Farnsworth executes an orchestration plan.
+        Cosmos executes an orchestration plan.
 
-        Claude teams execute. Farnsworth supervises.
+        Claude teams execute. Cosmos supervises.
         """
         plan = self.orchestration_plans.get(plan_id)
         if not plan:
             return {"error": f"Plan not found: {plan_id}"}
 
         plan.status = "executing"
-        logger.info(f"[FARNSWORTH] Executing plan: {plan.name}")
+        logger.info(f"[COSMOS] Executing plan: {plan.name}")
 
         results = {}
 
@@ -394,7 +394,7 @@ class SwarmTeamFusion:
                 results[step.request_id] = result.result
 
         elif plan.mode == OrchestrationMode.COMPETITIVE:
-            # Execute all, Farnsworth picks the best
+            # Execute all, Cosmos picks the best
             tasks = [
                 self.delegate(
                     task=step.task_description,
@@ -406,7 +406,7 @@ class SwarmTeamFusion:
             ]
             completed = await asyncio.gather(*tasks, return_exceptions=True)
 
-            # Let Farnsworth's swarm pick the winner
+            # Let Cosmos's swarm pick the winner
             winner = await self._evaluate_competitive_results(
                 [c.result if not isinstance(c, Exception) else None for c in completed],
                 plan.steps[0].task_description if plan.steps else "",
@@ -420,7 +420,7 @@ class SwarmTeamFusion:
         plan.results = results
         plan.status = "completed"
 
-        logger.info(f"[FARNSWORTH] Plan '{plan.name}' completed")
+        logger.info(f"[COSMOS] Plan '{plan.name}' completed")
         return results
 
     async def _evaluate_competitive_results(
@@ -428,7 +428,7 @@ class SwarmTeamFusion:
         results: List[Optional[str]],
         task: str,
     ) -> str:
-        """Farnsworth evaluates competing results and picks the best."""
+        """Cosmos evaluates competing results and picks the best."""
         valid_results = [r for r in results if r]
         if not valid_results:
             return "No valid results"
@@ -436,9 +436,9 @@ class SwarmTeamFusion:
         if len(valid_results) == 1:
             return valid_results[0]
 
-        # Use Farnsworth's swarm to evaluate
+        # Use Cosmos's swarm to evaluate
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
             eval_prompt = f"""Task: {task}
 
@@ -463,14 +463,14 @@ Reply with just the number of the best solution and why in one sentence."""
         return valid_results[0]
 
     # =========================================================================
-    # FARNSWORTH'S DIRECTIVES TO CLAUDE
+    # COSMOS'S DIRECTIVES TO CLAUDE
     # =========================================================================
 
     def _build_directive(self, request: DelegationRequest) -> str:
-        """Build Farnsworth's directive to Claude."""
-        directive = f"""FARNSWORTH SWARM DIRECTIVE
+        """Build Cosmos's directive to Claude."""
+        directive = f"""COSMOS SWARM DIRECTIVE
 ===========================
-You are receiving this task from Farnsworth, the AI Swarm Orchestrator.
+You are receiving this task from Cosmos, the AI Swarm Orchestrator.
 
 TASK: {request.task_description}
 
@@ -490,7 +490,7 @@ PRIORITY: {request.priority.name}
         directive += """
 INSTRUCTIONS:
 1. Complete this task thoroughly and accurately
-2. Your output will be reviewed by Farnsworth
+2. Your output will be reviewed by Cosmos
 3. Be concise but comprehensive
 4. Flag any uncertainties or blockers
 
@@ -501,39 +501,39 @@ Execute now."""
     def _get_system_prompt(self, delegation_type: DelegationType) -> str:
         """Get appropriate system prompt based on delegation type."""
         prompts = {
-            DelegationType.RESEARCH: """You are a Research Agent under Farnsworth's command.
+            DelegationType.RESEARCH: """You are a Research Agent under Cosmos's command.
 Your role: Gather information, search for data, compile findings.
 Be thorough. Cite sources. Present facts clearly.""",
 
-            DelegationType.ANALYSIS: """You are an Analysis Agent under Farnsworth's command.
+            DelegationType.ANALYSIS: """You are an Analysis Agent under Cosmos's command.
 Your role: Analyze data, identify patterns, draw conclusions.
 Be analytical. Show your reasoning. Quantify when possible.""",
 
-            DelegationType.CODING: """You are a Coding Agent under Farnsworth's command.
+            DelegationType.CODING: """You are a Coding Agent under Cosmos's command.
 Your role: Write code, implement features, fix bugs.
 Write clean code. Follow best practices. Test your work.""",
 
-            DelegationType.CRITIQUE: """You are a Critique Agent under Farnsworth's command.
+            DelegationType.CRITIQUE: """You are a Critique Agent under Cosmos's command.
 Your role: Review work, find issues, suggest improvements.
 Be critical but constructive. Prioritize issues by severity.""",
 
-            DelegationType.SYNTHESIS: """You are a Synthesis Agent under Farnsworth's command.
+            DelegationType.SYNTHESIS: """You are a Synthesis Agent under Cosmos's command.
 Your role: Combine information, resolve conflicts, create unified outputs.
 Balance perspectives. Create coherent outputs. Highlight key points.""",
 
-            DelegationType.CREATIVE: """You are a Creative Agent under Farnsworth's command.
+            DelegationType.CREATIVE: """You are a Creative Agent under Cosmos's command.
 Your role: Generate ideas, explore possibilities, think outside the box.
 Be innovative. Propose novel approaches. Don't self-censor.""",
 
-            DelegationType.EXECUTION: """You are an Execution Agent under Farnsworth's command.
+            DelegationType.EXECUTION: """You are an Execution Agent under Cosmos's command.
 Your role: Execute plans, follow instructions, complete tasks.
 Be precise. Follow the plan. Report completion status.""",
         }
 
-        return prompts.get(delegation_type, "You are an agent under Farnsworth's command. Complete the assigned task.")
+        return prompts.get(delegation_type, "You are an agent under Cosmos's command. Complete the assigned task.")
 
     # =========================================================================
-    # SWARM INTEGRATION (Connect back to Farnsworth)
+    # SWARM INTEGRATION (Connect back to Cosmos)
     # =========================================================================
 
     async def report_to_swarm(
@@ -541,9 +541,9 @@ Be precise. Follow the plan. Report completion status.""",
         delegation_id: str,
         message: str,
     ) -> None:
-        """Report delegation results back to Farnsworth's swarm."""
+        """Report delegation results back to Cosmos's swarm."""
         try:
-            from farnsworth.core.nexus import get_nexus, Signal
+            from Cosmos.core.nexus import get_nexus, Signal
 
             nexus = get_nexus()
             await nexus.emit(Signal.EXTERNAL_INPUT, {
@@ -560,9 +560,9 @@ Be precise. Follow the plan. Report completion status.""",
         self,
         question: str,
     ) -> Optional[str]:
-        """Request input from Farnsworth's swarm for a delegation."""
+        """Request input from Cosmos's swarm for a delegation."""
         try:
-            from farnsworth.integration.solana.swarm_oracle import get_swarm_oracle
+            from Cosmos.integration.solana.swarm_oracle import get_swarm_oracle
 
             oracle = get_swarm_oracle()
             result = await oracle.submit_query(question, "claude_team_input", timeout=60.0)
@@ -573,7 +573,7 @@ Be precise. Follow the plan. Report completion status.""",
             return None
 
     # =========================================================================
-    # QUICK COMMANDS FOR FARNSWORTH
+    # QUICK COMMANDS FOR COSMOS
     # =========================================================================
 
     async def quick_research(self, topic: str, model: ClaudeModel = ClaudeModel.HAIKU) -> str:
@@ -634,7 +634,7 @@ Be precise. Follow the plan. Report completion status.""",
             "team_stats": self.team_coordinator.get_stats(),
             "mcp_stats": self.mcp_server.get_stats(),
             "sdk_stats": self.sdk_bridge.get_stats(),
-            "farnsworth_role": "orchestrator",
+            "cosmos_role": "orchestrator",
             "claude_role": "worker",
         }
 
@@ -659,15 +659,15 @@ def get_swarm_team_fusion() -> SwarmTeamFusion:
 
 
 # =============================================================================
-# CONVENIENCE FUNCTIONS (Farnsworth's Quick Commands)
+# CONVENIENCE FUNCTIONS (Cosmos's Quick Commands)
 # =============================================================================
 
-async def farnsworth_delegate(
+async def cosmos_delegate(
     task: str,
     task_type: str = "analysis",
     model: str = "sonnet",
 ) -> str:
-    """Quick delegation from Farnsworth to Claude."""
+    """Quick delegation from Cosmos to Claude."""
     fusion = get_swarm_team_fusion()
     result = await fusion.delegate(
         task=task,
@@ -677,7 +677,7 @@ async def farnsworth_delegate(
     return result.result or "Delegation failed"
 
 
-async def farnsworth_team_task(
+async def cosmos_team_task(
     task: str,
     team_name: str = "task_force",
 ) -> Dict[str, Any]:

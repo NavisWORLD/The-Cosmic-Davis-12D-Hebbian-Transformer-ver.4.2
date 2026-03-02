@@ -71,7 +71,7 @@ HEADER_PAYMENT_SIGNATURE = "X-PAYMENT"  # retry request: base64 JSON with tx sig
 HEADER_PAYMENT_RESPONSE = "X-PAYMENT-RESPONSE"  # success response: base64 JSON receipt
 
 # Discovery
-FARNSWORTH_API_BASE = os.getenv("FARNSWORTH_API_URL", "https://ai.farnsworth.cloud")
+COSMOS_API_BASE = os.getenv("COSMOS_API_URL", "https://ai.cosmos.cloud")
 
 # Max payment age (prevent old tx replays)
 MAX_PAYMENT_AGE_SECONDS = 300  # 5 minutes
@@ -452,7 +452,7 @@ def build_payment_required_payload(endpoint: str, resource_description: str = ""
                 "scheme": "exact",
                 "network": SOLANA_NETWORK,
                 "maxAmountRequired": str(TIER_SIMULATED_LAMPORTS),
-                "resource": f"{FARNSWORTH_API_BASE}{endpoint}",
+                "resource": f"{COSMOS_API_BASE}{endpoint}",
                 "description": (
                     "Simulated Quantum (0.25 SOL) — Quantum simulator with hardware-optimized "
                     "algo weights. EMA momentum + quantum Monte Carlo + collective AI. Fast response."
@@ -462,7 +462,7 @@ def build_payment_required_payload(endpoint: str, resource_description: str = ""
                 "asset": SOL_ASSET,
                 "maxTimeoutSeconds": MAX_PAYMENT_AGE_SECONDS,
                 "extra": {
-                    "name": "Farnsworth AI Swarm",
+                    "name": "Cosmos AI Swarm",
                     "tier": "simulated",
                     "pricing": f"{TIER_SIMULATED_SOL} SOL",
                     "estimated_time": "5-15 seconds",
@@ -481,7 +481,7 @@ def build_payment_required_payload(endpoint: str, resource_description: str = ""
                 "scheme": "exact",
                 "network": SOLANA_NETWORK,
                 "maxAmountRequired": str(TIER_HARDWARE_LAMPORTS),
-                "resource": f"{FARNSWORTH_API_BASE}{endpoint}",
+                "resource": f"{COSMOS_API_BASE}{endpoint}",
                 "description": (
                     "Real Quantum Hardware (1 SOL) — IBM Quantum QPU circuit execution. "
                     "Higher qubit count, more shots, Bell correlation verification on real hardware. "
@@ -492,7 +492,7 @@ def build_payment_required_payload(endpoint: str, resource_description: str = ""
                 "asset": SOL_ASSET,
                 "maxTimeoutSeconds": MAX_PAYMENT_AGE_SECONDS,
                 "extra": {
-                    "name": "Farnsworth AI Swarm",
+                    "name": "Cosmos AI Swarm",
                     "tier": "hardware",
                     "pricing": f"{TIER_HARDWARE_SOL} SOL",
                     "estimated_time": "30-90 seconds",
@@ -552,15 +552,15 @@ def get_x402_discovery_manifest() -> dict:
     return {
         "x402Version": 2,
         "provider": {
-            "name": "Farnsworth AI Swarm",
+            "name": "Cosmos AI Swarm",
             "description": (
                 "Quantum-enhanced trading intelligence powered by IBM Quantum hardware and simulation, "
                 "EMA momentum analysis, and multi-agent collective deliberation. "
                 "Two tiers: Simulated (0.25 SOL, fast) and Real Quantum Hardware (1 SOL, IBM QPU). "
                 "Supports any Solana memecoin plus BTC, ETH, and SOL majors."
             ),
-            "url": FARNSWORTH_API_BASE,
-            "logo": f"{FARNSWORTH_API_BASE}/static/logo.png",
+            "url": COSMOS_API_BASE,
+            "logo": f"{COSMOS_API_BASE}/static/logo.png",
             "category": "trading",
             "tags": ["solana", "quantum", "trading", "defi", "ai", "signals", "ibm-quantum", "bitcoin", "ethereum"],
         },
@@ -626,8 +626,8 @@ def get_x402_discovery_manifest() -> dict:
             },
         ],
         "networks": [SOLANA_NETWORK],
-        "termsOfService": f"{FARNSWORTH_API_BASE}/terms",
-        "contact": "farnsworth@ai.farnsworth.cloud",
+        "termsOfService": f"{COSMOS_API_BASE}/terms",
+        "contact": "cosmos@ai.cosmos.cloud",
     }
 
 
@@ -659,7 +659,7 @@ async def run_premium_quantum_analysis(
         "asset_type": asset_info["type"],
         "tier": tier,
         "timestamp": datetime.now().isoformat(),
-        "powered_by": "Farnsworth AI Swarm — Quantum Trading Cortex",
+        "powered_by": "Cosmos AI Swarm — Quantum Trading Cortex",
     }
 
     if use_hardware:
@@ -671,11 +671,11 @@ async def run_premium_quantum_analysis(
 
     # 1. Generate quantum trading signal
     try:
-        from farnsworth.core.quantum_trading import get_quantum_cortex
+        from Cosmos.core.quantum_trading import get_quantum_cortex
         cortex = get_quantum_cortex()
 
         if cortex is None:
-            from farnsworth.core.quantum_trading import initialize_quantum_cortex
+            from Cosmos.core.quantum_trading import initialize_quantum_cortex
             cortex = await initialize_quantum_cortex()
 
         # Fetch live price data

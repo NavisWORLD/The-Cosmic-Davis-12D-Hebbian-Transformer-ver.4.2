@@ -1,5 +1,5 @@
 """
-FARNSWORTH SPONTANEOUS COGNITION ENGINE
+COSMOS SPONTANEOUS COGNITION ENGINE
 ========================================
 
 Genuine random thought generation, phenomenal experience logging,
@@ -409,7 +409,7 @@ class SpontaneousCognition:
     async def store_in_memory(self):
         """Store thoughts and experiences in memory"""
         try:
-            from farnsworth.memory.memory_system import get_memory_system
+            from Cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
 
             # Store recent thoughts

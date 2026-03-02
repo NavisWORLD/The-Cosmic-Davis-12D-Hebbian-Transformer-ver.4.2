@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/cicd/gitlab_ci.py
 cosmos GitLab CI Integration
-=======
-Farnsworth GitLab CI Integration
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cicd/gitlab_ci.py
 
 "GitLab? Is that where the gits are kept?"
 
@@ -21,11 +17,7 @@ try:
 except ImportError:
     HAS_HTTPX = False
 
-<<<<<<< HEAD:cosmos/cicd/gitlab_ci.py
-from cosmos.cicd.pipeline_manager import (
-=======
-from farnsworth.cicd.pipeline_manager import (
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cicd/gitlab_ci.py
+from Cosmos.cicd.pipeline_manager import (
     CICDProvider,
     Pipeline,
     PipelineRun,

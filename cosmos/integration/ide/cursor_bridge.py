@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/integration/ide/cursor_bridge.py
 cosmos Cursor Bridge.
-=======
-Farnsworth Cursor Bridge.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/ide/cursor_bridge.py
 
 "I can code in the dark!"
 
@@ -28,17 +24,10 @@ class CursorBridge:
 
     def generate_cursorrules(self, project_context: str):
         """
-<<<<<<< HEAD:cosmos/integration/ide/cursor_bridge.py
         Auto-generate a .cursorrules file based on cosmos's memory.
         This allows cosmos to "teach" Cursor about the project.
         """
         rules = f"""# cosmos Generated Rules
-=======
-        Auto-generate a .cursorrules file based on Farnsworth's memory.
-        This allows Farnsworth to "teach" Cursor about the project.
-        """
-        rules = f"""# Farnsworth Generated Rules
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/ide/cursor_bridge.py
 # Project Context:
 {project_context}
 
@@ -48,11 +37,7 @@ class CursorBridge:
 - Use Rich for CLI output
 
 # Architecture:
-<<<<<<< HEAD:cosmos/integration/ide/cursor_bridge.py
 - Framework: cosmos
-=======
-- Framework: Farnsworth
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/ide/cursor_bridge.py
 - State: Nexus Event Bus
 """
         with open(".cursorrules", "w") as f:

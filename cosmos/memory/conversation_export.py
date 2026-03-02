@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/memory/conversation_export.py
 cosmos Conversation Export - Export memory and context as shareable formats
-=======
-Farnsworth Conversation Export - Export memory and context as shareable formats
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/conversation_export.py
 
 Features:
 - Multiple export formats: JSON, Markdown, HTML
@@ -113,11 +109,7 @@ class ConversationExporter:
     ):
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
-<<<<<<< HEAD:cosmos/memory/conversation_export.py
         self.instance_id = instance_id or "cosmos"
-=======
-        self.instance_id = instance_id or "farnsworth"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/conversation_export.py
 
         # Callbacks for data access (set by MemorySystem)
         self.get_memories_fn = None
@@ -353,11 +345,7 @@ class ConversationExporter:
         lines = []
 
         # Header
-<<<<<<< HEAD:cosmos/memory/conversation_export.py
         lines.append("# cosmos Memory Export")
-=======
-        lines.append("# Farnsworth Memory Export")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/conversation_export.py
         lines.append("")
         lines.append(f"**Exported:** {data['metadata']['exported_at']}")
         lines.append(f"**Instance:** {data['metadata']['instance_id']}")
@@ -437,11 +425,7 @@ class ConversationExporter:
         # Footer
         lines.append("---")
         lines.append("")
-<<<<<<< HEAD:cosmos/memory/conversation_export.py
         lines.append("*Exported with cosmos - Self-Evolving AI Companion*")
-=======
-        lines.append("*Exported with Farnsworth - Self-Evolving AI Companion*")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/conversation_export.py
 
         return "\n".join(lines)
 
@@ -455,11 +439,7 @@ class ConversationExporter:
             "<head>",
             "  <meta charset='UTF-8'>",
             "  <meta name='viewport' content='width=device-width, initial-scale=1.0'>",
-<<<<<<< HEAD:cosmos/memory/conversation_export.py
             "  <title>cosmos Memory Export</title>",
-=======
-            "  <title>Farnsworth Memory Export</title>",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/conversation_export.py
             "  <style>",
             self._get_html_styles(),
             "  </style>",
@@ -471,11 +451,7 @@ class ConversationExporter:
         # Header
         html_parts.extend([
             "    <header>",
-<<<<<<< HEAD:cosmos/memory/conversation_export.py
             "      <h1>🧠 cosmos Memory Export</h1>",
-=======
-            "      <h1>🧠 Farnsworth Memory Export</h1>",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/conversation_export.py
             f"      <p class='meta'>Exported: {data['metadata']['exported_at']}</p>",
             f"      <p class='meta'>Instance: {data['metadata']['instance_id']}</p>",
             "    </header>",
@@ -564,13 +540,8 @@ class ConversationExporter:
         # Footer
         html_parts.extend([
             "    <footer>",
-<<<<<<< HEAD:cosmos/memory/conversation_export.py
             "      <p>Exported with <strong>cosmos</strong> - Self-Evolving AI Companion</p>",
             "      <p><a href='https://github.com/anthropics/cosmos'>GitHub</a></p>",
-=======
-            "      <p>Exported with <strong>Farnsworth</strong> - Self-Evolving AI Companion</p>",
-            "      <p><a href='https://github.com/anthropics/farnsworth'>GitHub</a></p>",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/conversation_export.py
             "    </footer>",
             "  </div>",
             "</body>",
@@ -805,11 +776,7 @@ class ConversationExporter:
 
         # Header
         lines.append("=" * 60)
-<<<<<<< HEAD:cosmos/memory/conversation_export.py
         lines.append("cosmos MEMORY EXPORT")
-=======
-        lines.append("FARNSWORTH MEMORY EXPORT")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/conversation_export.py
         lines.append("=" * 60)
         lines.append(f"Exported: {data['metadata']['exported_at']}")
         lines.append(f"Instance: {data['metadata']['instance_id']}")
@@ -864,11 +831,7 @@ class ConversationExporter:
 
         # Footer
         lines.append("=" * 60)
-<<<<<<< HEAD:cosmos/memory/conversation_export.py
         lines.append("Exported with cosmos - Self-Evolving AI Companion")
-=======
-        lines.append("Exported with Farnsworth - Self-Evolving AI Companion")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/conversation_export.py
         lines.append("=" * 60)
 
         return "\n".join(lines)

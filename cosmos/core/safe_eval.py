@@ -1,5 +1,5 @@
 """
-Farnsworth Safe Expression Evaluator
+Cosmos Safe Expression Evaluator
 
 Provides sandboxed eval/exec replacements that prevent code injection.
 Used by workflow_builder, tool_router, runbook_executor, and openclaw_adapter.

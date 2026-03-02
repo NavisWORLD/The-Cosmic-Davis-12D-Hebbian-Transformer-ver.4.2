@@ -1,5 +1,5 @@
 """
-Farnsworth CAD Integration.
+Cosmos CAD Integration.
 
 Parametric 3D modeling using CadQuery.
 
@@ -11,7 +11,7 @@ Capabilities:
 - Natural language model generation
 """
 
-from .engine import FarnsworthCAD
+from .engine import CosmosCAD
 from .translator import CADTranslator
 
-__all__ = ['FarnsworthCAD', 'CADTranslator']
+__all__ = ['CosmosCAD', 'CADTranslator']

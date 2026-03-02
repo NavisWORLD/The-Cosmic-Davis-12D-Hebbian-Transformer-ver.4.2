@@ -1,8 +1,8 @@
 """
-Farnsworth Telegram Channel Adapter
+Cosmos Telegram Channel Adapter
 ====================================
 
-Telegram Bot API integration for the Farnsworth swarm.
+Telegram Bot API integration for the Cosmos swarm.
 
 Features:
 - Long-polling and webhook support
@@ -391,7 +391,7 @@ class TelegramChannel(BaseChannel):
         """Handle /start command."""
         if update.message:
             await update.message.reply_text(
-                "👋 Welcome to Farnsworth!\n\n"
+                "👋 Welcome to Cosmos!\n\n"
                 "I'm a collective AI swarm. You can:\n"
                 "• Chat with me directly\n"
                 "• Add me to groups (@mention to activate)\n"
@@ -404,7 +404,7 @@ class TelegramChannel(BaseChannel):
         """Handle /help command."""
         if update.message:
             await update.message.reply_text(
-                "📚 *Farnsworth Commands*\n\n"
+                "📚 *Cosmos Commands*\n\n"
                 "/start - Introduction\n"
                 "/help - This message\n"
                 "/status - Check swarm status\n"
@@ -417,7 +417,7 @@ class TelegramChannel(BaseChannel):
         """Handle /status command."""
         if update.message:
             await update.message.reply_text(
-                "✅ *Farnsworth Status*\n\n"
+                "✅ *Cosmos Status*\n\n"
                 "• Swarm: Online\n"
                 "• Telegram: Connected\n"
                 "• Agents: Active\n\n"

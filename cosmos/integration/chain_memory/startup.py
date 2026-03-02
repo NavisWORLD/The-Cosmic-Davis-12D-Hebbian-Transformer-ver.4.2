@@ -32,7 +32,7 @@ DEFAULT_RPC = os.getenv("MONAD_RPC", "https://rpc.monad.xyz")
 # =============================================================================
 
 def prompt_memory_load(
-    bot_type: str = "farnsworth",
+    bot_type: str = "cosmos",
     auto_detect_wallet: bool = True
 ) -> Optional[List[str]]:
     """
@@ -41,7 +41,7 @@ def prompt_memory_load(
     This should be called at the start of your bot's main() function.
 
     Args:
-        bot_type: "farnsworth" or "openclaw"
+        bot_type: "cosmos" or "openclaw"
         auto_detect_wallet: If True, checks for MONAD_PRIVATE_KEY
 
     Returns:
@@ -49,7 +49,7 @@ def prompt_memory_load(
 
     Usage:
         # In your bot's main.py:
-        from farnsworth.integration.chain_memory import prompt_memory_load
+        from Cosmos.integration.chain_memory import prompt_memory_load
 
         def main():
             memories_to_load = prompt_memory_load()
@@ -179,7 +179,7 @@ def _prompt_import_file() -> Optional[List[str]]:
             import json
             data = json.load(f)
 
-        if data.get("format") == "farnsworth_chain_memory_v1":
+        if data.get("format") == "cosmos_chain_memory_v1":
             tx_hashes = data.get("tx_hashes", [])
             print(f"\n  Found memory: {data.get('title', 'Unknown')}")
             print(f"  {len(tx_hashes)} transactions")
@@ -199,7 +199,7 @@ def _prompt_import_file() -> Optional[List[str]]:
 
 async def auto_load_memories(
     tx_ids_or_wallet: List[str],
-    bot_type: str = "farnsworth",
+    bot_type: str = "cosmos",
     memory_path: Optional[str] = None,
     on_progress: Optional[Callable[[str], None]] = None
 ) -> bool:
@@ -208,7 +208,7 @@ async def auto_load_memories(
 
     Args:
         tx_ids_or_wallet: Either list of TX IDs or ["WALLET:0x..."]
-        bot_type: "farnsworth" or "openclaw"
+        bot_type: "cosmos" or "openclaw"
         memory_path: Path to memory directory
         on_progress: Callback for progress updates
 
@@ -243,8 +243,8 @@ async def auto_load_memories(
             log_progress(f"Found {len(packages)} memories. Loading...")
 
             for package in packages:
-                if bot_type == "farnsworth":
-                    cm.load_into_farnsworth(package, memory_path, merge=True)
+                if bot_type == "cosmos":
+                    cm.load_into_cosmos(package, memory_path, merge=True)
                 else:
                     cm.load_into_openclaw(package, memory_path, merge=True)
 
@@ -260,8 +260,8 @@ async def auto_load_memories(
                 on_progress=lambda c, t, s: log_progress(s)
             )
 
-            if bot_type == "farnsworth":
-                cm.load_into_farnsworth(package, memory_path, merge=True)
+            if bot_type == "cosmos":
+                cm.load_into_cosmos(package, memory_path, merge=True)
             else:
                 cm.load_into_openclaw(package, memory_path, merge=True)
 
@@ -289,19 +289,19 @@ def main():
         epilog="""
 Examples:
   # Push current memory to chain
-  python -m farnsworth.integration.chain_memory push --title "My Bot Memory"
+  python -m cosmos.integration.chain_memory push --title "My Bot Memory"
 
   # Pull memory by TX IDs
-  python -m farnsworth.integration.chain_memory pull --tx 0x123... 0x456...
+  python -m cosmos.integration.chain_memory pull --tx 0x123... 0x456...
 
   # Pull all memories for a wallet
-  python -m farnsworth.integration.chain_memory pull --wallet 0xYourAddress
+  python -m cosmos.integration.chain_memory pull --wallet 0xYourAddress
 
   # List local memories
-  python -m farnsworth.integration.chain_memory list
+  python -m cosmos.integration.chain_memory list
 
   # Export memory for sharing
-  python -m farnsworth.integration.chain_memory export --id abc123
+  python -m cosmos.integration.chain_memory export --id abc123
         """
     )
 
@@ -310,7 +310,7 @@ Examples:
     # Push command
     push_parser = subparsers.add_parser("push", help="Push memory to chain")
     push_parser.add_argument("--title", default="Bot Memory", help="Memory title")
-    push_parser.add_argument("--bot", default="farnsworth", choices=["farnsworth", "openclaw"])
+    push_parser.add_argument("--bot", default="cosmos", choices=["cosmos", "openclaw"])
     push_parser.add_argument("--path", help="Path to memory directory")
 
     # Pull command
@@ -318,7 +318,7 @@ Examples:
     pull_parser.add_argument("--tx", nargs="+", help="Transaction hashes")
     pull_parser.add_argument("--wallet", help="Wallet address to scan")
     pull_parser.add_argument("--id", help="Memory ID from local records")
-    pull_parser.add_argument("--bot", default="farnsworth", choices=["farnsworth", "openclaw"])
+    pull_parser.add_argument("--bot", default="cosmos", choices=["cosmos", "openclaw"])
     pull_parser.add_argument("--path", help="Path to memory directory")
 
     # List command
@@ -335,7 +335,7 @@ Examples:
 
     # Estimate command
     estimate_parser = subparsers.add_parser("estimate", help="Estimate push cost")
-    estimate_parser.add_argument("--bot", default="farnsworth", choices=["farnsworth", "openclaw"])
+    estimate_parser.add_argument("--bot", default="cosmos", choices=["cosmos", "openclaw"])
     estimate_parser.add_argument("--path", help="Path to memory directory")
 
     args = parser.parse_args()
@@ -402,8 +402,8 @@ async def _cli_pull(args):
             on_progress=progress
         )
         for package in packages:
-            if args.bot == "farnsworth":
-                cm.load_into_farnsworth(package, args.path)
+            if args.bot == "cosmos":
+                cm.load_into_cosmos(package, args.path)
             else:
                 cm.load_into_openclaw(package, args.path)
         print(f"\n=== LOADED {len(packages)} MEMORIES ===\n")
@@ -413,8 +413,8 @@ async def _cli_pull(args):
             tx_ids=args.tx,
             on_progress=progress
         )
-        if args.bot == "farnsworth":
-            cm.load_into_farnsworth(package, args.path)
+        if args.bot == "cosmos":
+            cm.load_into_cosmos(package, args.path)
         else:
             cm.load_into_openclaw(package, args.path)
         print("\n=== MEMORY LOADED ===\n")
@@ -424,8 +424,8 @@ async def _cli_pull(args):
             memory_id=args.id,
             on_progress=progress
         )
-        if args.bot == "farnsworth":
-            cm.load_into_farnsworth(package, args.path)
+        if args.bot == "cosmos":
+            cm.load_into_cosmos(package, args.path)
         else:
             cm.load_into_openclaw(package, args.path)
         print("\n=== MEMORY LOADED ===\n")

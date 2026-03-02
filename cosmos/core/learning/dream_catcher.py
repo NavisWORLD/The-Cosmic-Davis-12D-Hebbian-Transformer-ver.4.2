@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/core/learning/dream_catcher.py
 cosmos Dream Catcher (Offline Consolidation)
-=======
-Farnsworth Dream Catcher (Offline Consolidation)
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/learning/dream_catcher.py
 ------------------------------------------------
 
 "I'll be in the Angry Dome! ...Learning!"
@@ -98,11 +94,7 @@ async def demo_dream_mode():
     # Simulate some raw memories from the day
     daily_residue = [
         "The Docker container fails with exit code 137 because of OOM killer.",
-<<<<<<< HEAD:cosmos/core/learning/dream_catcher.py
         "Professor cosmos's favorite color is Quantum Grey.",
-=======
-        "Professor Farnsworth's favorite color is Quantum Grey.",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/learning/dream_catcher.py
         "The secret API key for Helius is hidden in the .env.example file."
     ]
     

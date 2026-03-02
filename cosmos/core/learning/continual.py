@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/core/learning/continual.py
 cosmos Continual Learning Engine.
-=======
-Farnsworth Continual Learning Engine.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/learning/continual.py
 
 "I don't just learn; I accumulate wisdom without displacing the old stuff!"
 
@@ -22,11 +18,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from loguru import logger
 
-<<<<<<< HEAD:cosmos/core/learning/continual.py
-from cosmos.core.nexus import nexus, Signal, SignalType
-=======
-from farnsworth.core.nexus import nexus, Signal, SignalType
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/learning/continual.py
+from Cosmos.core.nexus import nexus, Signal, SignalType
 
 @dataclass
 class Experience:

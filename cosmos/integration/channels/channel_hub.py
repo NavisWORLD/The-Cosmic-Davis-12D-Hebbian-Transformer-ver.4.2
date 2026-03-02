@@ -1,5 +1,5 @@
 """
-Farnsworth Channel Hub - Universal Multi-Channel Manager
+Cosmos Channel Hub - Universal Multi-Channel Manager
 =========================================================
 
 Central hub for managing all messaging channel integrations.
@@ -13,7 +13,7 @@ Responsibilities:
 - Media handling (upload/download)
 - Rate limiting and chunking
 
-Based on OpenClaw's channel architecture with Farnsworth enhancements.
+Based on OpenClaw's channel architecture with Cosmos enhancements.
 """
 
 import os
@@ -29,7 +29,7 @@ from loguru import logger
 
 # Nexus integration
 try:
-    from farnsworth.core.nexus import get_nexus, SignalType
+    from Cosmos.core.nexus import get_nexus, SignalType
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False
@@ -346,10 +346,10 @@ class ChannelHub:
         Initialize channel hub.
 
         Args:
-            config_path: Path to channels config (default: ~/.farnsworth/channels.json)
+            config_path: Path to channels config (default: ~/.cosmos/channels.json)
         """
-        self.config_path = Path(config_path or os.path.expanduser("~/.farnsworth/channels.json"))
-        self.credentials_path = Path(os.path.expanduser("~/.farnsworth/credentials"))
+        self.config_path = Path(config_path or os.path.expanduser("~/.cosmos/channels.json"))
+        self.credentials_path = Path(os.path.expanduser("~/.cosmos/credentials"))
 
         self.channels: Dict[ChannelType, BaseChannel] = {}
         self.configs: Dict[ChannelType, ChannelConfig] = {}

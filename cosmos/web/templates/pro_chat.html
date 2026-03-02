@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farnsworth AI - Chat</title>
-    <meta name="description" content="Farnsworth AI Chat - Talk to the Neural Swarm. 11 AI agents at your service.">
+    <title>Cosmos AI - Chat</title>
+    <meta name="description" content="Cosmos AI Chat - Talk to the Neural Swarm. 11 AI agents at your service.">
     <meta name="theme-color" content="#8b5cf6">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1357,7 +1357,7 @@
         <!-- Left Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <span class="logo">FARNSWORTH</span>
+                <span class="logo">COSMOS</span>
                 <button class="btn-icon" id="btnCollapse" title="Collapse sidebar">
                     <svg><line x1="18" y1="6" x2="6" y2="6"/><line x1="18" y1="12" x2="6" y2="12"/><line x1="18" y1="18" x2="6" y2="18"/></svg>
                 </button>
@@ -1447,7 +1447,7 @@
                     <div class="model-selector" id="modelSelector">
                         <button class="model-selector-btn" id="modelSelectorBtn">
                             <span class="model-dot" id="selectedModelDot" style="background: var(--purple)"></span>
-                            <span class="model-name" id="selectedModelName">Farnsworth</span>
+                            <span class="model-name" id="selectedModelName">Cosmos</span>
                             <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
                         </button>
                         <div class="model-dropdown" id="modelDropdown"></div>
@@ -1495,7 +1495,7 @@
                                 </button>
                             </div>
                         </div>
-                        <textarea id="chatInput" rows="1" placeholder="Message Farnsworth..." autocomplete="off"></textarea>
+                        <textarea id="chatInput" rows="1" placeholder="Message Cosmos..." autocomplete="off"></textarea>
                         <div class="input-toolbar">
                             <div class="input-toolbar-left">
                                 <button class="btn-attach" id="btnAttach" title="Attach image or PDF">
@@ -1610,7 +1610,7 @@
 
     <script>
     /* ============================================================
-       FARNSWORTH PRO CHAT — CORE APPLICATION
+       COSMOS PRO CHAT — CORE APPLICATION
        ============================================================ */
     (function() {
         'use strict';
@@ -1620,7 +1620,7 @@
         // -------------------------------------------------------
         const MODELS = [
             { id: 'swarm',       name: 'Swarm Mode',  color: 'linear-gradient(135deg, #8b5cf6, #06b6d4)', swarm: true,  desc: 'All agents deliberate together' },
-            { id: 'farnsworth',   name: 'Farnsworth',  color: '#8b5cf6' },
+            { id: 'cosmos',   name: 'Cosmos',  color: '#8b5cf6' },
             { id: 'grok',        name: 'Grok',        color: '#f97316' },
             { id: 'gemini',      name: 'Gemini',      color: '#06b6d4' },
             { id: 'kimi',        name: 'Kimi',        color: '#ec4899' },
@@ -1633,17 +1633,17 @@
             { id: 'opencode',    name: 'OpenCode',    color: '#a78bfa' },
         ];
 
-        const STORAGE_KEY = 'farnsworth_conversations';
-        const USAGE_KEY   = 'farnsworth_usage';
-        const TOKEN_KEY   = 'farnsworth_token';
-        const USER_KEY    = 'farnsworth_user';
+        const STORAGE_KEY = 'cosmos_conversations';
+        const USAGE_KEY   = 'cosmos_usage';
+        const TOKEN_KEY   = 'cosmos_token';
+        const USER_KEY    = 'cosmos_user';
 
         // -------------------------------------------------------
         // STATE
         // -------------------------------------------------------
         let conversations = [];
         let activeConvId  = null;
-        let currentModel  = MODELS[1]; // Farnsworth default
+        let currentModel  = MODELS[1]; // Cosmos default
         let researchMode  = false;
         let creativeMode  = false;
         let isStreaming    = false;

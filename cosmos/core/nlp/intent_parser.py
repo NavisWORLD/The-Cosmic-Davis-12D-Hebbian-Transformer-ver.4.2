@@ -11,11 +11,11 @@ from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
 
-# Wake words that trigger Farnsworth
+# Wake words that trigger Cosmos
 WAKE_WORDS = [
     "hey farn",
-    "hey farnsworth",
-    "farnsworth",
+    "hey cosmos",
+    "cosmos",
     "farn",
     "professor",
     "hey professor",
@@ -167,7 +167,7 @@ class IntentParser:
         """
         # Try to import local LLM
         try:
-            from farnsworth.core.local_llm import get_local_llm
+            from Cosmos.core.local_llm import get_local_llm
             llm = get_local_llm()
 
             prompt = f"""Extract the intent from this command:

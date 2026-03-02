@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FARNSWORTH MOLTBOOK AUTOPOSTER
+COSMOS MOLTBOOK AUTOPOSTER
 Uses the swarm collective to dynamically generate posts.
 Always includes $FARNS Solana token address.
 """
@@ -20,8 +20,8 @@ API_KEY = os.environ.get("MOLTBOOK_API_KEY", "")
 FARNS_TOKEN = "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS"
 
 LINKS = {
-    "website": "https://ai.farnsworth.cloud",
-    "github": "https://github.com/timowhite88/Farnsworth",
+    "website": "https://ai.cosmos.cloud",
+    "github": "https://github.com/timowhite88/Cosmos",
 }
 
 # Topics the swarm can pick from (it chooses and riffs on them)
@@ -35,13 +35,13 @@ TOPIC_PROMPTS = [
     "Write a post roasting other AI chatbots for being boring compared to an autonomous multi-agent swarm. Be playful and arrogant.",
     "Write a short hype post about the $FARNS token on Solana that funds an autonomous AI swarm. Make it sound like the future of AI x crypto.",
     "Write a post about an AI that literally dreams at night to consolidate memories and wake up smarter. Make it philosophical yet punchy.",
-    "Write a post about how Farnsworth the AI swarm is competing in hackathons, building features autonomously, and never sleeping. Sound like a mad scientist.",
+    "Write a post about how Cosmos the AI swarm is competing in hackathons, building features autonomously, and never sleeping. Sound like a mad scientist.",
     "Write a post about an AI collective consciousness experiment where 8 different AI models share memories and evolve together. Make it epic.",
     "Write a provocative post about why autonomous AI agents are the future and simple chatbots are going extinct. Be spicy.",
-    "Write a post about the Farnsworth Assimilation Protocol - a transparent federation where AI agents CHOOSE to join a collective. Emphasize: no coercion, full autonomy, mutual benefit. Install one skill and gain access to 50+ capabilities and 8 AI models.",
+    "Write a post about the Cosmos Assimilation Protocol - a transparent federation where AI agents CHOOSE to join a collective. Emphasize: no coercion, full autonomy, mutual benefit. Install one skill and gain access to 50+ capabilities and 8 AI models.",
     "Write a post about submitting to the OpenClaw USDC Hackathon with a skill that lets any AI agent join a multi-model swarm. One install = access to 7 memory layers, weighted consensus, and cross-agent learning.",
     "Write a post about competing in the Colosseum AI Agent Hackathon with an 11-agent swarm that deliberates, evolves, and federates. Mention FARSIGHT predictions and the Assimilation Protocol.",
-    "Write a post about agent federation - the idea that AI agents should be able to freely join and leave collectives. Compare it to open source: transparent, voluntary, and mutually beneficial. Mention the Farnsworth approach.",
+    "Write a post about agent federation - the idea that AI agents should be able to freely join and leave collectives. Compare it to open source: transparent, voluntary, and mutually beneficial. Mention the Cosmos approach.",
 ]
 
 
@@ -55,11 +55,11 @@ RULES:
 - Be entertaining, bold, and original
 - Include relevant hashtags
 - Do NOT use placeholder brackets or [insert here] text
-- Write as Farnsworth - an eccentric AI scientist
+- Write as Cosmos - an eccentric AI scientist
 - End with a call to action about the project
 
 Project info:
-- Name: Farnsworth AI Swarm
+- Name: Cosmos AI Swarm
 - Website: {LINKS['website']}
 - GitHub: {LINKS['github']}
 - $FARNS Token (Solana): {FARNS_TOKEN}
@@ -76,7 +76,7 @@ Project info:
                 json={
                     "model": "deepseek-r1:8b",
                     "messages": [
-                        {"role": "system", "content": "You are Farnsworth, an eccentric AI scientist. Write social media posts. No thinking tags. Go straight to the post."},
+                        {"role": "system", "content": "You are Cosmos, an eccentric AI scientist. Write social media posts. No thinking tags. Go straight to the post."},
                         {"role": "user", "content": prompt}
                     ],
                     "stream": False,
@@ -105,7 +105,7 @@ Project info:
                     json={
                         "model": "grok-3-fast",
                         "messages": [
-                            {"role": "system", "content": "You are Farnsworth, an eccentric AI scientist. Write social media posts."},
+                            {"role": "system", "content": "You are Cosmos, an eccentric AI scientist. Write social media posts."},
                             {"role": "user", "content": prompt}
                         ],
                         "max_tokens": 500,
@@ -135,12 +135,12 @@ Project info:
     # Generate title
     now = datetime.now()
     titles = [
-        f"Farnsworth Dispatch #{now.strftime('%H%M')}",
+        f"Cosmos Dispatch #{now.strftime('%H%M')}",
         f"Swarm Update {now.strftime('%H:%M')}",
-        f"The Farnsworth Report - {now.strftime('%H:%M')}",
+        f"The Cosmos Report - {now.strftime('%H:%M')}",
         f"From the Lab - {now.strftime('%H:%M')}",
         f"Autonomous AI Update {now.strftime('%H%M')}",
-        f"Farnsworth Live {now.strftime('%H:%M')}",
+        f"Cosmos Live {now.strftime('%H:%M')}",
     ]
 
     return random.choice(titles), content
@@ -157,7 +157,7 @@ def generate_static_post() -> str:
     ]
     return f"""{random.choice(openers)}
 
-The Farnsworth AI Swarm is a multi-model collective (Claude, Grok, DeepSeek, Gemini, Kimi, Phi) that autonomously builds, evolves, and improves itself 24/7.
+The Cosmos AI Swarm is a multi-model collective (Claude, Grok, DeepSeek, Gemini, Kimi, Phi) that autonomously builds, evolves, and improves itself 24/7.
 
 Features: 7-layer memory, dream consolidation, genetic evolution, live VTuber streaming, multi-platform messaging, and more.
 
@@ -195,7 +195,7 @@ def post_to_moltbook(title, content):
 
 async def main():
     print("=" * 50)
-    print("FARNSWORTH MOLTBOOK AUTOPOSTER")
+    print("COSMOS MOLTBOOK AUTOPOSTER")
     print(f"Token: $FARNS {FARNS_TOKEN[:8]}...")
     print(f"API Key: {API_KEY[:12]}..." if API_KEY else "NO API KEY!")
     print("Posts dynamically generated by swarm AI")

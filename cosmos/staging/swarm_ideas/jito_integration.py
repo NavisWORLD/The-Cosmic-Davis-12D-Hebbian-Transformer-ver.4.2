@@ -1,5 +1,5 @@
 """
-Module for integrating Farnsworth with Jito's trading infrastructure.
+Module for integrating Cosmos with Jito's trading infrastructure.
 Provides functions to fetch available assets and execute swaps.
 """
 
@@ -7,8 +7,8 @@ import asyncio
 from typing import Dict, List, Optional
 from loguru import logger
 from aiohttp import ClientSession, ClientResponse
-from farnsworth.memory.memory_system import get_memory_system
-from farnsworth.core.capability_registry import get_capability_registry
+from Cosmos.memory.memory_system import get_memory_system
+from Cosmos.core.capability_registry import get_capability_registry
 
 class JitoIntegrationError(Exception):
     """Base exception class for Jito integration errors."""

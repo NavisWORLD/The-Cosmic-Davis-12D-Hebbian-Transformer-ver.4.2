@@ -1,4 +1,4 @@
-"""X/Twitter Automation for Farnsworth using Puppeteer Stealth"""
+"""X/Twitter Automation for Cosmos using Puppeteer Stealth"""
 from .social_poster import (
     SocialPoster,
     get_social_poster,

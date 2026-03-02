@@ -1,5 +1,5 @@
 """
-Farnsworth Memory Browser Widget.
+Cosmos Memory Browser Widget.
 """
 
 try:
@@ -15,7 +15,7 @@ except ImportError:
 
 
 class MemoryWidget(QWidget if PYSIDE_AVAILABLE else object):
-    """Widget for browsing and searching Farnsworth's memory."""
+    """Widget for browsing and searching Cosmos's memory."""
 
     def __init__(self, parent=None):
         if not PYSIDE_AVAILABLE:
@@ -74,7 +74,7 @@ class MemoryWidget(QWidget if PYSIDE_AVAILABLE else object):
         self.results_list.clear()
 
         try:
-            from farnsworth.memory.memory_system import get_memory_system
+            from Cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
 
             if memory:
@@ -93,7 +93,7 @@ class MemoryWidget(QWidget if PYSIDE_AVAILABLE else object):
     def _load_stats(self):
         """Load memory system statistics."""
         try:
-            from farnsworth.memory.memory_system import get_memory_system
+            from Cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
 
             if memory:

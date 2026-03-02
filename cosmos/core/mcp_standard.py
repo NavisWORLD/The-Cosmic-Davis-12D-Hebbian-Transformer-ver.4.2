@@ -1,5 +1,5 @@
 """
-Farnsworth MCP Standardization - Standard Protocol for Agent-Tool Communication.
+Cosmos MCP Standardization - Standard Protocol for Agent-Tool Communication.
 
 AGI v1.8 Feature: Implements the Model Context Protocol standard for
 unified tool discovery, invocation, and agent-to-agent communication.
@@ -588,7 +588,7 @@ class AgentMCPClient:
             return
 
         try:
-            from farnsworth.core.nexus import SignalType
+            from Cosmos.core.nexus import SignalType
 
             signal_enum = getattr(SignalType, signal_type, None)
             if signal_enum:
@@ -737,7 +737,7 @@ class MCPStandardProtocol:
             return
 
         try:
-            from farnsworth.core.nexus import SignalType
+            from Cosmos.core.nexus import SignalType
 
             signal_enum = getattr(SignalType, signal_type, None)
             if signal_enum:

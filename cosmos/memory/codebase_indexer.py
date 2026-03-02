@@ -1,5 +1,5 @@
 """
-Farnsworth Codebase Indexer - AST-Based Memory Population
+Cosmos Codebase Indexer - AST-Based Memory Population
 
 Extracts structured data from every .py file using AST parsing and stores
 it across the 7-layer memory system (archival, knowledge graph, virtual
@@ -7,7 +7,7 @@ context, episodic). This gives agents deep codebase awareness when planning
 or implementing tasks.
 
 Usage:
-    from farnsworth.memory.codebase_indexer import get_codebase_indexer
+    from Cosmos.memory.codebase_indexer import get_codebase_indexer
     indexer = get_codebase_indexer()
     stats = await indexer.index_codebase()
 """
@@ -50,13 +50,13 @@ class ClassInfo:
 
 @dataclass
 class ModuleInfo:
-    filepath: str         # "farnsworth/core/nexus.py"
-    module_name: str      # "farnsworth.core.nexus"
+    filepath: str         # "cosmos/core/nexus.py"
+    module_name: str      # "cosmos.core.nexus"
     docstring: str
     classes: List[ClassInfo]
     functions: List[FunctionInfo]
     imports: List[str]
-    internal_imports: List[str]   # Only farnsworth.* imports
+    internal_imports: List[str]   # Only cosmos.* imports
     line_count: int
     category: str         # "core", "memory", "web", etc.
     tags: List[str]       # ["codebase", "module", "core", ...]
@@ -103,12 +103,12 @@ class ASTExtractor:
             elif isinstance(node, ast.Import):
                 for alias in node.names:
                     imports.append(alias.name)
-                    if alias.name.startswith("farnsworth"):
+                    if alias.name.startswith("cosmos"):
                         internal_imports.append(alias.name)
             elif isinstance(node, ast.ImportFrom):
                 if node.module:
                     imports.append(node.module)
-                    if node.module.startswith("farnsworth"):
+                    if node.module.startswith("cosmos"):
                         internal_imports.append(node.module)
 
         line_count = len(source.splitlines())
@@ -180,10 +180,10 @@ class ASTExtractor:
         )
 
     def _categorize_path(self, relative_path: str) -> str:
-        """Map first directory after farnsworth/ to category."""
+        """Map first directory after cosmos/ to category."""
         parts = relative_path.replace("\\", "/").split("/")
-        # e.g. farnsworth/core/nexus.py -> "core"
-        if len(parts) >= 2 and parts[0] == "farnsworth":
+        # e.g. cosmos/core/nexus.py -> "core"
+        if len(parts) >= 2 and parts[0] == "cosmos":
             return parts[1]
         return "other"
 
@@ -216,7 +216,7 @@ class ASTExtractor:
 
 class CodebaseIndexer:
     """
-    Indexes the Farnsworth codebase into the 7-layer memory system.
+    Indexes the Cosmos codebase into the 7-layer memory system.
 
     Uses AST parsing to extract structured data from every .py file and
     stores it across archival memory, knowledge graph, virtual context,
@@ -226,7 +226,7 @@ class CodebaseIndexer:
     def __init__(
         self,
         project_root: str = None,
-        scan_dir: str = "farnsworth",
+        scan_dir: str = "cosmos",
         reindex_interval_hours: float = 6.0,
     ):
         if project_root is None:
@@ -268,7 +268,7 @@ class CodebaseIndexer:
             # Get memory system
             if memory_system is None:
                 try:
-                    from farnsworth.memory.memory_system import get_memory_system
+                    from Cosmos.memory.memory_system import get_memory_system
                     memory_system = get_memory_system()
                     if not memory_system._initialized:
                         await memory_system.initialize()
@@ -560,7 +560,7 @@ class CodebaseIndexer:
         self, memory_system, modules: List[ModuleInfo]
     ):
         """Store tiered directory listings in virtual context."""
-        from farnsworth.memory.virtual_context import MemoryBlock, MemoryTier
+        from Cosmos.memory.virtual_context import MemoryBlock, MemoryTier
 
         # Group modules by category
         by_category: Dict[str, List[ModuleInfo]] = {}

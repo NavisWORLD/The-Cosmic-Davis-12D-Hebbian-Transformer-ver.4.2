@@ -1,5 +1,5 @@
 """
-Farnsworth Sub-Swarm Spawner.
+Cosmos Sub-Swarm Spawner.
 
 "Doomsday device? No no, it's a SWARM spawner! Much more terrifying!"
 
@@ -567,7 +567,7 @@ class SubSwarmSpawner:
     async def _emit_swarm_signal(self, event_type: str, swarm: SubSwarm):
         """Emit a Nexus signal for swarm events."""
         try:
-            from farnsworth.core.nexus import nexus, SignalType
+            from Cosmos.core.nexus import nexus, SignalType
 
             signal_map = {
                 "spawn": SignalType.SUBSWARM_SPAWN,

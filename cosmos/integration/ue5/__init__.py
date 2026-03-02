@@ -1,5 +1,5 @@
 """
-Farnsworth Unreal Engine 5 Integration.
+Cosmos Unreal Engine 5 Integration.
 
 Provides automation for UE5 via Python API or remote connection.
 

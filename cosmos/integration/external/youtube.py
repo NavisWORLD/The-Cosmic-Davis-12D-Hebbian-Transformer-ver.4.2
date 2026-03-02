@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/integration/external/youtube.py
 cosmos YouTube Intelligence - Video Insight Extraction.
-=======
-Farnsworth YouTube Intelligence - Video Insight Extraction.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/youtube.py
 
 "I can tell you exactly what that 10-hour lecture said in 30 seconds."
 

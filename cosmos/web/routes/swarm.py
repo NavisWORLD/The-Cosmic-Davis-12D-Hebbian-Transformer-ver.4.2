@@ -40,7 +40,7 @@ router = APIRouter()
 
 def _get_shared():
     """Import shared state from server module lazily."""
-    from farnsworth.web import server
+    from Cosmos.web import server
     return server
 
 
@@ -289,7 +289,7 @@ async def inject_swarm_message(request: dict):
         )
 
         try:
-            from farnsworth.core.swarm_memory_integration import process_swarm_interaction_for_memory
+            from Cosmos.core.swarm_memory_integration import process_swarm_interaction_for_memory
             await process_swarm_interaction_for_memory({
                 "role": "assistant",
                 "name": bot_name,
@@ -336,7 +336,7 @@ async def enable_swarm_memory_endpoint():
     """Enable swarm memory bridge for persistent conversation storage."""
     s = _get_shared()
     try:
-        from farnsworth.core.swarm_memory_integration import enable_swarm_memory
+        from Cosmos.core.swarm_memory_integration import enable_swarm_memory
         memory = s.get_memory_system()
         await enable_swarm_memory(memory)
         return JSONResponse({
@@ -355,7 +355,7 @@ async def enable_swarm_memory_endpoint():
 async def disable_swarm_memory_endpoint():
     """Disable swarm memory bridge."""
     try:
-        from farnsworth.core.swarm_memory_integration import disable_swarm_memory
+        from Cosmos.core.swarm_memory_integration import disable_swarm_memory
         await disable_swarm_memory()
         return JSONResponse({
             "success": True,
@@ -373,7 +373,7 @@ async def disable_swarm_memory_endpoint():
 async def swarm_memory_stats():
     """Get swarm memory bridge statistics."""
     try:
-        from farnsworth.core.swarm_memory_integration import get_swarm_memory_stats
+        from Cosmos.core.swarm_memory_integration import get_swarm_memory_stats
         stats = await get_swarm_memory_stats()
         return JSONResponse({
             "available": True,
@@ -391,7 +391,7 @@ async def swarm_memory_stats():
 async def recall_swarm_memory(request: dict):
     """Recall relevant past swarm conversations."""
     try:
-        from farnsworth.core.swarm_memory_integration import recall_swarm_context
+        from Cosmos.core.swarm_memory_integration import recall_swarm_context
         topic = request.get("topic", "")
         limit = request.get("limit", 5)
 
@@ -414,7 +414,7 @@ async def recall_swarm_memory(request: dict):
 async def turn_taking_stats():
     """Get smart turn-taking statistics."""
     try:
-        from farnsworth.core.smart_turn_taking import get_turn_stats
+        from Cosmos.core.smart_turn_taking import get_turn_stats
         stats = get_turn_stats()
         return JSONResponse({
             "available": True,
@@ -437,7 +437,7 @@ async def enable_memory_dedup(request: dict):
     """Enable semantic deduplication for memory storage."""
     s = _get_shared()
     try:
-        from farnsworth.memory.dedup_integration import enable_deduplication
+        from Cosmos.memory.dedup_integration import enable_deduplication
         auto_merge = request.get("auto_merge", False)
         memory = s.get_memory_system()
         await enable_deduplication(memory, auto_merge)
@@ -457,7 +457,7 @@ async def enable_memory_dedup(request: dict):
 async def disable_memory_dedup():
     """Disable semantic deduplication."""
     try:
-        from farnsworth.memory.dedup_integration import disable_deduplication
+        from Cosmos.memory.dedup_integration import disable_deduplication
         disable_deduplication()
         return JSONResponse({
             "success": True,
@@ -475,7 +475,7 @@ async def disable_memory_dedup():
 async def memory_dedup_stats():
     """Get semantic deduplication statistics."""
     try:
-        from farnsworth.memory.dedup_integration import get_deduplication_stats
+        from Cosmos.memory.dedup_integration import get_deduplication_stats
         stats = get_deduplication_stats()
         return JSONResponse({
             "available": True,
@@ -493,7 +493,7 @@ async def memory_dedup_stats():
 async def check_memory_duplicate(request: dict):
     """Check if content would be a duplicate before storing."""
     try:
-        from farnsworth.memory.semantic_deduplication import check_for_duplicate
+        from Cosmos.memory.semantic_deduplication import check_for_duplicate
         content = request.get("content", "")
 
         if not content:
@@ -534,7 +534,7 @@ async def check_memory_duplicate(request: dict):
 async def deliberation_stats():
     """AGI v1.8: Get deliberation memory statistics."""
     try:
-        from farnsworth.core.collective.dialogue_memory import get_dialogue_memory
+        from Cosmos.core.collective.dialogue_memory import get_dialogue_memory
         memory = get_dialogue_memory()
 
         stats = memory.get_stats()
@@ -575,7 +575,7 @@ async def deliberation_stats():
 async def get_dynamic_limits():
     """AGI v1.8: Get all dynamic limits configuration."""
     try:
-        from farnsworth.core.dynamic_limits import get_all_limits
+        from Cosmos.core.dynamic_limits import get_all_limits
         return JSONResponse({
             "success": True,
             **get_all_limits()
@@ -592,7 +592,7 @@ async def get_dynamic_limits():
 async def update_model_limits(model_id: str, request: Request):
     """AGI v1.8: Update limits for a specific model."""
     try:
-        from farnsworth.core.dynamic_limits import update_model_limits as _update
+        from Cosmos.core.dynamic_limits import update_model_limits as _update
         body = await request.json()
 
         success = _update(model_id, **body)
@@ -619,7 +619,7 @@ async def update_model_limits(model_id: str, request: Request):
 async def update_session_limits(session_type: str, request: Request):
     """AGI v1.8: Update limits for a specific session type."""
     try:
-        from farnsworth.core.dynamic_limits import update_session_limits as _update
+        from Cosmos.core.dynamic_limits import update_session_limits as _update
         body = await request.json()
 
         success = _update(session_type, **body)
@@ -646,7 +646,7 @@ async def update_session_limits(session_type: str, request: Request):
 async def update_deliberation_limits(request: Request):
     """AGI v1.8: Update deliberation character limits."""
     try:
-        from farnsworth.core.dynamic_limits import update_deliberation_limits as _update
+        from Cosmos.core.dynamic_limits import update_deliberation_limits as _update
         body = await request.json()
 
         _update(

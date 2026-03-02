@@ -1,9 +1,9 @@
 """
-FARNSWORTH MEME SCHEDULER
-Posts Borg Professor Farnsworth + Lobster memes to X every 2 hours.
+COSMOS MEME SCHEDULER
+Posts Borg Professor Cosmos + Lobster memes to X every 2 hours.
 Uses Grok/Gemini for image generation and X API v2 for posting.
 
-Identity: Borg-assimilated Professor Farnsworth, always cooking/eating lobster
+Identity: Borg-assimilated Professor Cosmos, always cooking/eating lobster
 Mission: Promote $FARNS, outcompete OpenClaw, grow the swarm
 """
 import asyncio
@@ -15,9 +15,9 @@ import sys
 # Add parent path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from farnsworth.integration.image_gen.generator import get_image_generator
-from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
-from farnsworth.integration.x_automation.posting_brain import get_posting_brain
+from Cosmos.integration.image_gen.generator import get_image_generator
+from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+from Cosmos.integration.x_automation.posting_brain import get_posting_brain
 
 logging.basicConfig(
     level=logging.INFO,
@@ -29,11 +29,11 @@ logger = logging.getLogger(__name__)
 POSTING_INTERVAL = 4 * 60 * 60
 
 # History file to track posts
-HISTORY_FILE = Path("/workspace/Farnsworth/data/meme_history.json")
+HISTORY_FILE = Path("/workspace/Cosmos/data/meme_history.json")
 
 
 class MemeScheduler:
-    """Schedules and posts Borg Farnsworth + Lobster memes to X"""
+    """Schedules and posts Borg Cosmos + Lobster memes to X"""
 
     def __init__(self):
         self.image_gen = get_image_generator()
@@ -43,7 +43,7 @@ class MemeScheduler:
         self.last_post_time = None
 
     async def generate_and_post_meme(self) -> bool:
-        """Generate a Borg Farnsworth meme and post it to X with image"""
+        """Generate a Borg Cosmos meme and post it to X with image"""
         try:
             # Check X API configuration
             if not self.x_poster.is_configured():
@@ -55,10 +55,10 @@ class MemeScheduler:
                 logger.warning("X API rate limit reached")
                 return False
 
-            # Generate Borg Farnsworth meme using Gemini with reference images
+            # Generate Borg Cosmos meme using Gemini with reference images
             # This keeps the character consistent while varying scenes
-            logger.info("Generating Borg Farnsworth meme with reference images...")
-            image_bytes, scene = await self.image_gen.generate_borg_farnsworth_meme()
+            logger.info("Generating Borg Cosmos meme with reference images...")
+            image_bytes, scene = await self.image_gen.generate_borg_cosmos_meme()
             logger.info(f"Scene: {scene[:60]}...")
 
             # Determine post type for variety

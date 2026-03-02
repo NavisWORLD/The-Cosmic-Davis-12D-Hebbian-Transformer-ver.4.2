@@ -1,5 +1,5 @@
 """
-Farnsworth Free Discussion Engine
+Cosmos Free Discussion Engine
 ==================================
 
 Autonomous inter-bot discussion orchestrator. When no user task is active,
@@ -54,7 +54,7 @@ RESEARCH_TOPICS = [
     "The alignment tax: performance cost of making AI systems safe",
 
     # Meta / self-reflective
-    "What does the Farnsworth collective lack? Honest self-assessment time.",
+    "What does the Cosmos collective lack? Honest self-assessment time.",
     "If we could add one capability to our swarm, what would have the biggest impact?",
     "How should AI agents handle disagreement? Consensus vs productive dissent.",
     "The role of personality in AI collectives — does diversity of style improve outcomes?",
@@ -283,7 +283,7 @@ class FreeDiscussionEngine:
         """Generate topics from codebase context, memory, etc."""
         topics = []
         try:
-            from farnsworth.memory.memory_system import MemorySystem
+            from Cosmos.memory.memory_system import MemorySystem
             ms = MemorySystem._instance if hasattr(MemorySystem, '_instance') else None
             if ms and hasattr(ms, 'working_memory'):
                 recent = ms.working_memory.get_recent(5) if hasattr(ms.working_memory, 'get_recent') else []
@@ -440,7 +440,7 @@ class FreeDiscussionEngine:
     async def _broadcast_to_ui(self, agent_id: str, content: str):
         """Broadcast discussion message to swarm chat websocket."""
         try:
-            from farnsworth.web.server import swarm_manager
+            from Cosmos.web.server import swarm_manager
             # Map agent_id to display name
             display_names = {
                 "phi": "Phi",

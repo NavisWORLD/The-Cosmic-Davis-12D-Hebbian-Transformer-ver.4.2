@@ -12,7 +12,7 @@ This package provides:
 - InteractiveCLISession for tmux-based persistent agents
 
 Usage:
-    from farnsworth.integration.cli_bridge import create_router
+    from Cosmos.integration.cli_bridge import create_router
 
     router = await create_router()
     response = await router.query_with_fallback("What's trending in crypto?")

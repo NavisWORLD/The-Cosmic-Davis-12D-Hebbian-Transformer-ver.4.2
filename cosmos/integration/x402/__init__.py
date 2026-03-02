@@ -1,9 +1,9 @@
 """
-Farnsworth x402 Protocol Integration.
+Cosmos x402 Protocol Integration.
 
 HTTP 402 Payment Required protocol for micropayments:
 - Client-side: Uses Bankr x402 SDK for paying for external APIs
-- Server-side: Custom middleware for monetizing Farnsworth's endpoints
+- Server-side: Custom middleware for monetizing Cosmos's endpoints
 - Solana-native: Premium quantum API (0.25 SOL simulated / 1 SOL hardware) via x402
 
 See: https://www.x402.org/

@@ -17,7 +17,7 @@ from loguru import logger
 # Load environment
 try:
     from dotenv import load_dotenv
-    load_dotenv("/workspace/Farnsworth/.env")
+    load_dotenv("/workspace/Cosmos/.env")
 except ImportError:
     pass
 
@@ -55,7 +55,7 @@ class DIDAvatar:
         self._session: Optional[aiohttp.ClientSession] = None
 
         # Cache directory for generated videos
-        self.cache_dir = Path("/workspace/Farnsworth/cache/did_videos")
+        self.cache_dir = Path("/workspace/Cosmos/cache/did_videos")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
         # Uploaded image URL cache (to avoid re-uploading same avatar)
@@ -424,8 +424,8 @@ class ElevenLabsDIDPipeline:
     Full pipeline: Text → ElevenLabs (audio) → D-ID (video with lip sync)
 
     This offloads all heavy processing to APIs:
-    - ElevenLabs: High quality TTS with custom Farnsworth voice
-    - D-ID: Avatar rendering + lip sync with custom Farnsworth avatar
+    - ElevenLabs: High quality TTS with custom Cosmos voice
+    - D-ID: Avatar rendering + lip sync with custom Cosmos avatar
     """
 
     def __init__(
@@ -435,13 +435,13 @@ class ElevenLabsDIDPipeline:
     ):
         self.did = DIDAvatar(did_config)
         self.elevenlabs_voice_id = elevenlabs_voice_id or os.getenv(
-            "ELEVENLABS_VOICE_FARNSWORTH",
+            "ELEVENLABS_VOICE_COSMOS",
             "dxvY1G6UilzEKgCy370m"
         )
         self.elevenlabs_api_key = os.getenv("ELEVENLABS_API_KEY", "")
 
         # Audio cache
-        self.audio_cache_dir = Path("/workspace/Farnsworth/cache/elevenlabs_audio")
+        self.audio_cache_dir = Path("/workspace/Cosmos/cache/elevenlabs_audio")
         self.audio_cache_dir.mkdir(parents=True, exist_ok=True)
 
         logger.info(f"ElevenLabs+D-ID Pipeline initialized")
@@ -449,7 +449,7 @@ class ElevenLabsDIDPipeline:
         logger.info(f"  Avatar: {self.did.config.presenter_id[:50]}..." if self.did.config.presenter_id else "  Avatar: NOT SET")
 
     async def generate_elevenlabs_audio(self, text: str) -> Optional[str]:
-        """Generate audio using ElevenLabs API with Farnsworth voice"""
+        """Generate audio using ElevenLabs API with Cosmos voice"""
         if not self.elevenlabs_api_key:
             logger.error("ElevenLabs API key not configured")
             return None

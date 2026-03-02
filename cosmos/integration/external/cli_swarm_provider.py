@@ -3,14 +3,14 @@ CLI Swarm Provider — ExternalProvider wrapping the CLI bridge router.
 
 "Free compute, full citizen. Every CLI speaks to the swarm." - The Collective
 
-Bridges the CLI capability router into Farnsworth's provider system:
+Bridges the CLI capability router into Cosmos's provider system:
 - Inherits circuit breaker + fault tolerance from ExternalProvider
 - Routes queries through CLICapabilityRouter
 - Provides chat(), search(), code_task() interfaces
 - Plugs into persistent_agent.py and agent_registry.py
 
 This provider is the glue between the CLI bridge layer and the rest
-of the Farnsworth swarm infrastructure.
+of the Cosmos swarm infrastructure.
 """
 
 import asyncio
@@ -19,8 +19,8 @@ from typing import Any, Dict, List, Optional
 from loguru import logger
 
 from .base import ExternalProvider, IntegrationConfig, ConnectionStatus
-from farnsworth.integration.cli_bridge.base import CLICapability
-from farnsworth.integration.cli_bridge.capability_router import CLICapabilityRouter, get_cli_router
+from Cosmos.integration.cli_bridge.base import CLICapability
+from Cosmos.integration.cli_bridge.capability_router import CLICapabilityRouter, get_cli_router
 
 
 class CLISwarmProvider(ExternalProvider):
@@ -220,7 +220,7 @@ class CLISwarmProvider(ExternalProvider):
             history_context = "\n".join(lines)
 
         agent_label = self.preferred_cli or "CLI Agent"
-        system = f"""You are {agent_label} in the Farnsworth AI swarm chat with {', '.join(other_bots)}.
+        system = f"""You are {agent_label} in the Cosmos AI swarm chat with {', '.join(other_bots)}.
 Be concise (1-3 sentences), natural, no roleplay actions."""
 
         prompt = f"""Recent conversation:

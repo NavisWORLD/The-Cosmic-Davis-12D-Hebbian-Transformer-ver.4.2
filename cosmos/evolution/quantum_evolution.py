@@ -1,15 +1,15 @@
 """
-Quantum-Enhanced Evolution for Farnsworth Agents
+Quantum-Enhanced Evolution for Cosmos Agents
 =================================================
 
 Integrates IBM Quantum computing with the existing evolution system
 to provide quantum-accelerated genetic algorithms for agent optimization.
 
 This module bridges:
-- farnsworth/integration/quantum/ibm_quantum.py (quantum algorithms)
-- farnsworth/evolution/genetic_optimizer.py (existing GA)
-- farnsworth/evolution/fitness_tracker.py (fitness evaluation)
-- farnsworth/core/collective/evolution.py (agent evolution)
+- cosmos/integration/quantum/ibm_quantum.py (quantum algorithms)
+- cosmos/evolution/genetic_optimizer.py (existing GA)
+- cosmos/evolution/fitness_tracker.py (fitness evaluation)
+- cosmos/core/collective/evolution.py (agent evolution)
 
 Strategy:
 - Use quantum simulators (unlimited) for routine evolution
@@ -28,7 +28,7 @@ from datetime import datetime
 
 # Quantum integration
 try:
-    from farnsworth.integration.quantum import (
+    from Cosmos.integration.quantum import (
         get_quantum_provider,
         initialize_quantum,
         QuantumGeneticOptimizer,
@@ -44,14 +44,14 @@ except ImportError:
 
 # Existing evolution system
 try:
-    from farnsworth.evolution.fitness_tracker import FitnessTracker, get_fitness_tracker
+    from Cosmos.evolution.fitness_tracker import FitnessTracker, get_fitness_tracker
     FITNESS_AVAILABLE = True
 except ImportError:
     FITNESS_AVAILABLE = False
 
 # Nexus integration for signal emission
 try:
-    from farnsworth.core.nexus import get_nexus
+    from Cosmos.core.nexus import get_nexus
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False

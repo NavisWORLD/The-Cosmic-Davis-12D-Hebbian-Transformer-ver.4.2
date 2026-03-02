@@ -300,8 +300,8 @@ class MetaLearner:
         self._quantum_available = False
         self._quantum_optimizer = None
         try:
-            from farnsworth.integration.quantum import QISKIT_AVAILABLE, get_quantum_provider
-            from farnsworth.integration.quantum.ibm_quantum import QuantumGeneticOptimizer
+            from Cosmos.integration.quantum import QISKIT_AVAILABLE, get_quantum_provider
+            from Cosmos.integration.quantum.ibm_quantum import QuantumGeneticOptimizer
             self._quantum_available = QISKIT_AVAILABLE
             if QISKIT_AVAILABLE:
                 provider = get_quantum_provider()
@@ -636,7 +636,7 @@ class GeneticOptimizer:
         """Emit a signal to the Nexus event bus. Fails silently."""
         try:
             if self._nexus is None:
-                from farnsworth.core.nexus import nexus, SignalType
+                from Cosmos.core.nexus import nexus, SignalType
                 self._nexus = nexus
                 self._SignalType = SignalType
             signal_type = getattr(self._SignalType, signal_type_name, None)

@@ -23,7 +23,7 @@ router = APIRouter()
 
 def _get_shared():
     """Import shared state from server module lazily."""
-    from farnsworth.web import server
+    from Cosmos.web import server
     return server
 
 
@@ -39,7 +39,7 @@ async def websocket_live(websocket: WebSocket):
     try:
         await websocket.send_json({
             "type": "connected",
-            "message": "Good news, everyone! Connected to Farnsworth Live Feed!",
+            "message": "Good news, everyone! Connected to Cosmos Live Feed!",
             "timestamp": datetime.now().isoformat()
         })
 

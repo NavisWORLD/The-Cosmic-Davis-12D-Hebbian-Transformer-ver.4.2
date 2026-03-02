@@ -22,8 +22,8 @@ try:
 except ImportError:
     np = None
 
-from cosmos.rag.hybrid_retriever import HybridRetriever, RetrievalResult, Document
-from cosmos.rag.embeddings import EmbeddingManager
+from Cosmos.rag.hybrid_retriever import HybridRetriever, RetrievalResult, Document
+from Cosmos.rag.embeddings import EmbeddingManager
 
 
 @dataclass

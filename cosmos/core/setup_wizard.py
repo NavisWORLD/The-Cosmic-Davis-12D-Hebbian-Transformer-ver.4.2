@@ -1,17 +1,9 @@
 """
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
 cosmos Setup Wizard - Comprehensive Configuration.
 
 "I've built a machine that lets you choose your own fate!"
 
 This module provides a step-by-step interactive setup for all cosmos systems.
-=======
-Farnsworth Setup Wizard - Comprehensive Configuration.
-
-"I've built a machine that lets you choose your own fate!"
-
-This module provides a step-by-step interactive setup for all Farnsworth systems.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
 It saves configuration to a local .env file and provides detailed setup guides.
 """
 
@@ -59,11 +51,7 @@ class IntegrationGuide:
 
 
 class SetupWizard:
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
     """Comprehensive setup wizard for all cosmos integrations."""
-=======
-    """Comprehensive setup wizard for all Farnsworth integrations."""
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
 
     def __init__(self, project_root: Path):
         self.project_root = project_root
@@ -207,11 +195,7 @@ class SetupWizard:
             setup_steps=[
                 "Go to Azure Portal: https://portal.azure.com",
                 "Navigate to 'App registrations' in Entra ID",
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
                 "Click 'New registration' and name it 'cosmos'",
-=======
-                "Click 'New registration' and name it 'Farnsworth'",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
                 "Set redirect URI to 'http://localhost:8080/callback' (Web)",
                 "Copy the 'Application (client) ID' - this is your AZURE_CLIENT_ID",
                 "Copy the 'Directory (tenant) ID' - this is your AZURE_TENANT_ID",
@@ -220,11 +204,7 @@ class SetupWizard:
                 "Go to 'API permissions' and add required Microsoft Graph permissions",
                 "Grant admin consent for the permissions",
                 "For Subscription access: Go to Subscriptions > Your Sub > IAM > Add role assignment",
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
                 "Assign 'Contributor' role to the cosmos app",
-=======
-                "Assign 'Contributor' role to the Farnsworth app",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
             ],
             env_vars={
                 "AZURE_TENANT_ID": "Your Entra ID Tenant ID",
@@ -251,11 +231,7 @@ class SetupWizard:
             setup_steps=[
                 "Go to AWS Console: https://console.aws.amazon.com",
                 "Navigate to IAM > Users > Add users",
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
                 "Create user 'cosmos-integration' with programmatic access",
-=======
-                "Create user 'farnsworth-integration' with programmatic access",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
                 "Attach policies directly or create a custom policy",
                 "For full access: Attach 'AdministratorAccess' (not recommended for production)",
                 "For limited access: Create custom policy with specific permissions",
@@ -287,11 +263,7 @@ class SetupWizard:
                 "Select or create a project",
                 "Navigate to IAM & Admin > Service Accounts",
                 "Click 'Create Service Account'",
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
                 "Name it 'cosmos-integration'",
-=======
-                "Name it 'farnsworth-integration'",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
                 "Grant required roles (Editor for full access)",
                 "Click 'Create Key' > JSON",
                 "Save the JSON key file securely",
@@ -319,11 +291,7 @@ class SetupWizard:
             ],
             setup_steps=[
                 "Go to Azure Portal > Entra ID > App registrations",
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
                 "Create new registration 'cosmos-O365'",
-=======
-                "Create new registration 'Farnsworth-O365'",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
                 "Add redirect URI: http://localhost:8080/o365/callback",
                 "Go to API permissions > Add permission > Microsoft Graph",
                 "Add Delegated permissions: Mail.ReadWrite, Calendars.ReadWrite, etc.",
@@ -419,11 +387,7 @@ class SetupWizard:
     async def run(self):
         """Run the complete setup wizard."""
         print("\n" + "="*60)
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
         print("  cosmos COMPREHENSIVE SETUP WIZARD")
-=======
-        print("  FARNSWORTH COMPREHENSIVE SETUP WIZARD")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
         print("  'Good news, everyone! Let's configure your fate!'")
         print("="*60)
 
@@ -515,11 +479,7 @@ class SetupWizard:
                 self.selected_use_cases = list(UseCase)
                 break
 
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
         self.config["cosmos_USE_CASES"] = ",".join(uc.value for uc in self.selected_use_cases)
-=======
-        self.config["FARNSWORTH_USE_CASES"] = ",".join(uc.value for uc in self.selected_use_cases)
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
         print(f"\n  Selected: {', '.join(uc.value for uc in self.selected_use_cases)}")
 
     async def _setup_networking(self):
@@ -527,19 +487,11 @@ class SetupWizard:
         self._print_header("PRIVACY & NETWORKING", "🛡️")
 
         is_isolated = self._ask_bool("Enable ISOLATED MODE? (Disables P2P swarm)", default=False)
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
         self.config["cosmos_ISOLATED"] = "true" if is_isolated else "false"
 
         if not is_isolated:
             self.config["cosmos_P2P_PORT"] = self._ask("P2P Swarm Port", "9999")
             self.config["cosmos_DISCOVERY_PORT"] = self._ask("UDP Discovery Port", "8888")
-=======
-        self.config["FARNSWORTH_ISOLATED"] = "true" if is_isolated else "false"
-
-        if not is_isolated:
-            self.config["FARNSWORTH_P2P_PORT"] = self._ask("P2P Swarm Port", "9999")
-            self.config["FARNSWORTH_DISCOVERY_PORT"] = self._ask("UDP Discovery Port", "8888")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
 
     async def _setup_hardware(self):
         """Configure hardware profile."""
@@ -551,11 +503,7 @@ class SetupWizard:
             profiles,
             default="medium_vram"
         )
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
         self.config["cosmos_HARDWARE_PROFILE"] = profile
-=======
-        self.config["FARNSWORTH_HARDWARE_PROFILE"] = profile
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
 
         if profile == "max":
             print("\n  MAX profile detected - enabling all GPU acceleration")
@@ -576,15 +524,12 @@ class SetupWizard:
             self.config["OPENAI_API_KEY"] = self._ask("OpenAI API Key", secret=True)
             self.config["OPENAI_ORG_ID"] = self._ask("OpenAI Organization ID (optional)")
 
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
         # Google Gemini
         if self._ask_bool("Configure Google Gemini (2.0 Flash, 1.5 Pro)?", default=False):
             print("\n  Get your API key from: https://makersuite.google.com/app/apikey")
             self.config["GEMINI_API_KEY"] = self._ask("Gemini API Key", secret=True)
             print("  Available models: gemini-2.0-flash, gemini-2.0-flash-lite, gemini-1.5-pro, gemini-1.5-flash")
 
-=======
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
         # DeepInfra (for local models)
         if self._ask_bool("Configure DeepInfra (DeepSeek, Llama, etc.)?", default=False):
             self.config["DEEPINFRA_API_KEY"] = self._ask("DeepInfra API Key", secret=True)
@@ -723,13 +668,8 @@ class SetupWizard:
         self._print_header("HEALTH TRACKING", "🏥")
 
         if self._ask_bool("Enable Health Dashboard?", default=True):
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
             self.config["cosmos_HEALTH_ENABLED"] = "true"
             self.config["cosmos_HEALTH_PORT"] = self._ask("Health Dashboard Port", "8081")
-=======
-            self.config["FARNSWORTH_HEALTH_ENABLED"] = "true"
-            self.config["FARNSWORTH_HEALTH_PORT"] = self._ask("Health Dashboard Port", "8081")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
 
         if self._ask_bool("Configure health providers?", default=False):
             self._print_guide(self._get_health_providers_guide())
@@ -817,11 +757,7 @@ class SetupWizard:
             db_type = self._ask_select("Database Type", ["sqlite", "postgres", "mysql"], "sqlite")
             self.config["DB_TYPE"] = db_type
             if db_type == "sqlite":
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
                 self.config["DB_CONNECTION_STRING"] = self._ask("SQLite file path", "cosmos_data.db")
-=======
-                self.config["DB_CONNECTION_STRING"] = self._ask("SQLite file path", "farnsworth_data.db")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
             else:
                 self.config["DB_CONNECTION_STRING"] = self._ask("Connection string")
 
@@ -894,7 +830,6 @@ class SetupWizard:
     def _save(self):
         """Save configuration to .env file."""
         with open(self.env_file, "w") as f:
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
             f.write("# cosmos Environment Configuration\n")
             f.write(f"# Generated by Setup Wizard\n")
             f.write(f"# Use cases: {self.config.get('cosmos_USE_CASES', 'personal')}\n\n")
@@ -903,16 +838,6 @@ class SetupWizard:
             categories = {
                 "Core": ["cosmos_", "ENABLE_"],
                 "AI Providers": ["ANTHROPIC_", "OPENAI_", "GEMINI_", "DEEPINFRA_", "XAI_", "OLLAMA_"],
-=======
-            f.write("# Farnsworth Environment Configuration\n")
-            f.write(f"# Generated by Setup Wizard\n")
-            f.write(f"# Use cases: {self.config.get('FARNSWORTH_USE_CASES', 'personal')}\n\n")
-
-            # Group by category for readability
-            categories = {
-                "Core": ["FARNSWORTH_", "ENABLE_"],
-                "AI Providers": ["ANTHROPIC_", "OPENAI_", "DEEPINFRA_", "XAI_", "OLLAMA_"],
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
                 "Cloud - Azure": ["AZURE_", "ENTRA_"],
                 "Cloud - AWS": ["AWS_"],
                 "Cloud - GCP": ["GCP_", "GOOGLE_APPLICATION"],
@@ -985,11 +910,7 @@ class SetupWizard:
             enabled.append("Vulnerability Scanner")
         if self.config.get("ENABLE_FORENSICS") == "true":
             enabled.append("Forensics")
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
         if self.config.get("cosmos_HEALTH_ENABLED") == "true":
-=======
-        if self.config.get("FARNSWORTH_HEALTH_ENABLED") == "true":
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
             enabled.append("Health Dashboard")
         if self.config.get("ENABLE_PARALLEL_AI") == "true":
             enabled.append("Parallel AI")
@@ -999,30 +920,17 @@ class SetupWizard:
 
         print("\n  Next Steps:")
         print("    1. Review the .env file and add any missing credentials")
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
         print("    2. Run 'python -m cosmos' to start cosmos")
-=======
-        print("    2. Run 'python -m farnsworth' to start Farnsworth")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
         print("    3. Access the web dashboard at http://localhost:8080")
 
         if any(uc in self.selected_use_cases for uc in [UseCase.SECURITY, UseCase.SYSADMIN]):
             print("\n  Security Tools:")
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
             print("    - Vulnerability Scanner: cosmos scan <target>")
             print("    - EDR: cosmos edr --start")
             print("    - Log Parser: cosmos logs <path>")
 
         if UseCase.HEALTH in self.selected_use_cases:
             print(f"\n  Health Dashboard: http://localhost:{self.config.get('cosmos_HEALTH_PORT', '8081')}")
-=======
-            print("    - Vulnerability Scanner: farnsworth scan <target>")
-            print("    - EDR: farnsworth edr --start")
-            print("    - Log Parser: farnsworth logs <path>")
-
-        if UseCase.HEALTH in self.selected_use_cases:
-            print(f"\n  Health Dashboard: http://localhost:{self.config.get('FARNSWORTH_HEALTH_PORT', '8081')}")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
 
         print("\n" + "="*60 + "\n")
 
@@ -1032,13 +940,6 @@ class SetupWizard:
         guides = {
             "azure": """
 AZURE / ENTRA ID QUICK SETUP
-============================
-1. Go to portal.azure.com > Entra ID > App registrations
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
-2. Create new app 'cosmos'
-=======
-2. Create new app 'Farnsworth'
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
 3. Copy: Application ID (CLIENT_ID), Directory ID (TENANT_ID)
 4. Create client secret and copy immediately
 5. Go to Subscriptions > Your Sub > IAM > Add Contributor role
@@ -1050,13 +951,6 @@ AZURE / ENTRA ID QUICK SETUP
 """,
             "aws": """
 AWS QUICK SETUP
-===============
-1. Go to AWS Console > IAM > Users
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
-2. Create user 'cosmos' with programmatic access
-=======
-2. Create user 'farnsworth' with programmatic access
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
 3. Attach AdministratorAccess (or specific policies)
 4. Download/copy Access Key ID and Secret
 5. Add to .env:
@@ -1066,13 +960,6 @@ AWS QUICK SETUP
 """,
             "office365": """
 OFFICE 365 QUICK SETUP
-======================
-1. Go to portal.azure.com > Entra ID > App registrations
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
-2. Create new app 'cosmos-O365'
-=======
-2. Create new app 'Farnsworth-O365'
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
 3. Add API permissions: Mail.ReadWrite, Calendars.ReadWrite
 4. Grant admin consent
 5. Create client secret
@@ -1083,34 +970,6 @@ OFFICE 365 QUICK SETUP
 """,
             "google": """
 GOOGLE WORKSPACE QUICK SETUP
-============================
-1. Go to console.cloud.google.com
-2. Enable Gmail API, Calendar API
-3. Create OAuth 2.0 credentials
-4. Download credentials JSON
-5. Add to .env:
-   GOOGLE_OAUTH_CREDENTIALS=./google-oauth.json
-""",
-        }
-        return guides.get(integration.lower(), f"No guide available for {integration}")
-
-
-async def run_wizard(project_root: Path = None):
-    """Run the setup wizard."""
-    if project_root is None:
-        project_root = Path(".")
-    wizard = SetupWizard(project_root)
-    await wizard.run()
-
-
-if __name__ == "__main__":
-    import asyncio
-
-<<<<<<< HEAD:cosmos/core/setup_wizard.py
-    parser = argparse.ArgumentParser(description="cosmos Setup Wizard")
-=======
-    parser = argparse.ArgumentParser(description="Farnsworth Setup Wizard")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/setup_wizard.py
     parser.add_argument("--guide", type=str, help="Show quick guide for integration (azure, aws, office365, google)")
     parser.add_argument("--root", type=str, default=".", help="Project root directory")
 

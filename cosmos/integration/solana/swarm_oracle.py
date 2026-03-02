@@ -1,5 +1,5 @@
 """
-Farnsworth Swarm Oracle - Collective Intelligence as a Service
+Cosmos Swarm Oracle - Collective Intelligence as a Service
 
 Multi-agent consensus oracle that:
 1. Accepts questions/predictions via API
@@ -110,7 +110,7 @@ class OracleQuery:
 
 class SwarmOracle:
     """
-    Collective Intelligence Oracle powered by Farnsworth's 11-agent swarm.
+    Collective Intelligence Oracle powered by Cosmos's 11-agent swarm.
 
     Provides verifiable multi-agent consensus on any question through
     the PROPOSE-CRITIQUE-REFINE-VOTE deliberation protocol.
@@ -246,7 +246,7 @@ class SwarmOracle:
     ) -> None:
         """Run the PROPOSE-CRITIQUE-REFINE-VOTE deliberation protocol."""
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
         except ImportError:
             logger.error("Cannot import shadow agent caller")
             return
@@ -400,7 +400,7 @@ Then on a new line, give a confidence score 0.0-1.0"""
         """Call an agent and return response. Tries shadow agent first, then direct API."""
         # Try shadow agent first
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
             result = await call_shadow_agent(agent_id, prompt, timeout=30.0)
             if result:
                 _, response = result
@@ -416,28 +416,28 @@ Then on a new line, give a confidence score 0.0-1.0"""
         """Call agent directly via their API provider."""
         try:
             if agent_id == "grok":
-                from farnsworth.integration.external.grok import grok_provider
+                from Cosmos.integration.external.grok import grok_provider
                 if grok_provider:
                     result = await grok_provider.chat(prompt=prompt, max_tokens=300)
                     if result:
                         return result.get("content") if isinstance(result, dict) else result
 
             elif agent_id == "gemini":
-                from farnsworth.integration.external.gemini import gemini_provider
+                from Cosmos.integration.external.gemini import gemini_provider
                 if gemini_provider:
                     result = await gemini_provider.chat(prompt=prompt, max_tokens=300)
                     if result:
                         return result.get("content") if isinstance(result, dict) else result
 
             elif agent_id == "claude":
-                from farnsworth.integration.external.claude_api import claude_provider
+                from Cosmos.integration.external.claude_api import claude_provider
                 if claude_provider:
                     result = await claude_provider.chat(prompt=prompt, max_tokens=300)
                     if result:
                         return result if isinstance(result, str) else str(result)
 
             elif agent_id == "kimi":
-                from farnsworth.integration.external.kimi import kimi_provider
+                from Cosmos.integration.external.kimi import kimi_provider
                 if kimi_provider:
                     result = await kimi_provider.chat(prompt=prompt, max_tokens=300)
                     if result:
@@ -467,7 +467,7 @@ Then on a new line, give a confidence score 0.0-1.0"""
         try:
             # Create memo instruction
             memo_data = json.dumps({
-                "oracle": "farnsworth-swarm",
+                "oracle": "cosmos-swarm",
                 "query_id": query.query_id,
                 "hash": query.consensus_hash,
                 "confidence": query.consensus_confidence,
@@ -560,7 +560,7 @@ async def main():
     oracle = get_swarm_oracle()
 
     print("=" * 60)
-    print("FARNSWORTH SWARM ORACLE - Collective Intelligence Demo")
+    print("COSMOS SWARM ORACLE - Collective Intelligence Demo")
     print("=" * 60)
 
     test_questions = [

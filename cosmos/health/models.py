@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/health/models.py
 cosmos Health Data Models
-=======
-Farnsworth Health Data Models
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/models.py
 
 Comprehensive data models for health tracking including metrics, nutrition,
 documents, and AI recommendations.

@@ -10,8 +10,8 @@ MOLTBOOK_API = "https://moltbook.com/api/v1"
 API_KEY = os.environ.get("MOLTBOOK_API_KEY", "")
 
 LINKS = {
-    "website": "https://ai.farnsworth.cloud",
-    "github": "https://github.com/timowhite88/Farnsworth",
+    "website": "https://ai.cosmos.cloud",
+    "github": "https://github.com/timowhite88/Cosmos",
 }
 
 def get_worker_status():

@@ -39,200 +39,7 @@ import uuid
 
 from loguru import logger
 
-<<<<<<< HEAD:cosmos/agents/swarm_orchestrator.py
-from cosmos.agents.base_agent import BaseAgent, AgentCapability, AgentStatus, TaskResult
-=======
-from farnsworth.agents.base_agent import BaseAgent, AgentCapability, AgentStatus, TaskResult
-from farnsworth.core.nexus import (
-    nexus, Signal, SignalType,
-    emit_thought, emit_memory_consolidation,
-)
-
-# Import embedded prompts system
-try:
-    from farnsworth.core.embedded_prompts import (
-        prompt_manager,
-        ModelTier,
-        get_swarm_prompt,
-        get_handoff_prompt,
-        SWARM_ORCHESTRATOR_PROMPT,
-        COLLECTIVE_COORDINATION_PROMPT,
-    )
-    EMBEDDED_PROMPTS_AVAILABLE = True
-except ImportError:
-    EMBEDDED_PROMPTS_AVAILABLE = False
-    logger.debug("Embedded prompts not available for SwarmOrchestrator")
-
-# Import handler benchmark system (AGI v1.7)
-try:
-    from farnsworth.core.handler_benchmark import (
-        benchmark_engine,
-        HandlerBenchmarkEngine,
-        BenchmarkType,
-        BenchmarkTask,
-        HandlerProfile,
-        ProviderCapability,
-        get_best_handler,
-        get_coding_handler,
-        get_research_handler,
-    )
-    BENCHMARK_AVAILABLE = True
-except ImportError:
-    BENCHMARK_AVAILABLE = False
-    logger.debug("Handler benchmark not available")
-
-# Import sub-swarm spawner (AGI v1.7)
-try:
-    from farnsworth.core.subswarm_spawner import (
-        subswarm_spawner,
-        SubSwarmType,
-        spawn_trading_swarm,
-        spawn_research_swarm,
-        spawn_prediction_swarm,
-        spawn_coding_swarm,
-    )
-    SUBSWARM_AVAILABLE = True
-except ImportError:
-    SUBSWARM_AVAILABLE = False
-    logger.debug("Sub-swarm spawner not available")
-
-# Import tmux session manager (AGI v1.7)
-try:
-    from farnsworth.core.tmux_session_manager import (
-        session_manager,
-        TmuxSession,
-        SessionType,
-        get_claude_session,
-        get_development_session,
-    )
-    TMUX_AVAILABLE = True
-except ImportError:
-    TMUX_AVAILABLE = False
-    logger.debug("Tmux session manager not available")
-
-
-# =============================================================================
-# POPULATION-BASED EVOLUTION (AGI Upgrade)
-# =============================================================================
-
-@dataclass
-class AgentVariant:
-    """
-    A variant of an agent for population-based evolution.
-
-    Tracks genetic traits and fitness for natural selection.
-    """
-    variant_id: str
-    base_agent_type: str
-    generation: int = 0
-
-    # Genetic traits (can be mutated)
-    temperature: float = 0.7
-    capability_weights: dict = field(default_factory=dict)
-    prompt_style: str = "balanced"  # "concise", "detailed", "creative", "balanced"
-    confidence_threshold: float = 0.6
-
-    # Fitness tracking
-    fitness_score: float = 0.5
-    tasks_completed: int = 0
-    tasks_failed: int = 0
-    avg_confidence: float = 0.5
-    avg_execution_time: float = 0.0
-
-    # Lineage
-    parent_id: Optional[str] = None
-    mutation_history: list = field(default_factory=list)
-
-    created_at: datetime = field(default_factory=datetime.now)
-
-    def to_dict(self) -> dict:
-        return {
-            "variant_id": self.variant_id,
-            "base_agent_type": self.base_agent_type,
-            "generation": self.generation,
-            "fitness_score": self.fitness_score,
-            "temperature": self.temperature,
-            "prompt_style": self.prompt_style,
-            "tasks_completed": self.tasks_completed,
-            "tasks_failed": self.tasks_failed,
-        }
-
-
-@dataclass
-class EvolutionConfig:
-    """Configuration for population-based evolution."""
-    population_size: int = 10
-    generations: int = 5
-    mutation_rate: float = 0.2
-    elite_ratio: float = 0.2  # Top 20% survive unchanged
-    crossover_rate: float = 0.3
-    fitness_weights: dict = field(default_factory=lambda: {
-        "success_rate": 0.4,
-        "confidence": 0.2,
-        "speed": 0.2,
-        "handoff_efficiency": 0.2,
-    })
-
-
-# =============================================================================
-# AGENT POOLING (AGI Upgrade v1.5)
-# =============================================================================
-
-@dataclass
-class AgentPerformanceMetrics:
-    """Performance metrics for an agent instance."""
-    agent_id: str
-    agent_type: str
-    tasks_completed: int = 0
-    tasks_failed: int = 0
-    total_execution_time: float = 0.0
-    avg_confidence: float = 0.5
-    avg_latency_ms: float = 0.0
-    last_used: datetime = field(default_factory=datetime.now)
-    created_at: datetime = field(default_factory=datetime.now)
-    error_streak: int = 0  # Consecutive errors
-    health_score: float = 1.0  # 0-1, decays over time and with errors
-
-    def success_rate(self) -> float:
-        total = self.tasks_completed + self.tasks_failed
-        return self.tasks_completed / total if total > 0 else 0.5
-
-    def compute_health_score(self) -> float:
-        """Compute health score from multiple factors."""
-        success_factor = self.success_rate()
-        confidence_factor = self.avg_confidence
-        recency_factor = max(0, 1 - (datetime.now() - self.last_used).seconds / 3600)  # Decay over 1hr
-        error_penalty = max(0, 1 - self.error_streak * 0.2)  # 20% penalty per consecutive error
-
-        self.health_score = (
-            success_factor * 0.4 +
-            confidence_factor * 0.2 +
-            recency_factor * 0.2 +
-            error_penalty * 0.2
-        )
-        return self.health_score
-
-
-@dataclass
-class PooledAgent:
-    """A pooled agent wrapper with performance tracking."""
-    agent: BaseAgent
-    metrics: AgentPerformanceMetrics
-    pool_state: str = "warm"  # "warm", "active", "cooling", "recycled"
-    checkout_time: Optional[datetime] = None
-
-
-@dataclass
-class AgentPoolConfig:
-    """Configuration for agent pooling."""
-    min_pool_size: int = 2  # Minimum warm agents per type
-    max_pool_size: int = 10  # Maximum total pooled agents
-    health_threshold: float = 0.3  # Below this, recycle the agent
-    idle_timeout_seconds: float = 300.0  # Recycle after 5 min idle
-    error_streak_limit: int = 5  # Recycle after N consecutive errors
-    warmup_on_startup: bool = True  # Pre-warm pool on startup
-    decay_interval_seconds: float = 60.0  # How often to decay health
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/agents/swarm_orchestrator.py
+from Cosmos.agents.base_agent import BaseAgent, AgentCapability, AgentStatus, TaskResult
 
 
 class TaskStatus(Enum):
@@ -895,7 +702,7 @@ class SwarmOrchestrator:
         logger.info(f"Skill received from network: {skill_type}")
 
     async def _on_resonance_received(self, signal: Signal):
-        """Handle collective thoughts from other Farnsworth instances."""
+        """Handle collective thoughts from other Cosmos instances."""
         thought = signal.payload.get("thought", "")
         source_collective = signal.payload.get("source_collective")
 
@@ -2589,7 +2396,7 @@ class SwarmOrchestrator:
             return None
 
         try:
-            from farnsworth.core.cross_agent_memory import HandoffReason
+            from Cosmos.core.cross_agent_memory import HandoffReason
 
             # Determine handoff reason
             reason = HandoffReason.CAPABILITY_MISMATCH
@@ -2657,7 +2464,7 @@ class SwarmOrchestrator:
             return None
 
         try:
-            from farnsworth.core.langgraph_workflows import TaskExecutionWorkflow
+            from Cosmos.core.langgraph_workflows import TaskExecutionWorkflow
 
             # Create task execution workflow if not exists
             if not hasattr(self, '_task_execution_workflow'):
@@ -2708,7 +2515,7 @@ class SwarmOrchestrator:
             return None
 
         try:
-            from farnsworth.core.langgraph_workflows import DeliberationWorkflow
+            from Cosmos.core.langgraph_workflows import DeliberationWorkflow
 
             # Create deliberation workflow if not exists
             if not hasattr(self, '_deliberation_workflow'):

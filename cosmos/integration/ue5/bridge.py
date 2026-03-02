@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class UE5Bridge:
     """
-    Bridge between Farnsworth and Unreal Engine 5.
+    Bridge between Cosmos and Unreal Engine 5.
 
     Connection modes:
     1. Direct (inside UE5 Editor) - use 'unreal' module
@@ -73,7 +73,7 @@ class UE5Bridge:
         if self._mode == "direct" and self._unreal:
             try:
                 # Execute with restricted builtins (AGI v1.9.1)
-                from farnsworth.core.safe_eval import SAFE_BUILTINS
+                from Cosmos.core.safe_eval import SAFE_BUILTINS
                 local_vars = {"unreal": self._unreal}
                 exec(code, {"__builtins__": SAFE_BUILTINS, "unreal": self._unreal}, local_vars)
                 return {"success": True, "result": local_vars}

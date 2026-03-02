@@ -1,5 +1,5 @@
 """
-Farnsworth CAD Engine.
+Cosmos CAD Engine.
 
 CadQuery-based parametric modeling.
 """
@@ -19,7 +19,7 @@ except ImportError:
     cq = None
 
 
-class FarnsworthCAD:
+class CosmosCAD:
     """
     CAD modeling engine using CadQuery.
 

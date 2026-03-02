@@ -5,15 +5,15 @@ Task: Add asynchronous calls to the mev detection service and
 **CONCRETE Implementation Plan: Asynchronous MEV Detection Service Integration**
 
 **1. Files to Create/Modify**
-- **Create**: `farnsworth/integration/mev_detection_service.py`
-- **Modify**: `farnsworth/agents/trading_agent.py`
-- **Modify**: `farnsworth/core/cognition/decision_engine.py`
+- **Create**: `cosmos/integration/mev_detection_service.py`
+- **Modify**: `cosmos/agents/trading_agent.py`
+- **Modify**: `cosmos/core/cognition/decision_engine.py`
 
 ---
 
 **2. Function Signatures**
 
-**File**: `farnsworth/integration/mev_detection_service.py`
+**File**: `cosmos/integration/mev_detection_service.py`
 ```python
 import httpx
 from typing import Optional, Dict, Any

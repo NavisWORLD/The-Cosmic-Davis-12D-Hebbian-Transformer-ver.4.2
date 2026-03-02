@@ -1,8 +1,8 @@
 """
-Farnsworth WhatsApp Channel Adapter
+Cosmos WhatsApp Channel Adapter
 ====================================
 
-WhatsApp integration for the Farnsworth swarm.
+WhatsApp integration for the Cosmos swarm.
 
 Features:
 - Multi-device support via Baileys protocol
@@ -64,7 +64,7 @@ class WhatsAppChannel(BaseChannel):
         self,
         config: ChannelConfig = None,
         bridge_url: str = None,
-        session_name: str = "farnsworth"
+        session_name: str = "cosmos"
     ):
         """
         Initialize WhatsApp channel.

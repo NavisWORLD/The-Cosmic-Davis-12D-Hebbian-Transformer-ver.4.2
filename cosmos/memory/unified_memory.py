@@ -1,5 +1,5 @@
 """
-FARNSWORTH UNIFIED MEMORY ARCHITECTURE
+COSMOS UNIFIED MEMORY ARCHITECTURE
 =======================================
 
 The most advanced multi-layered memory system integrating all 18 memory types
@@ -695,12 +695,12 @@ class UnifiedMemoryAPI:
         # Import and initialize each system
         try:
             # Core memory systems
-            from farnsworth.memory.working_memory import WorkingMemory
-            from farnsworth.memory.archival_memory import ArchivalMemory
-            from farnsworth.memory.recall_memory import RecallMemory
-            from farnsworth.memory.knowledge_graph import KnowledgeGraph
-            from farnsworth.memory.virtual_context import VirtualContext
-            from farnsworth.memory.memory_dreaming import MemoryDreamer
+            from Cosmos.memory.working_memory import WorkingMemory
+            from Cosmos.memory.archival_memory import ArchivalMemory
+            from Cosmos.memory.recall_memory import RecallMemory
+            from Cosmos.memory.knowledge_graph import KnowledgeGraph
+            from Cosmos.memory.virtual_context import VirtualContext
+            from Cosmos.memory.memory_dreaming import MemoryDreamer
 
             self._systems["working_memory"] = WorkingMemory()
             self._systems["archival_memory"] = ArchivalMemory(str(self.data_dir / "archival"))
@@ -714,43 +714,43 @@ class UnifiedMemoryAPI:
 
         # Extended memory systems
         try:
-            from farnsworth.memory.episodic_memory import EpisodicMemory
+            from Cosmos.memory.episodic_memory import EpisodicMemory
             self._systems["episodic_memory"] = EpisodicMemory(str(self.data_dir / "episodic"))
         except ImportError:
             pass
 
         try:
-            from farnsworth.memory.knowledge_graph_v2 import KnowledgeGraphV2
+            from Cosmos.memory.knowledge_graph_v2 import KnowledgeGraphV2
             self._systems["knowledge_graph_v2"] = KnowledgeGraphV2(str(self.data_dir / "graph_v2"))
         except ImportError:
             pass
 
         try:
-            from farnsworth.memory.dream_consolidation import DreamConsolidator
+            from Cosmos.memory.dream_consolidation import DreamConsolidator
             self._systems["dream_consolidation"] = DreamConsolidator(str(self.data_dir / "dreams"))
         except ImportError:
             pass
 
         try:
-            from farnsworth.memory.semantic_layers import SemanticLayerSystem
+            from Cosmos.memory.semantic_layers import SemanticLayerSystem
             self._systems["semantic_layers"] = SemanticLayerSystem(str(self.data_dir / "semantic"))
         except ImportError:
             pass
 
         try:
-            from farnsworth.memory.project_tracking import ProjectTracker
+            from Cosmos.memory.project_tracking import ProjectTracker
             self._systems["project_tracking"] = ProjectTracker(str(self.data_dir / "projects"))
         except ImportError:
             pass
 
         try:
-            from farnsworth.memory.semantic_deduplication import SemanticDeduplicator
+            from Cosmos.memory.semantic_deduplication import SemanticDeduplicator
             self._systems["semantic_dedup"] = SemanticDeduplicator()
         except ImportError:
             pass
 
         try:
-            from farnsworth.memory.memory_sharing import MemorySharing
+            from Cosmos.memory.memory_sharing import MemorySharing
             self._systems["memory_sharing"] = MemorySharing(str(self.data_dir))
         except ImportError:
             pass
@@ -877,7 +877,7 @@ class UnifiedMemoryAPI:
         # Add to working memory if important
         if importance > 0.7 and "working_memory" in self._systems:
             try:
-                from farnsworth.memory.working_memory import SlotType
+                from Cosmos.memory.working_memory import SlotType
                 await self._systems["working_memory"].set(
                     name=f"memory_{memory_id[:8]}",
                     value=content[:500],

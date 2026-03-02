@@ -4,7 +4,7 @@ Chain Memory Manager - High-level API for on-chain memory storage.
 Provides a simple interface for:
 - Pushing bot memory to Monad blockchain
 - Pulling and reconstructing memory from chain
-- Loading memory into Farnsworth/OpenClaw bots
+- Loading memory into Cosmos/OpenClaw bots
 
 REQUIREMENTS:
 - Must hold 100,000+ FARNS tokens to use push features
@@ -68,7 +68,7 @@ class MemoryRecord:
     tx_hashes: List[str]
     total_chunks: int
     total_size: int
-    bot_type: str  # "farnsworth" or "openclaw"
+    bot_type: str  # "cosmos" or "openclaw"
     wallet_address: str
     chain: str
     uploaded_at: str
@@ -102,7 +102,7 @@ class ChainMemory:
         self,
         wallet_key: Optional[str] = None,
         rpc_url: Optional[str] = None,
-        bot_type: str = "farnsworth",
+        bot_type: str = "cosmos",
         skip_farns_check: bool = False
     ):
         """
@@ -111,7 +111,7 @@ class ChainMemory:
         Args:
             wallet_key: Private key for uploads (required for push)
             rpc_url: Monad RPC URL (uses default if not specified)
-            bot_type: Type of bot ("farnsworth", "clawwbot", "claude", "kimi")
+            bot_type: Type of bot ("cosmos", "clawwbot", "claude", "kimi")
             skip_farns_check: Skip FARNS verification (for testing only)
         """
         # Load config
@@ -163,7 +163,7 @@ class ChainMemory:
                 f"You must hold at least {MIN_FARNS_REQUIRED:,} FARNS tokens to use Chain Memory.\n"
                 f"FARNS Token: {FARNS_TOKEN_MINT}\n"
                 f"Buy FARNS: https://pump.fun/coin/{FARNS_TOKEN_MINT}\n\n"
-                f"Run 'python -m farnsworth.integration.chain_memory.setup' to configure."
+                f"Run 'python -m cosmos.integration.chain_memory.setup' to configure."
             )
 
     @property
@@ -208,8 +208,8 @@ class ChainMemory:
             Cost estimate dict
         """
         # Extract memory
-        if self.bot_type == "farnsworth":
-            package = self.memvid.extract_farnsworth_memory(memory_path)
+        if self.bot_type == "cosmos":
+            package = self.memvid.extract_cosmos_memory(memory_path)
         else:
             package = self.memvid.extract_openclaw_memory(memory_path)
 
@@ -265,8 +265,8 @@ class ChainMemory:
         if on_progress:
             on_progress(1, 5, "Extracting memory...")
 
-        if self.bot_type == "farnsworth":
-            package = self.memvid.extract_farnsworth_memory(memory_path)
+        if self.bot_type == "cosmos":
+            package = self.memvid.extract_cosmos_memory(memory_path)
         else:
             package = self.memvid.extract_openclaw_memory(memory_path)
 
@@ -448,18 +448,18 @@ class ChainMemory:
     # LOAD INTO BOT
     # -------------------------------------------------------------------------
 
-    def load_into_farnsworth(
+    def load_into_cosmos(
         self,
         package: BotMemoryPackage,
         memory_path: Optional[str] = None,
         merge: bool = True
     ):
         """
-        Load memory package into Farnsworth's memory system.
+        Load memory package into Cosmos's memory system.
 
         Args:
             package: The memory package to load
-            memory_path: Path to Farnsworth memory directory
+            memory_path: Path to Cosmos memory directory
             merge: If True, merge with existing; if False, replace
         """
         if memory_path is None:
@@ -468,7 +468,7 @@ class ChainMemory:
         memory_path = Path(memory_path)
         memory_path.mkdir(parents=True, exist_ok=True)
 
-        logger.info(f"Loading {len(package.chunks)} chunks into Farnsworth...")
+        logger.info(f"Loading {len(package.chunks)} chunks into Cosmos...")
 
         # Group chunks by type
         by_type = {}
@@ -557,7 +557,7 @@ class ChainMemory:
                 json.dump(package.personality, f, indent=2)
             logger.info("Loaded personality state")
 
-        logger.info("Memory loaded into Farnsworth!")
+        logger.info("Memory loaded into Cosmos!")
 
     def load_into_openclaw(
         self,
@@ -641,7 +641,7 @@ class ChainMemory:
             raise ValueError(f"Memory {memory_id} not found")
 
         export_data = {
-            "format": "farnsworth_chain_memory_v1",
+            "format": "cosmos_chain_memory_v1",
             "memory_id": record.memory_id,
             "title": record.title,
             "bot_type": record.bot_type,
@@ -662,7 +662,7 @@ class ChainMemory:
         """
         data = json.loads(export_string)
 
-        if data.get("format") != "farnsworth_chain_memory_v1":
+        if data.get("format") != "cosmos_chain_memory_v1":
             raise ValueError("Invalid export format")
 
         record = MemoryRecord(
@@ -671,7 +671,7 @@ class ChainMemory:
             tx_hashes=data["tx_hashes"],
             total_chunks=data.get("total_chunks", len(data["tx_hashes"])),
             total_size=0,
-            bot_type=data.get("bot_type", "farnsworth"),
+            bot_type=data.get("bot_type", "cosmos"),
             wallet_address="",
             chain=data.get("chain", "monad"),
             uploaded_at=data.get("uploaded_at", datetime.now().isoformat())

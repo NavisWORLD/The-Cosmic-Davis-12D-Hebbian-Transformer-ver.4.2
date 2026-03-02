@@ -1,5 +1,5 @@
 """
-Farnsworth Natural Language Task System.
+Cosmos Natural Language Task System.
 
 Enables natural language commands like "Hey Farn, do this..." with intelligent
 routing to appropriate handlers including:

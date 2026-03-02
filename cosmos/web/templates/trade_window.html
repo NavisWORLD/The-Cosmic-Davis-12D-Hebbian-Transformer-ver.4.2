@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FARNSWORTH — Trading Command Center</title>
+<title>COSMOS — Trading Command Center</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -180,7 +180,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);over
 <!-- ===== TOP BAR ===== -->
 <div class="topbar">
   <div class="topbar-left">
-    <div class="topbar-title">Farnsworth Command Center</div>
+    <div class="topbar-title">Cosmos Command Center</div>
     <div class="topbar-version">v4.1 WHALE HUNTER</div>
   </div>
   <div class="topbar-center">
@@ -295,7 +295,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);over
 // AGENTS
 // ============================================================
 const AG=[
-  {id:'farnsworth',n:'Farnsworth',c:'#8b5cf6',e:'\u{1F9EC}'},
+  {id:'cosmos',n:'Cosmos',c:'#8b5cf6',e:'\u{1F9EC}'},
   {id:'grok',n:'Grok',c:'#10b981',e:'\u26A1'},
   {id:'gemini',n:'Gemini',c:'#3b82f6',e:'\u264A'},
   {id:'claude',n:'Claude',c:'#6366f1',e:'\u{1F3AD}'},
@@ -406,7 +406,7 @@ const TOKENS=['$RUGPULL','$MOONCOIN','$CATGOLD','$SOLBULL','$PEPEMOON','$GIGACHA
 const SNIPER_TOKENS=TOKENS;
 const WALLETS=['7xKZ...3mF','4pQr...9Tz','Bv3k...7wN','Dk8j...2cR','9mFz...4qP','3nHx...8bL','Fw2v...5gS','6tYp...1kJ'];
 const SIGNALS=['CABAL_SHILL','KOL_CALL','TRENDING','INSIDER_ALERT','DEV_MOVEMENT'];
-const AGENTS_SHORT=['Grok','DeepSeek','Gemini','Kimi','Farnsworth','Claude'];
+const AGENTS_SHORT=['Grok','DeepSeek','Gemini','Kimi','Cosmos','Claude'];
 const VERDICTS=['BUY','STRONG_BUY','SKIP'];
 const PLATFORMS=['PUMP','BONK','BAGS'];
 const PLAT_CLS={'PUMP':'t-pump','BONK':'t-bonk','BAGS':'t-bags'};
@@ -463,7 +463,7 @@ function startSim(){
       html=`<span class="fi-t">${ts()}</span><span class="fi-c"><span class="tag ${platCls}">${plat}</span><span class="tag t-rug">SKIP</span> ${t} &mdash; ${rnd(['serial deployer','creator dumped','FDV too high','age >15m','low velocity'])}</span>`;
     }
     addFeed('fSniper',html,'sniper');
-    activateBots(['farnsworth','deepseek','grok'],1200);
+    activateBots(['cosmos','deepseek','grok'],1200);
   },2500+Math.random()*2000));
 
   // Cabal follow
@@ -480,7 +480,7 @@ function startSim(){
       html=`<span class="fi-t">${ts()}</span><span class="fi-c"><span class="tag t-cabal">SKIP</span> ${t} FDV $${rndI(120,500)}k &mdash; above cabal cap ($100k)</span>`;
     }
     addFeed('fCabal',html,'cabal');
-    activateBots(['grok','deepseek','farnsworth'],1500);
+    activateBots(['grok','deepseek','cosmos'],1500);
   },3500+Math.random()*2000));
   // X sentinel
   simIntervals.push(setInterval(()=>{
@@ -494,7 +494,7 @@ function startSim(){
     const t=rnd(TOKENS),rug=rndI(5,88),edge=rndI(-15,20),conf=rndI(40,95);
     const tagCls=rug>50?'t-rug':'t-safe';const tagTxt=rug>50?'HIGH RISK':'LOW RISK';
     addFeed('fQ',`<span class="fi-t">${ts()}</span><span class="fi-c"><span class="tag t-quantum">QAOA</span> ${t} rug: <strong>${rug}%</strong> <span class="tag ${tagCls}">${tagTxt}</span> edge: ${edge>0?'+':''}${edge} conf: ${conf}%</span>`,'q');
-    activateBots(['farnsworth','swarm'],1800);
+    activateBots(['cosmos','swarm'],1800);
   },5000+Math.random()*3000));
   // Whale
   simIntervals.push(setInterval(()=>{
@@ -519,7 +519,7 @@ function startSim(){
     const reason=act==='buy'?`score=${rndI(62,95)} FDV=${fdv} age=${age}`:`${rnd(['velocity_drop','tp_'+rndI(2,5)+'x','stop_loss','sell_pressure'])}`;
     const tx=mkAddr();
     addFeed('fE',`<span class="fi-t">${ts()}</span><span class="fi-c"><span class="tag ${cls}">${act.toUpperCase()}</span> ${t} <strong>${sol} SOL</strong> <span class="tag t-lowcap">${fdv}</span> <span class="tag t-fresh">${age}</span> ${reason} tx:${tx}</span>`,'e');
-    activateBots(['farnsworth','opus'],1600);
+    activateBots(['cosmos','opus'],1600);
   },7000+Math.random()*5000));
   // Sim stats — keep balance/PnL/positions/trades ticking so dashboard looks alive
   let simBal=2.4500,simPnl=0,simWins=0,simTrades=0,simPos=0;

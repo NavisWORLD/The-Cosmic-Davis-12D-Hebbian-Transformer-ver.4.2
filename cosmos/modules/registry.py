@@ -1,5 +1,5 @@
 """
-Farnsworth Optional Module Registry.
+Cosmos Optional Module Registry.
 
 Defines all optional capability modules and their dependencies.
 Each module can be installed via Y/N prompts during setup.
@@ -36,7 +36,7 @@ OPTIONAL_MODULES: Dict[str, ModuleConfig] = {
     "bankr": ModuleConfig(
         name="Bankr Trading Engine",
         description="Crypto trading, DeFi, Polymarket via Bankr API",
-        package="farnsworth.integration.bankr",
+        package="cosmos.integration.bankr",
         dependencies=["httpx"],
         size_mb=5,
         requires=["Bankr API key (BANKR_API_KEY)"],
@@ -45,7 +45,7 @@ OPTIONAL_MODULES: Dict[str, ModuleConfig] = {
     "x402": ModuleConfig(
         name="x402 Protocol",
         description="Micropayments via Bankr SDK + custom API monetization",
-        package="farnsworth.integration.x402",
+        package="cosmos.integration.x402",
         dependencies=["httpx", "web3"],
         size_mb=50,
         requires=["Bankr API key", "USDC on Base network"],
@@ -54,7 +54,7 @@ OPTIONAL_MODULES: Dict[str, ModuleConfig] = {
     "nlp_tasks": ModuleConfig(
         name="Natural Language Tasks",
         description="Hey Farn, do this... style commands (routes crypto to Bankr)",
-        package="farnsworth.core.nlp",
+        package="cosmos.core.nlp",
         dependencies=[],
         size_mb=5,
         requires=[],
@@ -62,7 +62,7 @@ OPTIONAL_MODULES: Dict[str, ModuleConfig] = {
     "desktop": ModuleConfig(
         name="Windows Desktop Interface",
         description="Full GUI for local interaction with system tray",
-        package="farnsworth.desktop",
+        package="cosmos.desktop",
         dependencies=["PySide6", "keyboard", "darkdetect"],
         size_mb=150,
         requires=[],
@@ -70,7 +70,7 @@ OPTIONAL_MODULES: Dict[str, ModuleConfig] = {
     "browser_agent": ModuleConfig(
         name="Agentic Browser",
         description="Autonomous web browsing with Playwright",
-        package="farnsworth.agents.browser",
+        package="cosmos.agents.browser",
         dependencies=["browser-use", "playwright"],
         size_mb=300,
         requires=[],
@@ -80,7 +80,7 @@ OPTIONAL_MODULES: Dict[str, ModuleConfig] = {
     "ide": ModuleConfig(
         name="IDE with Terminal",
         description="Code editor with Monaco and integrated terminal",
-        package="farnsworth.ide",
+        package="cosmos.ide",
         dependencies=["pygments", "pywinpty"],
         size_mb=20,
         requires=[],
@@ -88,7 +88,7 @@ OPTIONAL_MODULES: Dict[str, ModuleConfig] = {
     "ue5": ModuleConfig(
         name="Unreal Engine 5 Integration",
         description="UE5 automation and asset creation",
-        package="farnsworth.integration.ue5",
+        package="cosmos.integration.ue5",
         dependencies=[],
         size_mb=5,
         requires=["Unreal Engine 5 installed separately"],
@@ -96,7 +96,7 @@ OPTIONAL_MODULES: Dict[str, ModuleConfig] = {
     "cad": ModuleConfig(
         name="CAD Integration",
         description="3D modeling with CadQuery/FreeCAD",
-        package="farnsworth.integration.cad",
+        package="cosmos.integration.cad",
         dependencies=["cadquery"],
         size_mb=200,
         requires=[],

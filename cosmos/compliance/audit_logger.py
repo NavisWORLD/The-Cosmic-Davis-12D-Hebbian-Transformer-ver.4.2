@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/compliance/audit_logger.py
 cosmos Audit Logger
-=======
-Farnsworth Audit Logger
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/compliance/audit_logger.py
 
 "Every action must be recorded! The Central Bureaucracy demands it!"
 
@@ -93,11 +89,7 @@ class AuditEvent:
     description: str = ""
 
     # Context
-<<<<<<< HEAD:cosmos/compliance/audit_logger.py
     service: str = "cosmos"
-=======
-    service: str = "farnsworth"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/compliance/audit_logger.py
     session_id: str = ""
     request_id: str = ""
     correlation_id: str = ""

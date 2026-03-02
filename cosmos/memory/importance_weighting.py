@@ -1,5 +1,5 @@
 """
-FARNSWORTH IMPORTANCE-WEIGHTED MEMORY
+COSMOS IMPORTANCE-WEIGHTED MEMORY
 =====================================
 
 Score memories by value, not just relevance.

@@ -1,5 +1,5 @@
 """
-Farnsworth Hackathon Dashboard Routes
+Cosmos Hackathon Dashboard Routes
 ======================================
 
 Provides the /hackathon dashboard page and API endpoints for live
@@ -30,7 +30,7 @@ def _get_archival_count() -> int:
     now = time.time()
     if now - _archival_count_cache["ts"] < 300 and _archival_count_cache["count"] > 0:
         return _archival_count_cache["count"]
-    for p in [Path("/workspace/farnsworth_memory/archival"), Path("./data/archival")]:
+    for p in [Path("/workspace/cosmos_memory/archival"), Path("./data/archival")]:
         if p.exists():
             try:
                 count = sum(1 for f in p.iterdir() if f.suffix == ".json")
@@ -45,7 +45,7 @@ def _get_archival_count() -> int:
 def _get_templates():
     """Lazy-load Jinja2 templates."""
     try:
-        from farnsworth.web.server import templates
+        from Cosmos.web.server import templates
         return templates
     except Exception:
         from fastapi.templating import Jinja2Templates
@@ -77,7 +77,7 @@ async def hackathon_status():
 
         # Active swarms
         try:
-            from farnsworth.core.development_swarm import DevelopmentSwarm
+            from Cosmos.core.development_swarm import DevelopmentSwarm
             result["all_active_swarms"] = len(DevelopmentSwarm._active_swarms)
             if hasattr(DevelopmentSwarm, "_hackathon_state"):
                 state = DevelopmentSwarm._hackathon_state
@@ -99,21 +99,21 @@ async def hackathon_status():
 
         # Tools
         try:
-            from farnsworth.core.collective.tool_awareness import get_tool_awareness
+            from Cosmos.core.collective.tool_awareness import get_tool_awareness
             result["tools_available"] = len(get_tool_awareness().AVAILABLE_TOOLS)
         except Exception:
             result["tools_available"] = 0
 
         # Skills
         try:
-            from farnsworth.core.skill_registry import get_skill_registry
+            from Cosmos.core.skill_registry import get_skill_registry
             result["skills_registered"] = len(get_skill_registry()._skills)
         except Exception:
             result["skills_registered"] = 0
 
         # Memory
         try:
-            from farnsworth.memory.memory_system import get_memory_system
+            from Cosmos.memory.memory_system import get_memory_system
             mem = get_memory_system()
             total = 0
             if hasattr(mem, "get_stats"):
@@ -132,21 +132,21 @@ async def hackathon_status():
 
         # Evolution
         try:
-            from farnsworth.core.evolution_loop import get_evolution_loop
+            from Cosmos.core.evolution_loop import get_evolution_loop
             result["evolution_cycle"] = get_evolution_loop().evolution_cycle
         except Exception:
             result["evolution_cycle"] = 0
 
         # Gateway
         try:
-            from farnsworth.core.external_gateway import get_external_gateway
+            from Cosmos.core.external_gateway import get_external_gateway
             result["gateway"] = get_external_gateway().get_stats()
         except Exception:
             result["gateway"] = {}
 
         # Orchestrator
         try:
-            from farnsworth.core.token_orchestrator import get_token_orchestrator
+            from Cosmos.core.token_orchestrator import get_token_orchestrator
             result["orchestrator"] = get_token_orchestrator().get_dashboard()
         except Exception:
             result["orchestrator"] = {}
@@ -161,7 +161,7 @@ async def hackathon_status():
 async def hackathon_deliberations():
     """Get recent hackathon deliberation transcripts."""
     try:
-        from farnsworth.core.development_swarm import DevelopmentSwarm
+        from Cosmos.core.development_swarm import DevelopmentSwarm
         if hasattr(DevelopmentSwarm, "_hackathon_state"):
             deliberations = DevelopmentSwarm._hackathon_state.get("deliberations", [])
         else:
@@ -179,7 +179,7 @@ async def hackathon_deliberations():
 async def populate_usage():
     """Inject estimated hackathon usage data into the running orchestrator."""
     try:
-        from farnsworth.core.token_orchestrator import get_token_orchestrator
+        from Cosmos.core.token_orchestrator import get_token_orchestrator
         orch = get_token_orchestrator()
 
         AGENT_USAGE = {
@@ -188,7 +188,7 @@ async def populate_usage():
             "kimi": {"tokens": 465000, "requests": 1105, "quality": 0.88},
             "phi": {"tokens": 570000, "requests": 2340, "quality": 0.85},
             "deepseek": {"tokens": 620000, "requests": 2156, "quality": 0.87},
-            "farnsworth": {"tokens": 390000, "requests": 890, "quality": 0.86},
+            "cosmos": {"tokens": 390000, "requests": 890, "quality": 0.86},
             "gemini": {"tokens": 250000, "requests": 612, "quality": 0.89},
             "claudeopus": {"tokens": 230000, "requests": 478, "quality": 0.96},
             "swarm-mind": {"tokens": 325000, "requests": 1580, "quality": 0.82},
@@ -231,7 +231,7 @@ async def hackathon_trigger(request: Request):
         if not description.startswith("[HACKATHON]"):
             description = f"[HACKATHON] {description}"
 
-        from farnsworth.core.development_swarm import DevelopmentSwarm
+        from Cosmos.core.development_swarm import DevelopmentSwarm
 
         swarm = DevelopmentSwarm(
             task_id=f"hackathon_{datetime.now().strftime('%Y%m%d_%H%M%S')}",

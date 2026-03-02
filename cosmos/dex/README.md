@@ -1,6 +1,6 @@
-# DEXAI - Farnsworth AI-Powered DEX Screener
+# DEXAI - Cosmos AI-Powered DEX Screener
 
-A premium DexScreener replacement powered by the Farnsworth AI Collective.
+A premium DexScreener replacement powered by the Cosmos AI Collective.
 
 ## Features
 
@@ -12,7 +12,7 @@ A premium DexScreener replacement powered by the Farnsworth AI Collective.
 
 ### 💎 Token-Gated Monetization
 - **Boost System** - Pay $25 USD equivalent per boost
-  - Pay with **SOL** → Supports Farnsworth ecosystem (`3fSS5RVErbgcJEDCQmCXpKsD2tWqfhxFZtkDUB8qw`)
+  - Pay with **SOL** → Supports Cosmos ecosystem (`3fSS5RVErbgcJEDCQmCXpKsD2tWqfhxFZtkDUB8qw`)
   - Pay with **FARNS** → Tokens are **permanently burned** 🔥
   
 ### 🛡️ Collective Verification
@@ -48,7 +48,7 @@ A premium DexScreener replacement powered by the Farnsworth AI Collective.
 ## Installation
 
 ```bash
-cd farnsworth/dex
+cd cosmos/dex
 npm install
 ```
 
@@ -69,7 +69,7 @@ Server runs on port 3847 by default.
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `DEXAI_PORT` | Server port | `3847` |
-| `FARNSWORTH_API` | Farnsworth API URL | `http://localhost:8080` |
+| `COSMOS_API` | Cosmos API URL | `http://localhost:8080` |
 
 ## API Endpoints
 
@@ -118,9 +118,9 @@ Connect to `/ws` for real-time updates.
 { "type": "unsubscribe", "token": "TOKEN_ADDRESS" }
 ```
 
-## Integration with Farnsworth
+## Integration with Cosmos
 
-DEXAI integrates with the Farnsworth ecosystem:
+DEXAI integrates with the Cosmos ecosystem:
 
 1. **Trading Engine** - Uses the 80% win rate paper trading algo for predictions
 2. **Collective** - AI swarm provides token analysis
@@ -134,4 +134,4 @@ DEXAI integrates with the Farnsworth ecosystem:
 
 ## License
 
-Proprietary - Farnsworth AI Swarm
+Proprietary - Cosmos AI Swarm

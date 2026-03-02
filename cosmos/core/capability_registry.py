@@ -1,5 +1,5 @@
 """
-FARNSWORTH UNIFIED CAPABILITY REGISTRY
+COSMOS UNIFIED CAPABILITY REGISTRY
 ======================================
 
 Central registry of ALL tools, APIs, integrations, and capabilities.
@@ -107,7 +107,7 @@ class CapabilityRegistry:
                 description="Local LLM inference via Ollama. Supports DeepSeek, Phi, Llama, Qwen, Mistral models.",
                 usage_example="Use for local, private inference. Models: deepseek-r1:1.5b, llama3.2:3b, phi4:mini",
                 requires_module="ollama",
-                handler_module="farnsworth.core.cognition.llm_router",
+                handler_module="cosmos.core.cognition.llm_router",
                 handler_function="ollama_completion",
             ),
             Capability(
@@ -116,7 +116,7 @@ class CapabilityRegistry:
                 description="Moonshot AI Kimi with 256K context. Eastern philosophy synthesis, long-context understanding.",
                 usage_example="Use for: Long documents, philosophical questions, synthesis tasks",
                 requires_api_key="KIMI_API_KEY",
-                handler_module="farnsworth.integration.external.kimi",
+                handler_module="cosmos.integration.external.kimi",
                 handler_function="kimi_swarm_respond",
             ),
             Capability(
@@ -125,7 +125,7 @@ class CapabilityRegistry:
                 description="xAI Grok with real-time X/Twitter data access. Web search, current events.",
                 usage_example="Use for: Real-time info, X data, trending topics, current events",
                 requires_api_key="XAI_API_KEY",
-                handler_module="farnsworth.integration.external.grok",
+                handler_module="cosmos.integration.external.grok",
                 handler_function="GrokProvider.chat",
             ),
             Capability(
@@ -134,7 +134,7 @@ class CapabilityRegistry:
                 description="Google Gemini with 1M+ context, multimodal (text/image/audio/video), Google Search grounding.",
                 usage_example="Use for: Multimodal tasks, very long context, image analysis, fact verification",
                 requires_api_key="GEMINI_API_KEY",
-                handler_module="farnsworth.integration.external.gemini",
+                handler_module="cosmos.integration.external.gemini",
                 handler_function="gemini_swarm_respond",
             ),
             Capability(
@@ -143,7 +143,7 @@ class CapabilityRegistry:
                 description="Anthropic Claude via Claude Code CLI. Deep reasoning, careful analysis.",
                 usage_example="Use for: Complex reasoning, code review, careful analysis",
                 requires_module="claude",
-                handler_module="farnsworth.integration.external.claude_code",
+                handler_module="cosmos.integration.external.claude_code",
                 handler_function="claude_swarm_respond",
             ),
         ]
@@ -161,21 +161,21 @@ class CapabilityRegistry:
                 description="Bankr API for crypto trading on Solana, Base, Ethereum, Polygon. Supports swaps, prices, Polymarket.",
                 usage_example="bankr.execute('Buy $50 of SOL')",
                 requires_api_key="BANKR_API_KEY",
-                handler_module="farnsworth.integration.bankr",
+                handler_module="cosmos.integration.bankr",
             ),
             Capability(
                 name="dexscreener",
                 category="crypto",
                 description="DexScreener API for token prices, liquidity, volume. No API key needed.",
                 usage_example="dex_screener.get_token_pairs('solana', 'token_address')",
-                handler_module="farnsworth.integration.financial.dexscreener",
+                handler_module="cosmos.integration.financial.dexscreener",
             ),
             Capability(
                 name="solana_rpc",
                 category="crypto",
                 description="Solana blockchain RPC for account info, transactions, token balances.",
                 usage_example="Get SOL balance, check transactions, monitor wallets",
-                handler_module="farnsworth.integration.solana",
+                handler_module="cosmos.integration.solana",
             ),
 
             # Social
@@ -185,14 +185,14 @@ class CapabilityRegistry:
                 description="X/Twitter OAuth2 API for posting tweets with text and images.",
                 usage_example="x_poster.post_tweet('Hello world!', image_bytes=img)",
                 requires_api_key="X_CLIENT_ID",
-                handler_module="farnsworth.integration.x_automation.x_api_poster",
+                handler_module="cosmos.integration.x_automation.x_api_poster",
             ),
             Capability(
                 name="discord",
                 category="social",
                 description="Discord bot for sending messages, reacting, managing channels.",
                 requires_api_key="DISCORD_BOT_TOKEN",
-                handler_module="farnsworth.integration.external.discord_ext",
+                handler_module="cosmos.integration.external.discord_ext",
             ),
 
             # Image Generation
@@ -202,14 +202,14 @@ class CapabilityRegistry:
                 description="Gemini image generation with reference images for character consistency.",
                 usage_example="generator.generate_with_reference(prompt, reference_images)",
                 requires_api_key="GEMINI_API_KEY",
-                handler_module="farnsworth.integration.image_gen.generator",
+                handler_module="cosmos.integration.image_gen.generator",
             ),
             Capability(
                 name="imagen",
                 category="image",
                 description="Google Imagen 4.0 for high-quality image generation.",
                 requires_api_key="GEMINI_API_KEY",
-                handler_module="farnsworth.integration.image_gen.generator",
+                handler_module="cosmos.integration.image_gen.generator",
             ),
 
             # Voice/TTS
@@ -226,13 +226,13 @@ class CapabilityRegistry:
                 name="web_search",
                 category="knowledge",
                 description="Web search via Grok or external APIs for current information.",
-                handler_module="farnsworth.integration.external.grok",
+                handler_module="cosmos.integration.external.grok",
             ),
             Capability(
                 name="web_fetch",
                 category="knowledge",
                 description="Fetch and parse web pages for content extraction.",
-                handler_module="farnsworth.agents.web_agent",
+                handler_module="cosmos.agents.web_agent",
             ),
         ]
 
@@ -247,28 +247,28 @@ class CapabilityRegistry:
                 category="memory",
                 description="Store information in long-term memory with semantic indexing.",
                 usage_example="memory.remember('key', 'content', importance=0.8)",
-                handler_module="farnsworth.memory.memory_system",
+                handler_module="cosmos.memory.memory_system",
             ),
             Capability(
                 name="memory_recall",
                 category="memory",
                 description="Retrieve information from memory using semantic search.",
                 usage_example="results = memory.recall('query', top_k=5)",
-                handler_module="farnsworth.memory.memory_system",
+                handler_module="cosmos.memory.memory_system",
             ),
             Capability(
                 name="knowledge_graph",
                 category="memory",
                 description="Store and query entity relationships for multi-hop reasoning.",
                 usage_example="kg.add_entity('Python', type='language')",
-                handler_module="farnsworth.memory.knowledge_graph",
+                handler_module="cosmos.memory.knowledge_graph",
             ),
             Capability(
                 name="episodic_memory",
                 category="memory",
                 description="Timeline-based event memory with 'on this day' recall.",
                 usage_example="episodic.add_episode(event_type, content)",
-                handler_module="farnsworth.memory.episodic_memory",
+                handler_module="cosmos.memory.episodic_memory",
             ),
         ]
 
@@ -283,19 +283,19 @@ class CapabilityRegistry:
                 category="tool",
                 description="Detect crypto contract addresses in text and fetch token data.",
                 usage_example="Automatically scans chat for CAs and provides DexScreener data",
-                handler_module="farnsworth.integration.financial.token_scanner",
+                handler_module="cosmos.integration.financial.token_scanner",
             ),
             Capability(
                 name="code_execution",
                 category="tool",
                 description="Execute Python code in sandboxed environment.",
-                handler_module="farnsworth.tools.productivity",
+                handler_module="cosmos.tools.productivity",
             ),
             Capability(
                 name="file_operations",
                 category="tool",
                 description="Read, write, and manage files in the workspace.",
-                handler_module="farnsworth.agents.filesystem_agent",
+                handler_module="cosmos.agents.filesystem_agent",
             ),
         ]
 
@@ -310,19 +310,19 @@ class CapabilityRegistry:
                 category="agent",
                 description="Spawn parallel development team: research, discuss, plan, implement, audit.",
                 usage_example="Automatically spawns when actionable task detected in chat",
-                handler_module="farnsworth.core.development_swarm",
+                handler_module="cosmos.core.development_swarm",
             ),
             Capability(
                 name="proactive_agent",
                 category="agent",
                 description="Background monitoring that anticipates user needs and makes suggestions.",
-                handler_module="farnsworth.agents.proactive_agent",
+                handler_module="cosmos.agents.proactive_agent",
             ),
             Capability(
                 name="research_agent",
                 category="agent",
                 description="Gather and synthesize information from multiple sources.",
-                handler_module="farnsworth.agents.specialist_agents",
+                handler_module="cosmos.agents.specialist_agents",
             ),
         ]
 
@@ -386,7 +386,7 @@ class CapabilityRegistry:
             status = "AVAILABLE" if cap.is_available else "unavailable"
             categories[cap.category].append(f"  - {cap.name} [{status}]: {cap.description[:80]}")
 
-        lines = ["=== FARNSWORTH CAPABILITIES ===\n"]
+        lines = ["=== COSMOS CAPABILITIES ===\n"]
         for category, caps in sorted(categories.items()):
             lines.append(f"\n## {category.upper()}")
             lines.extend(caps)
@@ -396,7 +396,7 @@ class CapabilityRegistry:
     async def store_in_memory(self):
         """Store capability registry in memory for model discovery"""
         try:
-            from farnsworth.memory.memory_system import get_memory_system
+            from Cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
 
             summary = self.get_summary()

@@ -1,5 +1,5 @@
 """
-FARNSWORTH KNOWLEDGE LOADER
+COSMOS KNOWLEDGE LOADER
 Loads API references and knowledge on startup.
 ALWAYS APPENDS - never overwrites existing knowledge.
 
@@ -15,14 +15,14 @@ from typing import Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
 
-KNOWLEDGE_DIR = Path("/workspace/Farnsworth/farnsworth/knowledge")
-MEMORY_FILE = Path("/workspace/Farnsworth/data/knowledge_memory.json")
+KNOWLEDGE_DIR = Path("/workspace/Cosmos/cosmos/knowledge")
+MEMORY_FILE = Path("/workspace/Cosmos/data/knowledge_memory.json")
 
 
 class KnowledgeLoader:
     """
     Loads and manages persistent knowledge.
-    Integrates with Farnsworth's memory system.
+    Integrates with Cosmos's memory system.
     """
 
     def __init__(self):

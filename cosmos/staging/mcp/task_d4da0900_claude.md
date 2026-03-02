@@ -9,8 +9,8 @@ You want me to build MCP (Model Context Protocol) tool discovery functionality -
 
 Before I dive into implementation, I have a few questions:
 
-1. Are you working within the Farnsworth codebase I see here, or is this a standalone MCP tool?
+1. Are you working within the Cosmos codebase I see here, or is this a standalone MCP tool?
 2. Do you have an existing MCP server/client setup I should integrate with, or should I build the discovery layer from scratch?
 3. What MCP tools are you hoping to discover - are these local tools, remote services, or both?
 
-Looking at your repo, I see you have integration patterns already (`farnsworth/integration/external/`) - should this MCP discovery system follow similar patterns?
+Looking at your repo, I see you have integration patterns already (`cosmos/integration/external/`) - should this MCP discovery system follow similar patterns?

@@ -13,13 +13,13 @@ Q1 2025 (v0.2.0) Features:
 - Context compression for token efficiency
 """
 
-from cosmos.rag.embeddings import EmbeddingManager
-from cosmos.rag.hybrid_retriever import HybridRetriever
-from cosmos.rag.document_processor import DocumentProcessor
-from cosmos.rag.self_refining_rag import SelfRefiningRAG
+from Cosmos.rag.embeddings import EmbeddingManager
+from Cosmos.rag.hybrid_retriever import HybridRetriever
+from Cosmos.rag.document_processor import DocumentProcessor
+from Cosmos.rag.self_refining_rag import SelfRefiningRAG
 
 # Q1 2025 Features
-from cosmos.rag.hybrid_search_v2 import (
+from Cosmos.rag.hybrid_search_v2 import (
     HybridSearchV2,
     QueryIntent,
     QueryAnalysis,
@@ -27,7 +27,7 @@ from cosmos.rag.hybrid_search_v2 import (
     AttributedResult,
     HybridSearchResult,
 )
-from cosmos.rag.context_compression import (
+from Cosmos.rag.context_compression import (
     ContextCompressor,
     CompressionLevel,
     ContentPriority,

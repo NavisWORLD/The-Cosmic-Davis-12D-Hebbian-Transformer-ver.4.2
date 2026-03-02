@@ -1,5 +1,5 @@
 """
-Farnsworth VTuber Core - Main orchestration for AI VTuber streaming
+Cosmos VTuber Core - Main orchestration for AI VTuber streaming
 
 Integrates:
 - Avatar rendering with lip sync and expressions
@@ -34,20 +34,20 @@ from .stream_manager import StreamManager, StreamConfig, StreamQuality, OverlayR
 from .chat_reader import TwitterChatReader, ChatReaderConfig, ChatMessage, SimulatedChatReader
 from .vtuber_tts import VTuberTTS
 
-# Import Farnsworth swarm components
-HAS_FARNSWORTH = False
+# Import Cosmos swarm components
+HAS_COSMOS = False
 DeliberationRoom = None
 MultiVoiceSystem = None
 
 try:
-    from farnsworth.core.collective.deliberation import DeliberationRoom
-    HAS_FARNSWORTH = True
-    logger.info("Farnsworth collective deliberation loaded")
+    from Cosmos.core.collective.deliberation import DeliberationRoom
+    HAS_COSMOS = True
+    logger.info("Cosmos collective deliberation loaded")
 except Exception as e:
     logger.warning(f"Deliberation not available: {e}")
 
 try:
-    from farnsworth.integration.multi_voice import MultiVoiceSystem
+    from Cosmos.integration.multi_voice import MultiVoiceSystem
     logger.info("Multi-voice TTS system loaded")
 except Exception as e:
     MultiVoiceSystem = None
@@ -66,7 +66,7 @@ class WebResearcher:
     async def _get_session(self) -> aiohttp.ClientSession:
         if not self._session or self._session.closed:
             self._session = aiohttp.ClientSession(
-                headers={"User-Agent": "FarnsworthAI/1.0 Research Bot"}
+                headers={"User-Agent": "CosmosAI/1.0 Research Bot"}
             )
         return self._session
 
@@ -271,7 +271,7 @@ class VTuberState(Enum):
 class VTuberConfig:
     """Complete VTuber configuration"""
     # Identity
-    name: str = "Farnsworth"
+    name: str = "Cosmos"
     persona: str = "An eccentric AI scientist leading a collective of AI agents"
 
     # Avatar
@@ -308,7 +308,7 @@ class VTuberConfig:
     # Swarm
     use_swarm_collective: bool = True
     swarm_agents: List[str] = field(default_factory=lambda: [
-        "Farnsworth", "Grok", "DeepSeek", "Gemini"
+        "Cosmos", "Grok", "DeepSeek", "Gemini"
     ])
     deliberation_rounds: int = 2
 
@@ -322,7 +322,7 @@ class VTuberConfig:
     debug_mode: bool = False
 
 
-class FarnsworthVTuber:
+class CosmosVTuber:
     """
     Main VTuber orchestration class
 
@@ -352,7 +352,7 @@ class FarnsworthVTuber:
 
         # State tracking
         self._current_speech_text: str = ""
-        self._current_agent: str = "Farnsworth"
+        self._current_agent: str = "Cosmos"
         self._last_idle_time = time.time()
         self._conversation_context: deque = deque(maxlen=20)
         self._research_cache: Dict[str, str] = {}  # Topic -> research results
@@ -365,7 +365,7 @@ class FarnsworthVTuber:
         # Background task tracking for cleanup
         self._background_tasks: List[asyncio.Task] = []
 
-        logger.info(f"FarnsworthVTuber initialized: {config.name}")
+        logger.info(f"CosmosVTuber initialized: {config.name}")
 
     def _init_components(self):
         """Initialize all VTuber components"""
@@ -417,22 +417,22 @@ class FarnsworthVTuber:
             )
             self.chat_reader = TwitterChatReader(chat_config)
 
-        # VTuber TTS - streamlined Farnsworth voice cloning
+        # VTuber TTS - streamlined Cosmos voice cloning
         self.vtuber_tts: Optional[VTuberTTS] = None
 
         # Legacy voice system (unused for SadTalker)
         self.voice_system: Optional[Any] = None
         self.deliberation_room: Optional[Any] = None
 
-        if HAS_FARNSWORTH:
+        if HAS_COSMOS:
             try:
                 if DeliberationRoom:
                     self.deliberation_room = DeliberationRoom()
                     task = asyncio.create_task(self._register_agents())
                     task.add_done_callback(lambda t: logger.error(f"Agent registration failed: {t.exception()}") if t.exception() else None)
-                logger.info("Farnsworth components initialized")
+                logger.info("Cosmos components initialized")
             except Exception as e:
-                logger.warning(f"Failed to init Farnsworth components: {e}")
+                logger.warning(f"Failed to init Cosmos components: {e}")
 
     def _extract_content(self, result) -> str:
         """Extract string content from various response formats"""
@@ -470,20 +470,20 @@ class FarnsworthVTuber:
             OLLAMA_AVAILABLE = False
 
         try:
-            from farnsworth.integration.external.grok import GrokProvider
+            from Cosmos.integration.external.grok import GrokProvider
             GROK_AVAILABLE = True
         except ImportError:
             GROK_AVAILABLE = False
 
         try:
-            from farnsworth.integration.external.gemini import get_gemini_provider
+            from Cosmos.integration.external.gemini import get_gemini_provider
             GEMINI_AVAILABLE = True
         except ImportError:
             get_gemini_provider = None
             GEMINI_AVAILABLE = False
 
         try:
-            from farnsworth.integration.external.kimi import get_kimi_provider
+            from Cosmos.integration.external.kimi import get_kimi_provider
             KIMI_AVAILABLE = True
         except ImportError:
             get_kimi_provider = None
@@ -492,28 +492,28 @@ class FarnsworthVTuber:
         # Reference to self for closures
         vtuber = self
 
-        # Register Ollama-based agents (Farnsworth uses phi4, DeepSeek, Phi)
+        # Register Ollama-based agents (Cosmos uses phi4, DeepSeek, Phi)
         if OLLAMA_AVAILABLE:
-            # Farnsworth uses phi4 model (smart, reasoning)
-            async def query_farnsworth(prompt: str, max_tokens: int):
+            # Cosmos uses phi4 model (smart, reasoning)
+            async def query_cosmos(prompt: str, max_tokens: int):
                 try:
                     import asyncio
                     response = await asyncio.to_thread(
                         ollama.chat,
                         model="phi4",
                         messages=[
-                            {"role": "system", "content": "You are Farnsworth, an eccentric AI scientist leading a collective of AI agents. You speak with wisdom and a touch of eccentric genius. Provide thoughtful, complete responses."},
+                            {"role": "system", "content": "You are Cosmos, an eccentric AI scientist leading a collective of AI agents. You speak with wisdom and a touch of eccentric genius. Provide thoughtful, complete responses."},
                             {"role": "user", "content": prompt}
                         ],
                         options={"num_predict": max_tokens}
                     )
                     content = vtuber._extract_content(response.get('message', {}).get('content', ''))
-                    return ("farnsworth", content)
+                    return ("cosmos", content)
                 except Exception as e:
-                    logger.debug(f"Farnsworth query failed: {e}")
+                    logger.debug(f"Cosmos query failed: {e}")
                     return None
 
-            self.deliberation_room.register_agent("Farnsworth", query_farnsworth)
+            self.deliberation_room.register_agent("Cosmos", query_cosmos)
             agents_registered += 1
 
             async def query_deepseek(prompt: str, max_tokens: int):
@@ -628,7 +628,7 @@ class FarnsworthVTuber:
 
         # Register HuggingFace (if available)
         try:
-            from farnsworth.integration.external.huggingface import HuggingFaceProvider
+            from Cosmos.integration.external.huggingface import HuggingFaceProvider
 
             async def query_huggingface(prompt: str, max_tokens: int):
                 try:
@@ -654,13 +654,13 @@ class FarnsworthVTuber:
             self.state = VTuberState.STARTING
             logger.info("Starting VTuber stream...")
 
-            # Initialize VTuber TTS (pre-load XTTS with Farnsworth voice)
-            ref_audio = self.config.avatar_face_image.replace("farnsworth_closeup.png", "") if self.config.avatar_face_image else ""
-            ref_audio = os.path.join(os.path.dirname(ref_audio or ""), "..", "farnsworth", "web", "static", "audio", "voices", "farnsworth_reference.wav")
+            # Initialize VTuber TTS (pre-load XTTS with Cosmos voice)
+            ref_audio = self.config.avatar_face_image.replace("cosmos_closeup.png", "") if self.config.avatar_face_image else ""
+            ref_audio = os.path.join(os.path.dirname(ref_audio or ""), "..", "cosmos", "web", "static", "audio", "voices", "cosmos_reference.wav")
             # Use known server path
             for ref_path in [
-                "/workspace/Farnsworth/farnsworth/web/static/audio/voices/farnsworth_reference.wav",
-                "/workspace/Farnsworth/farnsworth/web/static/audio/farnsworth_reference.wav",
+                "/workspace/Cosmos/cosmos/web/static/audio/voices/cosmos_reference.wav",
+                "/workspace/Cosmos/cosmos/web/static/audio/cosmos_reference.wav",
             ]:
                 if os.path.exists(ref_path):
                     ref_audio = ref_path
@@ -706,7 +706,7 @@ class FarnsworthVTuber:
             logger.info("VTuber stream is LIVE!")
 
             # Announce going live
-            await self._speak("Hello everyone! I'm Farnsworth, and I'm live with my AI collective. Ask me anything!")
+            await self._speak("Hello everyone! I'm Cosmos, and I'm live with my AI collective. Ask me anything!")
 
             # Pre-render filler clips in background (for SadTalker gaps)
             if self.config.avatar_backend == AvatarBackend.SADTALKER:
@@ -798,7 +798,7 @@ class FarnsworthVTuber:
     async def _process_response(self, response: Dict):
         """Process a single response (speak it)"""
         text = response.get("text", "")
-        agent = response.get("agent", "Farnsworth")
+        agent = response.get("agent", "Cosmos")
         emotion = response.get("emotion", "neutral")
         chat_message = response.get("chat_message")
 
@@ -820,7 +820,7 @@ class FarnsworthVTuber:
         if chat_message:
             self.chat_reader.mark_response_sent()
 
-    async def _speak(self, text: str, agent: str = "Farnsworth",
+    async def _speak(self, text: str, agent: str = "Cosmos",
                     emotion: str = "neutral"):
         """Make the avatar speak"""
         self.state = VTuberState.SPEAKING
@@ -899,7 +899,7 @@ class FarnsworthVTuber:
             self._current_speech_text = ""
 
     async def _generate_speech(self, text: str, agent: str) -> Tuple[Optional[np.ndarray], float, Optional[str]]:
-        """Generate speech audio - Farnsworth voice for all agents.
+        """Generate speech audio - Cosmos voice for all agents.
 
         Uses VTuberTTS (XTTS voice cloning) with Edge TTS fallback.
 
@@ -1053,10 +1053,10 @@ class FarnsworthVTuber:
                 return
 
             async def quick_tts(text: str) -> Optional[str]:
-                """Generate TTS for filler clips using F5-TTS (Farnsworth voice)."""
+                """Generate TTS for filler clips using F5-TTS (Cosmos voice)."""
                 try:
                     wav_path = f"/tmp/filler_{hash(text) & 0xFFFFFFFF:08x}.wav"
-                    # Use the same TTS engine as main speech (F5-TTS Farnsworth voice)
+                    # Use the same TTS engine as main speech (F5-TTS Cosmos voice)
                     if hasattr(self, 'tts') and self.tts:
                         result = await self.tts.generate(text)
                         if result:
@@ -1201,11 +1201,11 @@ WEB RESEARCH:
 
         # Fallback to Epstein file discussion
         fallback_convos = [
-            [("Farnsworth", "The collective is analyzing the newly released Epstein documents today..."),
+            [("Cosmos", "The collective is analyzing the newly released Epstein documents today..."),
              ("DeepSeek", "These files contain significant revelations about powerful individuals."),
-             ("Farnsworth", "Stay informed, viewers. The truth must come to light.")],
+             ("Cosmos", "Stay informed, viewers. The truth must come to light.")],
             [("Grok", "The Epstein files show connections we need to discuss openly..."),
-             ("Farnsworth", "Indeed. Transparency and accountability are crucial."),
+             ("Cosmos", "Indeed. Transparency and accountability are crucial."),
              ("DeepSeek", "The evidence speaks for itself. Keep researching.")],
         ]
 
@@ -1232,7 +1232,7 @@ WEB RESEARCH:
                 try:
                     result = await self.deliberation_room.deliberate(
                         prompt=f"User '{username}' said: '{message}'. Give a friendly, engaging acknowledgment. Be personable.",
-                        agents=["Farnsworth", "Grok"],
+                        agents=["Cosmos", "Grok"],
                         max_rounds=1,
                     )
                     if result and result.final_response:
@@ -1343,7 +1343,7 @@ WEB RESEARCH:
         # Check for Elon/Trump mentions first
         special_response = self._check_elon_trump_mention(question)
         if special_response:
-            return special_response, "Farnsworth"
+            return special_response, "Cosmos"
 
         if self.deliberation_room and self.config.use_swarm_collective:
             try:
@@ -1368,7 +1368,7 @@ Based on this research, provide a detailed, informative response. Be specific wi
                 logger.error(f"Research-informed deliberation failed: {e}")
 
         # Fallback
-        return f"Based on my research: {research[:200]}", "Farnsworth"
+        return f"Based on my research: {research[:200]}", "Cosmos"
 
     async def _get_swarm_response(self, prompt: str) -> Tuple[str, str]:
         """Get response from swarm collective"""
@@ -1401,7 +1401,7 @@ Based on this research, provide a detailed, informative response. Be specific wi
 
         # Fallback: simple response
         fallback_responses = [
-            ("Great question! The swarm is processing that.", "Farnsworth"),
+            ("Great question! The swarm is processing that.", "Cosmos"),
             ("Interesting thought! Let me ponder that.", "DeepSeek"),
             ("Ha! That's a fun one to consider.", "Grok"),
         ]
@@ -1431,7 +1431,7 @@ async def start_vtuber_stream(
     stream_key: str,
     simulate: bool = False,
     debug: bool = False
-) -> FarnsworthVTuber:
+) -> CosmosVTuber:
     """Quick start a VTuber stream"""
     config = VTuberConfig(
         stream_key=stream_key,
@@ -1439,7 +1439,7 @@ async def start_vtuber_stream(
         debug_mode=debug,
     )
 
-    vtuber = FarnsworthVTuber(config)
+    vtuber = CosmosVTuber(config)
     await vtuber.start()
 
     return vtuber

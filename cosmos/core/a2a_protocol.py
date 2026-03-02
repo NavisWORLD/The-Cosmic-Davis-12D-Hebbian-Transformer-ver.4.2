@@ -1,5 +1,5 @@
 """
-Farnsworth A2A Protocol - Agent-to-Agent Communication.
+Cosmos A2A Protocol - Agent-to-Agent Communication.
 
 AGI v1.8 Feature: Direct agent-to-agent collaboration protocol
 for peer sessions, task auctions, context sharing, and skill transfer.
@@ -834,7 +834,7 @@ class A2AProtocol:
             return
 
         try:
-            from farnsworth.core.nexus import SignalType
+            from Cosmos.core.nexus import SignalType
 
             signal_enum = getattr(SignalType, signal_type, None)
             if signal_enum:

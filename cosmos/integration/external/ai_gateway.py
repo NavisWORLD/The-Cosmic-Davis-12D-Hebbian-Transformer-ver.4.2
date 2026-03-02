@@ -1,17 +1,9 @@
 """
-<<<<<<< HEAD:cosmos/integration/external/ai_gateway.py
 cosmos Universal AI Gateway.
 
 "If it thinks, I can link to it!"
 
 This module allows cosmos to connect to ANY external AI/LLM API.
-=======
-Farnsworth Universal AI Gateway.
-
-"If it thinks, I can link to it!"
-
-This module allows Farnsworth to connect to ANY external AI/LLM API.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/ai_gateway.py
 It normalizes inputs/outputs so the swarm can use Google AI Labs, Grok, OpenAI, etc.
 transparently alongside local models.
 """
@@ -22,11 +14,7 @@ from loguru import logger
 import aiohttp
 import json
 
-<<<<<<< HEAD:cosmos/integration/external/ai_gateway.py
-from cosmos.core.llm_backend import LLMBackend, GenerationConfig, GenerationResult, BackendType, StreamChunk
-=======
-from farnsworth.core.llm_backend import LLMBackend, GenerationConfig, GenerationResult, BackendType, StreamChunk
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/ai_gateway.py
+from Cosmos.core.llm_backend import LLMBackend, GenerationConfig, GenerationResult, BackendType, StreamChunk
 
 @dataclass
 class APIEndpoint:

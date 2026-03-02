@@ -1,5 +1,5 @@
 """
-Farnsworth tmux Session Manager.
+Cosmos tmux Session Manager.
 
 "I've created immortal robot sessions! They'll outlive us all!"
 
@@ -212,7 +212,7 @@ class TmuxSessionManager:
 
         # Generate session ID
         session_id = f"{name}_{uuid.uuid4().hex[:8]}"
-        session_name = f"farnsworth_{session_id}"
+        session_name = f"cosmos_{session_id}"
 
         # Get default command for type
         if command is None:
@@ -320,7 +320,7 @@ class TmuxSessionManager:
             SessionType.CLAUDE_CODE: "claude --api-key $ANTHROPIC_API_KEY",
             SessionType.DEVELOPMENT: "bash",
             SessionType.RESEARCH: "python -c 'print(\"Research session ready\")'",
-            SessionType.TRADING: "cd /workspace/Farnsworth && python -c 'print(\"Trading session ready\")'",
+            SessionType.TRADING: "cd /workspace/Cosmos && python -c 'print(\"Trading session ready\")'",
             SessionType.CUSTOM: "bash",
         }
         return defaults.get(session_type, "bash")

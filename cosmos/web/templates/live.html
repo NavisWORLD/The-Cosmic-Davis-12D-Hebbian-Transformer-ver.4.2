@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<<<<<<< HEAD:cosmos/web/templates/live.html
 
 <head>
     <meta charset="UTF-8">
@@ -10,40 +9,6 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
         rel="stylesheet">
-=======
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farnsworth Live Dashboard</title>
-
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Watch the Farnsworth AI swarm in real-time. Live neural activity, agent interactions, and system metrics.">
-
-    <!-- Open Graph -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://ai.farnsworth.cloud/live">
-    <meta property="og:title" content="Farnsworth Live Dashboard">
-    <meta property="og:description" content="Watch the AI swarm in real-time. Live neural activity, agent interactions, and system metrics.">
-    <meta property="og:image" content="https://ai.farnsworth.cloud/static/images/og-image.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="Farnsworth AI">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@timowhite88">
-    <meta name="twitter:creator" content="@timowhite88">
-    <meta name="twitter:title" content="Farnsworth Live Dashboard">
-    <meta name="twitter:description" content="Watch the AI swarm in real-time. Live neural activity, agent interactions, and system metrics.">
-    <meta name="twitter:image" content="https://ai.farnsworth.cloud/static/images/og-image.png">
-    <meta name="twitter:image:alt" content="Farnsworth AI Live Dashboard">
-
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#6366f1">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/templates/live.html
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.2/dist/vis-network.min.js"></script>
     <style>
@@ -95,7 +60,6 @@
         }
 
         @keyframes pulse {
-<<<<<<< HEAD:cosmos/web/templates/live.html
 
             0%,
             100% {
@@ -105,10 +69,6 @@
             50% {
                 opacity: 0.5;
             }
-=======
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/templates/live.html
         }
 
         /* Sessions Panel */
@@ -167,7 +127,6 @@
             border-left: 3px solid #6366f1;
         }
 
-<<<<<<< HEAD:cosmos/web/templates/live.html
         .event-item.thinking_start,
         .event-item.thinking_step,
         .event-item.thinking_end {
@@ -181,17 +140,6 @@
 
         .event-item.response_chunk,
         .event-item.response_complete {
-=======
-        .event-item.thinking_start, .event-item.thinking_step, .event-item.thinking_end {
-            border-left-color: #f59e0b;
-        }
-
-        .event-item.tool_call, .event-item.tool_result {
-            border-left-color: #10b981;
-        }
-
-        .event-item.response_chunk, .event-item.response_complete {
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/templates/live.html
             border-left-color: #8b5cf6;
         }
 
@@ -253,10 +201,7 @@
         }
     </style>
 </head>
-<<<<<<< HEAD:cosmos/web/templates/live.html
 
-=======
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/templates/live.html
 <body>
     <!-- Cosmic Background -->
     <div class="cosmos">
@@ -294,12 +239,8 @@
         <div class="panel">
             <div class="panel-header">
                 <span class="panel-title">Action Chain Graph</span>
-<<<<<<< HEAD:cosmos/web/templates/live.html
                 <button onclick="resetGraph()"
                     style="background: rgba(139, 92, 246, 0.2); border: none; padding: 6px 12px; border-radius: 6px; color: #f8fafc; cursor: pointer;">Reset</button>
-=======
-                <button onclick="resetGraph()" style="background: rgba(139, 92, 246, 0.2); border: none; padding: 6px 12px; border-radius: 6px; color: #f8fafc; cursor: pointer;">Reset</button>
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/templates/live.html
             </div>
             <div id="action-graph"></div>
         </div>
@@ -416,11 +357,7 @@
 
             ws.onopen = () => {
                 document.getElementById('status-dot').classList.remove('disconnected');
-<<<<<<< HEAD:cosmos/web/templates/live.html
                 document.getElementById('connection-status').textContent = 'Connected to COSMOS Live Feed';
-=======
-                document.getElementById('connection-status').textContent = 'Connected to Farnsworth Live Feed';
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/templates/live.html
                 reconnectAttempts = 0;
             };
 
@@ -502,9 +439,5 @@
         });
     </script>
 </body>
-<<<<<<< HEAD:cosmos/web/templates/live.html
 
 </html>
-=======
-</html>
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/web/templates/live.html

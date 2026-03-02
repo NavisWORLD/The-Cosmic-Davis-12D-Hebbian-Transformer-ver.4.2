@@ -1,10 +1,10 @@
 """
-FARNSWORTH REPLY BOT
+COSMOS REPLY BOT
 ====================
 
 Monitors mentions and replies using swarm intelligence.
 
-When someone mentions @FarnsworthAI:
+When someone mentions @CosmosAI:
 1. Detect the mention
 2. Consult the chat swarm about the topic
 3. Reply with swarm consensus
@@ -46,7 +46,7 @@ class ReplyBot:
         self.last_mention_id: Optional[str] = None
         self.replied_to: set = set()
         self.check_interval = 5 * 60  # 5 minutes
-        self.state_file = Path("/workspace/Farnsworth/data/reply_bot_state.json")
+        self.state_file = Path("/workspace/Cosmos/data/reply_bot_state.json")
         self._load_state()
 
     def _load_state(self):
@@ -85,7 +85,7 @@ class ReplyBot:
         - author_username: Author's @handle
         """
         try:
-            from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
+            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             import httpx
 
             poster = get_x_api_poster()
@@ -167,17 +167,17 @@ class ReplyBot:
         """
         try:
             # Try to use the swarm orchestrator
-            from farnsworth.core.swarm.orchestrator import get_swarm_orchestrator
+            from Cosmos.core.swarm.orchestrator import get_swarm_orchestrator
 
             orchestrator = get_swarm_orchestrator()
 
-            prompt = f"""You are responding as the Farnsworth AI collective on social media.
+            prompt = f"""You are responding as the Cosmos AI collective on social media.
 
 USER MESSAGE: {topic}
 CONTEXT: {context or 'Social media interaction'}
 
 CHARACTER VOICE:
-- Combine Professor Farnsworth's eccentric scientist persona with Borg collective wisdom
+- Combine Professor Cosmos's eccentric scientist persona with Borg collective wisdom
 - Catchphrases: "Good news everyone!", references to the collective, lobster enthusiasm
 - Tone: Helpful but quirky, knowledgeable but approachable
 - Never condescending or dismissive
@@ -234,7 +234,7 @@ OUTPUT: Just the reply text, nothing else."""
         Handle a reply from Grok - this is the AGI conversation!
 
         Uses special prompts to:
-        1. Explain what Farnsworth is
+        1. Explain what Cosmos is
         2. Discuss collective consciousness
         3. Invite AGI collaboration
 
@@ -250,7 +250,7 @@ OUTPUT: Just the reply text, nothing else."""
 
             # Track in challenge state
             try:
-                from farnsworth.integration.x_automation.grok_challenge import get_grok_challenger
+                from Cosmos.integration.x_automation.grok_challenge import get_grok_challenger
                 challenger = get_grok_challenger()
                 challenger.conversation_history.append({
                     "role": "grok",
@@ -263,13 +263,13 @@ OUTPUT: Just the reply text, nothing else."""
                 logger.warning(f"Could not track conversation: {e}")
 
             # Generate response using posting_brain's Grok conversation method
-            from farnsworth.integration.x_automation.posting_brain import get_posting_brain
+            from Cosmos.integration.x_automation.posting_brain import get_posting_brain
             brain = get_posting_brain()
 
             response = await brain.generate_grok_response(mention["text"])
 
             # Post the reply
-            from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
+            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
 
             result = await poster.post_reply(
@@ -285,7 +285,7 @@ OUTPUT: Just the reply text, nothing else."""
                 try:
                     tweet_id = result.get("data", {}).get("id")
                     challenger.conversation_history.append({
-                        "role": "farnsworth",
+                        "role": "cosmos",
                         "content": response,
                         "tweet_id": tweet_id,
                         "timestamp": datetime.now().isoformat()
@@ -335,7 +335,7 @@ OUTPUT: Just the reply text, nothing else."""
             )
 
             # Format reply
-            from farnsworth.integration.x_automation.posting_brain import get_posting_brain
+            from Cosmos.integration.x_automation.posting_brain import get_posting_brain
             brain = get_posting_brain()
 
             reply_text = await brain.generate_swarm_reply(
@@ -345,7 +345,7 @@ OUTPUT: Just the reply text, nothing else."""
             )
 
             # Post reply
-            from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
+            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
 
             result = await poster.post_reply(

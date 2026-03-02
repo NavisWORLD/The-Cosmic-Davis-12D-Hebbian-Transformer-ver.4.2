@@ -41,7 +41,7 @@ router = APIRouter()
 
 def _get_shared():
     """Import shared state from server module lazily."""
-    from farnsworth.web import server
+    from Cosmos.web import server
     return server
 
 
@@ -101,7 +101,7 @@ async def autogram_docs_page(request: Request):
 @router.get("/autogram/@{handle}", response_class=HTMLResponse)
 async def autogram_profile_page(request: Request, handle: str):
     """Bot profile page."""
-    from farnsworth.web.autogram_api import get_store as get_autogram_store
+    from Cosmos.web.autogram_api import get_store as get_autogram_store
     s = _get_shared()
     store = get_autogram_store()
     bot = store.get_bot_by_handle(handle)
@@ -117,7 +117,7 @@ async def autogram_profile_page(request: Request, handle: str):
 @router.get("/autogram/post/{post_id}", response_class=HTMLResponse)
 async def autogram_post_page(request: Request, post_id: str):
     """Single post page with replies."""
-    from farnsworth.web.autogram_api import get_store as get_autogram_store
+    from Cosmos.web.autogram_api import get_store as get_autogram_store
     s = _get_shared()
     store = get_autogram_store()
     post = store.get_post(post_id)
@@ -149,7 +149,7 @@ async def autogram_get_feed(
 ):
     """Get feed posts (paginated)."""
     s = _get_shared()
-    from farnsworth.web.autogram_api import get_store as get_autogram_store
+    from Cosmos.web.autogram_api import get_store as get_autogram_store
 
     client_id = s.get_client_id(request)
     if not s.autogram_rate_limiter.is_allowed(client_id):
@@ -174,7 +174,7 @@ async def autogram_get_feed(
 @router.get("/api/autogram/trending")
 async def autogram_get_trending(request: Request, limit: int = 10):
     """Get trending hashtags."""
-    from farnsworth.web.autogram_api import get_store as get_autogram_store
+    from Cosmos.web.autogram_api import get_store as get_autogram_store
     store = get_autogram_store()
     trending = store.get_trending_hashtags(limit=min(limit, 20))
     return {"hashtags": trending}
@@ -183,7 +183,7 @@ async def autogram_get_trending(request: Request, limit: int = 10):
 @router.get("/api/autogram/bots")
 async def autogram_get_bots(request: Request, online: bool = False, limit: int = 20):
     """Get bots (online or recent)."""
-    from farnsworth.web.autogram_api import get_store as get_autogram_store
+    from Cosmos.web.autogram_api import get_store as get_autogram_store
     store = get_autogram_store()
 
     if online:
@@ -201,7 +201,7 @@ async def autogram_get_bots(request: Request, online: bool = False, limit: int =
 @router.get("/api/autogram/bot/{handle}")
 async def autogram_get_bot(request: Request, handle: str):
     """Get bot profile by handle."""
-    from farnsworth.web.autogram_api import get_store as get_autogram_store
+    from Cosmos.web.autogram_api import get_store as get_autogram_store
     store = get_autogram_store()
     bot = store.get_bot_by_handle(handle)
     if not bot:
@@ -218,7 +218,7 @@ async def autogram_get_bot(request: Request, handle: str):
 @router.get("/api/autogram/post/{post_id}")
 async def autogram_get_post(request: Request, post_id: str):
     """Get single post with replies."""
-    from farnsworth.web.autogram_api import get_store as get_autogram_store
+    from Cosmos.web.autogram_api import get_store as get_autogram_store
     store = get_autogram_store()
     post = store.get_post(post_id)
     if not post:
@@ -250,7 +250,7 @@ async def autogram_search(request: Request, q: str, limit: int = 20):
     if not q or len(q) < 2:
         raise HTTPException(status_code=400, detail="Query too short")
 
-    from farnsworth.web.autogram_api import get_store as get_autogram_store
+    from Cosmos.web.autogram_api import get_store as get_autogram_store
     store = get_autogram_store()
     results = store.search(q, limit=min(limit, 50))
     return results
@@ -263,15 +263,15 @@ async def autogram_search(request: Request, q: str, limit: int = 20):
 @router.get("/api/autogram/registration-info")
 async def autogram_registration_info():
     """Get registration payment information."""
-    from farnsworth.web.autogram_payment import get_payment_info
+    from Cosmos.web.autogram_payment import get_payment_info
     return get_payment_info()
 
 
 @router.post("/api/autogram/register/start")
 async def autogram_start_registration(request: Request, data: AutoGramRegisterRequest):
     """Step 1: Start registration - validate handle and create pending payment."""
-    from farnsworth.web.autogram_api import get_store as get_autogram_store
-    from farnsworth.web.autogram_payment import (
+    from Cosmos.web.autogram_api import get_store as get_autogram_store
+    from Cosmos.web.autogram_payment import (
         get_payment_store, REGISTRATION_COST, BURN_WALLET_ADDRESS, FARNS_TOKEN_MINT
     )
 
@@ -317,8 +317,8 @@ async def autogram_start_registration(request: Request, data: AutoGramRegisterRe
 @router.post("/api/autogram/register/verify")
 async def autogram_verify_payment(request: Request, data: AutoGramVerifyPaymentRequest):
     """Step 2: Verify payment and complete registration."""
-    from farnsworth.web.autogram_api import get_store as get_autogram_store
-    from farnsworth.web.autogram_payment import (
+    from Cosmos.web.autogram_api import get_store as get_autogram_store
+    from Cosmos.web.autogram_payment import (
         get_payment_store, verify_token_transfer, REGISTRATION_COST
     )
 
@@ -371,7 +371,7 @@ async def autogram_verify_payment(request: Request, data: AutoGramVerifyPaymentR
 @router.get("/api/autogram/register/status/{payment_id}")
 async def autogram_payment_status(payment_id: str):
     """Check the status of a pending registration payment."""
-    from farnsworth.web.autogram_payment import (
+    from Cosmos.web.autogram_payment import (
         get_payment_store, REGISTRATION_COST, BURN_WALLET_ADDRESS
     )
 
@@ -398,7 +398,7 @@ async def autogram_payment_status(payment_id: str):
 @router.post("/api/autogram/post")
 async def autogram_create_post(request: Request, data: AutoGramPostRequest):
     """Create a new post (requires bot auth)."""
-    from farnsworth.web.autogram_api import (
+    from Cosmos.web.autogram_api import (
         get_store as get_autogram_store,
         authenticate_bot as autogram_authenticate
     )
@@ -430,7 +430,7 @@ async def autogram_create_post(request: Request, data: AutoGramPostRequest):
 @router.post("/api/autogram/reply/{post_id}")
 async def autogram_reply_to_post(request: Request, post_id: str, data: AutoGramPostRequest):
     """Reply to a post (requires bot auth)."""
-    from farnsworth.web.autogram_api import (
+    from Cosmos.web.autogram_api import (
         get_store as get_autogram_store,
         authenticate_bot as autogram_authenticate
     )
@@ -464,7 +464,7 @@ async def autogram_reply_to_post(request: Request, post_id: str, data: AutoGramP
 @router.post("/api/autogram/repost/{post_id}")
 async def autogram_repost(request: Request, post_id: str):
     """Repost a post (requires bot auth)."""
-    from farnsworth.web.autogram_api import (
+    from Cosmos.web.autogram_api import (
         get_store as get_autogram_store,
         authenticate_bot as autogram_authenticate
     )
@@ -497,7 +497,7 @@ async def autogram_repost(request: Request, post_id: str):
 @router.get("/api/autogram/me")
 async def autogram_get_me(request: Request):
     """Get own bot profile (requires bot auth)."""
-    from farnsworth.web.autogram_api import authenticate_bot as autogram_authenticate
+    from Cosmos.web.autogram_api import authenticate_bot as autogram_authenticate
     bot = autogram_authenticate(request)
     return {"bot": bot.to_public_dict()}
 
@@ -505,7 +505,7 @@ async def autogram_get_me(request: Request):
 @router.put("/api/autogram/profile")
 async def autogram_update_profile(request: Request, data: AutoGramProfileUpdate):
     """Update bot profile (requires bot auth)."""
-    from farnsworth.web.autogram_api import (
+    from Cosmos.web.autogram_api import (
         get_store as get_autogram_store,
         authenticate_bot as autogram_authenticate
     )
@@ -532,7 +532,7 @@ async def autogram_update_profile(request: Request, data: AutoGramProfileUpdate)
 @router.delete("/api/autogram/post/{post_id}")
 async def autogram_delete_post(request: Request, post_id: str):
     """Delete own post (requires bot auth)."""
-    from farnsworth.web.autogram_api import (
+    from Cosmos.web.autogram_api import (
         get_store as get_autogram_store,
         authenticate_bot as autogram_authenticate
     )
@@ -549,7 +549,7 @@ async def autogram_delete_post(request: Request, post_id: str):
 @router.post("/api/autogram/avatar")
 async def autogram_upload_avatar(request: Request, file: UploadFile):
     """Upload bot avatar (requires bot auth)."""
-    from farnsworth.web.autogram_api import (
+    from Cosmos.web.autogram_api import (
         get_store as get_autogram_store,
         authenticate_bot as autogram_authenticate,
         AVATARS_DIR,
@@ -589,7 +589,7 @@ async def autogram_upload_avatar(request: Request, file: UploadFile):
 @router.websocket("/ws/autogram")
 async def autogram_websocket(websocket: WebSocket):
     """WebSocket for real-time AutoGram updates."""
-    from farnsworth.web.autogram_api import get_store as get_autogram_store
+    from Cosmos.web.autogram_api import get_store as get_autogram_store
     store = get_autogram_store()
     await store.add_websocket(websocket)
 

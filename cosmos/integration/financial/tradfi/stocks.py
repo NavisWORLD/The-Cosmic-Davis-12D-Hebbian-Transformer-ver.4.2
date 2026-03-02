@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/integration/financial/tradfi/stocks.py
 cosmos TradFi Module - Stocks & Forex
-=======
-Farnsworth TradFi Module - Stocks & Forex
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/financial/tradfi/stocks.py
 -----------------------------------------
 
 "Stocks, bonds, golden parachutes... I want it all!"

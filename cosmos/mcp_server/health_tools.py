@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
 cosmos Health MCP Tools
-=======
-Farnsworth Health MCP Tools
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
 
 MCP tool implementations for health tracking, nutrition, and recommendations.
 Provides Claude with comprehensive health management capabilities.
@@ -36,17 +32,10 @@ def _ensure_health_modules():
         return
 
     try:
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
-        from cosmos.health.providers import HealthProviderManager, MockHealthProvider
-        from cosmos.health.analysis import HealthAnalysisEngine
-        from cosmos.health.nutrition import NutritionManager
-        from cosmos.health.models import UserHealthProfile
-=======
-        from farnsworth.health.providers import HealthProviderManager, MockHealthProvider
-        from farnsworth.health.analysis import HealthAnalysisEngine
-        from farnsworth.health.nutrition import NutritionManager
-        from farnsworth.health.models import UserHealthProfile
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
+        from Cosmos.health.providers import HealthProviderManager, MockHealthProvider
+        from Cosmos.health.analysis import HealthAnalysisEngine
+        from Cosmos.health.nutrition import NutritionManager
+        from Cosmos.health.models import UserHealthProfile
 
         # Initialize managers
         _provider_manager = HealthProviderManager()
@@ -102,11 +91,7 @@ class HealthTools:
     # Health Summary and Metrics
     # ============================================
 
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
     async def cosmos_health_summary(
-=======
-    async def farnsworth_health_summary(
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         self,
         date_str: Optional[str] = None,
     ) -> HealthToolResult:
@@ -153,11 +138,7 @@ class HealthTools:
             logger.error(f"Health summary error: {e}")
             return HealthToolResult(success=False, error=str(e))
 
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
     async def cosmos_health_trend(
-=======
-    async def farnsworth_health_trend(
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         self,
         metric: str,
         days: int = 7,
@@ -181,11 +162,7 @@ class HealthTools:
             )
 
         try:
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
-            from cosmos.health.models import MetricType
-=======
-            from farnsworth.health.models import MetricType
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
+            from Cosmos.health.models import MetricType
 
             # Parse metric type
             try:
@@ -240,11 +217,7 @@ class HealthTools:
     # Nutrition Tracking
     # ============================================
 
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
     async def cosmos_nutrition_log(
-=======
-    async def farnsworth_nutrition_log(
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         self,
         meal_type: str,
         foods: List[dict],
@@ -270,11 +243,7 @@ class HealthTools:
             )
 
         try:
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
-            from cosmos.health.models import MealType
-=======
-            from farnsworth.health.models import MealType
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
+            from Cosmos.health.models import MealType
 
             # Parse meal type
             try:
@@ -292,11 +261,7 @@ class HealthTools:
                     processed_foods.append(food)
                 elif "name" in food:
                     # Create a custom food entry
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
-                    from cosmos.health.models import FoodItem, NutrientInfo
-=======
-                    from farnsworth.health.models import FoodItem, NutrientInfo
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
+                    from Cosmos.health.models import FoodItem, NutrientInfo
                     custom = FoodItem(
                         name=food["name"],
                         nutrients=NutrientInfo(
@@ -325,11 +290,7 @@ class HealthTools:
             logger.error(f"Nutrition log error: {e}")
             return HealthToolResult(success=False, error=str(e))
 
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
     async def cosmos_nutrition_search(
-=======
-    async def farnsworth_nutrition_search(
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         self,
         query: str,
         limit: int = 10,
@@ -368,11 +329,7 @@ class HealthTools:
             logger.error(f"Food search error: {e}")
             return HealthToolResult(success=False, error=str(e))
 
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
     async def cosmos_nutrition_daily(
-=======
-    async def farnsworth_nutrition_daily(
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         self,
         date_str: Optional[str] = None,
     ) -> HealthToolResult:
@@ -411,11 +368,7 @@ class HealthTools:
     # Recipe Suggestions
     # ============================================
 
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
     async def cosmos_recipe_suggest(
-=======
-    async def farnsworth_recipe_suggest(
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         self,
         meal_type: Optional[str] = None,
         max_calories: Optional[int] = None,
@@ -465,11 +418,7 @@ class HealthTools:
     # Goal Management
     # ============================================
 
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
     async def cosmos_goal_create(
-=======
-    async def farnsworth_goal_create(
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         self,
         name: str,
         metric_type: str,
@@ -495,11 +444,7 @@ class HealthTools:
         _ensure_health_modules()
 
         try:
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
-            from cosmos.health.models import HealthGoal, MetricType
-=======
-            from farnsworth.health.models import HealthGoal, MetricType
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
+            from Cosmos.health.models import HealthGoal, MetricType
 
             # Parse metric type
             try:
@@ -530,11 +475,7 @@ class HealthTools:
             logger.error(f"Goal create error: {e}")
             return HealthToolResult(success=False, error=str(e))
 
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
     async def cosmos_goal_update(
-=======
-    async def farnsworth_goal_update(
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         self,
         goal_id: str,
         current_value: Optional[float] = None,
@@ -573,11 +514,7 @@ class HealthTools:
     # Document Parsing
     # ============================================
 
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
     async def cosmos_document_parse(
-=======
-    async def farnsworth_document_parse(
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         self,
         image_path: str,
         doc_type: str = "lab_result",
@@ -595,13 +532,8 @@ class HealthTools:
         _ensure_health_modules()
 
         try:
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
-            from cosmos.health.ocr_parser import DeepSeekOCRParser
-            from cosmos.health.models import DocumentType
-=======
-            from farnsworth.health.ocr_parser import DeepSeekOCRParser
-            from farnsworth.health.models import DocumentType
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
+            from Cosmos.health.ocr_parser import DeepSeekOCRParser
+            from Cosmos.health.models import DocumentType
 
             # Parse document type
             try:
@@ -639,11 +571,7 @@ class HealthTools:
     # AI Recommendations
     # ============================================
 
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
     async def cosmos_health_recommend(
-=======
-    async def farnsworth_health_recommend(
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         self,
         focus_area: Optional[str] = None,
     ) -> HealthToolResult:
@@ -714,11 +642,7 @@ class HealthTools:
 # Tool definitions for MCP registration
 HEALTH_TOOL_DEFINITIONS = [
     {
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
         "name": "cosmos_health_summary",
-=======
-        "name": "farnsworth_health_summary",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         "description": "Get daily health summary with wellness score. Includes heart rate, steps, sleep, recovery, and more.",
         "input_schema": {
             "type": "object",
@@ -731,11 +655,7 @@ HEALTH_TOOL_DEFINITIONS = [
         },
     },
     {
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
         "name": "cosmos_health_trend",
-=======
-        "name": "farnsworth_health_trend",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         "description": "Analyze health metric trends over time. Identifies patterns in heart rate, sleep, activity, etc.",
         "input_schema": {
             "type": "object",
@@ -754,11 +674,7 @@ HEALTH_TOOL_DEFINITIONS = [
         },
     },
     {
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
         "name": "cosmos_nutrition_log",
-=======
-        "name": "farnsworth_nutrition_log",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         "description": "Log a meal with nutritional tracking. Automatically calculates calories, protein, carbs, and fat.",
         "input_schema": {
             "type": "object",
@@ -793,11 +709,7 @@ HEALTH_TOOL_DEFINITIONS = [
         },
     },
     {
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
         "name": "cosmos_nutrition_search",
-=======
-        "name": "farnsworth_nutrition_search",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         "description": "Search the food database for nutritional information.",
         "input_schema": {
             "type": "object",
@@ -816,11 +728,7 @@ HEALTH_TOOL_DEFINITIONS = [
         },
     },
     {
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
         "name": "cosmos_recipe_suggest",
-=======
-        "name": "farnsworth_recipe_suggest",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         "description": "Get recipe suggestions based on dietary needs and preferences.",
         "input_schema": {
             "type": "object",
@@ -846,11 +754,7 @@ HEALTH_TOOL_DEFINITIONS = [
         },
     },
     {
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
         "name": "cosmos_goal_create",
-=======
-        "name": "farnsworth_goal_create",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         "description": "Create a new health goal to track progress.",
         "input_schema": {
             "type": "object",
@@ -884,11 +788,7 @@ HEALTH_TOOL_DEFINITIONS = [
         },
     },
     {
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
         "name": "cosmos_document_parse",
-=======
-        "name": "farnsworth_document_parse",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         "description": "Parse health documents (lab results, prescriptions, nutrition labels) using AI OCR.",
         "input_schema": {
             "type": "object",
@@ -908,11 +808,7 @@ HEALTH_TOOL_DEFINITIONS = [
         },
     },
     {
-<<<<<<< HEAD:cosmos/mcp_server/health_tools.py
         "name": "cosmos_health_recommend",
-=======
-        "name": "farnsworth_health_recommend",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/mcp_server/health_tools.py
         "description": "Get personalized AI health recommendations based on your data.",
         "input_schema": {
             "type": "object",

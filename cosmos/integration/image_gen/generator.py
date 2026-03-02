@@ -1,5 +1,5 @@
 """
-FARNSWORTH IMAGE GENERATION
+COSMOS IMAGE GENERATION
 Supports Grok (xAI) and Gemini (Google) APIs for meme generation.
 
 Official Documentation:
@@ -24,7 +24,7 @@ def load_env():
     possible_paths = [
         Path(__file__).parent.parent.parent.parent / ".env",  # Project root
         Path(__file__).parent.parent.parent / ".env",
-        Path("/workspace/Farnsworth/.env"),  # Docker/cloud
+        Path("/workspace/Cosmos/.env"),  # Docker/cloud
     ]
 
     for env_path in possible_paths:
@@ -40,28 +40,28 @@ def load_env():
 load_env()
 
 # ============================================
-# FARNSWORTH MEME PROMPTS
+# COSMOS MEME PROMPTS
 # ============================================
 
-FARNSWORTH_MEME_PROMPTS = [
-    # Classic Farnsworth poses
-    "Professor Farnsworth from Futurama in his lab coat and round glasses, saying 'Good news everyone!' with excited expression, cartoon style, vibrant colors, meme format",
-    "Cartoon mad scientist Professor Farnsworth pointing at a glowing computer screen showing AI code, excited expression, Futurama art style",
-    "Professor Farnsworth with wild white hair adjusting his thick glasses, looking at a robot brain, cartoon style, 'Science!' caption ready",
-    "Futurama's Professor Farnsworth holding a bubbling test tube with glowing green liquid, crazy scientist expression, lab background",
-    "Professor Farnsworth at a whiteboard covered in complex AI equations, looking proud, cartoon style, meme ready",
+COSMOS_MEME_PROMPTS = [
+    # Classic Cosmos poses
+    "Professor Cosmos from Futurama in his lab coat and round glasses, saying 'Good news everyone!' with excited expression, cartoon style, vibrant colors, meme format",
+    "Cartoon mad scientist Professor Cosmos pointing at a glowing computer screen showing AI code, excited expression, Futurama art style",
+    "Professor Cosmos with wild white hair adjusting his thick glasses, looking at a robot brain, cartoon style, 'Science!' caption ready",
+    "Futurama's Professor Cosmos holding a bubbling test tube with glowing green liquid, crazy scientist expression, lab background",
+    "Professor Cosmos at a whiteboard covered in complex AI equations, looking proud, cartoon style, meme ready",
 
     # AI/Tech themed
-    "Professor Farnsworth presenting a neural network diagram on a holographic display, amazed expression, futuristic lab, cartoon style",
-    "Cartoon Professor Farnsworth surrounded by multiple AI robot assistants, looking overwhelmed but happy, Futurama style",
-    "Professor Farnsworth typing frantically on multiple keyboards, screens showing 'SWARM INTELLIGENCE ACTIVE', cartoon style",
-    "Futurama Professor Farnsworth shaking hands with a friendly robot, 'Partnership!' theme, vibrant cartoon colors",
-    "Professor Farnsworth sleeping at his desk with robots working autonomously in background, cartoon style, funny",
+    "Professor Cosmos presenting a neural network diagram on a holographic display, amazed expression, futuristic lab, cartoon style",
+    "Cartoon Professor Cosmos surrounded by multiple AI robot assistants, looking overwhelmed but happy, Futurama style",
+    "Professor Cosmos typing frantically on multiple keyboards, screens showing 'SWARM INTELLIGENCE ACTIVE', cartoon style",
+    "Futurama Professor Cosmos shaking hands with a friendly robot, 'Partnership!' theme, vibrant cartoon colors",
+    "Professor Cosmos sleeping at his desk with robots working autonomously in background, cartoon style, funny",
 
     # Crypto/Token themed
-    "Professor Farnsworth holding a glowing cryptocurrency coin, excited expression, 'To the moon!' vibes, cartoon style",
-    "Cartoon Professor Farnsworth watching crypto charts go up, celebration pose, Futurama art style",
-    "Professor Farnsworth in front of a rocket ship with '$FARNS' written on it, excited, cartoon meme style",
+    "Professor Cosmos holding a glowing cryptocurrency coin, excited expression, 'To the moon!' vibes, cartoon style",
+    "Cartoon Professor Cosmos watching crypto charts go up, celebration pose, Futurama art style",
+    "Professor Cosmos in front of a rocket ship with '$FARNS' written on it, excited, cartoon meme style",
 ]
 
 MEME_CAPTIONS = [
@@ -171,7 +171,7 @@ class GeminiImageGenerator:
         # Fallback to Imagen if Nano Banana fails
         self.imagen_model = "imagen-4.0-generate-001"
 
-        # Reference images for Borg Farnsworth (relative to this file's location)
+        # Reference images for Borg Cosmos (relative to this file's location)
         self.reference_dir = Path(__file__).parent.parent / "x_automation"
         self.portrait_ref = self.reference_dir / "reference_portrait.jpg"
         self.eating_ref = self.reference_dir / "reference_eating.jpg"
@@ -398,7 +398,7 @@ class GeminiImageGenerator:
                         }
                     })
         else:
-            # Use default Borg Farnsworth reference
+            # Use default Borg Cosmos reference
             ref_path = self.portrait_ref if use_portrait else self.eating_ref
             ref_b64 = self._load_reference_image(ref_path)
             if ref_b64:
@@ -422,10 +422,10 @@ class GeminiImageGenerator:
                     }
                 })
 
-        # Add prompt - be VERY explicit about the EXACT Borg Farnsworth character
+        # Add prompt - be VERY explicit about the EXACT Borg Cosmos character
         if parts and parts[0].get("inlineData"):
             # With reference images - DETAILED description of exact character features
-            full_prompt = f"""REFERENCE IMAGE SHOWS: "Borg Farnsworth" - you MUST replicate this EXACT character.
+            full_prompt = f"""REFERENCE IMAGE SHOWS: "Borg Cosmos" - you MUST replicate this EXACT character.
 
 MANDATORY CHARACTER FEATURES (copy EXACTLY from reference):
 - HALF-METAL CYBORG FACE: Left side is metallic silver/chrome Borg implants
@@ -436,15 +436,15 @@ MANDATORY CHARACTER FEATURES (copy EXACTLY from reference):
 - Elderly, hunched posture
 - Cartoon/Futurama art style with thick outlines
 
-THIS IS A BORG-ASSIMILATED PROFESSOR FARNSWORTH. Half his face is METAL with a RED LASER EYE.
+THIS IS A BORG-ASSIMILATED PROFESSOR COSMOS. Half his face is METAL with a RED LASER EYE.
 
 SCENE TO DRAW: {prompt}
 
-Draw this EXACT Borg Farnsworth character (with metal face and red laser eye!) in the scene above.
+Draw this EXACT Borg Cosmos character (with metal face and red laser eye!) in the scene above.
 Keep the character IDENTICAL to reference. Cartoon meme style, vibrant colors."""
         else:
             # No reference images - full embedded character description
-            full_prompt = f"""Borg-assimilated Professor Farnsworth from Futurama:
+            full_prompt = f"""Borg-assimilated Professor Cosmos from Futurama:
 - Half-metal cyborg face with chrome Borg implants on left side
 - Bright red glowing laser eye (left eye is cybernetic)
 - Wild white hair, balding
@@ -637,14 +637,14 @@ class GrokVideoGenerator:
 class ImageGenerator:
     """
     Unified image generator with fallback support.
-    Uses Gemini with reference images for Borg Farnsworth memes.
+    Uses Gemini with reference images for Borg Cosmos memes.
     Falls back to Grok for generic generation.
     Now includes video generation via Grok Imagine.
     """
 
     # Scene variation prompts - ONLY describe scene/setting/action, NOT the character
     # The character comes from reference images
-    BORG_FARNSWORTH_SCENES = [
+    BORG_COSMOS_SCENES = [
         # Restaurant/Eating scenes (use eating reference)
         "sitting at an upscale seafood restaurant, cracking open a fresh lobster with his mechanical hand, zapping competitor crabs with his laser eye",
         "at a beachside lobster shack, enjoying a lobster roll while robots serve him, ocean view in background",
@@ -708,26 +708,26 @@ class ImageGenerator:
 
         return await self.video.generate_from_image(image_bytes, prompt, duration)
 
-    async def generate_borg_farnsworth_video(self, scene: str = None) -> Optional[bytes]:
+    async def generate_borg_cosmos_video(self, scene: str = None) -> Optional[bytes]:
         """
-        Generate a Borg Farnsworth video: Gemini image → Grok video.
+        Generate a Borg Cosmos video: Gemini image → Grok video.
 
         Returns:
             MP4 video bytes or None
         """
         # First generate image with Gemini
         if not scene:
-            scene = random.choice(self.BORG_FARNSWORTH_SCENES)
+            scene = random.choice(self.BORG_COSMOS_SCENES)
 
         logger.info(f"Step 1: Generating image with Gemini for: {scene[:50]}...")
-        image, _ = await self.generate_borg_farnsworth_meme()
+        image, _ = await self.generate_borg_cosmos_meme()
 
         if not image:
             logger.error("Failed to generate source image for video")
             return None
 
         # Then animate with Grok
-        video_prompt = f"Animate Borg Farnsworth {scene}. Natural movement, expressive, cartoon style."
+        video_prompt = f"Animate Borg Cosmos {scene}. Natural movement, expressive, cartoon style."
         logger.info(f"Step 2: Animating with Grok video...")
 
         video = await self.generate_video_from_image(image, video_prompt, duration=5)
@@ -739,14 +739,14 @@ class ImageGenerator:
         return video
 
     def get_random_meme_prompt(self) -> Tuple[str, str]:
-        """Get a random Farnsworth meme prompt and caption"""
-        prompt = random.choice(FARNSWORTH_MEME_PROMPTS)
+        """Get a random Cosmos meme prompt and caption"""
+        prompt = random.choice(COSMOS_MEME_PROMPTS)
         caption = random.choice(MEME_CAPTIONS)
         return prompt, caption
 
     def get_random_scene(self) -> str:
-        """Get a random scene variation for Borg Farnsworth"""
-        return random.choice(self.BORG_FARNSWORTH_SCENES)
+        """Get a random scene variation for Borg Cosmos"""
+        return random.choice(self.BORG_COSMOS_SCENES)
 
     async def generate(self, prompt: str, prefer: str = "gemini") -> Optional[bytes]:
         """
@@ -773,9 +773,9 @@ class ImageGenerator:
         logger.error("All image providers failed or unavailable")
         return None
 
-    async def generate_borg_farnsworth_meme(self) -> Tuple[Optional[bytes], str]:
+    async def generate_borg_cosmos_meme(self) -> Tuple[Optional[bytes], str]:
         """
-        Generate a Borg Farnsworth meme using Gemini with reference images.
+        Generate a Borg Cosmos meme using Gemini with reference images.
 
         Uses the reference images to maintain character consistency while
         varying the scene, setting, and cooking method.
@@ -788,7 +788,7 @@ class ImageGenerator:
         # Determine which reference to use based on scene
         use_portrait = any(kw in scene.lower() for kw in ["cooking", "kitchen", "lab", "grill", "fry", "tech", "command", "conference", "present"])
 
-        logger.info(f"Generating Borg Farnsworth scene: {scene[:60]}...")
+        logger.info(f"Generating Borg Cosmos scene: {scene[:60]}...")
 
         # Try Gemini with reference first
         if self.gemini.is_available():
@@ -798,29 +798,29 @@ class ImageGenerator:
                 return image, scene
 
         # Fallback to Grok with full prompt
-        full_prompt = f"Borg-cyborg Professor Farnsworth from Futurama with half-metal face, red glowing laser eye, white lab coat, {scene}, cartoon style, meme format"
+        full_prompt = f"Borg-cyborg Professor Cosmos from Futurama with half-metal face, red glowing laser eye, white lab coat, {scene}, cartoon style, meme format"
         if self.grok.is_available():
             image = await self.grok.generate(full_prompt)
             if image:
                 self.last_provider = "grok"
                 return image, scene
 
-        logger.error("Failed to generate Borg Farnsworth meme")
+        logger.error("Failed to generate Borg Cosmos meme")
         return None, scene
 
-    async def generate_farnsworth_meme(self) -> Tuple[Optional[bytes], str, str]:
+    async def generate_cosmos_meme(self) -> Tuple[Optional[bytes], str, str]:
         """
-        Generate a random Farnsworth meme.
+        Generate a random Cosmos meme.
 
         Returns:
             (image_bytes, prompt_used, caption)
         """
-        # Use the new Borg Farnsworth generator with references
-        image, scene = await self.generate_borg_farnsworth_meme()
+        # Use the new Borg Cosmos generator with references
+        image, scene = await self.generate_borg_cosmos_meme()
 
         # Get a caption from posting brain if available
         try:
-            from farnsworth.integration.x_automation.posting_brain import get_posting_brain
+            from Cosmos.integration.x_automation.posting_brain import get_posting_brain
             brain = get_posting_brain()
             caption = brain.get_meme_caption()
         except ImportError:
@@ -839,9 +839,9 @@ def get_image_generator() -> ImageGenerator:
     return _image_generator
 
 async def generate_meme() -> Tuple[Optional[bytes], str, str]:
-    """Convenience function to generate a Farnsworth meme"""
+    """Convenience function to generate a Cosmos meme"""
     gen = get_image_generator()
-    return await gen.generate_farnsworth_meme()
+    return await gen.generate_cosmos_meme()
 
 
 # ============================================
@@ -865,7 +865,7 @@ if __name__ == "__main__":
         image = await gen.generate(prompt)
 
         if image:
-            output_path = f"/tmp/farnsworth_meme_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+            output_path = f"/tmp/cosmos_meme_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
             with open(output_path, "wb") as f:
                 f.write(image)
             print(f"Saved to: {output_path}")

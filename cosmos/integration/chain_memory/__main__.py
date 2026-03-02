@@ -3,10 +3,10 @@
 Chain Memory CLI
 
 Usage:
-    python -m farnsworth.integration.chain_memory setup
-    python -m farnsworth.integration.chain_memory push
-    python -m farnsworth.integration.chain_memory pull
-    python -m farnsworth.integration.chain_memory list
+    python -m cosmos.integration.chain_memory setup
+    python -m cosmos.integration.chain_memory push
+    python -m cosmos.integration.chain_memory pull
+    python -m cosmos.integration.chain_memory list
 """
 
 import sys

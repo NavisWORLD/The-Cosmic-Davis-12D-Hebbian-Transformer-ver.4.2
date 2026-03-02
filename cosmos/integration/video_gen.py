@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/integration/video_gen.py
 cosmos Remotion Integration - Programmatic Video Generation.
-=======
-Farnsworth Remotion Integration - Programmatic Video Generation.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/video_gen.py
 
 "Lights, Camera, React!"
 
@@ -43,11 +39,7 @@ class RemotionVideoSkill:
         
         # 1. package.json
         pkg = {
-<<<<<<< HEAD:cosmos/integration/video_gen.py
             "name": "cosmos-video",
-=======
-            "name": "farnsworth-video",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/video_gen.py
             "version": "1.0.0",
             "scripts": {
                 "start": "remotion preview src/index.ts",

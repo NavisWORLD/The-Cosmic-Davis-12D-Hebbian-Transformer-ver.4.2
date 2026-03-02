@@ -14,7 +14,7 @@ Predictions are generated every 5 minutes using:
 7. Time-decay analysis
 8. Multi-agent deliberation & voting
 
-"The swarm sees what no single mind can." - Farnsworth
+"The swarm sees what no single mind can." - Cosmos
 """
 
 import asyncio
@@ -646,7 +646,7 @@ Thoughtful analysis (200-300 words) then end with:
 MY PREDICTION: YES or NO
 CONFIDENCE: (1-10)""",
 
-            "Farnsworth": f"""As the Swarm Mind orchestrator:
+            "Cosmos": f"""As the Swarm Mind orchestrator:
 Final synthesis on: "{market.question}"
 
 Market data:

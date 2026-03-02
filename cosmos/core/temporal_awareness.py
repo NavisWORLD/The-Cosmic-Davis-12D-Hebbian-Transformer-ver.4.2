@@ -1,5 +1,5 @@
 """
-FARNSWORTH TEMPORAL AWARENESS SYSTEM
+COSMOS TEMPORAL AWARENESS SYSTEM
 =====================================
 
 Human-like time awareness without rigid schedulers.

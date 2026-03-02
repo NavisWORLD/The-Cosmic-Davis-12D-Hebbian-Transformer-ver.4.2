@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/health/providers/oura.py
 cosmos Oura Ring Health Provider
-=======
-Farnsworth Oura Ring Health Provider
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/providers/oura.py
 
 Integration with Oura Ring API v2 for comprehensive health metrics.
 """

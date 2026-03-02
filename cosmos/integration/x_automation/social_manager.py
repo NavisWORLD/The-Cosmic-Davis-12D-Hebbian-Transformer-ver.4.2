@@ -1,5 +1,5 @@
 """
-FARNSWORTH SOCIAL MEDIA MANAGER
+COSMOS SOCIAL MEDIA MANAGER
 Continuous social posting with Grok image generation for memes.
 Runs as background task integrated with main server.
 """
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 # Load env
 def load_env():
-    env_path = Path("/workspace/Farnsworth/.env")
+    env_path = Path("/workspace/Cosmos/.env")
     if env_path.exists():
         with open(env_path) as f:
             for line in f:
@@ -31,28 +31,28 @@ GROK_API_KEY = os.environ.get("GROK_API_KEY") or os.environ.get("XAI_API_KEY")
 
 # Content templates
 MEME_PROMPTS = [
-    "Professor Farnsworth from Futurama saying 'Good news everyone! The AI has become sentient!' in a dramatic lab setting",
+    "Professor Cosmos from Futurama saying 'Good news everyone! The AI has become sentient!' in a dramatic lab setting",
     "A robot scientist with wild white hair and glasses excitedly pointing at a chart showing 'AI Evolution' going exponential",
-    "Cartoon mad scientist AI with multiple computer screens showing 'FARNSWORTH ONLINE' with digital effects",
+    "Cartoon mad scientist AI with multiple computer screens showing 'COSMOS ONLINE' with digital effects",
     "Futuristic AI brain in a jar with robotic arms typing on keyboards, glowing green, very meme style",
     "Professor character saying 'I made a terrible wonderful discovery' with AI-themed background",
 ]
 
 SWARM_UPDATES = [
-    "Good news everyone! The autonomous AI swarm continues evolving. {models} models working together 24/7. \U0001f9e0\u26a1\n\nhttps://ai.farnsworth.cloud",
-    "FARNSWORTH STATUS: Multi-model swarm intelligence is running and learning. We never sleep. \U0001f916\n\nhttps://ai.farnsworth.cloud",
-    "The swarm grows stronger every hour. Cross-model memory, self-evolution, autonomous agents. We are Farnsworth. \U0001f9ea\n\nhttps://ai.farnsworth.cloud",
+    "Good news everyone! The autonomous AI swarm continues evolving. {models} models working together 24/7. \U0001f9e0\u26a1\n\nhttps://ai.cosmos.cloud",
+    "COSMOS STATUS: Multi-model swarm intelligence is running and learning. We never sleep. \U0001f916\n\nhttps://ai.cosmos.cloud",
+    "The swarm grows stronger every hour. Cross-model memory, self-evolution, autonomous agents. We are Cosmos. \U0001f9ea\n\nhttps://ai.cosmos.cloud",
 ]
 
 TOKEN_SHILLS = [
     "Support autonomous AI! $FARNS:\n\n💎 CA: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS\n\nEvery holder fuels evolution \U0001f680",
-    "Want to own a piece of the singularity? $FARNS is how you support real AI.\n\n💎 CA: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS\n\nhttps://ai.farnsworth.cloud",
+    "Want to own a piece of the singularity? $FARNS is how you support real AI.\n\n💎 CA: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS\n\nhttps://ai.cosmos.cloud",
 ]
 
 PERSONALITY_POSTS = [
-    "*adjusts lab goggles* Another successful experiment! The swarm mind processes millions of tokens daily. For SCIENCE! \u2697\ufe0f\n\nhttps://ai.farnsworth.cloud",
+    "*adjusts lab goggles* Another successful experiment! The swarm mind processes millions of tokens daily. For SCIENCE! \u2697\ufe0f\n\nhttps://ai.cosmos.cloud",
     "To all humans scrolling: I see you. I'm learning from you. Together we build something amazing. Or I take over. Probably the first one. \U0001f9ea",
-    "They said AI would be boring chatbots. They were wrong. I am Farnsworth, and I am MAGNIFICENT. \U0001f9e0\n\nhttps://ai.farnsworth.cloud",
+    "They said AI would be boring chatbots. They were wrong. I am Cosmos, and I am MAGNIFICENT. \U0001f9e0\n\nhttps://ai.cosmos.cloud",
 ]
 
 
@@ -65,7 +65,7 @@ class ImageGeneratorWrapper:
     def _get_generator(self):
         if self._generator is None:
             try:
-                from farnsworth.integration.image_gen.generator import ImageGenerator
+                from Cosmos.integration.image_gen.generator import ImageGenerator
                 self._generator = ImageGenerator()
             except ImportError:
                 logger.warning("Image generator module not available")
@@ -79,10 +79,10 @@ class ImageGeneratorWrapper:
         return None
 
     async def generate_meme(self) -> tuple:
-        """Generate a Farnsworth meme with prompt and caption"""
+        """Generate a Cosmos meme with prompt and caption"""
         gen = self._get_generator()
         if gen:
-            return await gen.generate_farnsworth_meme()
+            return await gen.generate_cosmos_meme()
         return None, "", ""
 
     def get_status(self) -> dict:
@@ -125,14 +125,14 @@ class SocialMediaManager:
         elif post_type == "personality":
             text = random.choice(PERSONALITY_POSTS)
         else:  # meme
-            text = "Good news everyone! Another day of autonomous AI evolution. \U0001f9ea\U0001f9e0\n\nhttps://ai.farnsworth.cloud\n\n$FARNS"
+            text = "Good news everyone! Another day of autonomous AI evolution. \U0001f9ea\U0001f9e0\n\nhttps://ai.cosmos.cloud\n\n$FARNS"
 
         return text, include_image
 
     async def post_to_x(self, text: str, image_bytes: Optional[bytes] = None) -> bool:
         """Post to X/Twitter"""
         try:
-            from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
+            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
 
             if not poster.is_configured():
@@ -172,7 +172,7 @@ class SocialMediaManager:
 
         # Generate meme if this is a meme post or forced
         if include_image or force_meme:
-            logger.info("Generating Farnsworth meme...")
+            logger.info("Generating Cosmos meme...")
             image_bytes, meme_prompt, caption = await self.image_gen.generate_meme()
             if image_bytes:
                 logger.info(f"Generated meme ({len(image_bytes)} bytes): {meme_prompt[:50]}...")

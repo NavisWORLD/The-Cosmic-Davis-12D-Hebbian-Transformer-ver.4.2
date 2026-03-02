@@ -1,5 +1,5 @@
 """
-Farnsworth A2A Mesh - Model-to-Model Full Mesh Connectivity.
+Cosmos A2A Mesh - Model-to-Model Full Mesh Connectivity.
 
 AGI v1.8.4 Feature: Enables direct communication between all models/agents
 without requiring a central coordinator.
@@ -888,7 +888,7 @@ class A2AMesh:
             return
 
         try:
-            from farnsworth.core.nexus import SignalType
+            from Cosmos.core.nexus import SignalType
 
             signal_enum = getattr(SignalType, signal_type, None)
             if signal_enum:

@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/core/resilience.py
 cosmos Resilience Layer.
-=======
-Farnsworth Resilience Layer.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/resilience.py
 
 "I have made my device strong enough to withstand even my own incompetence!"
 
@@ -99,11 +95,7 @@ network_breaker = CircuitBreaker("NetworkIO", failure_threshold=5, reset_timeout
 class HealthMonitor:
     """
     Monitors system health by running registered health checks.
-<<<<<<< HEAD:cosmos/core/resilience.py
     Provides real-time status of all cosmos components.
-=======
-    Provides real-time status of all Farnsworth components.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/resilience.py
     """
 
     def __init__(self):
@@ -218,11 +210,7 @@ class HealthStatus:
 
 class BackupManager:
     """
-<<<<<<< HEAD:cosmos/core/resilience.py
     Manages automatic backups of cosmos data.
-=======
-    Manages automatic backups of Farnsworth data.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/resilience.py
     Ensures data durability and recovery capability.
     """
 
@@ -292,11 +280,7 @@ class BackupManager:
 
             # Generate backup name
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-<<<<<<< HEAD:cosmos/core/resilience.py
             backup_name = f"cosmos_backup_{label or timestamp}"
-=======
-            backup_name = f"farnsworth_backup_{label or timestamp}"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/resilience.py
             backup_path = self.backup_dir / backup_name
 
             # Create backup (copy directory)
@@ -337,11 +321,7 @@ class BackupManager:
         """Remove old backups exceeding max_backups limit."""
         try:
             backups = sorted(
-<<<<<<< HEAD:cosmos/core/resilience.py
                 self.backup_dir.glob("cosmos_backup_*.zip"),
-=======
-                self.backup_dir.glob("farnsworth_backup_*.zip"),
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/resilience.py
                 key=lambda p: p.stat().st_mtime,
                 reverse=True,
             )
@@ -387,11 +367,7 @@ class BackupManager:
         """List available backups."""
         backups = []
         for backup_file in sorted(
-<<<<<<< HEAD:cosmos/core/resilience.py
             self.backup_dir.glob("cosmos_backup_*.zip"),
-=======
-            self.backup_dir.glob("farnsworth_backup_*.zip"),
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/resilience.py
             key=lambda p: p.stat().st_mtime,
             reverse=True,
         ):
@@ -409,10 +385,6 @@ class BackupManager:
         return {
             "is_running": self._is_running,
             "last_backup": self._last_backup.isoformat() if self._last_backup else None,
-<<<<<<< HEAD:cosmos/core/resilience.py
             "backup_count": len(list(self.backup_dir.glob("cosmos_backup_*.zip"))),
-=======
-            "backup_count": len(list(self.backup_dir.glob("farnsworth_backup_*.zip"))),
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/resilience.py
             "backup_dir": str(self.backup_dir),
         }

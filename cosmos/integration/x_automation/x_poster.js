@@ -1,5 +1,5 @@
 /**
- * X/Twitter Automation for Farnsworth
+ * X/Twitter Automation for Cosmos
  * Uses Puppeteer-Extra with Stealth Plugin
  * Debug mode (headless: false) for maximum stealth on Twitter
  */
@@ -506,15 +506,15 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   const content = args.join(' ') || `Good news everyone! 🧪
 
-The Farnsworth AI Swarm is autonomously building:
+The Cosmos AI Swarm is autonomously building:
 - Memory systems
 - Context management
 - Self-improving code
 
 No human prompts needed!
 
-👀 https://ai.farnsworth.cloud
-⭐ https://github.com/timowhite88/Farnsworth
+👀 https://ai.cosmos.cloud
+⭐ https://github.com/timowhite88/Cosmos
 
 #AI #AutonomousAgents`;
 

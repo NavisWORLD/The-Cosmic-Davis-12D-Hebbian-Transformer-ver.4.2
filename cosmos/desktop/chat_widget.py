@@ -1,5 +1,5 @@
 """
-Farnsworth Chat Widget.
+Cosmos Chat Widget.
 """
 
 import logging
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 class ChatWidget(QWidget if PYSIDE_AVAILABLE else object):
     """
-    Chat interface for interacting with Farnsworth.
+    Chat interface for interacting with Cosmos.
     """
 
     def __init__(self, parent=None):
@@ -49,7 +49,7 @@ class ChatWidget(QWidget if PYSIDE_AVAILABLE else object):
         input_layout = QHBoxLayout()
 
         self.input_field = QLineEdit()
-        self.input_field.setPlaceholderText("Ask Farnsworth anything... (or use 'Hey Farn, ...')")
+        self.input_field.setPlaceholderText("Ask Cosmos anything... (or use 'Hey Farn, ...')")
         self.input_field.setMinimumHeight(40)
         self.input_field.returnPressed.connect(self._on_send)
         input_layout.addWidget(self.input_field)
@@ -63,7 +63,7 @@ class ChatWidget(QWidget if PYSIDE_AVAILABLE else object):
         layout.addLayout(input_layout)
 
         # Initial message
-        self._add_message("assistant", "Hello! I'm Farnsworth, your AI assistant. How can I help you today?")
+        self._add_message("assistant", "Hello! I'm Cosmos, your AI assistant. How can I help you today?")
 
     def _on_send(self):
         """Handle send button click."""
@@ -86,7 +86,7 @@ class ChatWidget(QWidget if PYSIDE_AVAILABLE else object):
             prefix = "<b>You:</b>"
             color = "#2196F3"
         else:
-            prefix = "<b>Farnsworth:</b>"
+            prefix = "<b>Cosmos:</b>"
             color = "#4CAF50"
 
         html = f'<p style="color: {color}; margin: 10px 0;">{prefix}<br/>{content}</p>'
@@ -96,7 +96,7 @@ class ChatWidget(QWidget if PYSIDE_AVAILABLE else object):
         """Process user message through NLP system."""
         try:
             # Use the NLP command router
-            from farnsworth.core.nlp import process_command
+            from Cosmos.core.nlp import process_command
 
             # Run async processing
             loop = asyncio.new_event_loop()

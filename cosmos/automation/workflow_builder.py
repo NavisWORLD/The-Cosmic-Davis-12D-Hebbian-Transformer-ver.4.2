@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/automation/workflow_builder.py
 cosmos Visual Workflow Builder
-=======
-Farnsworth Visual Workflow Builder
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/workflow_builder.py
 
 "I've invented a machine that builds machines that build workflows!"
 
@@ -87,11 +83,7 @@ class ActionType(Enum):
 
     # AI
     LLM_PROMPT = "llm_prompt"
-<<<<<<< HEAD:cosmos/automation/workflow_builder.py
     cosmos_TOOL = "cosmos_tool"
-=======
-    FARNSWORTH_TOOL = "farnsworth_tool"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/workflow_builder.py
 
     # System
     SHELL_COMMAND = "shell_command"
@@ -277,32 +269,8 @@ class Workflow:
                 if output_id not in node_ids:
                     errors.append(f"Node {node.name} references non-existent output {output_id}")
 
-<<<<<<< HEAD:cosmos/automation/workflow_builder.py
         # Check for cycles (basic check)
         # TODO: Implement full cycle detection
-=======
-        # DFS-based cycle detection
-        adjacency = {n.id: list(n.outputs) for n in self.nodes}
-        visited = set()
-        rec_stack = set()
-
-        def _has_cycle(node_id):
-            visited.add(node_id)
-            rec_stack.add(node_id)
-            for neighbor in adjacency.get(node_id, []):
-                if neighbor not in visited:
-                    if _has_cycle(neighbor):
-                        return True
-                elif neighbor in rec_stack:
-                    return True
-            rec_stack.discard(node_id)
-            return False
-
-        for nid in node_ids:
-            if nid not in visited:
-                if _has_cycle(nid):
-                    errors.append("Workflow contains a cycle")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/workflow_builder.py
 
         # Check trigger configuration
         if not self.triggers and not any(n.type == NodeType.TRIGGER for n in self.nodes):
@@ -821,11 +789,7 @@ class WorkflowBuilder:
             ) as response:
                 try:
                     response_body = await response.json()
-<<<<<<< HEAD:cosmos/automation/workflow_builder.py
                 except:
-=======
-                except Exception:
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/workflow_builder.py
                     response_body = await response.text()
 
                 return {
@@ -867,7 +831,6 @@ class WorkflowBuilder:
         config: Dict[str, Any],
         context: Dict[str, Any]
     ) -> Dict[str, Any]:
-<<<<<<< HEAD:cosmos/automation/workflow_builder.py
         """Handle Python code execution."""
         code = config.get("code", "")
 
@@ -879,13 +842,6 @@ class WorkflowBuilder:
 
         exec(code, {"__builtins__": __builtins__}, local_vars)
 
-=======
-        """Handle Python code execution (sandboxed)."""
-        from farnsworth.core.safe_eval import safe_exec
-
-        code = config.get("code", "")
-        local_vars = safe_exec(code, variables={"context": context})
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/workflow_builder.py
         return {"result": local_vars.get("result")}
 
     async def _handle_wait(
@@ -903,28 +859,18 @@ class WorkflowBuilder:
         config: Dict[str, Any],
         context: Dict[str, Any]
     ) -> Dict[str, Any]:
-<<<<<<< HEAD:cosmos/automation/workflow_builder.py
         """Handle data transformation."""
-=======
-        """Handle data transformation (sandboxed expressions)."""
-        from farnsworth.core.safe_eval import safe_eval
-
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/workflow_builder.py
         operation = config.get("operation", "passthrough")
         input_data = config.get("input", context.get("node_outputs", {}))
 
         if operation == "passthrough":
             return {"data": input_data}
         elif operation == "filter":
-<<<<<<< HEAD:cosmos/automation/workflow_builder.py
             # Filter array based on condition
-=======
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/workflow_builder.py
             condition = config.get("condition", "true")
             if isinstance(input_data, list):
                 filtered = [
                     item for item in input_data
-<<<<<<< HEAD:cosmos/automation/workflow_builder.py
                     if eval(condition, {"item": item})
                 ]
                 return {"data": filtered}
@@ -934,34 +880,17 @@ class WorkflowBuilder:
             if isinstance(input_data, list):
                 mapped = [
                     eval(expression, {"item": item})
-=======
-                    if safe_eval(condition, {"item": item})
-                ]
-                return {"data": filtered}
-        elif operation == "map":
-            expression = config.get("expression", "item")
-            if isinstance(input_data, list):
-                mapped = [
-                    safe_eval(expression, {"item": item})
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/workflow_builder.py
                     for item in input_data
                 ]
                 return {"data": mapped}
         elif operation == "reduce":
-<<<<<<< HEAD:cosmos/automation/workflow_builder.py
             # Reduce to single value
-=======
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/workflow_builder.py
             expression = config.get("expression", "acc + item")
             initial = config.get("initial", 0)
             if isinstance(input_data, list):
                 acc = initial
                 for item in input_data:
-<<<<<<< HEAD:cosmos/automation/workflow_builder.py
                     acc = eval(expression, {"acc": acc, "item": item})
-=======
-                    acc = safe_eval(expression, {"acc": acc, "item": item})
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/workflow_builder.py
                 return {"data": acc}
         elif operation == "json_parse":
             import json
@@ -977,17 +906,9 @@ class WorkflowBuilder:
         config: Dict[str, Any],
         context: Dict[str, Any]
     ) -> Dict[str, Any]:
-<<<<<<< HEAD:cosmos/automation/workflow_builder.py
         """Handle condition node."""
         condition = config.get("condition", "true")
         result = eval(condition, {"context": context})
-=======
-        """Handle condition node (sandboxed)."""
-        from farnsworth.core.safe_eval import safe_eval
-
-        condition = config.get("condition", "true")
-        result = safe_eval(condition, {"context": context})
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/workflow_builder.py
         return {"result": bool(result), "branch": "true" if result else "false"}
 
     async def _handle_loop(
@@ -1019,11 +940,7 @@ class WorkflowBuilder:
         context: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Handle LLM prompt action."""
-<<<<<<< HEAD:cosmos/automation/workflow_builder.py
         # This would integrate with cosmos's LLM system
-=======
-        # This would integrate with Farnsworth's LLM system
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/workflow_builder.py
         prompt = config.get("prompt", "")
         model = config.get("model", "default")
 

@@ -9,11 +9,7 @@ from typing import Optional, TYPE_CHECKING
 import logging
 
 if TYPE_CHECKING:
-<<<<<<< HEAD:cosmos/core/worker_broadcaster.py
-    from cosmos.web.server import SwarmChatManager
-=======
-    from farnsworth.web.server import SwarmChatManager
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/worker_broadcaster.py
+    from Cosmos.web.server import SwarmChatManager
 
 logger = logging.getLogger(__name__)
 
@@ -51,11 +47,7 @@ class WorkerBroadcaster:
     async def _broadcast_progress(self):
         """Broadcast current worker progress to chat"""
         try:
-<<<<<<< HEAD:cosmos/core/worker_broadcaster.py
-            from cosmos.core.agent_spawner import get_spawner
-=======
-            from farnsworth.core.agent_spawner import get_spawner
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/worker_broadcaster.py
+            from Cosmos.core.agent_spawner import get_spawner
             spawner = get_spawner()
 
             # Get status
@@ -92,11 +84,7 @@ Here's what I'm working on:
 ⏳ Queued: {status['pending_tasks']} tasks
 💡 Discoveries: {status['discoveries']}
 
-<<<<<<< HEAD:cosmos/core/worker_broadcaster.py
 All output goes to /cosmos/staging/ for Tim's review!"""
-=======
-All output goes to /farnsworth/staging/ for Tim's review!"""
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/worker_broadcaster.py
 
                 await self._send_to_chat(agent, message)
 
@@ -110,11 +98,7 @@ Just finished a task and found something interesting:
 
 {recent['content']}
 
-<<<<<<< HEAD:cosmos/core/worker_broadcaster.py
 The full implementation has been saved to staging. Check /cosmos/staging/ to see the code!"""
-=======
-The full implementation has been saved to staging. Check /farnsworth/staging/ to see the code!"""
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/worker_broadcaster.py
 
                     await self._send_to_chat(recent['from'], disc_msg)
                     self.last_broadcast['last_discovery'] = recent['timestamp']

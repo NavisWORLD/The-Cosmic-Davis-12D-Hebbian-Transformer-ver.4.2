@@ -1,5 +1,5 @@
 """
-Farnsworth DEX API - Real-time token data aggregation
+Cosmos DEX API - Real-time token data aggregation
 Pulls from DexScreener, Birdeye, Jupiter, and more
 """
 

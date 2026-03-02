@@ -158,7 +158,7 @@ class KnowledgeGraph:
     """
     NetworkX-based knowledge graph for entity relationships.
 
-    Provides a semantic memory layer for the Farnsworth AI swarm,
+    Provides a semantic memory layer for the Cosmos AI swarm,
     enabling entity extraction, relationship discovery, and multi-hop reasoning.
 
     Features:
@@ -230,8 +230,8 @@ class KnowledgeGraph:
         self._quantum_available = False
         self._quantum_pattern_extractor = None
         try:
-            from farnsworth.integration.quantum import QISKIT_AVAILABLE, get_quantum_provider
-            from farnsworth.integration.quantum.ibm_quantum import QuantumPatternExtractor
+            from Cosmos.integration.quantum import QISKIT_AVAILABLE, get_quantum_provider
+            from Cosmos.integration.quantum.ibm_quantum import QuantumPatternExtractor
             self._quantum_available = QISKIT_AVAILABLE
             if QISKIT_AVAILABLE:
                 provider = get_quantum_provider()

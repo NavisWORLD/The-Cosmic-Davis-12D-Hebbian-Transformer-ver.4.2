@@ -178,7 +178,7 @@ class X402Client:
     async def _make_payment(self, payment_info: Dict) -> Dict[str, Any]:
         """Make payment via Bankr SDK."""
         try:
-            from farnsworth.integration.bankr import get_bankr_client
+            from Cosmos.integration.bankr import get_bankr_client
 
             client = get_bankr_client()
             amount = payment_info.get("amount", Decimal("0.01"))

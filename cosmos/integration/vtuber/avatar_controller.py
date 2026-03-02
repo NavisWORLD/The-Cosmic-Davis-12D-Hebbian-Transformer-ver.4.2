@@ -115,8 +115,8 @@ class AvatarConfig:
     # VTube Studio settings
     vts_host: str = "localhost"
     vts_port: int = 8001
-    vts_plugin_name: str = "FarnsworthAI"
-    vts_developer: str = "FarnsworthSwarm"
+    vts_plugin_name: str = "CosmosAI"
+    vts_developer: str = "CosmosSwarm"
 
     # Rendering settings
     width: int = 1280
@@ -150,7 +150,7 @@ class AvatarConfig:
 
 class AvatarController:
     """
-    Multi-backend avatar controller for Farnsworth VTuber
+    Multi-backend avatar controller for Cosmos VTuber
 
     Handles:
     - Avatar model loading and rendering
@@ -323,7 +323,7 @@ class AvatarController:
         ]
 
         for expr in expressions:
-            img_path = avatar_dir / f"farnsworth_{expr}.png"
+            img_path = avatar_dir / f"cosmos_{expr}.png"
             if img_path.exists():
                 img = cv2.imread(str(img_path), cv2.IMREAD_UNCHANGED)
                 if img is not None:
@@ -378,7 +378,7 @@ class AvatarController:
         for viseme in viseme_names:
             # Try multiple naming patterns
             patterns = [
-                f"farnsworth_viseme_{viseme}.png",
+                f"cosmos_viseme_{viseme}.png",
                 f"mouth_{viseme}.png",
                 f"viseme_{viseme}.png",
             ]
@@ -514,7 +514,7 @@ class AvatarController:
             return False
 
     def _create_placeholder_avatar(self) -> np.ndarray:
-        """Create a placeholder Farnsworth avatar image"""
+        """Create a placeholder Cosmos avatar image"""
         img = np.zeros((self.config.height, self.config.width, 4), dtype=np.uint8)
 
         # Dark background

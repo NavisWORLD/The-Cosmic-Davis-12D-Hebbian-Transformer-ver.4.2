@@ -1,6 +1,6 @@
 """
 Local Avatar Animation - Wav2Lip neural + Face Rig with tracking points
-Replaces D-ID cloud dependency with local rendering for the cyborg Farnsworth avatar.
+Replaces D-ID cloud dependency with local rendering for the cyborg Cosmos avatar.
 
 Primary: Wav2Lip neural lip sync (GPU)
 Fallback: FaceRigAnimator - manual tracking points + Delaunay mesh warping (CPU)
@@ -367,7 +367,7 @@ class FaceRigAnimator:
     - Smooth Delaunay triangle warping for natural deformation
     """
 
-    # Default tracking points for the cyborg Farnsworth portrait.
+    # Default tracking points for the cyborg Cosmos portrait.
     # Format: (name, x_norm, y_norm, group)
     # Calibrated for the 942x875 cyborg image (human lower face, Borg upper).
     _DEFAULT_LANDMARKS = [

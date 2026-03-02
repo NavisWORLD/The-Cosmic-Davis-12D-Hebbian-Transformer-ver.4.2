@@ -50,10 +50,10 @@ class StreamConfig:
     stream_key: str = ""
 
     # HLS output settings
-    hls_output_dir: str = "/workspace/Farnsworth/farnsworth/web/static/hls"
+    hls_output_dir: str = "/workspace/Cosmos/cosmos/web/static/hls"
     hls_segment_duration: int = 2  # seconds per segment
     hls_playlist_size: int = 6  # number of segments in playlist (12 sec buffer)
-    hls_base_url: str = "https://ai.farnsworth.cloud/static/hls"  # Public URL
+    hls_base_url: str = "https://ai.cosmos.cloud/static/hls"  # Public URL
 
     # Video settings
     width: int = 854
@@ -226,7 +226,7 @@ class StreamManager:
         # Audio file management for TTS
         self._current_audio_file: Optional[str] = None
         self._audio_queue_files: asyncio.Queue = asyncio.Queue(maxsize=100)
-        self._temp_audio_dir = Path(os.environ.get('TEMP', '/tmp')) / 'farnsworth_stream_audio'
+        self._temp_audio_dir = Path(os.environ.get('TEMP', '/tmp')) / 'cosmos_stream_audio'
         self._temp_audio_dir.mkdir(parents=True, exist_ok=True)
         self._audio_restarting = False  # Flag to prevent monitor conflicts
 

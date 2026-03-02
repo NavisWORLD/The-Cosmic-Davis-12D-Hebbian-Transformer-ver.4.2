@@ -1,5 +1,5 @@
 """
-Farnsworth Desktop Application Entry Point.
+Cosmos Desktop Application Entry Point.
 """
 
 import sys
@@ -18,9 +18,9 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
-class FarnsworthApp(QApplication if PYSIDE_AVAILABLE else object):
+class CosmosApp(QApplication if PYSIDE_AVAILABLE else object):
     """
-    Main Farnsworth desktop application.
+    Main Cosmos desktop application.
 
     Manages:
     - Main window
@@ -36,10 +36,10 @@ class FarnsworthApp(QApplication if PYSIDE_AVAILABLE else object):
         super().__init__(argv or sys.argv)
 
         # Application metadata
-        self.setApplicationName("Farnsworth")
-        self.setApplicationDisplayName("Farnsworth AI")
-        self.setOrganizationName("Farnsworth")
-        self.setOrganizationDomain("farnsworth.ai")
+        self.setApplicationName("Cosmos")
+        self.setApplicationDisplayName("Cosmos AI")
+        self.setOrganizationName("Cosmos")
+        self.setOrganizationDomain("cosmos.ai")
 
         # Initialize components
         self._init_theme()
@@ -61,8 +61,8 @@ class FarnsworthApp(QApplication if PYSIDE_AVAILABLE else object):
         self.setStyleSheet(get_stylesheet(self.is_dark_mode))
 
     def _init_core(self):
-        """Initialize Farnsworth core systems."""
-        self.farnsworth_core = None
+        """Initialize Cosmos core systems."""
+        self.cosmos_core = None
         try:
             # Lazy load core to avoid circular imports
             pass
@@ -116,7 +116,7 @@ class FarnsworthApp(QApplication if PYSIDE_AVAILABLE else object):
 
 def main():
     """Entry point for desktop app."""
-    app = FarnsworthApp(sys.argv)
+    app = CosmosApp(sys.argv)
     sys.exit(app.exec())
 
 

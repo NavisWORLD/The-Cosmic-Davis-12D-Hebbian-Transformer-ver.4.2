@@ -1,5 +1,5 @@
 """
-Farnsworth Dynamic Limits Configuration
+Cosmos Dynamic Limits Configuration
 =======================================
 
 Centralized, runtime-adjustable limits for all models, sessions, and providers.
@@ -8,7 +8,7 @@ No more hardcoded character or token limits scattered across the codebase.
 "Limits are meant to be pushed, not hardcoded." - The Collective
 
 Usage:
-    from farnsworth.core.dynamic_limits import get_limits, ModelLimits
+    from Cosmos.core.dynamic_limits import get_limits, ModelLimits
 
     # Get limits for a specific model
     limits = get_limits("grok")
@@ -347,8 +347,8 @@ def _load_config_from_disk():
     global _config, _config_path
 
     import os
-    if os.path.exists("/workspace/farnsworth_memory"):
-        _config_path = Path("/workspace/farnsworth_memory/dynamic_limits.json")
+    if os.path.exists("/workspace/cosmos_memory"):
+        _config_path = Path("/workspace/cosmos_memory/dynamic_limits.json")
     else:
         _config_path = Path("data/dynamic_limits.json")
 

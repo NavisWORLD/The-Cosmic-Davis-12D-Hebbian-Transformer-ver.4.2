@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farnsworth VTuber Control Panel</title>
+    <title>Cosmos VTuber Control Panel</title>
     <style>
         :root {
             --bg-dark: #0a0a0f;
@@ -291,7 +291,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>🤖 Farnsworth VTuber Control</h1>
+            <h1>🤖 Cosmos VTuber Control</h1>
             <div>
                 <span class="connection-indicator disconnected" id="wsIndicator"></span>
                 <span class="status-badge status-offline" id="statusBadge">OFFLINE</span>
@@ -358,7 +358,7 @@
                 <div class="control-group">
                     <label>Agent</label>
                     <div class="agent-select" id="agentSelect">
-                        <span class="agent-chip active" data-agent="Farnsworth">Farnsworth</span>
+                        <span class="agent-chip active" data-agent="Cosmos">Cosmos</span>
                         <span class="agent-chip" data-agent="Grok">Grok</span>
                         <span class="agent-chip" data-agent="DeepSeek">DeepSeek</span>
                         <span class="agent-chip" data-agent="Gemini">Gemini</span>
@@ -423,7 +423,7 @@
     <script>
         const API_BASE = '/api/vtuber';
         let ws = null;
-        let selectedAgent = 'Farnsworth';
+        let selectedAgent = 'Cosmos';
 
         // WebSocket connection
         function connectWebSocket() {

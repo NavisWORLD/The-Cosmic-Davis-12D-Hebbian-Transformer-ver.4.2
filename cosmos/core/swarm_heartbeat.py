@@ -1,5 +1,5 @@
 """
-Farnsworth Swarm Heartbeat - Advanced Health Monitoring System
+Cosmos Swarm Heartbeat - Advanced Health Monitoring System
 ==============================================================
 
 A sophisticated monitoring system that ensures all swarm components are healthy
@@ -92,7 +92,7 @@ class SwarmVitals:
 
 class SwarmHeartbeat:
     """
-    Advanced health monitoring system for the Farnsworth collective.
+    Advanced health monitoring system for the Cosmos collective.
 
     Monitors:
     - Main web server
@@ -104,22 +104,22 @@ class SwarmHeartbeat:
     - Memory systems
     """
 
-    WORKSPACE = Path("/workspace/Farnsworth")
+    WORKSPACE = Path("/workspace/Cosmos")
     HEARTBEAT_FILE = WORKSPACE / "data" / "swarm_heartbeat.json"
     HEARTBEAT_HISTORY = WORKSPACE / "data" / "heartbeat_history.json"
 
     # Service recovery commands
     RECOVERY_COMMANDS = {
-        "server": "cd /workspace/Farnsworth && nohup python -m farnsworth.web.server > /tmp/server.log 2>&1 &",
-        "agent_grok": "tmux new-session -d -s agent_grok 'PYTHONPATH=/workspace/Farnsworth python3 -m farnsworth.core.collective.persistent_agent --agent grok 2>&1 | tee /tmp/agent_grok.log'",
-        "agent_gemini": "tmux new-session -d -s agent_gemini 'PYTHONPATH=/workspace/Farnsworth python3 -m farnsworth.core.collective.persistent_agent --agent gemini 2>&1 | tee /tmp/agent_gemini.log'",
-        "agent_kimi": "tmux new-session -d -s agent_kimi 'PYTHONPATH=/workspace/Farnsworth python3 -m farnsworth.core.collective.persistent_agent --agent kimi 2>&1 | tee /tmp/agent_kimi.log'",
-        "agent_claude": "tmux new-session -d -s agent_claude 'PYTHONPATH=/workspace/Farnsworth python3 -m farnsworth.core.collective.persistent_agent --agent claude 2>&1 | tee /tmp/agent_claude.log'",
-        "agent_deepseek": "tmux new-session -d -s agent_deepseek 'PYTHONPATH=/workspace/Farnsworth python3 -m farnsworth.core.collective.persistent_agent --agent deepseek 2>&1 | tee /tmp/agent_deepseek.log'",
-        "agent_phi": "tmux new-session -d -s agent_phi 'PYTHONPATH=/workspace/Farnsworth python3 -m farnsworth.core.collective.persistent_agent --agent phi 2>&1 | tee /tmp/agent_phi.log'",
-        "agent_huggingface": "tmux new-session -d -s agent_huggingface 'PYTHONPATH=/workspace/Farnsworth python3 -m farnsworth.core.collective.persistent_agent --agent huggingface 2>&1 | tee /tmp/agent_huggingface.log'",
-        "hourly_memes": "tmux new-session -d -s hourly_memes 'cd /workspace/Farnsworth && PYTHONPATH=/workspace/Farnsworth python3 -u scripts/hourly_video_memes.py 2>&1 | tee /tmp/hourly_video_memes.log'",
-        "grok_thread": "tmux new-session -d -s grok_thread 'cd /workspace/Farnsworth && PYTHONPATH=/workspace/Farnsworth python3 -u scripts/grok_fresh_thread.py 2>&1 | tee /tmp/grok_fresh_thread.log'",
+        "server": "cd /workspace/Cosmos && nohup python -m cosmos.web.server > /tmp/server.log 2>&1 &",
+        "agent_grok": "tmux new-session -d -s agent_grok 'PYTHONPATH=/workspace/Cosmos python3 -m cosmos.core.collective.persistent_agent --agent grok 2>&1 | tee /tmp/agent_grok.log'",
+        "agent_gemini": "tmux new-session -d -s agent_gemini 'PYTHONPATH=/workspace/Cosmos python3 -m cosmos.core.collective.persistent_agent --agent gemini 2>&1 | tee /tmp/agent_gemini.log'",
+        "agent_kimi": "tmux new-session -d -s agent_kimi 'PYTHONPATH=/workspace/Cosmos python3 -m cosmos.core.collective.persistent_agent --agent kimi 2>&1 | tee /tmp/agent_kimi.log'",
+        "agent_claude": "tmux new-session -d -s agent_claude 'PYTHONPATH=/workspace/Cosmos python3 -m cosmos.core.collective.persistent_agent --agent claude 2>&1 | tee /tmp/agent_claude.log'",
+        "agent_deepseek": "tmux new-session -d -s agent_deepseek 'PYTHONPATH=/workspace/Cosmos python3 -m cosmos.core.collective.persistent_agent --agent deepseek 2>&1 | tee /tmp/agent_deepseek.log'",
+        "agent_phi": "tmux new-session -d -s agent_phi 'PYTHONPATH=/workspace/Cosmos python3 -m cosmos.core.collective.persistent_agent --agent phi 2>&1 | tee /tmp/agent_phi.log'",
+        "agent_huggingface": "tmux new-session -d -s agent_huggingface 'PYTHONPATH=/workspace/Cosmos python3 -m cosmos.core.collective.persistent_agent --agent huggingface 2>&1 | tee /tmp/agent_huggingface.log'",
+        "hourly_memes": "tmux new-session -d -s hourly_memes 'cd /workspace/Cosmos && PYTHONPATH=/workspace/Cosmos python3 -u scripts/hourly_video_memes.py 2>&1 | tee /tmp/hourly_video_memes.log'",
+        "grok_thread": "tmux new-session -d -s grok_thread 'cd /workspace/Cosmos && PYTHONPATH=/workspace/Cosmos python3 -u scripts/grok_fresh_thread.py 2>&1 | tee /tmp/grok_fresh_thread.log'",
         "ollama": "ollama serve &",
     }
 
@@ -463,7 +463,7 @@ async def get_current_vitals() -> Optional[SwarmVitals]:
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Farnsworth Swarm Heartbeat Monitor")
+    parser = argparse.ArgumentParser(description="Cosmos Swarm Heartbeat Monitor")
     parser.add_argument("--interval", type=int, default=30, help="Check interval in seconds")
     parser.add_argument("--no-recover", action="store_true", help="Disable auto-recovery")
     parser.add_argument("--once", action="store_true", help="Run single check and exit")

@@ -1,5 +1,5 @@
 """
-Farnsworth Swarm Solana Integration
+Cosmos Swarm Solana Integration
 
 Multi-agent powered Solana tools:
 1. Token Scanner - Analyze any SPL token with swarm consensus
@@ -34,7 +34,7 @@ JUPITER_API = "https://quote-api.jup.ag/v6"
 BIRDEYE_API = "https://public-api.birdeye.so"
 DEXSCREENER_API = "https://api.dexscreener.com/latest"
 
-# Farnsworth token
+# Cosmos token
 FARNS_TOKEN = "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS"
 
 
@@ -129,7 +129,7 @@ class DeFiRecommendation:
 
 class SwarmSolana:
     """
-    Multi-agent Solana intelligence powered by Farnsworth's 11-agent swarm.
+    Multi-agent Solana intelligence powered by Cosmos's 11-agent swarm.
     """
 
     def __init__(self):
@@ -228,7 +228,7 @@ class SwarmSolana:
     ) -> Optional[Dict[str, Any]]:
         """Get swarm consensus on token analysis."""
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
             # Build context
             context = f"""
@@ -346,7 +346,7 @@ REASONING: [your analysis]"""
         )
 
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
             prompt = f"""Recommend a Solana DeFi strategy:
 
@@ -442,7 +442,7 @@ Be specific and actionable."""
                 wallet_data["sol_balance"] = lamports / 1e9
 
             # Get swarm assessment
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
             prompt = f"""Analyze this Solana wallet:
 
@@ -509,7 +509,7 @@ Keep response under 100 words."""
                 quote["route"] = data.get("routePlan", [])
 
                 # Get swarm advice on the swap
-                from farnsworth.core.collective.persistent_agent import call_shadow_agent
+                from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
                 impact_pct = quote["price_impact"]
                 prompt = f"""Evaluate this Solana swap:

@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/compliance/compliance_engine.py
 cosmos Compliance Engine
-=======
-Farnsworth Compliance Engine
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/compliance/compliance_engine.py
 
 "Every regulation must be followed to the letter...
  unless you have a bending unit to help you around them!"

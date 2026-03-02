@@ -31,7 +31,7 @@ router = APIRouter()
 
 def _get_shared():
     """Import shared state from server module lazily."""
-    from farnsworth.web import server
+    from Cosmos.web import server
     return server
 
 
@@ -43,7 +43,7 @@ def _get_shared():
 async def quantum_run_bell(shots: int = 20):
     """Run Bell state on REAL IBM Quantum hardware."""
     try:
-        from farnsworth.integration.hackathon.quantum_proof import get_quantum_proof
+        from Cosmos.integration.hackathon.quantum_proof import get_quantum_proof
 
         qp = get_quantum_proof()
         job = await qp.run_bell_state(shots=min(shots, 100))
@@ -68,7 +68,7 @@ async def quantum_run_bell(shots: int = 20):
 async def quantum_job_status(job_id: str):
     """Get quantum job status and results."""
     try:
-        from farnsworth.integration.hackathon.quantum_proof import get_quantum_proof
+        from Cosmos.integration.hackathon.quantum_proof import get_quantum_proof
 
         qp = get_quantum_proof()
         status = await qp.get_job_status(job_id)
@@ -86,7 +86,7 @@ async def quantum_job_status(job_id: str):
 async def quantum_list_jobs():
     """List all submitted quantum jobs."""
     try:
-        from farnsworth.integration.hackathon.quantum_proof import get_quantum_proof
+        from Cosmos.integration.hackathon.quantum_proof import get_quantum_proof
 
         qp = get_quantum_proof()
         jobs = qp.get_jobs()
@@ -108,7 +108,7 @@ async def quantum_list_jobs():
 async def quantum_status():
     """Get IBM Quantum integration status and usage."""
     try:
-        from farnsworth.integration.quantum import get_quantum_provider, QISKIT_AVAILABLE
+        from Cosmos.integration.quantum import get_quantum_provider, QISKIT_AVAILABLE
 
         if not QISKIT_AVAILABLE:
             return JSONResponse({
@@ -170,7 +170,7 @@ async def quantum_budget():
     to maximize innovation impact toward SAGI.
     """
     try:
-        from farnsworth.integration.quantum import get_quantum_provider
+        from Cosmos.integration.quantum import get_quantum_provider
 
         provider = get_quantum_provider()
         if not provider:
@@ -204,7 +204,7 @@ async def quantum_budget():
 async def quantum_initialize(request: Request):
     """Initialize IBM Quantum connection."""
     try:
-        from farnsworth.integration.quantum import initialize_quantum
+        from Cosmos.integration.quantum import initialize_quantum
 
         body = await request.json() if request.headers.get("content-type") == "application/json" else {}
         api_key = body.get("api_key")
@@ -234,7 +234,7 @@ async def quantum_initialize(request: Request):
 async def quantum_evolve_endpoint(request: Request):
     """Evolve an agent genome using Quantum Genetic Algorithm."""
     try:
-        from farnsworth.integration.quantum import quantum_evolve_agent, get_quantum_provider
+        from Cosmos.integration.quantum import quantum_evolve_agent, get_quantum_provider
 
         body = await request.json()
         genome = body.get("genome", "10101010")

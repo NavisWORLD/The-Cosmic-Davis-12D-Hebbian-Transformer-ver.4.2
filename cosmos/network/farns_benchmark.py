@@ -7,7 +7,7 @@ Runs deterministic GPU compute benchmarks to verify:
   - Latency to core nodes is under 30ms
 
 Usage:
-    python -m farnsworth.network.farns_benchmark
+    python -m cosmos.network.farns_benchmark
 """
 import time
 import asyncio

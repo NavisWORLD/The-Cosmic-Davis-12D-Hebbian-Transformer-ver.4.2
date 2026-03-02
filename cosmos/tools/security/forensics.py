@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/tools/security/forensics.py
 cosmos Forensics Toolkit
-=======
-Farnsworth Forensics Toolkit
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/security/forensics.py
 
 "Good news, everyone! I can analyze digital evidence like a 31st century detective!"
 

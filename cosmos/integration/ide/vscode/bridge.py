@@ -1,5 +1,4 @@
 """
-<<<<<<< HEAD:cosmos/integration/ide/vscode/bridge.py
 cosmos VS Code Integration (LSP Server).
 
 "I am the ghost in your machine!"
@@ -10,18 +9,6 @@ Features:
 1. Code Lenses: Show "Ask cosmos" above functions.
 2. Diagnostics: Push analysis/Critique directly to the "Problems" tab.
 3. Code Actions: "Refactor with cosmos".
-=======
-Farnsworth VS Code Integration (LSP Server).
-
-"I am the ghost in your machine!"
-
-This module implements a partial Language Server Protocol (LSP) to allow Farnsworth
-to communicate directly with VS Code.
-Features:
-1. Code Lenses: Show "Ask Farnsworth" above functions.
-2. Diagnostics: Push analysis/Critique directly to the "Problems" tab.
-3. Code Actions: "Refactor with Farnsworth".
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/ide/vscode/bridge.py
 """
 
 import asyncio
@@ -30,11 +17,7 @@ import sys
 from typing import Dict, Any, List, Optional
 from loguru import logger
 
-<<<<<<< HEAD:cosmos/integration/ide/vscode/bridge.py
-from cosmos.core.nexus import nexus, Signal, SignalType
-=======
-from farnsworth.core.nexus import nexus, Signal, SignalType
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/ide/vscode/bridge.py
+from Cosmos.core.nexus import nexus, Signal, SignalType
 
 class VSCodeBridge:
     """
@@ -56,11 +39,7 @@ class VSCodeBridge:
         """Send a notification toast to VS Code."""
         if not self.connected: return
         
-<<<<<<< HEAD:cosmos/integration/ide/vscode/bridge.py
         message = f"cosmos: {signal.payload.get('description', 'Task Updated')}"
-=======
-        message = f"Farnsworth: {signal.payload.get('description', 'Task Updated')}"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/ide/vscode/bridge.py
         await self._send_json_rpc("window/showMessage", {"type": 3, "message": message})
 
     async def _push_diagnostic(self, signal: Signal):
@@ -80,13 +59,8 @@ class VSCodeBridge:
                     "end": {"line": line-1, "character": 100}
                 },
                 "severity": 2, # Warning
-<<<<<<< HEAD:cosmos/integration/ide/vscode/bridge.py
                 "message": f"cosmos: {message}",
                 "source": "cosmos"
-=======
-                "message": f"Farnsworth: {message}",
-                "source": "Farnsworth"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/ide/vscode/bridge.py
             }]
         }
         await self._send_json_rpc("textDocument/publishDiagnostics", diagnostic)

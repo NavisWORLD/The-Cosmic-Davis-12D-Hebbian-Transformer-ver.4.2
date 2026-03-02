@@ -1,5 +1,5 @@
 """
-Farnsworth Rich CLI - Terminal UI with Swarm Integration.
+Cosmos Rich CLI - Terminal UI with Swarm Integration.
 
 AGI v1.8.4 Feature: Enhanced terminal interface using Rich/Textual
 for real-time swarm interaction with visual agent status and signal monitoring.
@@ -13,7 +13,7 @@ Features:
 
 Layout:
     ┌─────────────────────────────────────────────────────┐
-    │ 🧠 Farnsworth Swarm CLI                 [agents: 8] │
+    │ 🧠 Cosmos Swarm CLI                 [agents: 8] │
     ├─────────────────────────────────────────────────────┤
     │ ┌───────────────────┐ ┌───────────────────────────┐ │
     │ │ Agent Status      │ │ Nexus Signals             │ │
@@ -155,7 +155,7 @@ class ChatMessage:
 
 class RichCLI:
     """
-    Rich terminal UI for Farnsworth swarm interaction.
+    Rich terminal UI for Cosmos swarm interaction.
 
     Provides a visual interface with:
     - Real-time agent status panel
@@ -173,7 +173,7 @@ class RichCLI:
         "kimi": "green",
         "phi": "red",
         "huggingface": "orange1",
-        "farnsworth": "bright_white",
+        "cosmos": "bright_white",
     }
 
     def __init__(self, data_dir: str = "./data"):
@@ -240,7 +240,7 @@ class RichCLI:
             try:
                 # Get user input
                 command_line = Prompt.ask(
-                    "[bold cyan]farnsworth>[/]",
+                    "[bold cyan]cosmos>[/]",
                     console=self.console,
                 )
 
@@ -264,7 +264,7 @@ class RichCLI:
     async def _init_session(self) -> None:
         """Initialize swarm session."""
         try:
-            from farnsworth.cli.swarm_session import create_swarm_session
+            from Cosmos.cli.swarm_session import create_swarm_session
 
             self._swarm_session = create_swarm_session()
             await self._swarm_session.connect()
@@ -327,7 +327,7 @@ class RichCLI:
     def _cmd_help(self, args: str) -> None:
         """Show help."""
         help_text = """
-[bold]Farnsworth Rich CLI Commands[/]
+[bold]Cosmos Rich CLI Commands[/]
 
 [cyan]Chat & Deliberation:[/]
   /chat <message>        Send message to swarm (or just type directly)
@@ -523,7 +523,7 @@ class RichCLI:
         agent_count = len(self._agents)
         header = Text()
         header.append("🧠 ", style="bold")
-        header.append("Farnsworth Swarm CLI", style="bold bright_white")
+        header.append("Cosmos Swarm CLI", style="bold bright_white")
         header.append(f"  [agents: {agent_count}]", style="dim")
 
         self.console.print(Panel(
@@ -685,7 +685,7 @@ class RichCLI:
             ))
 
         # Subscribe to common signals
-        from farnsworth.core.nexus import SignalType
+        from Cosmos.core.nexus import SignalType
 
         for signal_type in [
             SignalType.DIALOGUE_PROPOSE,
@@ -717,7 +717,7 @@ def main():
     """Main entry point."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Farnsworth Rich CLI")
+    parser = argparse.ArgumentParser(description="Cosmos Rich CLI")
     parser.add_argument("--data-dir", default="./data", help="Data directory")
     args = parser.parse_args()
 

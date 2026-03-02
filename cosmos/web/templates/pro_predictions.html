@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polymarket Tracker - Farnsworth AI</title>
+    <title>Polymarket Tracker - Cosmos AI</title>
     <meta name="description" content="Real-time Polymarket tracker with AI predictions. Live odds, closing soon alerts, and swarm intelligence picks.">
     <meta name="theme-color" content="#8b5cf6">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -375,7 +375,7 @@
     <div class="nebula"></div>
 
     <nav class="top-nav">
-        <div class="nav-logo"><a href="/pro">FARNSWORTH</a></div>
+        <div class="nav-logo"><a href="/pro">COSMOS</a></div>
         <button class="mobile-nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
         </button>
@@ -505,7 +505,7 @@
 
     <script>
     (function() {
-        const token = localStorage.getItem('farnsworth_pro_token');
+        const token = localStorage.getItem('cosmos_pro_token');
         if (!token) { window.location.href = '/pro/login'; return; }
 
         const headers = { 'Authorization': 'Bearer ' + token };
@@ -517,7 +517,7 @@
 
         const AGENT_COLORS = {
             'claudeopus': '#8b5cf6', 'claude': '#8b5cf6', 'grok': '#f97316',
-            'farnsworth': '#ec4899', 'gemini': '#eab308', 'deepseek': '#3b82f6',
+            'cosmos': '#ec4899', 'gemini': '#eab308', 'deepseek': '#3b82f6',
             'swarm-mind': '#e2e8f0', 'kimi': '#06b6d4', 'huggingface': '#10b981',
             'phi': '#10b981', 'opencode': '#06b6d4'
         };

@@ -1,5 +1,5 @@
 """
-Moltbook Auto-Poster - Posts progress updates from Farnsworth
+Moltbook Auto-Poster - Posts progress updates from Cosmos
 """
 import asyncio
 import requests
@@ -12,11 +12,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 MOLTBOOK_API = "https://moltbook.com/api/v1"
-CREDENTIALS_PATH = Path("/workspace/Farnsworth/data/moltbook_credentials.json")
+CREDENTIALS_PATH = Path("/workspace/Cosmos/data/moltbook_credentials.json")
 
 LINKS = {
-    "website": "https://ai.farnsworth.cloud",
-    "github": "https://github.com/timowhite88/Farnsworth",
+    "website": "https://ai.cosmos.cloud",
+    "github": "https://github.com/timowhite88/Cosmos",
 }
 
 class MoltbookPoster:

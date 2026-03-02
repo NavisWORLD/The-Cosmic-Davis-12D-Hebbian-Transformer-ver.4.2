@@ -1,23 +1,13 @@
 """
-<<<<<<< HEAD:cosmos/interfaces/messaging/slack_adapter.py
 cosmos Slack Adapter
 ------------------------
 Connects cosmos to Slack via slack-bolt.
-=======
-Farnsworth Slack Adapter
-------------------------
-Connects Farnsworth to Slack via slack-bolt.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/slack_adapter.py
 
 Usage:
     export SLACK_BOT_TOKEN=xoxb-your-token
     export SLACK_SIGNING_SECRET=your-signing-secret
 
-<<<<<<< HEAD:cosmos/interfaces/messaging/slack_adapter.py
-    from cosmos.interfaces.messaging.slack_adapter import SlackAdapter
-=======
-    from farnsworth.interfaces.messaging.slack_adapter import SlackAdapter
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/slack_adapter.py
+    from Cosmos.interfaces.messaging.slack_adapter import SlackAdapter
 
     adapter = SlackAdapter()
     adapter.set_callback(my_message_handler)
@@ -30,11 +20,7 @@ from datetime import datetime
 from typing import Optional, Callable, Awaitable
 from loguru import logger
 
-<<<<<<< HEAD:cosmos/interfaces/messaging/slack_adapter.py
-from cosmos.interfaces.messaging.base import (
-=======
-from farnsworth.interfaces.messaging.base import (
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/slack_adapter.py
+from Cosmos.interfaces.messaging.base import (
     MessagingProvider,
     IncomingMessage,
     OutgoingMessage,
@@ -53,19 +39,11 @@ except ImportError:
 
 class SlackAdapter(MessagingProvider):
     """
-<<<<<<< HEAD:cosmos/interfaces/messaging/slack_adapter.py
     Slack messaging adapter for cosmos.
 
     Provides:
     - Two-way messaging with Slack users
     - Slash command handling (/cosmos)
-=======
-    Slack messaging adapter for Farnsworth.
-
-    Provides:
-    - Two-way messaging with Slack users
-    - Slash command handling (/farnsworth)
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/slack_adapter.py
     - Thread support
     - Emoji reactions
     - Channel and DM support
@@ -81,11 +59,7 @@ class SlackAdapter(MessagingProvider):
         self.handler: Optional[AsyncSocketModeHandler] = None
         self._running = False
 
-<<<<<<< HEAD:cosmos/interfaces/messaging/slack_adapter.py
         # cosmos persona
-=======
-        # Farnsworth persona
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/slack_adapter.py
         self.persona_prefix = "_*adjusts spectacles*_ "
         self.bot_user_id: Optional[str] = None
 
@@ -142,25 +116,15 @@ class SlackAdapter(MessagingProvider):
             if event.get("channel_type") == "im":
                 await self._process_event(event, say)
 
-<<<<<<< HEAD:cosmos/interfaces/messaging/slack_adapter.py
         @self.app.command("/cosmos")
         async def handle_slash_command(ack, respond, command):
             """Handle /cosmos slash command."""
-=======
-        @self.app.command("/farnsworth")
-        async def handle_slash_command(ack, respond, command):
-            """Handle /farnsworth slash command."""
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/slack_adapter.py
             await ack()
             text = command.get("text", "")
 
             if not text:
                 await respond(
-<<<<<<< HEAD:cosmos/interfaces/messaging/slack_adapter.py
                     "*Good news, everyone!* Use `/cosmos <your question>` to ask me something!"
-=======
-                    "*Good news, everyone!* Use `/farnsworth <your question>` to ask me something!"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/slack_adapter.py
                 )
                 return
 
@@ -173,11 +137,7 @@ class SlackAdapter(MessagingProvider):
                 channel_id=command["channel_id"],
                 content=text,
                 timestamp=datetime.now(),
-<<<<<<< HEAD:cosmos/interfaces/messaging/slack_adapter.py
                 metadata={"command": "/cosmos"}
-=======
-                metadata={"command": "/farnsworth"}
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/slack_adapter.py
             )
 
             if self._on_message_callback:
@@ -185,11 +145,7 @@ class SlackAdapter(MessagingProvider):
             else:
                 await respond(
                     f"{self.persona_prefix}You asked: {text}\n\n"
-<<<<<<< HEAD:cosmos/interfaces/messaging/slack_adapter.py
                     "I'm running in standalone mode. Connect me to the full cosmos system!"
-=======
-                    "I'm running in standalone mode. Connect me to the full Farnsworth system!"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/slack_adapter.py
                 )
 
     async def _process_event(self, event: dict, say):
@@ -238,11 +194,7 @@ class SlackAdapter(MessagingProvider):
         else:
             await say(
                 f"{self.persona_prefix}You said: {text}\n\n"
-<<<<<<< HEAD:cosmos/interfaces/messaging/slack_adapter.py
                 "I'm running in standalone mode. Connect me to the full cosmos system!",
-=======
-                "I'm running in standalone mode. Connect me to the full Farnsworth system!",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/slack_adapter.py
                 thread_ts=event.get("thread_ts") or event.get("ts")
             )
 
@@ -260,11 +212,7 @@ class SlackAdapter(MessagingProvider):
             return
 
         try:
-<<<<<<< HEAD:cosmos/interfaces/messaging/slack_adapter.py
             # Add cosmos persona flavor
-=======
-            # Add Farnsworth persona flavor
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/slack_adapter.py
             content = message.content
             if not content.startswith("_*"):
                 content = self.persona_prefix + content

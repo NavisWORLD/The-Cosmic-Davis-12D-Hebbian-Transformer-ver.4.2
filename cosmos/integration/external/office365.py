@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/integration/external/office365.py
 cosmos Office 365 Integration.
-=======
-Farnsworth Office 365 Integration.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/office365.py
 
 "I am already in your cloud!"
 

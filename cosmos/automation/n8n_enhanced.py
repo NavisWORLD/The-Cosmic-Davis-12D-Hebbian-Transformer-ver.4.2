@@ -1,13 +1,7 @@
 """
-<<<<<<< HEAD:cosmos/automation/n8n_enhanced.py
 cosmos Enhanced n8n Integration
 
 "I've enhanced n8n with my patented cosmos improvements!"
-=======
-Farnsworth Enhanced n8n Integration
-
-"I've enhanced n8n with my patented Farnsworth improvements!"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_enhanced.py
 
 Full n8n API integration for workflow creation, management, and execution.
 """
@@ -214,11 +208,7 @@ class N8nWorkflow:
 
 class EnhancedN8nIntegration:
     """
-<<<<<<< HEAD:cosmos/automation/n8n_enhanced.py
     Enhanced n8n integration for cosmos.
-=======
-    Enhanced n8n integration for Farnsworth.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_enhanced.py
 
     Features:
     - Full CRUD for workflows
@@ -503,11 +493,7 @@ class EnhancedN8nIntegration:
         handler_code: str,
     ) -> N8nWorkflow:
         """Create a simple webhook workflow."""
-<<<<<<< HEAD:cosmos/automation/n8n_enhanced.py
         workflow = N8nWorkflow(name=name, tags=["cosmos", "webhook"])
-=======
-        workflow = N8nWorkflow(name=name, tags=["farnsworth", "webhook"])
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_enhanced.py
 
         # Webhook trigger
         webhook = N8nNode(
@@ -544,11 +530,7 @@ class EnhancedN8nIntegration:
         task_code: str,
     ) -> N8nWorkflow:
         """Create a scheduled workflow."""
-<<<<<<< HEAD:cosmos/automation/n8n_enhanced.py
         workflow = N8nWorkflow(name=name, tags=["cosmos", "scheduled"])
-=======
-        workflow = N8nWorkflow(name=name, tags=["farnsworth", "scheduled"])
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_enhanced.py
 
         # Cron trigger
         cron = N8nNode(
@@ -589,11 +571,7 @@ class EnhancedN8nIntegration:
         method: str = "GET",
     ) -> N8nWorkflow:
         """Create a webhook-to-API workflow."""
-<<<<<<< HEAD:cosmos/automation/n8n_enhanced.py
         workflow = N8nWorkflow(name=name, tags=["cosmos", "api"])
-=======
-        workflow = N8nWorkflow(name=name, tags=["farnsworth", "api"])
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/n8n_enhanced.py
 
         # Webhook trigger
         webhook = N8nNode(

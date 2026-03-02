@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/integration/solana/degen_mob.py
 cosmos DeGen Mob - High-Utility Solana Trading & Intelligence.
-=======
-Farnsworth DeGen Mob - High-Utility Solana Trading & Intelligence.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/solana/degen_mob.py
 
 "We move faster than the speed of greed."
 
@@ -137,11 +133,7 @@ class DeGenMob:
     # --- CT Sentiment Scaler ---
     async def run_alpha_leak_loop(self, keywords: List[str]):
         """Run scaled sentiment analysis on narratives."""
-<<<<<<< HEAD:cosmos/integration/solana/degen_mob.py
-        from cosmos.integration.external.grok import create_grok_provider
-=======
-        from farnsworth.integration.external.grok import create_grok_provider
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/solana/degen_mob.py
+        from Cosmos.integration.external.grok import create_grok_provider
         
         api_key = os.environ.get("XAI_API_KEY")
         if not api_key:
@@ -156,11 +148,7 @@ class DeGenMob:
     # --- Meme Quality Analyzer (Vision) ---
     async def analyze_meme_quality(self, image_url: str) -> Dict:
         """
-<<<<<<< HEAD:cosmos/integration/solana/degen_mob.py
         Uses cosmos's Vision system to rate a meme's potential.
-=======
-        Uses Farnsworth's Vision system to rate a meme's potential.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/solana/degen_mob.py
         "Is this a top-tier recycled joke or just bad art?"
         """
         logger.info(f"DeGen: Analyzing meme aesthetics for {image_url}")

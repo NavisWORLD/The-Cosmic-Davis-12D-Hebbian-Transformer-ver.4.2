@@ -8,11 +8,11 @@ Hybrid MCP server for Claude Code integration with:
 - Resource streaming for context awareness
 """
 
-from cosmos.mcp_server.server import cosmosMCPServer, run_server
-from cosmos.mcp_server.memory_tools import MemoryTools
-from cosmos.mcp_server.agent_tools import AgentTools
-from cosmos.mcp_server.evolution_tools import EvolutionTools
-from cosmos.mcp_server.resources import cosmosResources
+from Cosmos.mcp_server.server import cosmosMCPServer, run_server
+from Cosmos.mcp_server.memory_tools import MemoryTools
+from Cosmos.mcp_server.agent_tools import AgentTools
+from Cosmos.mcp_server.evolution_tools import EvolutionTools
+from Cosmos.mcp_server.resources import cosmosResources
 
 __all__ = [
     "cosmosMCPServer",

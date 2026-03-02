@@ -48,7 +48,7 @@ router = APIRouter()
 
 def _get_shared():
     """Import shared state from server module lazily."""
-    from farnsworth.web import server
+    from Cosmos.web import server
     return server
 
 
@@ -60,7 +60,7 @@ def _get_shared():
 async def chat(request: Request):
     """Handle chat messages with security validation and crypto query detection."""
     s = _get_shared()
-    from farnsworth.web.server import ChatRequest
+    from Cosmos.web.server import ChatRequest
     import json
 
     # Rate limiting check
@@ -94,7 +94,7 @@ async def chat(request: Request):
 
         # Pause free discussion while user is active
         try:
-            from farnsworth.core.collective.free_discussion import get_free_discussion_engine
+            from Cosmos.core.collective.free_discussion import get_free_discussion_engine
             fde = get_free_discussion_engine()
             if fde:
                 fde.notify_user_activity()
@@ -154,7 +154,7 @@ async def chat(request: Request):
                     "crypto_query": True
                 })
 
-        # Regular chat response - FARNSWORTH IS THE COLLECTIVE
+        # Regular chat response - COSMOS IS THE COLLECTIVE
         collective_result = await s.generate_ai_response_collective(
             upgraded_message,
             chat_request.history or []
@@ -215,7 +215,7 @@ async def status():
             "providers": {
                 "ollama": {
                     "available": s.OLLAMA_AVAILABLE,
-                    "bots": ["Farnsworth", "DeepSeek", "Phi", "Swarm-Mind"]
+                    "bots": ["Cosmos", "DeepSeek", "Phi", "Swarm-Mind"]
                 },
                 "claude_code": {
                     "available": s.CLAUDE_CODE_AVAILABLE,
@@ -230,7 +230,7 @@ async def status():
             },
             "active_bots": s.ACTIVE_SWARM_BOTS
         },
-        "farnsworth_persona": True,
+        "cosmos_persona": True,
         "voice_enabled": True
     })
 
@@ -243,7 +243,7 @@ async def status():
 async def remember(request: Request):
     """Store information in memory."""
     s = _get_shared()
-    from farnsworth.web.server import MemoryRequest
+    from Cosmos.web.server import MemoryRequest
 
     client_id = s.get_client_id(request)
     if not s.api_rate_limiter.is_allowed(client_id):
@@ -290,7 +290,7 @@ async def remember(request: Request):
 async def recall(request: Request):
     """Search and recall memories."""
     s = _get_shared()
-    from farnsworth.web.server import RecallRequest
+    from Cosmos.web.server import RecallRequest
 
     try:
         body = await request.json()
@@ -371,7 +371,7 @@ async def list_notes():
 async def create_note(request: Request):
     """Create a new note."""
     s = _get_shared()
-    from farnsworth.web.server import NoteRequest
+    from Cosmos.web.server import NoteRequest
 
     try:
         body = await request.json()
@@ -434,7 +434,7 @@ async def list_snippets():
 async def create_snippet(request: Request):
     """Create a new snippet."""
     s = _get_shared()
-    from farnsworth.web.server import SnippetRequest
+    from Cosmos.web.server import SnippetRequest
 
     try:
         body = await request.json()
@@ -478,7 +478,7 @@ async def focus_status():
 async def focus_start(request: Request):
     """Start focus timer."""
     s = _get_shared()
-    from farnsworth.web.server import FocusRequest
+    from Cosmos.web.server import FocusRequest
 
     try:
         body = await request.json()
@@ -542,7 +542,7 @@ async def list_profiles():
 async def switch_profile(request: Request):
     """Switch active profile."""
     s = _get_shared()
-    from farnsworth.web.server import ProfileRequest
+    from Cosmos.web.server import ProfileRequest
 
     try:
         body = await request.json()
@@ -601,7 +601,7 @@ async def health_metrics(metric_type: str):
 async def think(request: Request):
     """Sequential thinking endpoint."""
     s = _get_shared()
-    from farnsworth.web.server import ThinkingRequest
+    from Cosmos.web.server import ThinkingRequest
 
     try:
         body = await request.json()
@@ -665,7 +665,7 @@ async def list_tools():
 async def execute_tool(request: Request):
     """Execute a specific tool."""
     s = _get_shared()
-    from farnsworth.web.server import ToolRequest
+    from Cosmos.web.server import ToolRequest
 
     try:
         body = await request.json()
@@ -706,7 +706,7 @@ async def execute_tool(request: Request):
 async def whale_track(request: Request):
     """Track whale wallet."""
     s = _get_shared()
-    from farnsworth.web.server import WhaleTrackRequest
+    from Cosmos.web.server import WhaleTrackRequest
 
     try:
         body = await request.json()
@@ -723,7 +723,7 @@ async def whale_track(request: Request):
 async def rug_check(request: Request):
     """Check token for rug risks."""
     s = _get_shared()
-    from farnsworth.web.server import RugCheckRequest
+    from Cosmos.web.server import RugCheckRequest
 
     try:
         body = await request.json()
@@ -740,7 +740,7 @@ async def rug_check(request: Request):
 async def token_scan(request: Request):
     """Scan token info."""
     s = _get_shared()
-    from farnsworth.web.server import TokenScanRequest
+    from Cosmos.web.server import TokenScanRequest
 
     try:
         body = await request.json()
@@ -780,7 +780,7 @@ async def oracle_query(request: Request):
         if not query:
             raise HTTPException(status_code=400, detail="Query is required")
 
-        from farnsworth.core.oracle import get_oracle
+        from Cosmos.core.oracle import get_oracle
         oracle = get_oracle()
         if not oracle:
             return JSONResponse({"success": False, "message": "Oracle not available"})
@@ -799,7 +799,7 @@ async def oracle_queries():
     """List recent oracle queries."""
     s = _get_shared()
     try:
-        from farnsworth.core.oracle import get_oracle
+        from Cosmos.core.oracle import get_oracle
         oracle = get_oracle()
         if not oracle:
             return JSONResponse({"queries": []})
@@ -814,7 +814,7 @@ async def oracle_get_query(query_id: str):
     """Get specific oracle query."""
     s = _get_shared()
     try:
-        from farnsworth.core.oracle import get_oracle
+        from Cosmos.core.oracle import get_oracle
         oracle = get_oracle()
         if not oracle:
             raise HTTPException(status_code=503, detail="Oracle not available")
@@ -834,7 +834,7 @@ async def oracle_stats():
     """Get oracle statistics."""
     s = _get_shared()
     try:
-        from farnsworth.core.oracle import get_oracle
+        from Cosmos.core.oracle import get_oracle
         oracle = get_oracle()
         if not oracle:
             return JSONResponse({"available": False})
@@ -854,7 +854,7 @@ async def farsight_predict(request: Request):
     s = _get_shared()
     try:
         body = await request.json()
-        from farnsworth.core.farsight import get_farsight
+        from Cosmos.core.farsight import get_farsight
         farsight = get_farsight()
         if not farsight:
             return JSONResponse({"success": False, "message": "FarSight not available"})
@@ -871,7 +871,7 @@ async def farsight_crypto(request: Request):
     s = _get_shared()
     try:
         body = await request.json()
-        from farnsworth.core.farsight import get_farsight
+        from Cosmos.core.farsight import get_farsight
         farsight = get_farsight()
         if not farsight:
             return JSONResponse({"success": False, "message": "FarSight not available"})
@@ -887,7 +887,7 @@ async def farsight_stats():
     """FarSight stats."""
     s = _get_shared()
     try:
-        from farnsworth.core.farsight import get_farsight
+        from Cosmos.core.farsight import get_farsight
         farsight = get_farsight()
         if not farsight:
             return JSONResponse({"available": False})
@@ -901,7 +901,7 @@ async def farsight_predictions():
     """FarSight recent predictions."""
     s = _get_shared()
     try:
-        from farnsworth.core.farsight import get_farsight
+        from Cosmos.core.farsight import get_farsight
         farsight = get_farsight()
         if not farsight:
             return JSONResponse({"predictions": []})
@@ -933,7 +933,7 @@ async def solana_defi_recommend(request: Request):
     s = _get_shared()
     try:
         body = await request.json()
-        from farnsworth.integration.solana.degen_mob import DeGenMob
+        from Cosmos.integration.solana.degen_mob import DeGenMob
         degen = DeGenMob()
         result = await degen.get_defi_recommendations(body)
         return JSONResponse({"success": True, **result})
@@ -949,7 +949,7 @@ async def solana_wallet(wallet_address: str):
     """Get Solana wallet info."""
     s = _get_shared()
     try:
-        from farnsworth.integration.solana.degen_mob import DeGenMob
+        from Cosmos.integration.solana.degen_mob import DeGenMob
         degen = DeGenMob()
         result = await degen.get_wallet_info(wallet_address)
         return JSONResponse({"success": True, **result})
@@ -965,7 +965,7 @@ async def solana_swap_quote(request: Request):
     """Get Solana swap quote."""
     s = _get_shared()
     try:
-        from farnsworth.integration.solana.degen_mob import DeGenMob
+        from Cosmos.integration.solana.degen_mob import DeGenMob
         degen = DeGenMob()
         params = dict(request.query_params)
         result = await degen.get_swap_quote(params)

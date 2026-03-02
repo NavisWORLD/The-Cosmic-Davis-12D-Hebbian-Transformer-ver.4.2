@@ -1,11 +1,11 @@
 """
-MCP BRIDGE - Expose Farnsworth Tools to Claude Teams
+MCP BRIDGE - Expose Cosmos Tools to Claude Teams
 ======================================================
 
 Implements Model Context Protocol (MCP) server that exposes
-Farnsworth's capabilities to Claude agent teams.
+Cosmos's capabilities to Claude agent teams.
 
-Farnsworth controls what tools Claude teams can access.
+Cosmos controls what tools Claude teams can access.
 """
 
 import asyncio
@@ -58,11 +58,11 @@ class MCPResponse:
     duration_ms: int = 0
 
 
-class FarnsworthMCPServer:
+class CosmosMCPServer:
     """
-    MCP Server exposing Farnsworth's tools to Claude teams.
+    MCP Server exposing Cosmos's tools to Claude teams.
 
-    Farnsworth remains in control - it decides:
+    Cosmos remains in control - it decides:
     - What tools are available
     - Who can access what
     - Rate limits and quotas
@@ -74,18 +74,18 @@ class FarnsworthMCPServer:
         self.request_log: List[MCPRequest] = []
         self.access_control: Dict[str, MCPToolAccess] = {}  # team_id -> access level
 
-        # Register default Farnsworth tools
+        # Register default Cosmos tools
         self._register_default_tools()
 
-        logger.info("FarnsworthMCPServer initialized - tools ready for Claude teams")
+        logger.info("CosmosMCPServer initialized - tools ready for Claude teams")
 
     def _register_default_tools(self) -> None:
-        """Register Farnsworth's default tools for Claude teams."""
+        """Register Cosmos's default tools for Claude teams."""
 
         # Swarm Oracle access
         self.register_tool(
             name="swarm_oracle_query",
-            description="Query the Farnsworth Swarm Oracle for multi-agent consensus on any question.",
+            description="Query the Cosmos Swarm Oracle for multi-agent consensus on any question.",
             parameters={
                 "question": {"type": "string", "description": "The question to get consensus on"},
                 "query_type": {"type": "string", "default": "general"},
@@ -96,7 +96,7 @@ class FarnsworthMCPServer:
         # Memory access (read-only by default)
         self.register_tool(
             name="read_swarm_memory",
-            description="Read from Farnsworth's multi-layer memory system.",
+            description="Read from Cosmos's multi-layer memory system.",
             parameters={
                 "query": {"type": "string", "description": "Memory query"},
                 "memory_layer": {"type": "string", "default": "working"},
@@ -108,7 +108,7 @@ class FarnsworthMCPServer:
         # Agent status
         self.register_tool(
             name="get_swarm_status",
-            description="Get status of Farnsworth's agent swarm.",
+            description="Get status of Cosmos's agent swarm.",
             parameters={},
             handler=self._handle_swarm_status,
             access_level=MCPToolAccess.LIMITED,
@@ -128,7 +128,7 @@ class FarnsworthMCPServer:
         # Shadow agent delegation
         self.register_tool(
             name="call_shadow_agent",
-            description="Delegate a task to a specific Farnsworth shadow agent (Grok, Gemini, etc.)",
+            description="Delegate a task to a specific Cosmos shadow agent (Grok, Gemini, etc.)",
             parameters={
                 "agent": {"type": "string", "description": "Agent name (grok, gemini, kimi, etc.)"},
                 "prompt": {"type": "string", "description": "Task prompt"},
@@ -139,7 +139,7 @@ class FarnsworthMCPServer:
         # Knowledge graph
         self.register_tool(
             name="query_knowledge_graph",
-            description="Query Farnsworth's knowledge graph for relationships and entities.",
+            description="Query Cosmos's knowledge graph for relationships and entities.",
             parameters={
                 "query": {"type": "string", "description": "Knowledge graph query"},
             },
@@ -150,7 +150,7 @@ class FarnsworthMCPServer:
         # Token analysis (Solana)
         self.register_tool(
             name="analyze_solana_token",
-            description="Get Farnsworth's swarm analysis of a Solana token.",
+            description="Get Cosmos's swarm analysis of a Solana token.",
             parameters={
                 "token_address": {"type": "string", "description": "Token contract address"},
             },
@@ -186,7 +186,7 @@ class FarnsworthMCPServer:
             del self.tools[name]
 
     # =========================================================================
-    # ACCESS CONTROL (Farnsworth decides who can do what)
+    # ACCESS CONTROL (Cosmos decides who can do what)
     # =========================================================================
 
     def set_team_access(self, team_id: str, access: MCPToolAccess) -> None:
@@ -277,13 +277,13 @@ class FarnsworthMCPServer:
             )
 
     # =========================================================================
-    # TOOL HANDLERS (Farnsworth's actual capabilities)
+    # TOOL HANDLERS (Cosmos's actual capabilities)
     # =========================================================================
 
     async def _handle_oracle_query(self, question: str, query_type: str = "general") -> Dict[str, Any]:
         """Handle swarm oracle query."""
         try:
-            from farnsworth.integration.solana.swarm_oracle import get_swarm_oracle
+            from Cosmos.integration.solana.swarm_oracle import get_swarm_oracle
 
             oracle = get_swarm_oracle()
             result = await oracle.submit_query(question, query_type, timeout=60.0)
@@ -292,7 +292,7 @@ class FarnsworthMCPServer:
                 "consensus": result.consensus_answer,
                 "confidence": result.consensus_confidence,
                 "agents": result.agent_votes,
-                "source": "farnsworth_swarm_oracle",
+                "source": "cosmos_swarm_oracle",
             }
         except Exception as e:
             return {"error": str(e)}
@@ -300,7 +300,7 @@ class FarnsworthMCPServer:
     async def _handle_memory_read(self, query: str, memory_layer: str = "working") -> Dict[str, Any]:
         """Handle memory read request."""
         try:
-            from farnsworth.memory.memory_system import get_memory_system
+            from Cosmos.memory.memory_system import get_memory_system
 
             memory = get_memory_system()
 
@@ -318,7 +318,7 @@ class FarnsworthMCPServer:
     async def _handle_swarm_status(self) -> Dict[str, Any]:
         """Handle swarm status request."""
         try:
-            from farnsworth.core.organism import get_organism
+            from Cosmos.core.organism import get_organism
 
             organism = get_organism()
             return {
@@ -332,7 +332,7 @@ class FarnsworthMCPServer:
     async def _handle_farsight_predict(self, question: str, category: str = "general") -> Dict[str, Any]:
         """Handle Farsight prediction request."""
         try:
-            from farnsworth.integration.hackathon.farsight_protocol import get_farsight
+            from Cosmos.integration.hackathon.farsight_protocol import get_farsight
 
             farsight = get_farsight()
             prediction = await farsight.predict(question, category, include_visual=False)
@@ -349,7 +349,7 @@ class FarnsworthMCPServer:
     async def _handle_shadow_agent_call(self, agent: str, prompt: str) -> Dict[str, Any]:
         """Handle shadow agent call request."""
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
             result = await call_shadow_agent(agent.lower(), prompt, timeout=30.0)
             if result:
@@ -362,7 +362,7 @@ class FarnsworthMCPServer:
     async def _handle_kg_query(self, query: str) -> Dict[str, Any]:
         """Handle knowledge graph query."""
         try:
-            from farnsworth.memory.knowledge_graph import get_knowledge_graph
+            from Cosmos.memory.knowledge_graph import get_knowledge_graph
 
             kg = get_knowledge_graph()
             results = kg.search(query, limit=10)
@@ -373,7 +373,7 @@ class FarnsworthMCPServer:
     async def _handle_token_analysis(self, token_address: str) -> Dict[str, Any]:
         """Handle Solana token analysis."""
         try:
-            from farnsworth.integration.solana.swarm_solana import get_swarm_solana
+            from Cosmos.integration.solana.swarm_solana import get_swarm_solana
 
             solana = get_swarm_solana()
             analysis = await solana.analyze_token(token_address)
@@ -420,12 +420,12 @@ class FarnsworthMCPServer:
 # GLOBAL INSTANCE
 # =============================================================================
 
-_mcp_server: Optional[FarnsworthMCPServer] = None
+_mcp_server: Optional[CosmosMCPServer] = None
 
 
-def get_mcp_server() -> FarnsworthMCPServer:
+def get_mcp_server() -> CosmosMCPServer:
     """Get global MCP server instance."""
     global _mcp_server
     if _mcp_server is None:
-        _mcp_server = FarnsworthMCPServer()
+        _mcp_server = CosmosMCPServer()
     return _mcp_server

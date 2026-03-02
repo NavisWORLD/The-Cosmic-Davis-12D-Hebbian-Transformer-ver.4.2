@@ -1,8 +1,8 @@
-# Farnsworth VTuber Streaming System
+# Cosmos VTuber Streaming System
 # Real-time AI avatar streaming to Twitter/X with swarm collective
 
 """
-Farnsworth VTuber Module
+Cosmos VTuber Module
 ========================
 
 A complete AI VTuber streaming system that integrates:
@@ -14,14 +14,14 @@ A complete AI VTuber streaming system that integrates:
 - Swarm collective integration for multi-agent responses
 
 Quick Start:
-    from farnsworth.integration.vtuber import FarnsworthVTuber, VTuberConfig
+    from Cosmos.integration.vtuber import CosmosVTuber, VTuberConfig
 
     config = VTuberConfig(
         stream_key="your_twitter_stream_key",
         simulate_chat=True,  # For testing
     )
 
-    vtuber = FarnsworthVTuber(config)
+    vtuber = CosmosVTuber(config)
     await vtuber.start()
 
 Or use the CLI:
@@ -62,7 +62,7 @@ from .chat_reader import (
     SimulatedChatReader,
 )
 from .vtuber_core import (
-    FarnsworthVTuber,
+    CosmosVTuber,
     VTuberConfig,
     VTuberState,
     start_vtuber_stream,
@@ -90,7 +90,7 @@ __version__ = "1.0.0"
 
 __all__ = [
     # Core
-    'FarnsworthVTuber',
+    'CosmosVTuber',
     'VTuberConfig',
     'VTuberState',
     'start_vtuber_stream',

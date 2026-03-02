@@ -6,13 +6,13 @@ Here is the concrete implementation plan for persistent fitness score storage:
 
 ## 1. Files to Create
 
-**`farnsworth/integration/persistence/fitness_storage.py`** - Core async storage engine
-**`farnsworth/core/fitness/manager.py`** - High-level interface for core systems  
+**`cosmos/integration/persistence/fitness_storage.py`** - Core async storage engine
+**`cosmos/core/fitness/manager.py`** - High-level interface for core systems  
 **`tests/integration/test_fitness_storage.py`** - Validation suite
 
 ## 2. Functions to Implement
 
-### `farnsworth/integration/persistence/fitness_storage.py`
+### `cosmos/integration/persistence/fitness_storage.py`
 
 ```python
 class FitnessStorage:

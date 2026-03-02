@@ -1,5 +1,5 @@
 """
-Farnsworth Quantum Trading Broadcaster — AGI v2.1
+Cosmos Quantum Trading Broadcaster — AGI v2.1
 
 The broadcaster is how the organism's trading intelligence reaches the outside world.
 Manages signal distribution across multiple channels:
@@ -57,13 +57,13 @@ class QuantumTradingBroadcaster:
         """Initialize broadcaster and subscribe to Nexus signals."""
         try:
             if self.cortex is None:
-                from farnsworth.core.quantum_trading import get_quantum_cortex
+                from Cosmos.core.quantum_trading import get_quantum_cortex
                 self.cortex = get_quantum_cortex()
 
             # Subscribe to Nexus for signal events
             if self.nexus:
                 try:
-                    from farnsworth.core.nexus import SignalType
+                    from Cosmos.core.nexus import SignalType
                     await self.nexus.subscribe(
                         SignalType.QUANTUM_SIGNAL_GENERATED,
                         self._on_signal_generated

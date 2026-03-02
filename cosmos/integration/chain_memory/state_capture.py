@@ -1,7 +1,7 @@
 """
-Complete State Capture for Farnsworth
+Complete State Capture for Cosmos
 
-Captures the ENTIRE state of Farnsworth bot for full restoration:
+Captures the ENTIRE state of Cosmos bot for full restoration:
 - All memory layers (archival, dialogue, episodic)
 - Personality evolution state
 - Running jobs and tasks
@@ -32,15 +32,15 @@ logger = logging.getLogger("chain_memory.state_capture")
 
 
 @dataclass
-class FarnsworthState:
+class CosmosState:
     """
-    Complete Farnsworth state snapshot.
+    Complete Cosmos state snapshot.
 
-    Contains everything needed to fully restore a Farnsworth instance.
+    Contains everything needed to fully restore a Cosmos instance.
     """
     # Metadata
     version: str = "1.0"
-    bot_type: str = "farnsworth"
+    bot_type: str = "cosmos"
     captured_at: str = field(default_factory=lambda: datetime.now().isoformat())
     machine_id: str = ""
 
@@ -88,7 +88,7 @@ class FarnsworthState:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'FarnsworthState':
+    def from_dict(cls, data: Dict) -> 'CosmosState':
         return cls(**{k: v for k, v in data.items() if k in cls.__dataclass_fields__})
 
     def get_size_bytes(self) -> int:
@@ -98,46 +98,46 @@ class FarnsworthState:
 
 class StateCapture:
     """
-    Captures complete Farnsworth state for chain backup.
+    Captures complete Cosmos state for chain backup.
 
     Scans all relevant directories and files to create a full snapshot.
     """
 
-    def __init__(self, farnsworth_root: Optional[str] = None):
+    def __init__(self, cosmos_root: Optional[str] = None):
         """
         Initialize state capture.
 
         Args:
-            farnsworth_root: Root directory of Farnsworth installation
+            cosmos_root: Root directory of Cosmos installation
         """
-        if farnsworth_root is None:
-            # Auto-detect Farnsworth root
+        if cosmos_root is None:
+            # Auto-detect Cosmos root
             possible_roots = [
                 Path(__file__).parent.parent.parent.parent,  # From chain_memory module
                 Path.cwd(),
-                Path("/workspace/Farnsworth"),
-                Path.home() / "Farnsworth",
+                Path("/workspace/Cosmos"),
+                Path.home() / "Cosmos",
             ]
             for root in possible_roots:
-                if (root / "farnsworth").exists():
-                    farnsworth_root = root
+                if (root / "cosmos").exists():
+                    cosmos_root = root
                     break
 
-        self.root = Path(farnsworth_root) if farnsworth_root else Path.cwd()
-        self.memory_dir = self.root / "farnsworth" / "memory"
+        self.root = Path(cosmos_root) if cosmos_root else Path.cwd()
+        self.memory_dir = self.root / "cosmos" / "memory"
 
         logger.info(f"StateCapture initialized with root: {self.root}")
 
-    def capture_full_state(self) -> FarnsworthState:
+    def capture_full_state(self) -> CosmosState:
         """
-        Capture complete Farnsworth state.
+        Capture complete Cosmos state.
 
         Returns:
-            FarnsworthState with all data
+            CosmosState with all data
         """
-        logger.info("Capturing full Farnsworth state...")
+        logger.info("Capturing full Cosmos state...")
 
-        state = FarnsworthState(
+        state = CosmosState(
             machine_id=self._get_machine_id()
         )
 
@@ -242,7 +242,7 @@ class StateCapture:
 
     def _capture_running_jobs(self) -> List[Dict]:
         """Capture currently running jobs."""
-        jobs_file = self.root / "farnsworth" / "jobs" / "running.json"
+        jobs_file = self.root / "cosmos" / "jobs" / "running.json"
         data = self._load_json_file(jobs_file)
         return data or []
 
@@ -250,8 +250,8 @@ class StateCapture:
         """Capture scheduled tasks."""
         # Check various scheduler locations
         possible_files = [
-            self.root / "farnsworth" / "scheduler" / "tasks.json",
-            self.root / "farnsworth" / "core" / "scheduled_tasks.json",
+            self.root / "cosmos" / "scheduler" / "tasks.json",
+            self.root / "cosmos" / "core" / "scheduled_tasks.json",
             self.memory_dir / "scheduled_tasks.json",
         ]
         for f in possible_files:
@@ -265,13 +265,13 @@ class StateCapture:
         configs = {}
 
         # Main agent config
-        agent_file = self.root / "farnsworth" / "core" / "agent_config.json"
+        agent_file = self.root / "cosmos" / "core" / "agent_config.json"
         data = self._load_json_file(agent_file)
         if data:
             configs['main'] = data
 
         # Individual agent configs
-        agents_dir = self.root / "farnsworth" / "agents"
+        agents_dir = self.root / "cosmos" / "agents"
         if agents_dir.exists():
             for f in agents_dir.glob("*.json"):
                 data = self._load_json_file(f)
@@ -282,13 +282,13 @@ class StateCapture:
 
     def _capture_spawned_agents(self) -> List[Dict]:
         """Capture spawned agent states."""
-        agents_file = self.root / "farnsworth" / "core" / "collective" / "spawned_agents.json"
+        agents_file = self.root / "cosmos" / "core" / "collective" / "spawned_agents.json"
         data = self._load_json_file(agents_file)
         return data or []
 
     def _capture_x_automation(self) -> Optional[Dict]:
         """Capture X/Twitter automation state."""
-        x_dir = self.root / "farnsworth" / "integration" / "x_automation"
+        x_dir = self.root / "cosmos" / "integration" / "x_automation"
         state = {}
 
         for f in ['state.json', 'queue.json', 'history.json']:
@@ -349,26 +349,26 @@ class StateCapture:
 
 class StateRestore:
     """
-    Restores Farnsworth state from chain backup.
+    Restores Cosmos state from chain backup.
     """
 
-    def __init__(self, farnsworth_root: Optional[str] = None):
+    def __init__(self, cosmos_root: Optional[str] = None):
         """Initialize state restore."""
-        if farnsworth_root is None:
-            farnsworth_root = Path(__file__).parent.parent.parent.parent
+        if cosmos_root is None:
+            cosmos_root = Path(__file__).parent.parent.parent.parent
 
-        self.root = Path(farnsworth_root)
-        self.memory_dir = self.root / "farnsworth" / "memory"
+        self.root = Path(cosmos_root)
+        self.memory_dir = self.root / "cosmos" / "memory"
 
-    def restore_full_state(self, state: FarnsworthState, merge: bool = True):
+    def restore_full_state(self, state: CosmosState, merge: bool = True):
         """
-        Restore complete Farnsworth state.
+        Restore complete Cosmos state.
 
         Args:
-            state: FarnsworthState to restore
+            state: CosmosState to restore
             merge: If True, merge with existing; if False, replace
         """
-        logger.info(f"Restoring Farnsworth state from {state.captured_at}...")
+        logger.info(f"Restoring Cosmos state from {state.captured_at}...")
 
         # Ensure directories exist
         self.memory_dir.mkdir(parents=True, exist_ok=True)

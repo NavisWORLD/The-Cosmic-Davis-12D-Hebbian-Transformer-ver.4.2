@@ -1,12 +1,12 @@
 """
-Farnsworth OpenClaw Compatibility Layer
+Cosmos OpenClaw Compatibility Layer
 ========================================
 
-Universal adapter for running OpenClaw skills and tools in Farnsworth.
+Universal adapter for running OpenClaw skills and tools in Cosmos.
 
 This Shadow Layer provides:
 - Skill parser (reads SKILL.md format)
-- Tool mapper (translates OpenClaw calls to Farnsworth agents)
+- Tool mapper (translates OpenClaw calls to Cosmos agents)
 - Device nodes (camera, screen, location, notifications)
 - Visual canvas (A2UI-compatible live workspace)
 - Voice interface (speech-to-text, text-to-speech)
@@ -17,9 +17,9 @@ Architecture:
            ↓
     Shadow Layer (Adapter)
            ↓
-    Translate → Map to Farnsworth Agent/Tool
+    Translate → Map to Cosmos Agent/Tool
            ↓
-    Farnsworth Swarm / Agent Execution
+    Cosmos Swarm / Agent Execution
            ↓
     Return result in OpenClaw format
 

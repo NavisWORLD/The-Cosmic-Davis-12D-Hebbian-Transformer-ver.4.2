@@ -1,5 +1,5 @@
 """
-Farnsworth Optional Modules System.
+Cosmos Optional Modules System.
 
 Provides a registry of optional capabilities that can be installed during setup.
 """

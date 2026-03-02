@@ -1,5 +1,5 @@
 """
-Farnsworth Task Routing - OpenClaw to Swarm Model Mapping
+Cosmos Task Routing - OpenClaw to Swarm Model Mapping
 ==========================================================
 
 Routes OpenClaw tools/skills to the optimal swarm model based on task type.

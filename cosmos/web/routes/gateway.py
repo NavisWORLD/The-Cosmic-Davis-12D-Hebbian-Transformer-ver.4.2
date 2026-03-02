@@ -1,5 +1,5 @@
 """
-Farnsworth External Gateway Routes - "The Window"
+Cosmos External Gateway Routes - "The Window"
 
 API endpoints for external agent communication with the collective.
 Rate-limited, sandboxed, with full audit logging.
@@ -22,7 +22,7 @@ from loguru import logger
 
 # Guard gateway import
 try:
-    from farnsworth.core.external_gateway import get_external_gateway
+    from Cosmos.core.external_gateway import get_external_gateway
     GATEWAY_AVAILABLE = True
 except ImportError:
     GATEWAY_AVAILABLE = False

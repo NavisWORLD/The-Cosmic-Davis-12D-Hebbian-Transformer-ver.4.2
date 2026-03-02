@@ -1,5 +1,5 @@
 """
-Generate mouth shape variants for Farnsworth avatar lip-sync.
+Generate mouth shape variants for Cosmos avatar lip-sync.
 Creates viseme images A-X based on Rhubarb Lip Sync mouth shapes.
 """
 
@@ -36,7 +36,7 @@ def generate_mouth_shapes(base_image_path: str, output_dir: str):
     h, w = base_img.shape[:2]
 
     # Detect face region (simplified - assumes centered face)
-    # For Farnsworth's cartoon, mouth is typically in lower-middle
+    # For Cosmos's cartoon, mouth is typically in lower-middle
     mouth_center_x = w // 2
     mouth_center_y = int(h * 0.65)  # Mouth at ~65% down
     mouth_width = int(w * 0.15)
@@ -147,7 +147,7 @@ def create_composite_avatar(base_path: str, mouth_shapes_dir: str, output_dir: s
 
         # For now, just copy the base with the mouth shape embedded
         # In a real implementation, we'd do alpha compositing
-        output_file = output_path / f"farnsworth_viseme_{shape_name}.png"
+        output_file = output_path / f"cosmos_viseme_{shape_name}.png"
         cv2.imwrite(str(output_file), base_img)
         logger.info(f"Created composite: {output_file}")
 
@@ -155,7 +155,7 @@ def create_composite_avatar(base_path: str, mouth_shapes_dir: str, output_dir: s
 if __name__ == "__main__":
     import sys
 
-    base_image = sys.argv[1] if len(sys.argv) > 1 else "avatars/farnsworth_neutral.png"
+    base_image = sys.argv[1] if len(sys.argv) > 1 else "avatars/cosmos_neutral.png"
     output_dir = sys.argv[2] if len(sys.argv) > 2 else "avatars/visemes"
 
     generate_mouth_shapes(base_image, output_dir)

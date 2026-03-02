@@ -1,5 +1,5 @@
 """
-Farnsworth Multi-Channel Messaging Hub
+Cosmos Multi-Channel Messaging Hub
 =======================================
 
 Universal messaging integration supporting 10+ platforms.

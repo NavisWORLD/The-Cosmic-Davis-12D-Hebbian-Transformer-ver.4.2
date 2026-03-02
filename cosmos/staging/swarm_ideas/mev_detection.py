@@ -1,14 +1,14 @@
 """
-Asynchronous MEV Detection Service integration for Farnsworth AI.
+Asynchronous MEV Detection Service integration for Cosmos AI.
 Provides async interface to MEV detection API endpoints.
 """
 
 import httpx
 from typing import Optional, Dict, Any, Coroutine
 from loguru import logger
-from farnsworth.memory.memory_system import get_memory_system
-from farnsworth.core.capability_registry import get_capability_registry
-from farnsworth.core.collective.session_manager import get_session_manager
+from Cosmos.memory.memory_system import get_memory_system
+from Cosmos.core.capability_registry import get_capability_registry
+from Cosmos.core.collective.session_manager import get_session_manager
 import asyncio
 import json
 

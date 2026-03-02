@@ -60,7 +60,7 @@ PRO_NODE_REQUIREMENTS = {
 # Paths
 FARNS_DATA_DIR = Path(os.environ.get(
     "FARNS_DATA_DIR",
-    "/workspace/Farnsworth/data/farns" if os.path.exists("/workspace") else "data/farns"
+    "/workspace/Cosmos/data/farns" if os.path.exists("/workspace") else "data/farns"
 ))
 FARNS_SEED_FILE = FARNS_DATA_DIR / "swarm.seed"
 FARNS_NODES_FILE = FARNS_DATA_DIR / "nodes.json"

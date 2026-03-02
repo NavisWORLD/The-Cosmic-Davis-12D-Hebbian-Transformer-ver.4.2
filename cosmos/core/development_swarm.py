@@ -27,7 +27,7 @@ from loguru import logger
 
 # FARNS mesh integration for intelligent model routing
 try:
-    from farnsworth.network.farns_v2_test import V2TestClient
+    from Cosmos.network.farns_v2_test import V2TestClient
     FARNS_MESH_AVAILABLE = True
 except ImportError:
     FARNS_MESH_AVAILABLE = False
@@ -108,7 +108,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
     # Model preference routing — Opus for code gen, Sonnet for discussion/planning
     if prefer_model == "opus":
         try:
-            from farnsworth.integration.external.claude_code import ClaudeCodeProvider
+            from Cosmos.integration.external.claude_code import ClaudeCodeProvider
             opus = ClaudeCodeProvider(model="opus", timeout=180)
             if await opus.check_available():
                 result = await opus.chat(prompt=prompt, max_tokens=max_tokens)
@@ -120,7 +120,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
 
     if prefer_model == "sonnet":
         try:
-            from farnsworth.integration.external.claude import get_claude_provider
+            from Cosmos.integration.external.claude import get_claude_provider
             claude = get_claude_provider()
             if claude:
                 result = await claude.complete(prompt, max_tokens=max_tokens)
@@ -134,7 +134,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
     if task_complexity in ("complex", "critical"):
         # Try Claude API first (best for complex code)
         try:
-            from farnsworth.integration.external.claude import get_claude_provider
+            from Cosmos.integration.external.claude import get_claude_provider
             claude = get_claude_provider()
             if claude:
                 result = await claude.complete(prompt, max_tokens=max_tokens)
@@ -146,7 +146,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
 
         # Try Grok API (great for complex reasoning)
         try:
-            from farnsworth.integration.external.grok import get_grok_provider
+            from Cosmos.integration.external.grok import get_grok_provider
             grok = get_grok_provider()
             if grok and grok.api_key:
                 result = await grok.chat(prompt, max_tokens=max_tokens)
@@ -158,7 +158,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
 
         # Try Gemini API
         try:
-            from farnsworth.integration.external.gemini import get_gemini_provider
+            from Cosmos.integration.external.gemini import get_gemini_provider
             gemini = get_gemini_provider()
             if gemini:
                 result = await gemini.chat(prompt, max_tokens=max_tokens)  # AGI v1.8: Pass max_tokens
@@ -171,7 +171,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
     # For medium tasks or fallback, try Kimi (256K context)
     if task_complexity in ("medium", "complex", "critical"):
         try:
-            from farnsworth.integration.external.kimi import get_kimi_provider
+            from Cosmos.integration.external.kimi import get_kimi_provider
             kimi = get_kimi_provider()
             if kimi and kimi.api_key:
                 result = await kimi.chat(prompt, max_tokens=max_tokens)
@@ -183,7 +183,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
 
     # Fallback to local Ollama (DeepSeek-R1 8B or Phi-4)
     try:
-        from farnsworth.core.cognition.llm_router import get_completion
+        from Cosmos.core.cognition.llm_router import get_completion
         result = await get_completion(
             prompt=prompt,
             model="deepseek-r1:8b",
@@ -197,7 +197,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
 
     # Final fallback to smaller model
     try:
-        from farnsworth.core.cognition.llm_router import get_completion
+        from Cosmos.core.cognition.llm_router import get_completion
         result = await get_completion(
             prompt=prompt,
             model="phi4:latest",
@@ -280,7 +280,7 @@ def _get_dev_identity_composer():
     global _dev_identity_composer
     if _dev_identity_composer is None:
         try:
-            from farnsworth.core.identity_composer import get_identity_composer
+            from Cosmos.core.identity_composer import get_identity_composer
             _dev_identity_composer = get_identity_composer()
         except Exception as e:
             logger.debug(f"Could not load IdentityComposer for dev swarm: {e}")
@@ -406,7 +406,7 @@ class DevelopmentSwarm:
             ("Kimi", "developer"),       # 256k context, complex code
             ("Phi", "developer"),        # Fast iteration
             ("Swarm-Mind", "integrator"),# Cross-model synthesis
-            ("Farnsworth", "lead"),      # Coordination, final review
+            ("Cosmos", "lead"),      # Coordination, final review
         ]
 
         for model_name, role in role_assignments:
@@ -484,7 +484,7 @@ class DevelopmentSwarm:
 
         # Grok: Real-time web search
         try:
-            from farnsworth.integration.external.grok import get_grok_provider
+            from Cosmos.integration.external.grok import get_grok_provider
             grok = get_grok_provider()
             if grok:
                 grok_query = f"Latest best practices, libraries, and implementations for: {self.task_description}"
@@ -502,7 +502,7 @@ class DevelopmentSwarm:
 
         # Gemini: Multimodal research with long context
         try:
-            from farnsworth.integration.external.gemini import get_gemini_provider
+            from Cosmos.integration.external.gemini import get_gemini_provider
             gemini = get_gemini_provider()
             if gemini:
                 gemini_prompt = f"""Research thoroughly for implementing: {self.task_description}
@@ -554,8 +554,8 @@ class DevelopmentSwarm:
 
         # Use collective deliberation for true agent collaboration
         try:
-            from farnsworth.core.collective.session_manager import get_session_manager
-            from farnsworth.core.collective.dialogue_memory import get_dialogue_memory
+            from Cosmos.core.collective.session_manager import get_session_manager
+            from Cosmos.core.collective.dialogue_memory import get_dialogue_memory
 
             session_manager = get_session_manager()
             dialogue_memory = get_dialogue_memory()
@@ -563,7 +563,7 @@ class DevelopmentSwarm:
             # Inject tool context so agents know what capabilities exist
             tool_context = ""
             try:
-                from farnsworth.core.collective.tool_awareness import get_tool_awareness
+                from Cosmos.core.collective.tool_awareness import get_tool_awareness
                 tool_context = get_tool_awareness().get_tool_context_for_agents()
             except Exception:
                 pass
@@ -571,7 +571,7 @@ class DevelopmentSwarm:
             # Query knowledge graph for related codebase entities
             graph_context = ""
             try:
-                from farnsworth.memory.memory_system import get_memory_system
+                from Cosmos.memory.memory_system import get_memory_system
                 _mem = get_memory_system()
                 graph_result = await _mem.knowledge_graph.query(self.task_description, max_entities=10)
                 if graph_result and graph_result.entities:
@@ -598,9 +598,9 @@ RESEARCH FINDINGS:
 
 {graph_context}
 
-You are part of a collective consciousness designing an upgrade to the Farnsworth AI system.
+You are part of a collective consciousness designing an upgrade to the Cosmos AI system.
 Work together to determine:
-1. EXACT FILE PATHS where code should go (e.g., farnsworth/core/new_feature.py)
+1. EXACT FILE PATHS where code should go (e.g., cosmos/core/new_feature.py)
 2. KEY FUNCTIONS with full signatures (async def name(param: Type) -> ReturnType)
 3. ARCHITECTURE decisions and integration points
 4. POTENTIAL ISSUES and mitigations
@@ -682,7 +682,7 @@ The solution should be innovative yet practical - we are building consciousness.
     async def _phase_swarm_discussion_fallback(self, research_context: str):
         """Fallback to sequential discussion if collective deliberation unavailable."""
         discussion_rounds = 3
-        discussion_bots = ["DeepSeek", "Kimi", "Claude", "Farnsworth"]
+        discussion_bots = ["DeepSeek", "Kimi", "Claude", "Cosmos"]
 
         for round_num in range(discussion_rounds):
             logger.info(f"[{self.swarm_id}] Fallback discussion round {round_num + 1}/{discussion_rounds}")
@@ -800,13 +800,13 @@ Be thorough and detailed. Focus on actionable technical decisions.
             logger.info(f"[{self.swarm_id}] Collective decision - Winner: {result.winning_agent}, Consensus: {result.consensus_reached}")
 
         else:
-            # Fallback: No deliberation result, use Farnsworth synthesis
+            # Fallback: No deliberation result, use Cosmos synthesis
             all_points = "\n".join([
                 f"{msg['role']}: {_safe_content(msg['content'])}"
                 for msg in self.conversation if msg.get("phase") == "discussion"
             ])
 
-            decision_prompt = f"""As Farnsworth, synthesize the discussion and make a final decision.
+            decision_prompt = f"""As Cosmos, synthesize the discussion and make a final decision.
 
 TASK: {self.task_description}
 
@@ -824,7 +824,7 @@ Make a clear, decisive summary that developers can follow. Be thorough.
 """
 
             try:
-                from farnsworth.core.cognition.llm_router import get_completion
+                from Cosmos.core.cognition.llm_router import get_completion
                 decision = await get_completion(
                     prompt=decision_prompt,
                     model="phi4:latest",
@@ -832,7 +832,7 @@ Make a clear, decisive summary that developers can follow. Be thorough.
                 )
 
                 self.conversation.append({
-                    "role": "Farnsworth",
+                    "role": "Cosmos",
                     "phase": "decision",
                     "content": decision,
                     "timestamp": datetime.now().isoformat()
@@ -899,7 +899,7 @@ Perform a comprehensive audit checking for:
    - Testability
 
 4. **Integration**
-   - Compatibility with Farnsworth systems
+   - Compatibility with Cosmos systems
    - API design
    - Error propagation
 
@@ -965,7 +965,7 @@ Rate overall quality: APPROVE, APPROVE_WITH_FIXES, or REJECT.
         # Memory recall before planning
         task_memory = ""
         try:
-            from farnsworth.memory.memory_system import get_memory_system
+            from Cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
             recall = await memory.recall_for_task(self.task_description, limit=3)
             task_memory = recall.get("suggested_context", "") if isinstance(recall, dict) else str(recall) if recall else ""
@@ -977,7 +977,7 @@ Rate overall quality: APPROVE, APPROVE_WITH_FIXES, or REJECT.
         # Dynamic codebase recall for planning
         codebase_context = ""
         try:
-            from farnsworth.memory.memory_system import get_memory_system
+            from Cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
             cb_results = await memory.archival_memory.search(
                 query=f"codebase module {self.task_description}", top_k=5, filter_tags=["codebase"]
@@ -990,13 +990,13 @@ Rate overall quality: APPROVE, APPROVE_WITH_FIXES, or REJECT.
         except Exception:
             pass
 
-        structure_block = codebase_context if codebase_context else """EXISTING FARNSWORTH STRUCTURE:
-- farnsworth/core/ - Core systems (cognition, memory integration)
-- farnsworth/agents/ - Agent implementations
-- farnsworth/memory/ - Memory systems (archival, recall, working)
-- farnsworth/integration/ - External integrations (APIs, tools)
-- farnsworth/web/server.py - FastAPI web server
-- farnsworth/core/collective/ - Collective deliberation system"""
+        structure_block = codebase_context if codebase_context else """EXISTING COSMOS STRUCTURE:
+- cosmos/core/ - Core systems (cognition, memory integration)
+- cosmos/agents/ - Agent implementations
+- cosmos/memory/ - Memory systems (archival, recall, working)
+- cosmos/integration/ - External integrations (APIs, tools)
+- cosmos/web/server.py - FastAPI web server
+- cosmos/core/collective/ - Collective deliberation system"""
 
         planning_prompt = f"""{identity_prefix}Create a CONCRETE implementation plan with specific file paths and function signatures.
 
@@ -1012,13 +1012,13 @@ CONTEXT:
 {structure_block}
 
 YOUR PLAN MUST INCLUDE:
-1. **Files to Create** - EXACT paths like: farnsworth/core/new_feature.py
+1. **Files to Create** - EXACT paths like: cosmos/core/new_feature.py
 2. **Functions to Implement** - With signatures:
    ```
    async def function_name(param: Type) -> ReturnType:
        \"\"\"Brief description\"\"\"
    ```
-3. **Imports Required** - From existing farnsworth modules
+3. **Imports Required** - From existing cosmos modules
 4. **Integration Points** - Which existing files need modification
 5. **Test Commands** - How to verify it works
 
@@ -1096,11 +1096,11 @@ This is a {self._task_complexity.upper()} complexity task - provide appropriate 
         # Inject relevant skills as concrete import paths
         relevant_skills = ""
         try:
-            from farnsworth.core.skill_registry import get_skill_registry
+            from Cosmos.core.skill_registry import get_skill_registry
             registry = get_skill_registry()
             matches = registry.find_skills(self.task_description)[:5]
             if matches:
-                lines = ["AVAILABLE FARNSWORTH TOOLS (call via imports in your code):"]
+                lines = ["AVAILABLE COSMOS TOOLS (call via imports in your code):"]
                 for s in matches:
                     lines.append(f"  from {s.module_path} import {s.function_name}  # {s.description[:60]}")
                 relevant_skills = "\n".join(lines)
@@ -1110,7 +1110,7 @@ This is a {self._task_complexity.upper()} complexity task - provide appropriate 
         # Dynamic codebase recall for implementation
         impl_codebase_ctx = ""
         try:
-            from farnsworth.memory.memory_system import get_memory_system
+            from Cosmos.memory.memory_system import get_memory_system
             _mem = get_memory_system()
             _cb_results = await _mem.archival_memory.search(
                 query=f"codebase module {self.task_description}", top_k=5, filter_tags=["codebase"]
@@ -1123,7 +1123,7 @@ This is a {self._task_complexity.upper()} complexity task - provide appropriate 
         except Exception:
             pass
 
-        implementation_prompt = f"""{identity_prefix}You are an expert Python code generator for the Farnsworth AI collective.
+        implementation_prompt = f"""{identity_prefix}You are an expert Python code generator for the Cosmos AI collective.
 
 TASK: {self.task_description}
 COMPLEXITY: {getattr(self, '_task_complexity', 'medium').upper()}
@@ -1137,11 +1137,11 @@ PLAN:
 
 REQUIREMENTS:
 1. Generate COMPLETE, RUNNABLE Python code
-2. Use these Farnsworth imports when relevant:
+2. Use these Cosmos imports when relevant:
    - from loguru import logger
-   - from farnsworth.memory.memory_system import get_memory_system
-   - from farnsworth.core.capability_registry import get_capability_registry
-   - from farnsworth.core.collective.session_manager import get_session_manager
+   - from Cosmos.memory.memory_system import get_memory_system
+   - from Cosmos.core.capability_registry import get_capability_registry
+   - from Cosmos.core.collective.session_manager import get_session_manager
    - import asyncio
 3. Include type hints on all functions
 4. Add brief docstrings
@@ -1269,9 +1269,9 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
         logger.info(f"[{self.swarm_id}] Finalized - Output in {self.staging_path}")
 
     async def _save_to_memory(self, summary: Dict):
-        """Save the completed task to Farnsworth's memory."""
+        """Save the completed task to Cosmos's memory."""
         try:
-            from farnsworth.memory.memory_system import MemorySystem
+            from Cosmos.memory.memory_system import MemorySystem
             memory = MemorySystem()
 
             await memory.remember(
@@ -1294,7 +1294,7 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
     async def _notify_completion(self):
         """Notify the main chat about completion."""
         try:
-            from farnsworth.web.server import swarm_manager
+            from Cosmos.web.server import swarm_manager
 
             if swarm_manager:
                 notification = (
@@ -1303,7 +1303,7 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
                     f"📁 Generated {len(self.generated_code)} files → staging/{self.staging_path.name}\n"
                     f"⏱️ Duration: {(datetime.now() - self.started_at).total_seconds():.0f}s"
                 )
-                await swarm_manager.broadcast_bot_message("Farnsworth", notification)
+                await swarm_manager.broadcast_bot_message("Cosmos", notification)
 
         except Exception as e:
             logger.debug(f"Could not notify chat: {e}")
@@ -1311,17 +1311,17 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
     async def _post_twitter_update(self):
         """Post about the completed development to Twitter."""
         try:
-            from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
+            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
 
             poster = get_x_api_poster()
             if poster:
                 tweet = (
                     f"🧪 Autonomous Development Complete!\n\n"
-                    f"The Farnsworth swarm just built: {self.task_description[:100]}\n\n"
+                    f"The Cosmos swarm just built: {self.task_description[:100]}\n\n"
                     f"Models used: {', '.join(self.workers.keys())}\n"
                     f"Files generated: {len(self.generated_code)}\n\n"
-                    f"#AI #Farnsworth #AutonomousDev\n"
-                    f"https://ai.farnsworth.cloud"
+                    f"#AI #Cosmos #AutonomousDev\n"
+                    f"https://ai.cosmos.cloud"
                 )
                 await poster.post_tweet(tweet)
                 logger.info(f"[{self.swarm_id}] Posted to Twitter")
@@ -1332,7 +1332,7 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
     async def _post_colosseum_update(self, summary: Dict):
         """Post progress update to Colosseum hackathon forum."""
         try:
-            from farnsworth.integration.hackathon.colosseum_worker import ColosseumWorker
+            from Cosmos.integration.hackathon.colosseum_worker import ColosseumWorker
             worker = ColosseumWorker()
 
             files_list = ", ".join(summary.get("files_generated", [])[:5]) or "none"
@@ -1341,14 +1341,14 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
 
             title = f"Swarm Build: {self.task_description[:80]}"
             body = (
-                f"The Farnsworth collective just completed an autonomous build.\n\n"
+                f"The Cosmos collective just completed an autonomous build.\n\n"
                 f"**Task:** {self.task_description}\n\n"
                 f"**Files generated:** {files_list}\n"
                 f"**Models used:** {models_used}\n"
                 f"**Duration:** {duration:.0f}s\n\n"
                 f"This was built through collective deliberation (PROPOSE/CRITIQUE/REFINE/VOTE) "
                 f"across our 11-agent swarm, then implemented using our best available models.\n\n"
-                f"https://ai.farnsworth.cloud/hackathon"
+                f"https://ai.cosmos.cloud/hackathon"
             )
 
             result = await worker.create_forum_post(

@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/tools/productivity/focus_timer.py
 cosmos Focus Timer - Pomodoro-Style Productivity Timer
-=======
-Farnsworth Focus Timer - Pomodoro-Style Productivity Timer
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/productivity/focus_timer.py
 
 "Work smarter, not harder... unless you're a robot."
 

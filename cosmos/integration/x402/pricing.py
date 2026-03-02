@@ -1,7 +1,7 @@
 """
 x402 Endpoint Pricing Configuration.
 
-Define prices for Farnsworth API endpoints.
+Define prices for Cosmos API endpoints.
 """
 
 from decimal import Decimal

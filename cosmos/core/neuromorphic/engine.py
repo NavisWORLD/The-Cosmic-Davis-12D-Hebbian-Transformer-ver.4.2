@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/core/neuromorphic/engine.py
 cosmos Neuromorphic Core.
-=======
-Farnsworth Neuromorphic Core.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/neuromorphic/engine.py
 
 "I built it with a distinct lack of common sense, but a surplus of neural plasticity!"
 
@@ -19,13 +15,9 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from loguru import logger
 
-<<<<<<< HEAD:cosmos/core/neuromorphic/engine.py
 print("DEBUG: neuro_engine.py: Importing nexus...")
-from cosmos.core.nexus import nexus, Signal, SignalType
+from Cosmos.core.nexus import nexus, Signal, SignalType
 print("DEBUG: neuro_engine.py: nexus imported")
-=======
-from farnsworth.core.nexus import nexus, Signal, SignalType
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/neuromorphic/engine.py
 
 @dataclass
 class Synapse:
@@ -100,10 +92,6 @@ class NeuromorphicEngine:
         logger.trace(f"Neuro: Synapse '{pathway_key}' weight updated to {synapse.weight:.3f}")
 
 # Global Instance
-<<<<<<< HEAD:cosmos/core/neuromorphic/engine.py
 print("DEBUG: neuro_engine.py: Instantiating NeuromorphicEngine...")
 neuro_engine = NeuromorphicEngine()
 print("DEBUG: neuro_engine.py: NeuromorphicEngine instantiated")
-=======
-neuro_engine = NeuromorphicEngine()
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/neuromorphic/engine.py

@@ -24,11 +24,8 @@ class BackendType(Enum):
     LLAMA_CPP = "llama_cpp"
     BITNET = "bitnet"
     OPENAI_COMPATIBLE = "openai_compatible"  # For MiniMax, DeepInfra, OpenRouter, etc.
-<<<<<<< HEAD:cosmos/core/llm_backend.py
     GEMINI = "gemini"  # Google Gemini AI
     COSMOS = "cosmos"  # Cosmo's 54D CST Transformer (local)
-=======
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/llm_backend.py
 
 
 @dataclass
@@ -969,7 +966,6 @@ class OpenAICompatibleBackend(LLMBackend):
                 val = (text_hash[byte_idx] / 255.0) * 2 - 1
                 embedding.append(val)
             return embedding
-<<<<<<< HEAD:cosmos/core/llm_backend.py
 
 
 class GeminiBackend(LLMBackend):
@@ -1226,8 +1222,6 @@ class GeminiBackend(LLMBackend):
     def list_models(cls) -> dict[str, str]:
         """List available Gemini models."""
         return cls.MODELS.copy()
-=======
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/llm_backend.py
 
 
 class CascadeBackend(LLMBackend):
@@ -1356,7 +1350,6 @@ class CascadeBackend(LLMBackend):
             embedding.append(val)
 
         return embedding
-<<<<<<< HEAD:cosmos/core/llm_backend.py
 
 
 class CosmosBackend(LLMBackend):
@@ -1610,5 +1603,3 @@ class CosmosBackend(LLMBackend):
             embedding = embedding[:384]
 
         return embedding
-=======
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/llm_backend.py

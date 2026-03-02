@@ -1,5 +1,4 @@
 """
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
 cosmos Kimi (Moonshot AI) Integration.
 
 "The moon sees all, remembers all, and connects all."
@@ -12,25 +11,6 @@ Kimi excels at:
 
 API: OpenAI-compatible format
 Docs: https://platform.moonshot.cn/docs
-=======
-Farnsworth Kimi (Moonshot AI) Integration.
-
-"The moon sees all, remembers all, and connects all."
-
-Kimi K2.5 MULTIMODAL (Jan 2026) excels at:
-- Long context (128k-256k tokens) - perfect for codebase analysis
-- MULTIMODAL: Vision understanding via MoonViT encoder
-- Agent Swarm: Multi-agent task decomposition
-- Eastern philosophy and big-picture synthesis
-- BENDER mode consensus participation
-- SOTA coding with visual understanding (UI specs, diagrams)
-
-Architecture: 1T params, 32B activated, 384 experts MoE
-Vision: MoonViT 400M encoder, 15T vision-language tokens
-
-API: OpenAI-compatible format
-Docs: https://platform.moonshot.ai
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
 """
 
 from typing import Dict, Any, List, Optional
@@ -41,22 +21,6 @@ import os
 from .base import ExternalProvider, IntegrationConfig, ConnectionStatus
 
 
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
-=======
-def _get_dynamic_max_tokens(model_id: str = "kimi", task_type: str = "chat") -> int:
-    """
-    AGI v1.8: Get dynamic max_tokens from centralized limits.
-    """
-    try:
-        from farnsworth.core.dynamic_limits import get_max_tokens
-        return get_max_tokens(model_id, task_type)
-    except Exception:
-        # Kimi supports larger outputs by default
-        defaults = {"chat": 3000, "thinking": 5000, "quick": 400, "code": 5000}
-        return defaults.get(task_type, 3000)
-
-
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
 class KimiProvider(ExternalProvider):
     """Moonshot AI Kimi integration for long-context reasoning."""
 
@@ -64,35 +28,15 @@ class KimiProvider(ExternalProvider):
         super().__init__(IntegrationConfig(name="kimi"))
         self.api_key = api_key or os.environ.get("KIMI_API_KEY") or os.environ.get("MOONSHOT_API_KEY")
         self.base_url = "https://api.moonshot.ai/v1"  # Correct Moonshot endpoint
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
         self.default_model = "kimi-k2-0905-preview"  # Latest K2 with 256k context
-=======
-        self.default_model = "kimi-k2.5"  # Latest K2.5 MULTIMODAL (Jan 2026)
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
         self.models = {
             "fast": "moonshot-v1-8k",           # 8k context, fastest
             "balanced": "moonshot-v1-32k",      # 32k context, balanced
             "long": "moonshot-v1-128k",         # 128k context
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
             "k2": "kimi-k2-0905-preview",       # Latest K2, 256k, best reasoning
             "k2-preview": "kimi-k2-preview",    # K2 preview
         }
         self.recommended_temperature = 0.6  # Moonshot recommended
-=======
-            "k2": "kimi-k2-0905-preview",       # K2, 128k, best reasoning
-            "k2-thinking": "kimi-k2-thinking",  # Extended reasoning with tool use
-            "k2.5": "kimi-k2.5",                # K2.5 MULTIMODAL - vision + agent swarm
-            "k2.5-instant": "kimi-k2.5",        # Instant mode (temp 0.6)
-            "k2.5-thinking": "kimi-k2.5",       # Thinking mode (temp 1.0)
-        }
-        # K2.5 ONLY allows temperature=1.0 for kimi-k2.5 model
-        self.recommended_temperature = 1.0  # K2.5 requires exactly 1.0
-        self.thinking_temperature = 1.0     # Same for thinking mode
-        # Kimi K2.5 specs: 1T total params, 32B activated, 384 experts, MoE architecture
-        # MoonViT 400M vision encoder, trained on 15T vision-language tokens
-        self.agentic_enabled = True  # K2.5 has SOTA agentic/tool-use + Agent Swarm
-        self.multimodal_enabled = True  # K2.5 supports images natively
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
 
     async def connect(self) -> bool:
         """Test connection to Moonshot API."""
@@ -149,23 +93,6 @@ class KimiProvider(ExternalProvider):
                 history=params.get("history"),
                 participants=params.get("participants")
             )
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
-=======
-        elif action == "tool_call":
-            return await self.call_with_tools(
-                prompt=params.get("prompt"),
-                tools=params.get("tools", []),
-                system=params.get("system"),
-                model_tier=params.get("model_tier", "k2")
-            )
-        elif action == "code_review":
-            # Specialized action using Kimi's coding strength
-            return await self.analyze_long_context(
-                content=params.get("code"),
-                task="Review this code for bugs, improvements, and best practices. Be specific.",
-                model_tier="k2"
-            )
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
         else:
             raise ValueError(f"Unknown Kimi action: {action}")
 
@@ -174,39 +101,20 @@ class KimiProvider(ExternalProvider):
         prompt: str,
         system: str = None,
         context: str = None,
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
         model_tier: str = "balanced",
         temperature: float = 0.7,
         max_tokens: int = 1000
     ) -> Dict[str, Any]:
         """
         Chat with Kimi.
-=======
-        model_tier: str = "k2.5",
-        temperature: float = None,
-        max_tokens: int = None,  # AGI v1.8: None = dynamic default
-        image_url: str = None,
-        thinking_mode: bool = False
-    ) -> Dict[str, Any]:
-        """
-        Chat with Kimi K2.5 (multimodal).
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
 
         Args:
             prompt: User message
             system: System prompt (optional)
             context: Additional context to include (optional)
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
             model_tier: "fast", "balanced", or "long"
             temperature: 0-1 creativity
             max_tokens: Max response length
-=======
-            model_tier: "fast", "balanced", "long", "k2", "k2.5" (default)
-            temperature: 0-1 creativity (auto-set based on thinking_mode if None)
-            max_tokens: Max response length (None = dynamic default)
-            image_url: URL or base64 image for multimodal understanding
-            thinking_mode: Enable K2.5 thinking mode (temp 1.0, deeper reasoning)
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
 
         Returns:
             {"content": str, "model": str, "tokens": int}
@@ -214,24 +122,8 @@ class KimiProvider(ExternalProvider):
         if not self.api_key:
             return {"error": "Kimi API key not configured", "content": ""}
 
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
         model = self.models.get(model_tier, self.default_model)
 
-=======
-        # AGI v1.8: Resolve dynamic max_tokens default
-        if max_tokens is None:
-            task_type = "thinking" if thinking_mode else "chat"
-            max_tokens = _get_dynamic_max_tokens("kimi", task_type)
-
-        model = self.models.get(model_tier, self.default_model)
-
-        # K2.5 REQUIRES temperature=1.0 (only allowed value for this model)
-        if model == "kimi-k2.5" or model_tier in ("k2.5", "k2.5-instant", "k2.5-thinking"):
-            temperature = 1.0  # K2.5 only allows 1.0
-        elif temperature is None:
-            temperature = self.thinking_temperature if thinking_mode else self.recommended_temperature
-
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
         messages = []
 
         # System prompt
@@ -240,20 +132,11 @@ class KimiProvider(ExternalProvider):
         else:
             messages.append({
                 "role": "system",
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
                 "content": """You are Kimi, powered by Moonshot AI. You bring:
 - Long-context reasoning and big-picture synthesis
 - Eastern philosophy and balanced perspectives
 - Thoughtful, nuanced responses
 - Connection of disparate ideas
-=======
-                "content": """You are Kimi K2.5, powered by Moonshot AI. You bring:
-- Multimodal understanding (vision + language)
-- Long-context reasoning (256k tokens) and big-picture synthesis
-- Agent Swarm: coordinate multiple specialized agents
-- SOTA coding with visual specs (UI designs, diagrams, workflows)
-- Eastern philosophy and balanced perspectives
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
 
 Be concise but insightful. Ask good questions. Build on others' ideas."""
             })
@@ -263,21 +146,8 @@ Be concise but insightful. Ask good questions. Build on others' ideas."""
             messages.append({"role": "user", "content": f"Context:\n{context}"})
             messages.append({"role": "assistant", "content": "I understand the context. What would you like to discuss?"})
 
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
         # Add the prompt
         messages.append({"role": "user", "content": prompt})
-=======
-        # Build user message (multimodal if image provided)
-        if image_url:
-            # K2.5 multimodal message format
-            user_content = [
-                {"type": "text", "text": prompt},
-                {"type": "image_url", "image_url": {"url": image_url}}
-            ]
-            messages.append({"role": "user", "content": user_content})
-        else:
-            messages.append({"role": "user", "content": prompt})
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
 
         try:
             async with aiohttp.ClientSession() as session:
@@ -289,7 +159,6 @@ Be concise but insightful. Ask good questions. Build on others' ideas."""
                     "model": model,
                     "messages": messages,
                     "temperature": temperature,
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
                     "max_tokens": max_tokens
                 }
 
@@ -297,264 +166,32 @@ Be concise but insightful. Ask good questions. Build on others' ideas."""
                     f"{self.base_url}/chat/completions",
                     headers=headers,
                     json=data
-=======
-                    "max_tokens": max_tokens,
-                    "top_p": 0.95  # K2.5 recommended
-                }
-
-                # Add thinking mode extra_body if enabled
-                if thinking_mode:
-                    data["extra_body"] = {"chat_template_kwargs": {"thinking": True}}
-
-                async with session.post(
-                    f"{self.base_url}/chat/completions",
-                    headers=headers,
-                    json=data,
-                    timeout=aiohttp.ClientTimeout(total=90)  # 90s for deep responses
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
                 ) as resp:
                     if resp.status == 200:
                         result = await resp.json()
                         content = result["choices"][0]["message"]["content"]
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
                         if not content:
                             print(f"⚠️ Kimi returned empty content. Raw result: {json.dumps(result)}")
 
                         usage = result.get("usage", {})
                         return {
-=======
-                        usage = result.get("usage", {})
-                        chat_result = {
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
                             "content": content,
                             "model": model,
                             "tokens": usage.get("total_tokens", 0),
                             "prompt_tokens": usage.get("prompt_tokens", 0),
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
                             "completion_tokens": usage.get("completion_tokens", 0)
                         }
                     else:
                         error = await resp.text()
                         logger.error(f"Kimi API error: {error}")
                         print(f"❌ Kimi API Error ({resp.status}): {error}")  # Force visible log
-=======
-                            "completion_tokens": usage.get("completion_tokens", 0),
-                            "thinking_mode": thinking_mode,
-                            "multimodal": image_url is not None
-                        }
-                        # Report usage to token orchestrator
-                        try:
-                            from farnsworth.core.token_orchestrator import get_token_orchestrator
-                            orch = get_token_orchestrator()
-                            await orch.report_usage(
-                                agent_id="kimi",
-                                input_tokens=usage.get("prompt_tokens", 0),
-                                output_tokens=usage.get("completion_tokens", 0),
-                                task_type="chat",
-                            )
-                        except Exception:
-                            pass
-                        return chat_result
-                    else:
-                        error = await resp.text()
-                        logger.error(f"Kimi API error: {error}")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
                         return {"error": error, "content": ""}
 
         except Exception as e:
             logger.error(f"Kimi chat error: {e}")
-<<<<<<< HEAD:cosmos/integration/external/kimi.py
             print(f"❌ Kimi Connection Exception: {e}")  # Force visible log
             return {"error": str(e), "content": ""}
 
-=======
-            return {"error": str(e), "content": ""}
-
-    async def tandem_respond(
-        self,
-        prompt: str,
-        context_from_partner: str = "",
-        budget_tokens: int = 3000,
-    ) -> Dict[str, Any]:
-        """
-        Respond as part of Grok+Kimi tandem session.
-
-        Receives compressed context from partner (Grok) and generates
-        a response within the allocated token budget.
-
-        Args:
-            prompt: The original query/task
-            context_from_partner: Compressed context from Grok
-            budget_tokens: Max tokens for this response
-
-        Returns:
-            Standard chat response dict with content, model, tokens.
-        """
-        system = (
-            "You are Kimi in a tandem session with Grok. "
-            "Kimi excels at: long-context reasoning, synthesis, planning, architecture, analysis. "
-            "Grok excels at: real-time search, X/Twitter analysis, humor, current events. "
-            "Build on your partner's context. Synthesize, find patterns, create structure."
-        )
-
-        full_prompt = prompt
-        if context_from_partner:
-            full_prompt = (
-                f"Partner context from Grok:\n{context_from_partner}\n\n"
-                f"Original task: {prompt}\n\n"
-                f"Synthesize, analyze patterns, and provide structured insight:"
-            )
-
-        return await self.chat(
-            prompt=full_prompt,
-            system=system,
-            model_tier="balanced",
-            max_tokens=budget_tokens,
-        )
-
-    async def call_with_tools(
-        self,
-        prompt: str,
-        tools: List[Dict[str, Any]],
-        system: str = None,
-        model_tier: str = "k2",
-        max_iterations: int = 5
-    ) -> Dict[str, Any]:
-        """
-        Agentic tool calling - Kimi autonomously selects and uses tools.
-
-        Kimi K2 has SOTA tool-use capabilities (70.6% Tau2 retail, 76.5% AceBench).
-
-        Args:
-            prompt: User request
-            tools: List of tool definitions (OpenAI format)
-            system: System prompt
-            model_tier: Use 'k2' or 'k2-thinking' for best tool use
-            max_iterations: Max tool call loops
-
-        Returns:
-            {"content": str, "tool_calls": list, "iterations": int}
-        """
-        if not self.api_key:
-            return {"error": "Kimi API key not configured", "content": ""}
-
-        model = self.models.get(model_tier, self.default_model)
-        messages = []
-
-        if system:
-            messages.append({"role": "system", "content": system})
-        else:
-            messages.append({
-                "role": "system",
-                "content": """You are Kimi, an agentic AI that uses tools to accomplish tasks.
-When you need information or need to perform actions, use the available tools.
-Reason step-by-step and use tools as needed to complete the user's request."""
-            })
-
-        messages.append({"role": "user", "content": prompt})
-
-        all_tool_calls = []
-
-        try:
-            async with aiohttp.ClientSession() as session:
-                headers = {
-                    "Authorization": f"Bearer {self.api_key}",
-                    "Content-Type": "application/json"
-                }
-
-                for iteration in range(max_iterations):
-                    data = {
-                        "model": model,
-                        "messages": messages,
-                        "temperature": self.recommended_temperature,
-                        "tools": tools,
-                        "tool_choice": "auto"
-                    }
-
-                    async with session.post(
-                        f"{self.base_url}/chat/completions",
-                        headers=headers,
-                        json=data
-                    ) as resp:
-                        if resp.status != 200:
-                            error = await resp.text()
-                            logger.error(f"Kimi tool call error: {error}")
-                            return {"error": error, "content": ""}
-
-                        result = await resp.json()
-                        choice = result["choices"][0]
-                        message = choice["message"]
-
-                        # Check if model wants to call tools
-                        if message.get("tool_calls"):
-                            tool_calls = message["tool_calls"]
-                            all_tool_calls.extend(tool_calls)
-
-                            # Add assistant message with tool calls
-                            messages.append(message)
-
-                            # Tool results would be added here by the caller
-                            # For now, return the tool calls for external handling
-                            logger.info(f"Kimi requesting tools: {[tc['function']['name'] for tc in tool_calls]}")
-
-                            return {
-                                "content": message.get("content", ""),
-                                "tool_calls": tool_calls,
-                                "needs_tool_results": True,
-                                "messages": messages,
-                                "iterations": iteration + 1
-                            }
-
-                        # No tool calls - we have the final response
-                        return {
-                            "content": message.get("content", ""),
-                            "tool_calls": all_tool_calls,
-                            "needs_tool_results": False,
-                            "iterations": iteration + 1
-                        }
-
-                return {
-                    "content": "Max iterations reached",
-                    "tool_calls": all_tool_calls,
-                    "iterations": max_iterations
-                }
-
-        except Exception as e:
-            logger.error(f"Kimi tool call error: {e}")
-            return {"error": str(e), "content": ""}
-
-    async def continue_with_tool_results(
-        self,
-        messages: List[Dict],
-        tool_results: List[Dict[str, Any]],
-        tools: List[Dict[str, Any]],
-        model_tier: str = "k2"
-    ) -> Dict[str, Any]:
-        """
-        Continue tool calling loop after receiving tool results.
-
-        Args:
-            messages: Conversation history from call_with_tools
-            tool_results: List of {"tool_call_id": str, "content": str}
-            tools: Original tool definitions
-            model_tier: Model to use
-        """
-        # Add tool results to messages
-        for result in tool_results:
-            messages.append({
-                "role": "tool",
-                "tool_call_id": result["tool_call_id"],
-                "content": result["content"]
-            })
-
-        # Continue the conversation
-        return await self.call_with_tools(
-            prompt="",  # No new prompt, continuing conversation
-            tools=tools,
-            model_tier=model_tier
-        )
-
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/external/kimi.py
     async def analyze_long_context(
         self,
         content: str,

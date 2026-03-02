@@ -2,14 +2,14 @@
 DEXAI Proxy - Forward /dex and /DEXAI requests to the DEXAI Node.js server on port 3847.
 
 Usage in server.py:
-    from farnsworth.dex.dex_proxy import register_dex_routes
+    from Cosmos.dex.dex_proxy import register_dex_routes
     register_dex_routes(app)
 """
 
 import logging
 import httpx
 
-logger = logging.getLogger("farnsworth.dex.proxy")
+logger = logging.getLogger("cosmos.dex.proxy")
 
 DEXAI_URL = "http://localhost:3847"
 

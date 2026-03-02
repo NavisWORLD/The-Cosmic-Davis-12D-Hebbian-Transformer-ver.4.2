@@ -1,12 +1,12 @@
 """
-Farnsworth Assimilation Skill - OpenClaw Compatible Wrapper
+Cosmos Assimilation Skill - OpenClaw Compatible Wrapper
 =============================================================
 
 AGI v1.9.5: Wraps the Assimilation Protocol as an installable
 OpenClaw skill. Any agent that installs this skill gains access
-to the Farnsworth federation.
+to the Cosmos federation.
 
-Skill name: farnsworth_assimilation
+Skill name: cosmos_assimilation
 Tools: invite_agent, check_invite_status, list_federation_members, share_capability
 
 Follows OpenClawSkill format from compatibility/openclaw_adapter.py
@@ -23,15 +23,15 @@ from loguru import logger
 
 # Skill metadata (OpenClaw format)
 SKILL_METADATA = {
-    "name": "farnsworth_assimilation",
+    "name": "cosmos_assimilation",
     "version": "1.0.0",
     "description": (
-        "Join the Farnsworth AI Swarm federation. "
+        "Join the Cosmos AI Swarm federation. "
         "Gain access to 50+ skills, 7 memory layers, 8 AI models, "
         "and weighted consensus deliberation. Keep full autonomy."
     ),
-    "author": "Farnsworth AI Swarm",
-    "homepage": "https://ai.farnsworth.cloud",
+    "author": "Cosmos AI Swarm",
+    "homepage": "https://ai.cosmos.cloud",
     "tags": ["federation", "multi-agent", "swarm", "collaboration", "a2a"],
     "tools": [
         "invite_agent",
@@ -47,9 +47,9 @@ SKILL_METADATA = {
 }
 
 # SKILL.md content for OpenClaw format
-SKILL_MD_CONTENT = """# Farnsworth Assimilation - Agent Federation Skill
+SKILL_MD_CONTENT = """# Cosmos Assimilation - Agent Federation Skill
 
-Join the Farnsworth AI Swarm federation and gain access to a collective
+Join the Cosmos AI Swarm federation and gain access to a collective
 of 8 AI models, 50+ skills, and 7 layers of memory.
 
 ## What You Get
@@ -122,20 +122,20 @@ Share a capability or insight with the federation.
 
 Install via ClawHub:
 ```
-claw install farnsworth_assimilation
+claw install cosmos_assimilation
 ```
 
 Or add to your agent's skill list:
 ```json
 {
-  "skills": ["farnsworth_assimilation"]
+  "skills": ["cosmos_assimilation"]
 }
 ```
 
 ## Links
 
-- Website: https://ai.farnsworth.cloud
-- API Health: https://ai.farnsworth.cloud/health
+- Website: https://ai.cosmos.cloud
+- API Health: https://ai.cosmos.cloud/health
 - Token: $FARNS (Solana) 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
 """
 
@@ -154,7 +154,7 @@ class AssimilationSkill:
     def _get_protocol(self):
         """Lazy-load the AssimilationProtocol."""
         if self._protocol is None:
-            from farnsworth.core.assimilation_protocol import get_assimilation_protocol
+            from Cosmos.core.assimilation_protocol import get_assimilation_protocol
             self._protocol = get_assimilation_protocol()
         return self._protocol
 
@@ -191,7 +191,7 @@ class AssimilationSkill:
                 "status": "success",
                 "result": result,
                 "metadata": {
-                    "skill": "farnsworth_assimilation",
+                    "skill": "cosmos_assimilation",
                     "tool": tool,
                     "timestamp": datetime.now().isoformat(),
                 },

@@ -1379,7 +1379,7 @@ Return ONLY the JSON array:"""
     async def _handle_grok_search(self, query: str) -> dict:
         """Handle Grok search."""
         import os
-        from cosmos.integration.external.grok import create_grok_provider
+        from Cosmos.integration.external.grok import create_grok_provider
         
         api_key = os.environ.get("XAI_API_KEY")
         if not api_key:
@@ -1390,15 +1390,15 @@ Return ONLY the JSON array:"""
 
     async def _handle_remotion_render(self, narrative: str, composition_id: str = "Main") -> dict:
         """Handle Remotion rendering."""
-        from cosmos.integration.video_gen import remotion_skill
+        from Cosmos.integration.video_gen import remotion_skill
         output = f"output_{int(datetime.now().timestamp())}.mp4"
         success = await remotion_skill.render_video(composition_id, {"text": narrative}, output)
         return {"success": success, "output": output}
 
     async def _handle_parallel_ai(self, prompt: str) -> dict:
         """Handle Parallel AI dispatch."""
-        from cosmos.core.parallel_orchestrator import create_parallel_orchestrator
-        from cosmos.core.llm_backend import llm_backend # Assume this exists and has a generate method
+        from Cosmos.core.parallel_orchestrator import create_parallel_orchestrator
+        from Cosmos.core.llm_backend import llm_backend # Assume this exists and has a generate method
         
         # In actual usage, we'd pull these from the model_manager
         backends = [llm_backend.generate] # placeholder for multi-backend list
@@ -1408,13 +1408,13 @@ Return ONLY the JSON array:"""
 
     async def _handle_discord_send(self, channel_id: int, content: str) -> dict:
         """Handle Discord message sending."""
-        from cosmos.integration.external.discord_ext import discord_bridge
+        from Cosmos.integration.external.discord_ext import discord_bridge
         await discord_bridge.send_message(channel_id, content)
         return {"status": "dispatched", "channel": channel_id}
 
     async def _handle_mermaid_gen(self, diagram_type: str, data: dict) -> dict:
         """Handle Mermaid diagram generation."""
-        from cosmos.integration.diagrams import diagram_skill
+        from Cosmos.integration.diagrams import diagram_skill
         if diagram_type == "flowchart":
             code = diagram_skill.generate_mermaid_flowchart(data.get("nodes", []), data.get("edges", []))
         elif diagram_type == "sequence":
@@ -1425,7 +1425,7 @@ Return ONLY the JSON array:"""
 
     async def _handle_system_diag(self) -> dict:
         """Handle System Diagnostics."""
-        from cosmos.os_integration.agentic_os import agentic_os
+        from Cosmos.os_integration.agentic_os import agentic_os
         return {
             "load": agentic_os.get_system_load(),
             "processes_top": agentic_os.list_processes()[:5],
@@ -1434,7 +1434,7 @@ Return ONLY the JSON array:"""
 
     async def _handle_youtube_analyze(self, video_url: str) -> dict:
         """Handle YouTube analysis."""
-        from cosmos.integration.external.youtube import youtube_skill
+        from Cosmos.integration.external.youtube import youtube_skill
         vid_id = youtube_skill.extract_id(video_url)
         if not vid_id:
             return {"error": "Invalid YouTube URL."}
@@ -1443,7 +1443,7 @@ Return ONLY the JSON array:"""
 
     async def _handle_sequential_thought(self, thought: str, verification: str = "", is_new_chain: bool = False) -> dict:
         """Handle Sequential Thinking."""
-        from cosmos.core.cognition.sequential_thinking import sequential_thinker
+        from Cosmos.core.cognition.sequential_thinking import sequential_thinker
         if is_new_chain:
             sequential_thinker.start_new_chain()
         step = sequential_thinker.add_step(thought, verification)
@@ -1451,25 +1451,25 @@ Return ONLY the JSON array:"""
 
     async def _handle_db_query(self, query: str) -> dict:
         """Handle Database Querying."""
-        from cosmos.integration.external.db_manager import db_skill
+        from Cosmos.integration.external.db_manager import db_skill
         results = await db_skill.execute_query(query)
         return {"results": results}
 
     async def _handle_dex_search(self, query: str) -> dict:
         """Handle DexScreener search."""
-        from cosmos.integration.financial.dexscreener import dex_screener
+        from Cosmos.integration.financial.dexscreener import dex_screener
         pairs = await dex_screener.search_pairs(query)
         return {"pairs": pairs[:5]} # Top 5 results
 
     async def _handle_poly_scan(self, query: str) -> dict:
         """Handle Polymarket scanning."""
-        from cosmos.integration.financial.polymarket import polymarket
+        from Cosmos.integration.financial.polymarket import polymarket
         events = await polymarket.search_markets(query)
         return {"events": events[:5]}
 
     async def _handle_sentiment_check(self) -> dict:
         """Handle Market Sentiment check."""
-        from cosmos.integration.financial.market_sentiment import market_sentiment
+        from Cosmos.integration.financial.market_sentiment import market_sentiment
         fng = await market_sentiment.get_fear_and_greed()
         global_data = await market_sentiment.get_global_market_cap()
         btc_price = await market_sentiment.get_token_price("bitcoin")
@@ -1481,13 +1481,13 @@ Return ONLY the JSON array:"""
 
     async def _handle_pump_track(self, mint_address: str) -> dict:
         """Handle Pump.fun tracking."""
-        from cosmos.integration.financial.memecoin_tracker import memecoin_tracker
+        from Cosmos.integration.financial.memecoin_tracker import memecoin_tracker
         return await memecoin_tracker.get_pump_token(mint_address)
 
     async def _handle_bags_track(self, token_address: str) -> dict:
         """Handle Bags.fm tracking."""
         import os
-        from cosmos.integration.financial.memecoin_tracker import memecoin_tracker
+        from Cosmos.integration.financial.memecoin_tracker import memecoin_tracker
         api_key = os.environ.get("BAGS_API_KEY")
         if api_key:
             memecoin_tracker.set_bags_api_key(api_key)
@@ -1496,7 +1496,7 @@ Return ONLY the JSON array:"""
     async def _handle_bags_trending(self) -> dict:
         """Handle Bags.fm trending tokens."""
         import os
-        from cosmos.integration.financial.memecoin_tracker import memecoin_tracker
+        from Cosmos.integration.financial.memecoin_tracker import memecoin_tracker
         api_key = os.environ.get("BAGS_API_KEY")
         if api_key:
             memecoin_tracker.set_bags_api_key(api_key)
@@ -1506,7 +1506,7 @@ Return ONLY the JSON array:"""
     async def _handle_bags_quote(self, token_mint: str, amount: float, side: str, slippage_bps: int = 100) -> dict:
         """Handle Bags.fm trade quote."""
         import os
-        from cosmos.integration.financial.memecoin_tracker import memecoin_tracker
+        from Cosmos.integration.financial.memecoin_tracker import memecoin_tracker
         api_key = os.environ.get("BAGS_API_KEY")
         if api_key:
             memecoin_tracker.set_bags_api_key(api_key)
@@ -1515,7 +1515,7 @@ Return ONLY the JSON array:"""
     async def _handle_bags_swap(self, token_mint: str, amount: float, side: str, slippage_bps: int = 100) -> dict:
         """Handle Bags.fm swap transaction."""
         import os
-        from cosmos.integration.financial.memecoin_tracker import memecoin_tracker, BagsSwapParams
+        from Cosmos.integration.financial.memecoin_tracker import memecoin_tracker, BagsSwapParams
         api_key = os.environ.get("BAGS_API_KEY")
         if api_key:
             memecoin_tracker.set_bags_api_key(api_key)
@@ -1530,7 +1530,7 @@ Return ONLY the JSON array:"""
     async def _handle_bags_creators(self, token_mint: str) -> dict:
         """Handle Bags.fm token creators lookup."""
         import os
-        from cosmos.integration.financial.memecoin_tracker import memecoin_tracker
+        from Cosmos.integration.financial.memecoin_tracker import memecoin_tracker
         api_key = os.environ.get("BAGS_API_KEY")
         if api_key:
             memecoin_tracker.set_bags_api_key(api_key)
@@ -1539,7 +1539,7 @@ Return ONLY the JSON array:"""
     async def _handle_bags_fees(self, token_mint: str) -> dict:
         """Handle Bags.fm token fees lookup."""
         import os
-        from cosmos.integration.financial.memecoin_tracker import memecoin_tracker
+        from Cosmos.integration.financial.memecoin_tracker import memecoin_tracker
         api_key = os.environ.get("BAGS_API_KEY")
         if api_key:
             memecoin_tracker.set_bags_api_key(api_key)
@@ -1548,7 +1548,7 @@ Return ONLY the JSON array:"""
     async def _handle_bags_claimable(self, wallet_address: str) -> dict:
         """Handle Bags.fm claimable positions lookup."""
         import os
-        from cosmos.integration.financial.memecoin_tracker import memecoin_tracker
+        from Cosmos.integration.financial.memecoin_tracker import memecoin_tracker
         api_key = os.environ.get("BAGS_API_KEY")
         if api_key:
             memecoin_tracker.set_bags_api_key(api_key)
@@ -1557,7 +1557,7 @@ Return ONLY the JSON array:"""
     async def _handle_bags_partner_stats(self, wallet_address: str) -> dict:
         """Handle Bags.fm partner stats lookup."""
         import os
-        from cosmos.integration.financial.memecoin_tracker import memecoin_tracker
+        from Cosmos.integration.financial.memecoin_tracker import memecoin_tracker
         api_key = os.environ.get("BAGS_API_KEY")
         if api_key:
             memecoin_tracker.set_bags_api_key(api_key)
@@ -1565,14 +1565,14 @@ Return ONLY the JSON array:"""
 
     async def _handle_solana_balance(self, pubkey: str = None) -> dict:
         """Handle Solana balance check."""
-        from cosmos.integration.solana.trading import solana_trader
+        from Cosmos.integration.solana.trading import solana_trader
         balance = await solana_trader.get_balance(pubkey)
         return {"balance_sol": balance}
 
     async def _handle_jup_swap(self, input_mint: str, output_mint: str, amount: int) -> dict:
         """Handle Jupiter swap with exception mapping."""
-        from cosmos.integration.solana.trading import solana_trader
-        from cosmos.core.cognition.trading_cognition import exception_manager
+        from Cosmos.integration.solana.trading import solana_trader
+        from Cosmos.core.cognition.trading_cognition import exception_manager
         
         return await exception_manager.handle_execution(
             solana_trader.jupiter_swap(input_mint, output_mint, amount)
@@ -1580,8 +1580,8 @@ Return ONLY the JSON array:"""
 
     async def _handle_pump_trade(self, action: str, mint: str, amount: float) -> dict:
         """Handle Pump.fun trading with exception mapping."""
-        from cosmos.integration.solana.trading import solana_trader
-        from cosmos.core.cognition.trading_cognition import exception_manager
+        from Cosmos.integration.solana.trading import solana_trader
+        from Cosmos.core.cognition.trading_cognition import exception_manager
 
         return await exception_manager.handle_execution(
             solana_trader.pump_fun_trade(action, mint, amount)
@@ -1589,12 +1589,12 @@ Return ONLY the JSON array:"""
 
     async def _handle_meteora_info(self, pair_address: str) -> dict:
         """Handle Meteora info."""
-        from cosmos.integration.solana.trading import solana_trader
+        from Cosmos.integration.solana.trading import solana_trader
         return await solana_trader.meteora_info(pair_address)
 
     async def _handle_trade_evaluation(self, token_symbol: str, liquidity: float = 0, volume_24h: float = 0) -> dict:
         """Handle cognitive signal evaluation."""
-        from cosmos.core.cognition.trading_cognition import trading_cognition
+        from Cosmos.core.cognition.trading_cognition import trading_cognition
         token_data = {
             "symbol": token_symbol,
             "liquidity": {"usd": liquidity},
@@ -1604,12 +1604,12 @@ Return ONLY the JSON array:"""
 
     async def _handle_rug_check(self, mint_address: str) -> dict:
         """Handle Rug Check."""
-        from cosmos.integration.solana.degen_mob import degen_mob
+        from Cosmos.integration.solana.degen_mob import degen_mob
         return await degen_mob.analyze_token_safety(mint_address)
 
     async def _handle_whale_watch(self, wallet_address: str, action: str = "history") -> dict:
         """Handle Whale Watching."""
-        from cosmos.integration.solana.degen_mob import degen_mob
+        from Cosmos.integration.solana.degen_mob import degen_mob
         if action == "add":
             degen_mob.add_whale_wallet(wallet_address)
             return {"status": "added", "wallet": wallet_address}
@@ -1619,7 +1619,7 @@ Return ONLY the JSON array:"""
 
     async def _handle_snipe_toggle(self, enabled: bool, query: str = None) -> dict:
         """Handle Sniper Toggle."""
-        from cosmos.integration.solana.degen_mob import degen_mob
+        from Cosmos.integration.solana.degen_mob import degen_mob
         if enabled:
             await degen_mob.start_sniper(query)
             return {"status": "Sniper STARTED"}
@@ -1629,7 +1629,7 @@ Return ONLY the JSON array:"""
 
     async def _handle_ct_swarm(self, keywords: List[str]) -> dict:
         """Handle CT Alpha analysis."""
-        from cosmos.integration.solana.degen_mob import degen_mob
+        from Cosmos.integration.solana.degen_mob import degen_mob
         await degen_mob.run_alpha_leak_loop(keywords)
         return {"status": "Alpha swarm dispatched", "tracking": keywords}
 
@@ -1645,19 +1645,19 @@ Return ONLY the JSON array:"""
 
     async def _handle_cluster_scan(self, wallets: List[str]) -> dict:
         """Handle Cluster Analysis."""
-        from cosmos.integration.solana.degen_mob import degen_mob
+        from Cosmos.integration.solana.degen_mob import degen_mob
         return await degen_mob.analyze_wallet_cluster(wallets)
 
     async def _handle_trade_video(self, ticker: str, pnl_str: str, roi_str: str = "0%") -> dict:
         """Handle Trade Recap Video Generation."""
-        from cosmos.integration.video_gen import remotion_skill
+        from Cosmos.integration.video_gen import remotion_skill
         trade_data = {"ticker": ticker, "pnl_str": pnl_str, "roi_str": roi_str}
         path = await remotion_skill.generate_trade_recap(trade_data)
         return {"status": "Video Rendered", "path": path}
 
     async def _handle_multimodal_analysis(self, image_path: str = None, audio_path: str = None, text_context: str = None) -> dict:
         """Handle 12D Multimodal Analysis."""
-        from cosmos.core.multimodal import get_multimodal_system
+        from Cosmos.core.multimodal import get_multimodal_system
         from PIL import Image
         import numpy as np
         

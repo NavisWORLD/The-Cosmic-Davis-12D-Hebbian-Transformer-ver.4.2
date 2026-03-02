@@ -1,8 +1,8 @@
 """
-Farnsworth Matrix Channel Adapter
+Cosmos Matrix Channel Adapter
 ==================================
 
-Matrix protocol integration for the Farnsworth swarm.
+Matrix protocol integration for the Cosmos swarm.
 
 Features:
 - End-to-end encryption (Olm/Megolm)
@@ -83,7 +83,7 @@ class MatrixChannel(BaseChannel):
         user_id: str = None,
         access_token: str = None,
         password: str = None,
-        device_name: str = "Farnsworth"
+        device_name: str = "Cosmos"
     ):
         """
         Initialize Matrix channel.

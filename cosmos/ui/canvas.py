@@ -1,5 +1,5 @@
 """
-Farnsworth Canvas Manager - Matplotlib Output for CLI and GUI.
+Cosmos Canvas Manager - Matplotlib Output for CLI and GUI.
 
 AGI v1.8.4 Feature: Manages matplotlib canvas outputs for visualization
 in both CLI (Rich terminal) and GUI (Streamlit) environments.
@@ -396,7 +396,7 @@ class CanvasManager:
             return
 
         try:
-            from farnsworth.core.nexus import SignalType
+            from Cosmos.core.nexus import SignalType
 
             signal_enum = getattr(SignalType, signal_type, None)
             if signal_enum:

@@ -1,5 +1,5 @@
 """
-Farnsworth Settings Widget.
+Cosmos Settings Widget.
 """
 
 try:

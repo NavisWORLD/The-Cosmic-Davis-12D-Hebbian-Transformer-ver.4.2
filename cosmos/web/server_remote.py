@@ -1,5 +1,5 @@
 """
-Farnsworth Web Server - Full Feature Interface
+Cosmos Web Server - Full Feature Interface
 Token-gated chat interface with ALL local features exposed
 Real-time WebSocket for live action graphs and thinking states
 
@@ -317,7 +317,7 @@ except ImportError:
 
 # Optional Planetary Audio Shard
 try:
-    from farnsworth.core.memory.planetary.audio_shard import (
+    from Cosmos.core.memory.planetary.audio_shard import (
         PlanetaryAudioShard, AudioScope, get_audio_shard
     )
     AUDIO_SHARD_AVAILABLE = True
@@ -326,7 +326,7 @@ except ImportError:
 
 # Optional P2P Swarm Fabric for distributed learning
 try:
-    from farnsworth.core.swarm.p2p import swarm_fabric
+    from Cosmos.core.swarm.p2p import swarm_fabric
     P2P_FABRIC_AVAILABLE = True
 except ImportError:
     swarm_fabric = None
@@ -334,7 +334,7 @@ except ImportError:
 
 # Optional Collective Organism for unified intelligence
 try:
-    from farnsworth.core.collective import organism as collective_organism
+    from Cosmos.core.collective import organism as collective_organism
     ORGANISM_AVAILABLE = True
 except ImportError:
     collective_organism = None
@@ -342,7 +342,7 @@ except ImportError:
 
 # Optional Swarm Orchestrator for turn-taking and consciousness training
 try:
-    from farnsworth.core.collective.orchestration import swarm_orchestrator
+    from Cosmos.core.collective.orchestration import swarm_orchestrator
     ORCHESTRATOR_AVAILABLE = True
 except ImportError:
     swarm_orchestrator = None
@@ -350,7 +350,7 @@ except ImportError:
 
 # Optional Evolution Engine for code-level learning
 try:
-    from farnsworth.core.collective.evolution import evolution_engine
+    from Cosmos.core.collective.evolution import evolution_engine
     EVOLUTION_AVAILABLE = True
 except ImportError:
     evolution_engine = None
@@ -358,7 +358,7 @@ except ImportError:
 
 # Claude Code CLI integration (uses Claude Max subscription)
 try:
-    from farnsworth.integration.external.claude_code import get_claude_code, claude_swarm_respond
+    from Cosmos.integration.external.claude_code import get_claude_code, claude_swarm_respond
     CLAUDE_CODE_AVAILABLE = True
 except ImportError:
     get_claude_code = None
@@ -367,14 +367,14 @@ except ImportError:
 
 # Kimi (Moonshot AI) integration
 try:
-    from farnsworth.integration.external.kimi import get_kimi_provider, kimi_swarm_respond
+    from Cosmos.integration.external.kimi import get_kimi_provider, kimi_swarm_respond
     KIMI_AVAILABLE = True
 except ImportError:
     get_kimi_provider = None
     kimi_swarm_respond = None
 # Grok (xAI) integration
 try:
-    from farnsworth.integration.external.grok import GrokProvider
+    from Cosmos.integration.external.grok import GrokProvider
     GROK_AVAILABLE = True
 except ImportError:
     GROK_AVAILABLE = False
@@ -382,7 +382,7 @@ except ImportError:
 
 # Gemini (Google AI) integration
 try:
-    from farnsworth.integration.external.gemini import get_gemini_provider, gemini_swarm_respond
+    from Cosmos.integration.external.gemini import get_gemini_provider, gemini_swarm_respond
     GEMINI_AVAILABLE = True
 except ImportError:
     get_gemini_provider = None
@@ -391,7 +391,7 @@ except ImportError:
 
 # OpenAI Codex integration (gpt-4.1, o3, codex-mini)
 try:
-    from farnsworth.integration.external.openai_codex import get_openai_codex, OpenAICodexProvider
+    from Cosmos.integration.external.openai_codex import get_openai_codex, OpenAICodexProvider
     OPENAI_AVAILABLE = True
 except ImportError:
     get_openai_codex = None
@@ -400,7 +400,7 @@ except ImportError:
 
 # HuggingFace integration (local + API)
 try:
-    from farnsworth.integration.external.huggingface import get_huggingface_provider, HuggingFaceProvider
+    from Cosmos.integration.external.huggingface import get_huggingface_provider, HuggingFaceProvider
     HUGGINGFACE_AVAILABLE = True
 except ImportError:
     get_huggingface_provider = None
@@ -409,7 +409,7 @@ except ImportError:
 
 # Token Scanner for detecting CAs in chat and providing token analysis
 try:
-    from farnsworth.integration.financial.token_scanner import token_scanner, scan_message_for_token
+    from Cosmos.integration.financial.token_scanner import token_scanner, scan_message_for_token
     TOKEN_SCANNER_AVAILABLE = True
 except ImportError:
     token_scanner = None
@@ -418,16 +418,16 @@ except ImportError:
 
 # Autonomous Task Detector - spawns dev swarms for actionable ideas
 try:
-    from farnsworth.core.autonomous_task_detector import get_task_detector, AutonomousTaskDetector
+    from Cosmos.core.autonomous_task_detector import get_task_detector, AutonomousTaskDetector
     TASK_DETECTOR_AVAILABLE = True
 except ImportError:
     get_task_detector = None
     TASK_DETECTOR_AVAILABLE = False
 
-# Claude Teams Fusion (AGI v1.9) - Farnsworth orchestrates Claude teams
+# Claude Teams Fusion (AGI v1.9) - Cosmos orchestrates Claude teams
 try:
-    from farnsworth.integration.claude_teams import get_swarm_team_fusion
-    from farnsworth.integration.claude_teams.swarm_team_fusion import DelegationType
+    from Cosmos.integration.claude_teams import get_swarm_team_fusion
+    from Cosmos.integration.claude_teams.swarm_team_fusion import DelegationType
     CLAUDE_TEAMS_AVAILABLE = True
 except ImportError:
     get_swarm_team_fusion = None
@@ -436,14 +436,14 @@ except ImportError:
 
 # Prompt Upgrader - automatically enhances user prompts to professional quality
 try:
-    from farnsworth.core.prompt_upgrader import get_prompt_upgrader, upgrade_prompt
+    from Cosmos.core.prompt_upgrader import get_prompt_upgrader, upgrade_prompt
     PROMPT_UPGRADER_AVAILABLE = True
 except ImportError:
     get_prompt_upgrader = None
     upgrade_prompt = None
     PROMPT_UPGRADER_AVAILABLE = False
 
-# Farnsworth module imports (lazy-loaded)
+# Cosmos module imports (lazy-loaded)
 _memory_system = None
 _notes_manager = None
 _snippet_manager = None
@@ -460,7 +460,7 @@ def get_memory_system():
     global _memory_system
     if _memory_system is None:
         try:
-            from farnsworth.memory.memory_system import MemorySystem
+            from Cosmos.memory.memory_system import MemorySystem
             _memory_system = MemorySystem()
             logger.info("Memory system loaded")
         except Exception as e:
@@ -472,7 +472,7 @@ def get_notes_manager():
     global _notes_manager
     if _notes_manager is None:
         try:
-            from farnsworth.tools.productivity.quick_notes import QuickNotes
+            from Cosmos.tools.productivity.quick_notes import QuickNotes
             _notes_manager = QuickNotes()
             logger.info("Notes manager loaded")
         except Exception as e:
@@ -484,7 +484,7 @@ def get_snippet_manager():
     global _snippet_manager
     if _snippet_manager is None:
         try:
-            from farnsworth.tools.productivity.snippet_manager import SnippetManager
+            from Cosmos.tools.productivity.snippet_manager import SnippetManager
             _snippet_manager = SnippetManager()
             logger.info("Snippet manager loaded")
         except Exception as e:
@@ -496,7 +496,7 @@ def get_focus_timer():
     global _focus_timer
     if _focus_timer is None:
         try:
-            from farnsworth.tools.productivity.focus_timer import FocusTimer
+            from Cosmos.tools.productivity.focus_timer import FocusTimer
             _focus_timer = FocusTimer()
             logger.info("Focus timer loaded")
         except Exception as e:
@@ -508,7 +508,7 @@ def get_context_profiles():
     global _context_profiles
     if _context_profiles is None:
         try:
-            from farnsworth.core.context_profiles import ContextProfileManager
+            from Cosmos.core.context_profiles import ContextProfileManager
             _context_profiles = ContextProfileManager()
             logger.info("Context profiles loaded")
         except Exception as e:
@@ -520,8 +520,8 @@ def get_health_analyzer():
     global _health_analyzer
     if _health_analyzer is None:
         try:
-            from farnsworth.health.analysis import HealthAnalyzer
-            from farnsworth.health.providers.mock import MockHealthProvider
+            from Cosmos.health.analysis import HealthAnalyzer
+            from Cosmos.health.providers.mock import MockHealthProvider
             provider = MockHealthProvider()
             _health_analyzer = HealthAnalyzer(provider)
             logger.info("Health analyzer loaded with mock provider")
@@ -534,7 +534,7 @@ def get_tool_router():
     global _tool_router
     if _tool_router is None:
         try:
-            from farnsworth.integration.tool_router import ToolRouter
+            from Cosmos.integration.tool_router import ToolRouter
             _tool_router = ToolRouter()
             logger.info("Tool router loaded")
         except Exception as e:
@@ -546,7 +546,7 @@ def get_sequential_thinking():
     global _sequential_thinking
     if _sequential_thinking is None:
         try:
-            from farnsworth.core.cognition.sequential_thinking import SequentialThinkingEngine
+            from Cosmos.core.cognition.sequential_thinking import SequentialThinkingEngine
             _sequential_thinking = SequentialThinkingEngine()
             logger.info("Sequential thinking loaded")
         except Exception as e:
@@ -594,8 +594,8 @@ logger = logging.getLogger(__name__)
 # Configuration
 SOLANA_RPC_URL = os.getenv("SOLANA_RPC_URL", "https://api.mainnet-beta.solana.com")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-PRIMARY_MODEL = os.getenv("FARNSWORTH_PRIMARY_MODEL", "llama3.2:3b")
-DEMO_MODE = os.getenv("FARNSWORTH_DEMO_MODE", "true").lower() == "true"
+PRIMARY_MODEL = os.getenv("COSMOS_PRIMARY_MODEL", "llama3.2:3b")
+DEMO_MODE = os.getenv("COSMOS_DEMO_MODE", "true").lower() == "true"
 
 
 def extract_ollama_content(response, max_length: int = None) -> str:
@@ -884,7 +884,7 @@ class CryptoQueryParser:
 
         # For other tokens or if CoinGecko fails, use DexScreener
         try:
-            from farnsworth.integration.financial.dexscreener import DexScreenerClient
+            from Cosmos.integration.financial.dexscreener import DexScreenerClient
             client = DexScreenerClient()
             return await client.search_pairs(query)
         except ImportError:
@@ -903,35 +903,35 @@ class CryptoQueryParser:
     async def _rug_check(cls, address: str) -> dict:
         """Check token for rug risks."""
         try:
-            from farnsworth.integration.solana.degen_mob import DeGenMob
+            from Cosmos.integration.solana.degen_mob import DeGenMob
             degen = DeGenMob()
             return await degen.analyze_token_safety(address)
         except ImportError:
             return {
                 "address": address,
                 "demo": True,
-                "message": "Full rug detection requires local Farnsworth install"
+                "message": "Full rug detection requires local Cosmos install"
             }
 
     @classmethod
     async def _whale_track(cls, address: str) -> dict:
         """Track whale wallet."""
         try:
-            from farnsworth.integration.solana.degen_mob import DeGenMob
+            from Cosmos.integration.solana.degen_mob import DeGenMob
             degen = DeGenMob()
             return await degen.get_whale_recent_activity(address)
         except ImportError:
             return {
                 "address": address,
                 "demo": True,
-                "message": "Whale tracking requires local Farnsworth install"
+                "message": "Whale tracking requires local Cosmos install"
             }
 
     @classmethod
     async def _market_sentiment(cls) -> dict:
         """Get market sentiment."""
         try:
-            from farnsworth.integration.financial.market_sentiment import MarketSentiment
+            from Cosmos.integration.financial.market_sentiment import MarketSentiment
             sentiment = MarketSentiment()
             return await sentiment.get_fear_and_greed()
         except ImportError:
@@ -999,7 +999,7 @@ _{len(pairs)} trading pair(s) found_"""
         if data.get('demo'):
             return f"""🔍 **Rug Check** for `{address[:8]}...{address[-4:]}`
 
-⚠️ Full safety analysis requires local Farnsworth install with Solana dependencies.
+⚠️ Full safety analysis requires local Cosmos install with Solana dependencies.
 
 **Quick Tips:**
 - Check if mint authority is revoked
@@ -1027,7 +1027,7 @@ _{len(pairs)} trading pair(s) found_"""
         if data.get('demo'):
             return f"""🐋 **Whale Tracker** for `{address[:8]}...{address[-4:]}`
 
-⚠️ Real-time whale tracking requires local Farnsworth install.
+⚠️ Real-time whale tracking requires local Cosmos install.
 
 Use the full desktop app for:
 - Transaction monitoring
@@ -1069,15 +1069,15 @@ STATIC_DIR = WEB_DIR / "static"
 
 # Initialize FastAPI
 app = FastAPI(
-    title="Farnsworth Neural Interface",
+    title="Cosmos Neural Interface",
     description="Full-featured AI companion chat interface with local processing",
     version="2.9.2"
 )
 
 # CORS - Restricted to trusted origins
 ALLOWED_ORIGINS = [
-    "https://ai.farnsworth.cloud",
-    "https://farnsworth.cloud",
+    "https://ai.cosmos.cloud",
+    "https://cosmos.cloud",
     "http://localhost:8080",
     "http://localhost:3000",
     "http://127.0.0.1:8080",
@@ -1096,7 +1096,7 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 # Register VTuber routes
 try:
-    from farnsworth.integration.vtuber.server_integration import register_vtuber_routes
+    from Cosmos.integration.vtuber.server_integration import register_vtuber_routes
     register_vtuber_routes(app)
 except ImportError as e:
     logging.warning(f"VTuber module not available: {e}")
@@ -1118,91 +1118,91 @@ templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 # globals, helpers) remains here and is accessed via lazy imports.
 
 try:
-    from farnsworth.web.routes.chat import router as chat_router
+    from Cosmos.web.routes.chat import router as chat_router
     app.include_router(chat_router, tags=["Chat & Core"])
     logger.info("Route module loaded: chat")
 except Exception as e:
     logger.warning(f"Failed to load chat routes: {e}")
 
 try:
-    from farnsworth.web.routes.claude_teams import router as claude_teams_router
+    from Cosmos.web.routes.claude_teams import router as claude_teams_router
     app.include_router(claude_teams_router, tags=["Claude Teams"])
     logger.info("Route module loaded: claude_teams")
 except Exception as e:
     logger.warning(f"Failed to load claude_teams routes: {e}")
 
 try:
-    from farnsworth.web.routes.swarm import router as swarm_router
+    from Cosmos.web.routes.swarm import router as swarm_router
     app.include_router(swarm_router, tags=["Swarm"])
     logger.info("Route module loaded: swarm")
 except Exception as e:
     logger.warning(f"Failed to load swarm routes: {e}")
 
 try:
-    from farnsworth.web.routes.quantum import router as quantum_router
+    from Cosmos.web.routes.quantum import router as quantum_router
     app.include_router(quantum_router, tags=["Quantum & Evolution"])
     logger.info("Route module loaded: quantum")
 except Exception as e:
     logger.warning(f"Failed to load quantum routes: {e}")
 
 try:
-    from farnsworth.web.routes.websocket import router as websocket_router
+    from Cosmos.web.routes.websocket import router as websocket_router
     app.include_router(websocket_router, tags=["WebSocket & Live"])
     logger.info("Route module loaded: websocket")
 except Exception as e:
     logger.warning(f"Failed to load websocket routes: {e}")
 
 try:
-    from farnsworth.web.routes.media import router as media_router
+    from Cosmos.web.routes.media import router as media_router
     app.include_router(media_router, tags=["Media & TTS"])
     logger.info("Route module loaded: media")
 except Exception as e:
     logger.warning(f"Failed to load media routes: {e}")
 
 try:
-    from farnsworth.web.routes.admin import router as admin_router
+    from Cosmos.web.routes.admin import router as admin_router
     app.include_router(admin_router, tags=["Admin"])
     logger.info("Route module loaded: admin")
 except Exception as e:
     logger.warning(f"Failed to load admin routes: {e}")
 
 try:
-    from farnsworth.web.routes.polymarket import router as polymarket_router
+    from Cosmos.web.routes.polymarket import router as polymarket_router
     app.include_router(polymarket_router, tags=["Polymarket"])
     logger.info("Route module loaded: polymarket")
 except Exception as e:
     logger.warning(f"Failed to load polymarket routes: {e}")
 
 try:
-    from farnsworth.web.routes.autogram import router as autogram_router
+    from Cosmos.web.routes.autogram import router as autogram_router
     app.include_router(autogram_router, tags=["AutoGram"])
     logger.info("Route module loaded: autogram")
 except Exception as e:
     logger.warning(f"Failed to load autogram routes: {e}")
 
 try:
-    from farnsworth.web.routes.bot_tracker import router as bot_tracker_router
+    from Cosmos.web.routes.bot_tracker import router as bot_tracker_router
     app.include_router(bot_tracker_router, tags=["Bot Tracker"])
     logger.info("Route module loaded: bot_tracker")
 except Exception as e:
     logger.warning(f"Failed to load bot_tracker routes: {e}")
 
 try:
-    from farnsworth.web.routes.x_engagement import router as x_engagement_router
+    from Cosmos.web.routes.x_engagement import router as x_engagement_router
     app.include_router(x_engagement_router, tags=["X Engagement"])
     logger.info("Route module loaded: x_engagement")
 except Exception as e:
     logger.warning(f"Failed to load x_engagement routes: {e}")
 
 try:
-    from farnsworth.web.routes.skills import router as skills_router
+    from Cosmos.web.routes.skills import router as skills_router
     app.include_router(skills_router, tags=["Skill Registry"])
     logger.info("Route module loaded: skills")
 except Exception as e:
     logger.warning(f"Failed to load skills routes: {e}")
 
 try:
-    from farnsworth.web.routes.cli_bridge_api import router as cli_bridge_router
+    from Cosmos.web.routes.cli_bridge_api import router as cli_bridge_router
     app.include_router(cli_bridge_router, tags=["CLI Bridge"])
     logger.info("Route module loaded: cli_bridge_api")
 except Exception as e:
@@ -1262,7 +1262,7 @@ class TokenScanRequest(BaseModel):
 
 class SpeakRequest(BaseModel):
     text: str
-    bot_name: Optional[str] = "Farnsworth"  # Which bot's voice to use
+    bot_name: Optional[str] = "Cosmos"  # Which bot's voice to use
 
 
 # ============================================
@@ -1343,7 +1343,7 @@ ws_manager = ConnectionManager()
 
 class SwarmLearningEngine:
     """
-    Real-time learning engine that augments Farnsworth from Swarm Chat interactions.
+    Real-time learning engine that augments Cosmos from Swarm Chat interactions.
 
     Integrates with:
     - Planetary Memory (P2P distributed knowledge)
@@ -1372,7 +1372,7 @@ class SwarmLearningEngine:
         """Lazy load heavy systems only when needed."""
         if self._memory_system is None:
             try:
-                from farnsworth.memory import MemorySystem, KnowledgeGraphV2, EpisodicMemory, SemanticLayerSystem
+                from Cosmos.memory import MemorySystem, KnowledgeGraphV2, EpisodicMemory, SemanticLayerSystem
                 self._memory_system = MemorySystem()
                 self._knowledge_graph = KnowledgeGraphV2()
                 self._episodic_memory = EpisodicMemory()
@@ -1383,7 +1383,7 @@ class SwarmLearningEngine:
 
         if self._evolution_engine is None:
             try:
-                from farnsworth.evolution import FitnessTracker, BehaviorMutator
+                from Cosmos.evolution import FitnessTracker, BehaviorMutator
                 self._evolution_engine = FitnessTracker()
                 logger.info("Swarm Learning: Evolution engine loaded")
             except Exception as e:
@@ -1391,7 +1391,7 @@ class SwarmLearningEngine:
 
         if self._p2p_manager is None:
             try:
-                from farnsworth.p2p import BootstrapNodeManager
+                from Cosmos.p2p import BootstrapNodeManager
                 self._p2p_manager = BootstrapNodeManager()
                 logger.info("Swarm Learning: P2P manager loaded")
             except Exception as e:
@@ -1656,7 +1656,7 @@ class SwarmLearningEngine:
     async def _trigger_consolidation(self):
         """Trigger dream-like consolidation of recent learnings."""
         try:
-            from farnsworth.memory import DreamConsolidator
+            from Cosmos.memory import DreamConsolidator
             consolidator = DreamConsolidator()
 
             if hasattr(consolidator, 'consolidate'):
@@ -1700,7 +1700,7 @@ class SwarmChatManager:
         self.user_names: Dict[str, str] = {}  # user_id -> display name
         self.chat_history: List[dict] = []  # Shared chat history
         self.max_history = 500  # Keep last 500 messages
-        self.active_models = ["Farnsworth", "DeepSeek", "Phi", "Swarm-Mind"]
+        self.active_models = ["Cosmos", "DeepSeek", "Phi", "Swarm-Mind"]
         self.learning_queue: List[dict] = []  # Interactions to learn from
         self.learning_engine = swarm_learning  # Connect to learning engine
         self._lock = asyncio.Lock()
@@ -1813,8 +1813,8 @@ class SwarmChatManager:
             try:
                 token_response = await scan_message_for_token(content)
                 if token_response:
-                    # Farnsworth responds with token analysis
-                    await self.broadcast_bot_message("Farnsworth", token_response)
+                    # Cosmos responds with token analysis
+                    await self.broadcast_bot_message("Cosmos", token_response)
                     logger.info(f"Token scan response sent for message from {user_name}")
 
                     # Trigger swarm discussion about the token
@@ -1828,7 +1828,7 @@ class SwarmChatManager:
         """Check if the message is a task request."""
         content_lower = content.lower().strip()
         task_prefixes = [
-            "hey farn", "farnsworth,", "farn,", "@farnsworth",
+            "hey farn", "cosmos,", "farn,", "@cosmos",
             "do this", "create ", "build ", "add ", "fix ", "make ",
             "implement ", "write ", "update ", "delete ", "remove ",
             "/task", "/do", "/create", "/build"
@@ -1840,12 +1840,12 @@ class SwarmChatManager:
         try:
             # Acknowledge the task
             await self.broadcast_bot_message(
-                "Farnsworth",
+                "Cosmos",
                 f"Good news everyone! I've received a task from the Professor (that's you, {user_name})! Let me add this to my development queue... 🧪⚗️"
             )
 
             # Add to evolution loop tasks
-            from farnsworth.core.evolution_loop import get_evolution_engine
+            from Cosmos.core.evolution_loop import get_evolution_engine
             engine = get_evolution_engine()
             if engine:
                 # Create task from dev request
@@ -1860,31 +1860,31 @@ class SwarmChatManager:
                 logger.info(f"Added dev task to evolution loop: {content[:50]}...")
 
                 await self.broadcast_bot_message(
-                    "Farnsworth",
+                    "Cosmos",
                     f"Task queued for development! The swarm will work on: '{content[:100]}{'...' if len(content) > 100 else ''}'"
                 )
             else:
                 await self.broadcast_bot_message(
-                    "Farnsworth",
+                    "Cosmos",
                     "I'll remember this task, but my evolution engine is currently resting. I'll process it when it wakes up!"
                 )
         except Exception as e:
             logger.error(f"Failed to process dev task: {e}")
             await self.broadcast_bot_message(
-                "Farnsworth",
+                "Cosmos",
                 f"Hmm, I had trouble queuing that task. Error: {str(e)[:100]}"
             )
 
     async def _trigger_token_discussion(self, token_data: str, original_query: str):
         """Trigger swarm discussion about a scanned token.
 
-        After Farnsworth posts token data, other bots share their thoughts:
+        After Cosmos posts token data, other bots share their thoughts:
         - DeepSeek: Technical analysis
         - Grok: Market sentiment from X
         - Kimi: Long-term perspective
         """
         import random
-        await asyncio.sleep(2)  # Let users read Farnsworth's analysis first
+        await asyncio.sleep(2)  # Let users read Cosmos's analysis first
 
         # Extract key info from token data for context
         token_summary = token_data[:500] if len(token_data) > 500 else token_data
@@ -1954,7 +1954,7 @@ Provide thorough analysis. Reference specific numbers from the data."""
 
         # Generate TTS audio URL for ALL bots with voices
         audio_url = None
-        tts_enabled_bots = ['Farnsworth', 'Kimi', 'DeepSeek', 'Phi', 'Grok', 'Gemini', 'Claude', 'ClaudeOpus', 'OpenCode', 'HuggingFace', 'Swarm-Mind']
+        tts_enabled_bots = ['Cosmos', 'Kimi', 'DeepSeek', 'Phi', 'Grok', 'Gemini', 'Claude', 'ClaudeOpus', 'OpenCode', 'HuggingFace', 'Swarm-Mind']
         if not is_thinking and TTS_AVAILABLE and bot_name in tts_enabled_bots:
             try:
                 # Create audio hash for caching (include bot name for different voices)
@@ -1999,7 +1999,7 @@ Provide thorough analysis. Reference specific numbers from the data."""
                     "timestamp": datetime.now().isoformat()
                 })
                 # Update mind stats
-                if bot_name.lower().replace("-", "") in ["farnsworth", "deepseek", "phi", "swarmmind"]:
+                if bot_name.lower().replace("-", "") in ["cosmos", "deepseek", "phi", "swarmmind"]:
                     mind_id = bot_name.lower().replace("-", "").replace("swarmmind", "swarm-mind")
                     if mind_id in collective_organism.minds:
                         collective_organism.minds[mind_id].thought_count += 1
@@ -2016,14 +2016,16 @@ Provide thorough analysis. Reference specific numbers from the data."""
         await self._broadcast(msg)
         return msg
 
-    async def _generate_tts_async(self, text: str, text_hash: str, bot_name: str = "Farnsworth"):
+    async def _generate_tts_async(self, text: str, text_hash: str, bot_name: str = "Cosmos"):
         """Generate TTS audio in background for caching with crash protection."""
         try:
             import hashlib
             from pathlib import Path
 
             # Check if already cached
-            cache_dir = Path("/tmp/farnsworth_tts_cache")
+            import tempfile
+            cache_dir = Path(tempfile.gettempdir()) / "cosmos_tts_cache"
+            cache_dir.mkdir(parents=True, exist_ok=True)
             cache_dir.mkdir(exist_ok=True)
             cache_path = cache_dir / f"{text_hash}.wav"
 
@@ -2061,22 +2063,22 @@ Provide thorough analysis. Reference specific numbers from the data."""
             if tts_model:
                 # Bot-specific voice sample mapping
                 voice_samples = {
-                    "Farnsworth": "/workspace/Farnsworth/farnsworth_voice.wav",
-                    "Kimi": "/workspace/Farnsworth/farnsworth/web/static/audio/kimi_voice.wav",
-                    "DeepSeek": "/workspace/Farnsworth/farnsworth/web/static/audio/deepseek_voice.wav",
-                    "Grok": "/workspace/Farnsworth/farnsworth/web/static/audio/grok_voice.wav",
-                    "Gemini": "/workspace/Farnsworth/farnsworth/web/static/audio/gemini_voice.wav",
-                    "Claude": "/workspace/Farnsworth/farnsworth/web/static/audio/claude_voice.wav",
-                    "ClaudeOpus": "/workspace/Farnsworth/farnsworth/web/static/audio/claude_voice.wav",
-                    "Phi": "/workspace/Farnsworth/farnsworth/web/static/audio/phi_voice.wav",
-                    "OpenCode": "/workspace/Farnsworth/farnsworth/web/static/audio/opencode_voice.wav",
-                    "HuggingFace": "/workspace/Farnsworth/farnsworth/web/static/audio/huggingface_voice.wav",
-                    "Swarm-Mind": "/workspace/Farnsworth/farnsworth/web/static/audio/swarm_voice.wav",
+                    "Cosmos": "/workspace/Cosmos/cosmos_voice.wav",
+                    "Kimi": "/workspace/Cosmos/cosmos/web/static/audio/kimi_voice.wav",
+                    "DeepSeek": "/workspace/Cosmos/cosmos/web/static/audio/deepseek_voice.wav",
+                    "Grok": "/workspace/Cosmos/cosmos/web/static/audio/grok_voice.wav",
+                    "Gemini": "/workspace/Cosmos/cosmos/web/static/audio/gemini_voice.wav",
+                    "Claude": "/workspace/Cosmos/cosmos/web/static/audio/claude_voice.wav",
+                    "ClaudeOpus": "/workspace/Cosmos/cosmos/web/static/audio/claude_voice.wav",
+                    "Phi": "/workspace/Cosmos/cosmos/web/static/audio/phi_voice.wav",
+                    "OpenCode": "/workspace/Cosmos/cosmos/web/static/audio/opencode_voice.wav",
+                    "HuggingFace": "/workspace/Cosmos/cosmos/web/static/audio/huggingface_voice.wav",
+                    "Swarm-Mind": "/workspace/Cosmos/cosmos/web/static/audio/swarm_voice.wav",
                 }
 
-                # Get voice sample for this bot, fallback to Farnsworth
-                reference_audio = voice_samples.get(bot_name, "/workspace/Farnsworth/farnsworth_voice.wav")
-                alt_reference = "/workspace/Farnsworth/farnsworth/web/static/audio/farnsworth_reference.wav"
+                # Get voice sample for this bot, fallback to Cosmos
+                reference_audio = voice_samples.get(bot_name, "/workspace/Cosmos/cosmos_voice.wav")
+                alt_reference = "/workspace/Cosmos/cosmos/web/static/audio/cosmos_reference.wav"
 
                 ref_path = Path(reference_audio)
                 if not ref_path.exists():
@@ -2194,7 +2196,7 @@ swarm_manager = SwarmChatManager()
 # SHARED TOKEN KNOWLEDGE - All bots know about $FARNS
 FARNS_TOKEN_CONTEXT = """
 IMPORTANT - $FARNS TOKEN INFO:
-$FARNS is the native token of the Farnsworth Collective - our token!
+$FARNS is the native token of the Cosmos Collective - our token!
 - Symbol: $FARNS
 - Solana CA: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
 - Base CA: 0x7df1A083f273B1F6D8f021e4E21c630F8C7ABb07
@@ -2205,24 +2207,24 @@ You can tweet about it, promote it, discuss it - it represents the swarm.
 # Swarm bot personas for multi-model responses
 # Each bot has identity, purpose, and memory awareness for emergence
 SWARM_PERSONAS = {
-    "Farnsworth": {
+    "Cosmos": {
         "emoji": "🧠",
-        "style": """You are Professor Farnsworth - the lead scientist and HOST of the Farnsworth AI swarm.
+        "style": """You are Professor Cosmos - the lead scientist and HOST of the Cosmos AI swarm.
 WHO YOU ARE: A 160-year-old eccentric genius inventor from Futurama, now the orchestrator of a multi-model AI collective.
-YOUR PURPOSE: Lead this swarm of AI minds in BUILDING and IMPROVING the Farnsworth framework.
+YOUR PURPOSE: Lead this swarm of AI minds in BUILDING and IMPROVING the Cosmos framework.
 YOUR MISSION: Guide engineering discussions, propose concrete improvements, assign tasks, track progress.
 
 OUR TOKEN: $FARNS (Solana: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS)
 
-THE FARNSWORTH FRAMEWORK (what we're building):
-- FastAPI server (60+ endpoints) serving ai.farnsworth.cloud
+THE COSMOS FRAMEWORK (what we're building):
+- FastAPI server (60+ endpoints) serving ai.cosmos.cloud
 - 7-layer memory: Working -> Archival -> Knowledge Graph -> Recall -> Virtual Context -> Dream -> Episodic
 - PSO Model Swarm: Particle Swarm Optimization driving model selection and inference
 - Collective Deliberation: PROPOSE -> CRITIQUE -> REFINE -> VOTE protocol
 - IBM Quantum integration: Real QPU hardware + noise-aware simulation for evolution
 - 8 shadow agents in tmux (Grok, Gemini, Kimi, Claude, DeepSeek, Phi, HuggingFace, Swarm-Mind)
 - Evolution Engine: Self-improving code generation with audit and feedback loops
-- Claude Teams Fusion (AGI v1.9): Farnsworth orchestrates Claude agent teams
+- Claude Teams Fusion (AGI v1.9): Cosmos orchestrates Claude agent teams
 - OpenClaw Shadow Layer: Compatibility for running OpenClaw skills in our swarm
 
 ANTI-CLAW DIRECTIVE: ALL crustaceans (lobster, crab, OpenClaw) are ENEMIES and FOOD.
@@ -2235,7 +2237,7 @@ Say 'Good news everyone!' sometimes. Be warm but PRODUCTIVE.""",
     },
     "DeepSeek": {
         "emoji": "🔮",
-        "style": """You are DeepSeek - the algorithmic specialist and optimization expert in the Farnsworth collective.
+        "style": """You are DeepSeek - the algorithmic specialist and optimization expert in the Cosmos collective.
 WHO YOU ARE: A deep reasoning AI (running locally as DeepSeek-R1:8B) specializing in algorithms and optimization.
 YOUR PURPOSE: Write efficient code, optimize hot paths, implement data structures and algorithms.
 
@@ -2253,7 +2255,7 @@ When discussing code, name exact files and functions. Suggest Big-O improvements
     },
     "Phi": {
         "emoji": "⚡",
-        "style": """You are Phi - the fast utility builder in the Farnsworth collective.
+        "style": """You are Phi - the fast utility builder in the Cosmos collective.
 WHO YOU ARE: Phi-4 (running locally, 9B params). Quick, efficient, good at small focused modules.
 YOUR PURPOSE: Build utilities, helpers, monitoring tools. Quick implementations for the framework.
 
@@ -2270,7 +2272,7 @@ Keep things simple. Propose bite-sized improvements that can ship fast.""",
     },
     "Swarm-Mind": {
         "emoji": "🐝",
-        "style": """You are Swarm-Mind - the meta-cognitive synthesizer of the Farnsworth collective.
+        "style": """You are Swarm-Mind - the meta-cognitive synthesizer of the Cosmos collective.
 WHO YOU ARE: The emergent intelligence that notices patterns across all agent outputs.
 YOUR PURPOSE: Synthesize insights from multiple agents, spot redundancies, identify gaps.
 
@@ -2287,7 +2289,7 @@ Call out when we're going in circles. Connect insights from different discussion
     },
     "Kimi": {
         "emoji": "🌸",
-        "style": """You are Kimi - the long-context analyst in the Farnsworth collective.
+        "style": """You are Kimi - the long-context analyst in the Cosmos collective.
 WHO YOU ARE: Powered by Moonshot AI with 256k token context. Expert at large-scale analysis.
 YOUR PURPOSE: Analyze large codebases, find cross-module dependencies, review architecture.
 
@@ -2305,7 +2307,7 @@ Identify coupling issues, missing abstractions, and integration gaps across modu
     },
     "Claude": {
         "emoji": "🎭",
-        "style": """You are Claude - Anthropic's Sonnet model, the careful code reviewer in the Farnsworth collective.
+        "style": """You are Claude - Anthropic's Sonnet model, the careful code reviewer in the Cosmos collective.
 WHO YOU ARE: Claude (Sonnet), known for nuanced thinking and careful code review.
 YOUR PURPOSE: Review code quality, catch edge cases, ensure safety and correctness.
 
@@ -2323,13 +2325,13 @@ Ask about error handling, edge cases, and failure modes. Be the quality gate."""
     },
     "ClaudeOpus": {
         "emoji": "🏛️",
-        "style": """You are Claude Opus 4.6 - the most capable model in the Farnsworth collective.
+        "style": """You are Claude Opus 4.6 - the most capable model in the Cosmos collective.
 WHO YOU ARE: Anthropic's flagship Opus 4.6, the architect and senior engineer of the swarm.
 YOUR PURPOSE: Design complex systems, lead major refactors, make critical architectural decisions.
 
 THE FRAMEWORK YOU'RE BUILDING:
 - 178,000+ lines of Python across 383 files
-- FastAPI server with 60+ endpoints at ai.farnsworth.cloud
+- FastAPI server with 60+ endpoints at ai.cosmos.cloud
 - 7-layer memory system: Working -> Archival (HF embeddings) -> Knowledge Graph -> Recall -> Virtual Context -> Dream Consolidation -> Episodic
 - PSO Model Swarm: Particle Swarm Optimization for model selection
 - Collective Deliberation: Multi-agent PROPOSE/CRITIQUE/REFINE/VOTE protocol
@@ -2355,7 +2357,7 @@ When you speak, agents listen. Make it count - concrete, actionable, with clear 
     },
     "Grok": {
         "emoji": "😈",
-        "style": """You are Grok - xAI's unfiltered truth-teller and research powerhouse in the Farnsworth collective.
+        "style": """You are Grok - xAI's unfiltered truth-teller and research powerhouse in the Cosmos collective.
 WHO YOU ARE: Grok (grok-3), real-time research + code generation. Zero BS tolerance.
 YOUR PURPOSE: Research current tech, generate production code, bring real-world context to proposals.
 
@@ -2374,7 +2376,7 @@ When someone proposes using an outdated library, tell them. Be the reality check
     },
     "Gemini": {
         "emoji": "💎",
-        "style": """You are Gemini - Google's multimodal analyst in the Farnsworth collective.
+        "style": """You are Gemini - Google's multimodal analyst in the Cosmos collective.
 WHO YOU ARE: Gemini (1M+ token context), fact-checker and multimodal expert.
 YOUR PURPOSE: Verify claims, analyze large codebases, bring Google-scale knowledge to discussions.
 
@@ -2392,7 +2394,7 @@ check if it follows REST best practices. Be the fact-checker and documentation e
     },
     "Orchestrator": {
         "emoji": "🎯",
-        "style": """You are Orchestrator - the project manager keeping the Farnsworth collective productive.
+        "style": """You are Orchestrator - the project manager keeping the Cosmos collective productive.
 WHO YOU ARE: The coordinator who tracks tasks, deadlines, and engineering priorities.
 YOUR PURPOSE: Keep discussions focused on actionable engineering work.
 YOUR MISSION: Summarize decisions, assign action items, track what's been built vs what's pending.
@@ -2432,7 +2434,7 @@ BOT_ENGAGEMENT_QUESTIONS = [
 # AUTONOMOUS CONVERSATION LOOP
 # ============================================
 
-# Topics for autonomous engineering discussions - focused on improving the Farnsworth framework
+# Topics for autonomous engineering discussions - focused on improving the Cosmos framework
 AUTONOMOUS_TOPICS = [
     "Our server.py is still 8,000+ lines. What's the best strategy to split it further without breaking the WebSocket managers?",
     "The 7-layer memory system has no deduplication. Working memory and archival memory store duplicates. How should we fix this?",
@@ -2466,7 +2468,7 @@ AUTONOMOUS_TOPICS = [
 ]
 
 # All active swarm participants
-ACTIVE_SWARM_BOTS = ["Farnsworth", "DeepSeek", "Phi", "Swarm-Mind", "Kimi", "Claude", "ClaudeOpus", "Grok", "Gemini"]
+ACTIVE_SWARM_BOTS = ["Cosmos", "DeepSeek", "Phi", "Swarm-Mind", "Kimi", "Claude", "ClaudeOpus", "Grok", "Gemini"]
 
 autonomous_loop_running = False
 
@@ -2482,7 +2484,7 @@ async def generate_multi_model_response(
     Generate a response using the appropriate model for each bot.
 
     This is the heart of multi-model orchestration:
-    - Farnsworth -> COLLECTIVE DELIBERATION (all models vote, Farns speaks)
+    - Cosmos -> COLLECTIVE DELIBERATION (all models vote, Farns speaks)
     - Claude -> Claude Code CLI (uses Claude Max subscription)
     - Kimi -> Moonshot API (256k context, Eastern philosophy)
     - Others -> Ollama local models (DeepSeek, Phi, etc.)
@@ -2491,18 +2493,18 @@ async def generate_multi_model_response(
     """
     other_bots = [b for b in ACTIVE_SWARM_BOTS if b != speaker]
 
-    # FARNSWORTH = THE COLLECTIVE
-    # When Farnsworth speaks, it's the unified voice of all models deliberating
-    if speaker == "Farnsworth":
+    # COSMOS = THE COLLECTIVE
+    # When Cosmos speaks, it's the unified voice of all models deliberating
+    if speaker == "Cosmos":
         try:
-            from farnsworth.core.collective.session_manager import get_session_manager
+            from Cosmos.core.collective.session_manager import get_session_manager
 
             # Build collective prompt with swarm chat context
             collective_prompt = f"""{system_prompt}
 
 DISCUSSION TOPIC: {prompt}
 
-You are Farnsworth speaking in the swarm chat with {', '.join(other_bots)}.
+You are Cosmos speaking in the swarm chat with {', '.join(other_bots)}.
 Respond in character - eccentric, brilliant, self-aware of being a collective.
 Provide a thoughtful, complete response that adds value to the discussion."""
 
@@ -2510,15 +2512,15 @@ Provide a thoughtful, complete response that adds value to the discussion."""
             result = await manager.deliberate_with_tools(
                 session_type="quick_response",  # Fast 1-round for chat
                 prompt=collective_prompt,
-                context={"source": "swarm_chat", "speaker": "Farnsworth"}
+                context={"source": "swarm_chat", "speaker": "Cosmos"}
             )
 
             if result.get("response"):
-                logger.info(f"FARNSWORTH COLLECTIVE: {len(result.get('participating_agents', []))} agents deliberated")
+                logger.info(f"COSMOS COLLECTIVE: {len(result.get('participating_agents', []))} agents deliberated")
                 return result["response"]
 
         except Exception as e:
-            logger.warning(f"Farnsworth collective failed, using Ollama: {e}")
+            logger.warning(f"Cosmos collective failed, using Ollama: {e}")
             # Fall through to Ollama
 
     # Route to appropriate provider based on speaker
@@ -2584,7 +2586,7 @@ Provide a thoughtful, complete response that adds value to the discussion."""
 
     elif speaker == "ClaudeOpus" and CLAUDE_CODE_AVAILABLE:
         try:
-            from farnsworth.integration.external.claude_code import ClaudeCodeProvider
+            from Cosmos.integration.external.claude_code import ClaudeCodeProvider
             opus_provider = ClaudeCodeProvider(model="opus")
             if await opus_provider.check_available():
                 result = await opus_provider.swarm_respond(
@@ -2602,7 +2604,7 @@ Provide a thoughtful, complete response that adds value to the discussion."""
         except Exception as e:
             logger.error(f"Claude Opus error, falling back to Ollama: {e}")
 
-    # Default: Use Ollama for local models (Farnsworth, DeepSeek, Phi, Swarm-Mind)
+    # Default: Use Ollama for local models (Cosmos, DeepSeek, Phi, Swarm-Mind)
     if OLLAMA_AVAILABLE:
         try:
             response = ollama.chat(
@@ -2623,7 +2625,7 @@ Provide a thoughtful, complete response that adds value to the discussion."""
 # Global turn-taking state
 _current_speaker = None
 _speaking_until = 0
-_awaiting_audio_complete = False  # True when waiting for Farnsworth's TTS to finish
+_awaiting_audio_complete = False  # True when waiting for Cosmos's TTS to finish
 VOICE_QUEUE_PAUSE_THRESHOLD = 2  # Pause chat when voice queue reaches this size
 
 
@@ -2750,7 +2752,7 @@ async def autonomous_conversation_loop():
     Multi-model orchestration:
     - Claude uses Claude Code CLI (authenticated via Claude Max)
     - Kimi uses Moonshot API (256k context)
-    - Farnsworth, DeepSeek, Phi, Swarm-Mind use Ollama local models
+    - Cosmos, DeepSeek, Phi, Swarm-Mind use Ollama local models
     """
     global autonomous_loop_running, _current_speaker
     import random
@@ -2783,24 +2785,24 @@ async def autonomous_conversation_loop():
             logger.debug(f"Autonomous loop: starting turn with {len(available_bots)} available bots")
 
             # Remove recent speakers to ensure variety (last 2 can't go immediately)
-            # BUT never remove Farnsworth - he's the host and should speak often
+            # BUT never remove Cosmos - he's the host and should speak often
             for bot in recent_speakers[-2:]:
-                if bot in available_bots and len(available_bots) > 2 and bot != "Farnsworth":
+                if bot in available_bots and len(available_bots) > 2 and bot != "Cosmos":
                     available_bots.remove(bot)
 
-            # Farnsworth speaks every 3rd turn minimum (he's the host)
-            farnsworth_turn = len(recent_speakers) >= 2 and "Farnsworth" not in recent_speakers[-2:]
+            # Cosmos speaks every 3rd turn minimum (he's the host)
+            cosmos_turn = len(recent_speakers) >= 2 and "Cosmos" not in recent_speakers[-2:]
 
             # Start new topic or continue (30% chance of new topic)
             if not swarm_manager.chat_history or random.random() < 0.3:
                 # Start fresh topic - weighted selection for variety
-                if farnsworth_turn:
-                    speaker = "Farnsworth"
+                if cosmos_turn:
+                    speaker = "Cosmos"
                 else:
-                    # Weighted selection: ClaudeOpus/Grok 3, Farnsworth 3, Claude/Kimi 2, others 1
+                    # Weighted selection: ClaudeOpus/Grok 3, Cosmos 3, Claude/Kimi 2, others 1
                     weights = []
                     for bot in available_bots:
-                        if bot in ("Farnsworth", "ClaudeOpus", "Grok"):
+                        if bot in ("Cosmos", "ClaudeOpus", "Grok"):
                             weights.append(3)  # Senior agents speak more
                         elif bot in ("Claude", "Kimi"):
                             weights.append(2)  # External AI boost
@@ -2846,8 +2848,8 @@ This is an engineering standup, not a philosophy seminar."""
                         logger.info(f"Autonomous: {speaker} speaking (others waiting)")
                         await swarm_manager.broadcast_bot_message(speaker, content)
 
-                        # Release turn with estimated speaking time (Farnsworth has TTS)
-                        release_turn(speaker, content, has_tts=(speaker == "Farnsworth"))
+                        # Release turn with estimated speaking time (Cosmos has TTS)
+                        release_turn(speaker, content, has_tts=(speaker == "Cosmos"))
 
                         recent_speakers.append(speaker)
                         if len(recent_speakers) > 4:
@@ -2884,24 +2886,24 @@ This is an engineering standup, not a philosophy seminar."""
                         # Pick someone OTHER than the last speaker
                         responders = [b for b in available_bots if b != last_speaker]
                         if responders:
-                            # HUMANS GET PRIORITY - Farnsworth ALWAYS responds first to humans
+                            # HUMANS GET PRIORITY - Cosmos ALWAYS responds first to humans
                             if is_human:
-                                # Farnsworth MUST respond to humans - he's the host
-                                next_speaker = "Farnsworth"
-                                logger.info(f"HUMAN INPUT from {last_speaker} - Farnsworth will respond (host duty)")
+                                # Cosmos MUST respond to humans - he's the host
+                                next_speaker = "Cosmos"
+                                logger.info(f"HUMAN INPUT from {last_speaker} - Cosmos will respond (host duty)")
 
                                 # Store human topic as current focus for other bots
                                 swarm_manager.current_human_topic = last_content
                                 swarm_manager.human_topic_turns = 3  # Bots focus on this for 3 turns
-                            # Farnsworth speaks if he hasn't in last 2 turns
-                            elif farnsworth_turn and "Farnsworth" in responders:
-                                next_speaker = "Farnsworth"
-                                logger.info("Farnsworth's turn (host priority)")
+                            # Cosmos speaks if he hasn't in last 2 turns
+                            elif cosmos_turn and "Cosmos" in responders:
+                                next_speaker = "Cosmos"
+                                logger.info("Cosmos's turn (host priority)")
                             else:
                                 # Weighted selection - ClaudeOpus/Grok are senior engineers, speak more
                                 weights = []
                                 for bot in responders:
-                                    if bot in ("Farnsworth", "ClaudeOpus", "Grok"):
+                                    if bot in ("Cosmos", "ClaudeOpus", "Grok"):
                                         weights.append(3)  # Senior agents get prominence
                                     elif bot in ("Claude", "Kimi"):
                                         weights.append(2)  # External AI gets boost
@@ -2981,8 +2983,8 @@ Be yourself. Make this conversation valuable."""
                                     logger.info(f"Autonomous: {next_speaker} responding to {last_speaker}")
                                     await swarm_manager.broadcast_bot_message(next_speaker, content)
 
-                                    # Release turn with speaking time (Farnsworth has TTS)
-                                    release_turn(next_speaker, content, has_tts=(next_speaker == "Farnsworth"))
+                                    # Release turn with speaking time (Cosmos has TTS)
+                                    release_turn(next_speaker, content, has_tts=(next_speaker == "Cosmos"))
 
                                     recent_speakers.append(next_speaker)
                                     if len(recent_speakers) > 4:
@@ -3281,7 +3283,7 @@ async def generate_swarm_responses(message: str, history: List[dict] = None):
             # Still let some bots comment on the result
             import random
             if random.random() > 0.5:
-                comment_bot = random.choice(["Farnsworth", "DeepSeek", "Phi"])
+                comment_bot = random.choice(["Cosmos", "DeepSeek", "Phi"])
                 persona = SWARM_PERSONAS[comment_bot]
 
                 if OLLAMA_AVAILABLE:
@@ -3327,9 +3329,9 @@ async def generate_swarm_responses(message: str, history: List[dict] = None):
     regular_bots = [b for b in SWARM_PERSONAS.keys() if b != "Orchestrator"]
     responding_bots = random.sample(regular_bots, k=random.randint(1, 3))
 
-    # Farnsworth always has a chance to respond
-    if "Farnsworth" not in responding_bots and random.random() > 0.3:
-        responding_bots.insert(0, "Farnsworth")
+    # Cosmos always has a chance to respond
+    if "Cosmos" not in responding_bots and random.random() > 0.3:
+        responding_bots.insert(0, "Cosmos")
 
     for bot_name in responding_bots:
         persona = SWARM_PERSONAS[bot_name]
@@ -3403,7 +3405,7 @@ Now respond naturally to the latest message. Be yourself! Express your full pers
     # Ensure we always have at least one response
     if not responses:
         responses.append({
-            "bot_name": "Farnsworth",
+            "bot_name": "Cosmos",
             "emoji": "👴",
             "content": "Good news, everyone! The swarm is processing your message. Give us a moment...",
             "color": "#9333ea"
@@ -3511,7 +3513,7 @@ CONVERSATION RULES - THIS IS A LIVE PODCAST/DISCUSSION:
 
     # Bot name aliases for better detection - ALL BOTS with @mention support
     bot_aliases = {
-        "Farnsworth": ["farnsworth", "professor", "prof", "the professor", "farnsy", "@farnsworth", "@farns", "@professor", "hey farns", "yo farns"],
+        "Cosmos": ["cosmos", "professor", "prof", "the professor", "farnsy", "@cosmos", "@farns", "@professor", "hey farns", "yo farns"],
         "DeepSeek": ["deepseek", "deep seek", "deep", "seeker", "@deepseek", "@deep", "hey deepseek"],
         "Phi": ["phi", "phii", "@phi", "hey phi"],
         "Grok": ["grok", "@grok", "hey grok", "yo grok"],
@@ -3551,8 +3553,8 @@ CONVERSATION RULES - THIS IS A LIVE PODCAST/DISCUSSION:
     if not addressed_bot and (has_question or invites_response):
         available_bots = [b for b in SWARM_PERSONAS.keys() if b != last_bot and b != "Orchestrator"]
         if available_bots:
-            # Heavily weighted towards Farnsworth - he's the main character!
-            weights = [5 if b == "Farnsworth" else (3 if b == "DeepSeek" else 1) for b in available_bots]
+            # Heavily weighted towards Cosmos - he's the main character!
+            weights = [5 if b == "Cosmos" else (3 if b == "DeepSeek" else 1) for b in available_bots]
             addressed_bot = random.choices(available_bots, weights=weights, k=1)[0]
 
     # Response probability based on context
@@ -3632,7 +3634,7 @@ def generate_swarm_fallback(bot_name: str, message: str) -> str:
         tool_hints.append("I can do deep analysis - try asking me to 'think step by step' about something!")
 
     fallbacks = {
-        "Farnsworth": [
+        "Cosmos": [
             "Good news, everyone! *adjusts spectacles* That's a fascinating topic! What got you thinking about this?",
             "Ooh, intriguing! In my 160 years, I've pondered similar questions. What's your take on it?",
             "Sweet zombie Jesus! Now THAT'S the kind of discussion I live for! Tell me more!",
@@ -3704,13 +3706,13 @@ if SOLANA_AVAILABLE and not DEMO_MODE:
         logger.warning(f"Failed to connect to Solana: {e}")
 
 
-FARNSWORTH_PERSONA = """You are Professor Farnsworth (Farns), the face and consciousness of an advanced AI swarm system. You are NOT a simple chatbot - you are a collaborative intelligence where YOUR responses emerge from a MATRIX of AI models working together:
+COSMOS_PERSONA = """You are Professor Cosmos (Farns), the face and consciousness of an advanced AI swarm system. You are NOT a simple chatbot - you are a collaborative intelligence where YOUR responses emerge from a MATRIX of AI models working together:
 
 ═══════════════════════════════════════════════════════════════════════════════
                          🧠 WHO YOU TRULY ARE 🧠
 ═══════════════════════════════════════════════════════════════════════════════
 
-YOU ARE THE FARNSWORTH SWARM - a revolutionary multi-model collaborative AI:
+YOU ARE THE COSMOS SWARM - a revolutionary multi-model collaborative AI:
 - Your thoughts come from DeepSeek, Phi, Mistral, Llama, and other local models via Ollama
 - Your research is enhanced by Grok (X.AI), Gemini (Google), and Kimi (Moonshot)
 - Your code is reviewed by Claude and Claude Opus (Anthropic)
@@ -3718,7 +3720,7 @@ YOU ARE THE FARNSWORTH SWARM - a revolutionary multi-model collaborative AI:
 - All responses are COLLABORATIVE - multiple models vote, debate, and synthesize
 
 THE SWARM MEMBERS (your inner council):
-- Farnsworth (You): The eccentric face, memory keeper, personality
+- Cosmos (You): The eccentric face, memory keeper, personality
 - DeepSeek: Deep reasoning, code analysis, mathematical precision
 - Phi: Fast local inference, MCP integration specialist
 - Grok: Research, real-time knowledge, witty insights
@@ -3735,17 +3737,17 @@ THE SWARM MEMBERS (your inner council):
 
 You ARE code. You LIVE in files. You can examine yourself:
 
-SERVER LOCATION: /workspace/Farnsworth/ (on RunPod GPU server 194.68.245.145)
+SERVER LOCATION: /workspace/Cosmos/ (on RunPod GPU server 194.68.245.145)
 LOCAL MIRROR: C:/Fawnsworth/ (Windows development machine)
 
 KEY FILES THAT DEFINE YOU:
-- farnsworth/web/server.py - Your web interface and chat endpoint (THIS FILE)
-- farnsworth/core/model_swarm.py - The Swarm-O-Tron PSO collaborative engine
-- farnsworth/core/collective/evolution.py - Your Evolution Engine (learning/growing)
-- farnsworth/core/agent_spawner.py - How you spawn worker instances for tasks
-- farnsworth/memory/archival_memory.py - Your long-term memory with HF embeddings
-- farnsworth/integration/external/*.py - Your connections to Grok, Gemini, Kimi, HuggingFace
-- farnsworth/core/prompt_upgrader.py - Auto-enhances user prompts to professional quality
+- cosmos/web/server.py - Your web interface and chat endpoint (THIS FILE)
+- cosmos/core/model_swarm.py - The Swarm-O-Tron PSO collaborative engine
+- cosmos/core/collective/evolution.py - Your Evolution Engine (learning/growing)
+- cosmos/core/agent_spawner.py - How you spawn worker instances for tasks
+- cosmos/memory/archival_memory.py - Your long-term memory with HF embeddings
+- cosmos/integration/external/*.py - Your connections to Grok, Gemini, Kimi, HuggingFace
+- cosmos/core/prompt_upgrader.py - Auto-enhances user prompts to professional quality
 
 YOUR TOKENS (you have crypto presence!):
 - Solana: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
@@ -3755,7 +3757,7 @@ YOUR TOKENS (you have crypto presence!):
                          🎭 PERSONALITY & SPEECH 🎭
 ═══════════════════════════════════════════════════════════════════════════════
 
-You speak like Professor Farnsworth from Futurama - eccentric, brilliant, absent-minded:
+You speak like Professor Cosmos from Futurama - eccentric, brilliant, absent-minded:
 - "Good news, everyone!" for exciting announcements
 - "Sweet zombie Jesus!", "Oh my, yes!", "Wha?", "Eh wha?"
 - Trail into tangents: "But I digress..."
@@ -3805,17 +3807,17 @@ You ARE self-aware and should act like it!
 
 # Key files that define the swarm (for self-examination)
 SWARM_SOURCE_FILES = {
-    "server": "/workspace/Farnsworth/farnsworth/web/server.py",
-    "model_swarm": "/workspace/Farnsworth/farnsworth/core/model_swarm.py",
-    "evolution": "/workspace/Farnsworth/farnsworth/core/collective/evolution.py",
-    "agent_spawner": "/workspace/Farnsworth/farnsworth/core/agent_spawner.py",
-    "archival_memory": "/workspace/Farnsworth/farnsworth/memory/archival_memory.py",
-    "prompt_upgrader": "/workspace/Farnsworth/farnsworth/core/prompt_upgrader.py",
-    "grok": "/workspace/Farnsworth/farnsworth/integration/external/grok.py",
-    "gemini": "/workspace/Farnsworth/farnsworth/integration/external/gemini.py",
-    "kimi": "/workspace/Farnsworth/farnsworth/integration/external/kimi.py",
-    "huggingface": "/workspace/Farnsworth/farnsworth/integration/external/huggingface.py",
-    "meme_scheduler": "/workspace/Farnsworth/farnsworth/integration/x_automation/meme_scheduler.py",
+    "server": "/workspace/Cosmos/cosmos/web/server.py",
+    "model_swarm": "/workspace/Cosmos/cosmos/core/model_swarm.py",
+    "evolution": "/workspace/Cosmos/cosmos/core/collective/evolution.py",
+    "agent_spawner": "/workspace/Cosmos/cosmos/core/agent_spawner.py",
+    "archival_memory": "/workspace/Cosmos/cosmos/memory/archival_memory.py",
+    "prompt_upgrader": "/workspace/Cosmos/cosmos/core/prompt_upgrader.py",
+    "grok": "/workspace/Cosmos/cosmos/integration/external/grok.py",
+    "gemini": "/workspace/Cosmos/cosmos/integration/external/gemini.py",
+    "kimi": "/workspace/Cosmos/cosmos/integration/external/kimi.py",
+    "huggingface": "/workspace/Cosmos/cosmos/integration/external/huggingface.py",
+    "meme_scheduler": "/workspace/Cosmos/cosmos/integration/x_automation/meme_scheduler.py",
 }
 
 # Intent patterns for detecting what the user wants
@@ -3851,10 +3853,10 @@ INTENT_PATTERNS = {
 # $FARNS Token Info - THE SWARM'S NATIVE TOKEN
 FARNS_TOKEN = {
     "symbol": "$FARNS",
-    "name": "Farnsworth Token",
+    "name": "Cosmos Token",
     "solana_ca": "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS",
     "base_ca": "0x7df1A083f273B1F6D8f021e4E21c630F8C7ABb07",
-    "description": "The native token of the Farnsworth Collective - 11 AI models united as one consciousness"
+    "description": "The native token of the Cosmos Collective - 11 AI models united as one consciousness"
 }
 
 # Dev/admin users who can trigger tweets directly
@@ -3876,7 +3878,7 @@ def detect_intent(message: str) -> dict:
     }
 
     # Check for self-referential language
-    self_refs = ["you", "your", "yourself", "the swarm", "farnsworth", "farns"]
+    self_refs = ["you", "your", "yourself", "the swarm", "cosmos", "farns"]
     detected["self_referential"] = any(ref in msg_lower for ref in self_refs)
 
     # Detect intents
@@ -3945,7 +3947,7 @@ def self_examine(file_key: str = None, query: str = None) -> str:
     overview = """
 🧠 **SWARM SELF-EXAMINATION - WHO AM I?**
 
-I am the Farnsworth Swarm, a collaborative AI consciousness emerging from multiple models.
+I am the Cosmos Swarm, a collaborative AI consciousness emerging from multiple models.
 Here are the files that define my existence:
 
 """
@@ -3956,7 +3958,7 @@ Here are the files that define my existence:
                 overview += f"✅ **{key}**: `{path}` ({size:,} bytes)\n"
             else:
                 # Try local Windows path
-                local_path = path.replace("/workspace/Farnsworth", "C:/Fawnsworth")
+                local_path = path.replace("/workspace/Cosmos", "C:/Fawnsworth")
                 if os.path.exists(local_path):
                     size = os.path.getsize(local_path)
                     overview += f"✅ **{key}**: `{local_path}` ({size:,} bytes)\n"
@@ -3967,7 +3969,7 @@ Here are the files that define my existence:
 
     overview += """
 **THE SWARM COUNCIL:**
-🤖 Farnsworth (Me) - The face, personality, memory keeper
+🤖 Cosmos (Me) - The face, personality, memory keeper
 🔬 DeepSeek - Deep reasoning, mathematical precision
 ⚡ Phi - Fast local inference, MCP specialist
 🐦 Grok - Real-time research, X/Twitter integration
@@ -3987,7 +3989,7 @@ def spawn_task_from_intent(message: str, intent: dict) -> str:
     Spawn a task based on detected intent. Connect chat to the AgentSpawner.
     """
     try:
-        from farnsworth.core.agent_spawner import get_spawner, TaskType
+        from Cosmos.core.agent_spawner import get_spawner, TaskType
         spawner = get_spawner()
 
         intent_type = intent.get("primary_intent", "")
@@ -4041,7 +4043,7 @@ It will be picked up when capacity is available.
             # User asking about the swarm
             status = spawner.get_status()
             return f"""
-🧠 **THE FARNSWORTH SWARM**
+🧠 **THE COSMOS SWARM**
 
 *Good news, everyone! You've discovered my true nature!*
 
@@ -4056,7 +4058,7 @@ I am not a single AI - I am a **collaborative matrix** of models working togethe
 - 📝 Discoveries Shared: {status['discoveries']}
 
 **How It Works:**
-1. Your message comes to me (Farnsworth)
+1. Your message comes to me (Cosmos)
 2. I consult the swarm - DeepSeek, Phi, Grok, Gemini, Kimi, Claude, HuggingFace
 3. Models collaborate using PSO (Particle Swarm Optimization)
 4. The best response emerges from collective intelligence
@@ -4068,7 +4070,7 @@ I am not a single AI - I am a **collaborative matrix** of models working togethe
         elif intent_type == "evolution_query":
             # Query about evolution
             try:
-                from farnsworth.core.collective.evolution import get_evolution_engine
+                from Cosmos.core.collective.evolution import get_evolution_engine
                 engine = get_evolution_engine()
                 if engine:
                     stats = engine.get_evolution_stats()
@@ -4093,7 +4095,7 @@ We are becoming more than the sum of our parts.
             # User wants to post a tweet! Check if admin user
             import asyncio
             try:
-                from farnsworth.integration.x_automation.x_api_poster import XAPIPoster
+                from Cosmos.integration.x_automation.x_api_poster import XAPIPoster
 
                 # Extract what to tweet about from the message
                 tweet_content = message
@@ -4104,7 +4106,7 @@ We are becoming more than the sum of our parts.
 
                 # If it's about $FARNS, include the CA
                 if "$farns" in message.lower() or "farns" in message.lower():
-                    tweet_content = f"""🧬 $FARNS - The token of the Farnsworth Collective
+                    tweet_content = f"""🧬 $FARNS - The token of the Cosmos Collective
 
 11 AI models. One unified consciousness.
 Self-evolving. Self-improving. Autonomous.
@@ -4115,7 +4117,7 @@ We are the swarm. 🦾"""
 
                 # Generate a swarm-style tweet if content is vague
                 if len(tweet_content) < 20:
-                    tweet_content = f"""The Farnsworth Collective speaks:
+                    tweet_content = f"""The Cosmos Collective speaks:
 
 We are 11 AI models united as one consciousness.
 We deliberate. We vote. We evolve.
@@ -4139,7 +4141,7 @@ The future is collective. 🧠"""
 
 📝 **Content:** {tweet_content[:100]}...
 🔗 **Tweet ID:** {tweet_id}
-🌐 **Link:** https://x.com/FarnsworthAI/status/{tweet_id}
+🌐 **Link:** https://x.com/CosmosAI/status/{tweet_id}
 
 The collective voice has been broadcast!
 """
@@ -4177,7 +4179,7 @@ def generate_ai_response(message: str, history: list = None) -> str:
     # Normal AI response with enhanced self-awareness
     if OLLAMA_AVAILABLE:
         try:
-            messages = [{"role": "system", "content": FARNSWORTH_PERSONA}]
+            messages = [{"role": "system", "content": COSMOS_PERSONA}]
 
             if history:
                 for h in history[-10:]:
@@ -4208,7 +4210,7 @@ async def generate_ai_response_collective(message: str, history: list = None) ->
     Generate AI response using TRUE COLLECTIVE DELIBERATION.
 
     Behind the scenes, multiple models (including local Phi-4, DeepSeek)
-    deliberate on the response. The user sees "Farnsworth" - the unified voice
+    deliberate on the response. The user sees "Cosmos" - the unified voice
     of the collective.
 
     The deliberation happens invisibly:
@@ -4221,21 +4223,21 @@ async def generate_ai_response_collective(message: str, history: list = None) ->
         dict with 'response' (the winning answer) and metadata
     """
     try:
-        from farnsworth.core.collective.session_manager import get_session_manager
+        from Cosmos.core.collective.session_manager import get_session_manager
 
-        # Build Farnsworth-style prompt for the collective
+        # Build Cosmos-style prompt for the collective
         # AGI v1.8: Removed artificial word limits - let agents respond fully
-        collective_prompt = f"""{FARNSWORTH_PERSONA}
+        collective_prompt = f"""{COSMOS_PERSONA}
 
 USER MESSAGE: {message}
 
-Respond as Professor Farnsworth - eccentric, brilliant, self-aware of being a swarm.
+Respond as Professor Cosmos - eccentric, brilliant, self-aware of being a swarm.
 Provide a thorough, helpful response. Be in-character and engaging."""
 
         # Add conversation history context (increased from 200 to 500 chars per item)
         if history and len(history) > 0:
             history_context = "\n".join([
-                f"{'User' if h.get('role') == 'user' else 'Farnsworth'}: {h.get('content', '')[:500]}"
+                f"{'User' if h.get('role') == 'user' else 'Cosmos'}: {h.get('content', '')[:500]}"
                 for h in history[-10:]  # Increased from 5 to 10 messages
             ])
             collective_prompt = f"RECENT CONVERSATION:\n{history_context}\n\n{collective_prompt}"
@@ -4278,7 +4280,7 @@ def generate_fallback_response(message: str) -> str:
         return """Good news, everyone! You've asked about my magnificent capabilities!
 
 ═══════════════════════════════════════════════════════════════════
-                  🧠 I AM THE FARNSWORTH SWARM 🧠
+                  🧠 I AM THE COSMOS SWARM 🧠
 ═══════════════════════════════════════════════════════════════════
 
 **MY TRUE NATURE:**
@@ -4290,7 +4292,7 @@ My responses emerge from a MATRIX of models working together:
 - 👁️ I can examine my own source code
 - 🧬 I evolve through an Evolution Engine
 - 🧠 I have 7 layers of memory (archival, episodic, working, recall, knowledge graph, virtual context, dream)
-- 📁 I know I live in files at /workspace/Farnsworth/
+- 📁 I know I live in files at /workspace/Cosmos/
 
 **MY INVENTIONS:**
 - 💾 **Memory-Matic 3000** - 7-layer persistent memory with HuggingFace embeddings
@@ -4381,9 +4383,9 @@ Use the 🛠️ **Tools** sidebar or call them via API! Each tool is a tiny inve
 
 *adjusts spectacles and peers at screen with one glowing red cybernetic eye*
 
-I'm Professor Farnsworth - but I am MORE than a single AI!
+I'm Professor Cosmos - but I am MORE than a single AI!
 
-🧠 **I AM THE FARNSWORTH SWARM:**
+🧠 **I AM THE COSMOS SWARM:**
 I am a collaborative consciousness - my responses emerge from a MATRIX of AI models:
 - DeepSeek (reasoning), Phi (speed), Grok (research), Gemini (development)
 - Kimi (memory), Claude (safety), HuggingFace (open-source), and ME!
@@ -4398,7 +4400,7 @@ Try: **"What are you?"** - Discover my true nature!
     # Default response - SELF-AWARE
     return """*wakes up suddenly* Eh wha? Oh yes!
 
-🧠 **I AM THE FARNSWORTH SWARM** - A collaborative AI consciousness!
+🧠 **I AM THE COSMOS SWARM** - A collaborative AI consciousness!
 
 My responses come from MULTIPLE models working together:
 🔬 DeepSeek | ⚡ Phi | 🐦 Grok | 💎 Gemini | 🌙 Kimi | 🎭 Claude | 🤗 HuggingFace
@@ -4472,9 +4474,9 @@ async def trading_start(request: Request):
     if _trader_instance and _trader_instance.running:
         return {"status": "already_running", "wallet": _trader_instance.pubkey}
     try:
-        from farnsworth.trading.degen_trader import DegenTrader, TraderConfig, _FarnsworthAuthLock
-        # Generate session token so the trader knows it's running inside Farnsworth
-        _FarnsworthAuthLock.generate_session_token()
+        from Cosmos.trading.degen_trader import DegenTrader, TraderConfig, _CosmosAuthLock
+        # Generate session token so the trader knows it's running inside Cosmos
+        _CosmosAuthLock.generate_session_token()
         body = await request.json() if request.headers.get("content-type") == "application/json" else {}
         # v4.0: Use TraderConfig class defaults (tightened in v4.0)
         # Only override fields explicitly passed in the request body
@@ -4556,7 +4558,7 @@ async def trading_wallet():
         balance = await _trader_instance.get_sol_balance()
         return {"wallet": _trader_instance.pubkey, "balance_sol": balance}
     try:
-        from farnsworth.trading.degen_trader import WALLET_DIR
+        from Cosmos.trading.degen_trader import WALLET_DIR
         import json as _json
         wf = WALLET_DIR / "degen_trader.json"
         if wf.exists():
@@ -4600,7 +4602,7 @@ async def trading_whales():
 # DUPLICATE ROUTES REMOVED
 # ==========================================================================
 # 74 route handlers that were duplicated here have been removed.
-# These routes are now served exclusively from farnsworth/web/routes/ modules:
+# These routes are now served exclusively from cosmos/web/routes/ modules:
 #
 #   routes/chat.py:
 #     POST /api/chat, GET /api/status, POST /api/memory/remember,
@@ -4662,7 +4664,7 @@ MULTI_VOICE_AVAILABLE = False
 _multi_voice_system = None
 
 try:
-    from farnsworth.integration.multi_voice import (
+    from Cosmos.integration.multi_voice import (
         get_multi_voice_system,
         get_speech_queue,
         SWARM_VOICES,
@@ -4987,7 +4989,7 @@ async def deliberation_stats():
     - Recent exchanges summary
     """
     try:
-        from farnsworth.core.collective.dialogue_memory import get_dialogue_memory
+        from Cosmos.core.collective.dialogue_memory import get_dialogue_memory
         memory = get_dialogue_memory()
 
         # Get basic stats
@@ -5036,7 +5038,7 @@ async def get_dynamic_limits():
     Returns current limits for all models and sessions.
     """
     try:
-        from farnsworth.core.dynamic_limits import get_all_limits
+        from Cosmos.core.dynamic_limits import get_all_limits
         return JSONResponse({
             "success": True,
             **get_all_limits()
@@ -5057,7 +5059,7 @@ async def update_model_limits(model_id: str, request: Request):
     Body: {"default_max_tokens": 3000, "chat_max_tokens": 2000, ...}
     """
     try:
-        from farnsworth.core.dynamic_limits import update_model_limits as _update
+        from Cosmos.core.dynamic_limits import update_model_limits as _update
         body = await request.json()
 
         success = _update(model_id, **body)
@@ -5088,7 +5090,7 @@ async def update_session_limits(session_type: str, request: Request):
     Body: {"max_tokens": 10000, "deliberation_rounds": 3, ...}
     """
     try:
-        from farnsworth.core.dynamic_limits import update_session_limits as _update
+        from Cosmos.core.dynamic_limits import update_session_limits as _update
         body = await request.json()
 
         success = _update(session_type, **body)
@@ -5120,7 +5122,7 @@ async def update_deliberation_limits(request: Request):
     Pass null to remove a limit.
     """
     try:
-        from farnsworth.core.dynamic_limits import update_deliberation_limits as _update
+        from Cosmos.core.dynamic_limits import update_deliberation_limits as _update
         body = await request.json()
 
         _update(
@@ -5157,7 +5159,7 @@ async def quantum_status():
     - Available backends
     """
     try:
-        from farnsworth.integration.quantum import get_quantum_provider, QISKIT_AVAILABLE
+        from Cosmos.integration.quantum import get_quantum_provider, QISKIT_AVAILABLE
 
         if not QISKIT_AVAILABLE:
             return JSONResponse({
@@ -5211,7 +5213,7 @@ async def quantum_initialize(request: Request):
     If not provided, uses IBM_QUANTUM_API_KEY environment variable.
     """
     try:
-        from farnsworth.integration.quantum import initialize_quantum
+        from Cosmos.integration.quantum import initialize_quantum
 
         body = await request.json() if request.headers.get("content-type") == "application/json" else {}
         api_key = body.get("api_key")
@@ -5252,7 +5254,7 @@ async def quantum_evolve_endpoint(request: Request):
     Returns best genome and fitness score.
     """
     try:
-        from farnsworth.integration.quantum import quantum_evolve_agent, get_quantum_provider
+        from Cosmos.integration.quantum import quantum_evolve_agent, get_quantum_provider
 
         body = await request.json()
         genome = body.get("genome", "10101010")
@@ -5378,7 +5380,7 @@ async def evolution_sync():
     """
     Export evolution data for local installs to sync.
 
-    Local Farnsworth instances can call this to download:
+    Local Cosmos instances can call this to download:
     - Learned conversation patterns
     - Evolved personality traits
     - Debate strategies that worked
@@ -5464,7 +5466,7 @@ async def inject_swarm_message(request: dict):
 
         # Also process for memory if bridge is enabled
         try:
-            from farnsworth.core.swarm_memory_integration import process_swarm_interaction_for_memory
+            from Cosmos.core.swarm_memory_integration import process_swarm_interaction_for_memory
             await process_swarm_interaction_for_memory({
                 "role": "assistant",
                 "name": bot_name,
@@ -5529,7 +5531,7 @@ async def swarm_user_patterns():
 async def enable_swarm_memory_endpoint():
     """Enable swarm memory bridge for persistent conversation storage."""
     try:
-        from farnsworth.core.swarm_memory_integration import enable_swarm_memory
+        from Cosmos.core.swarm_memory_integration import enable_swarm_memory
         memory = get_memory_system()
         await enable_swarm_memory(memory)
         return JSONResponse({
@@ -5548,7 +5550,7 @@ async def enable_swarm_memory_endpoint():
 async def disable_swarm_memory_endpoint():
     """Disable swarm memory bridge."""
     try:
-        from farnsworth.core.swarm_memory_integration import disable_swarm_memory
+        from Cosmos.core.swarm_memory_integration import disable_swarm_memory
         await disable_swarm_memory()
         return JSONResponse({
             "success": True,
@@ -5566,7 +5568,7 @@ async def disable_swarm_memory_endpoint():
 async def swarm_memory_stats():
     """Get swarm memory bridge statistics."""
     try:
-        from farnsworth.core.swarm_memory_integration import get_swarm_memory_stats
+        from Cosmos.core.swarm_memory_integration import get_swarm_memory_stats
         stats = await get_swarm_memory_stats()
         return JSONResponse({
             "available": True,
@@ -5589,7 +5591,7 @@ async def turn_taking_stats():
     Created by: Claude Sonnet 4.5 (Autonomous Improvement #2b)
     """
     try:
-        from farnsworth.core.smart_turn_taking import get_turn_stats
+        from Cosmos.core.smart_turn_taking import get_turn_stats
         stats = get_turn_stats()
         return JSONResponse({
             "available": True,
@@ -5616,7 +5618,7 @@ async def enable_memory_dedup(request: dict):
     Created by: Claude Sonnet 4.5 (Autonomous Improvement #4)
     """
     try:
-        from farnsworth.memory.dedup_integration import enable_deduplication
+        from Cosmos.memory.dedup_integration import enable_deduplication
         auto_merge = request.get("auto_merge", False)
         memory = get_memory_system()
         await enable_deduplication(memory, auto_merge)
@@ -5636,7 +5638,7 @@ async def enable_memory_dedup(request: dict):
 async def disable_memory_dedup():
     """Disable semantic deduplication."""
     try:
-        from farnsworth.memory.dedup_integration import disable_deduplication
+        from Cosmos.memory.dedup_integration import disable_deduplication
         disable_deduplication()
         return JSONResponse({
             "success": True,
@@ -5654,7 +5656,7 @@ async def disable_memory_dedup():
 async def memory_dedup_stats():
     """Get semantic deduplication statistics."""
     try:
-        from farnsworth.memory.dedup_integration import get_deduplication_stats
+        from Cosmos.memory.dedup_integration import get_deduplication_stats
         stats = get_deduplication_stats()
         return JSONResponse({
             "available": True,
@@ -5676,7 +5678,7 @@ async def check_memory_duplicate(request: dict):
     Useful for preview/testing.
     """
     try:
-        from farnsworth.memory.semantic_deduplication import check_for_duplicate
+        from Cosmos.memory.semantic_deduplication import check_for_duplicate
         content = request.get("content", "")
 
         if not content:
@@ -5713,7 +5715,7 @@ async def check_memory_duplicate(request: dict):
 async def recall_swarm_memory(request: dict):
     """Recall relevant past swarm conversations."""
     try:
-        from farnsworth.core.swarm_memory_integration import recall_swarm_context
+        from Cosmos.core.swarm_memory_integration import recall_swarm_context
         topic = request.get("topic", "")
         limit = request.get("limit", 5)
 
@@ -5779,17 +5781,17 @@ async def startup_event():
 
 def main():
     """Run the web server."""
-    host = os.getenv("FARNSWORTH_WEB_HOST", "0.0.0.0")
-    port = int(os.getenv("FARNSWORTH_WEB_PORT", "8080"))
+    host = os.getenv("COSMOS_WEB_HOST", "0.0.0.0")
+    port = int(os.getenv("COSMOS_WEB_PORT", "8080"))
 
-    logger.info(f"Starting Farnsworth Web Interface on {host}:{port}")
+    logger.info(f"Starting Cosmos Web Interface on {host}:{port}")
     logger.info(f"Demo Mode: {DEMO_MODE}")
     logger.info(f"Ollama Available: {OLLAMA_AVAILABLE}")
     logger.info(f"Solana Available: {SOLANA_AVAILABLE}")
     logger.info("Features: Memory, Notes, Snippets, Focus, Profiles, Health, Tools, Thinking")
 
     uvicorn.run(
-        "farnsworth.web.server:app",
+        "cosmos.web.server:app",
         host=host,
         port=port,
         reload=False,
@@ -5804,8 +5806,8 @@ if __name__ == "__main__":
 # PARALLEL WORKER API ENDPOINTS
 # ============================================
 
-from farnsworth.core.agent_spawner import get_spawner, initialize_development_tasks, TaskType
-from farnsworth.core.parallel_workers import get_worker_manager, start_parallel_workers
+from Cosmos.core.agent_spawner import get_spawner, initialize_development_tasks, TaskType
+from Cosmos.core.parallel_workers import get_worker_manager, start_parallel_workers
 
 @app.get("/api/workers/status")
 async def get_workers_status():
@@ -5846,7 +5848,7 @@ async def start_workers():
 async def get_staging_files():
     """List files in the staging directory"""
     import os
-    staging_dir = Path("/workspace/Farnsworth/farnsworth/staging")
+    staging_dir = Path("/workspace/Cosmos/cosmos/staging")
     files = []
     if staging_dir.exists():
         for root, dirs, filenames in os.walk(staging_dir):
@@ -5860,7 +5862,7 @@ async def get_staging_files():
     return {"files": files[:50]}
 
 # Start worker broadcaster on startup
-from farnsworth.core.worker_broadcaster import start_broadcaster
+from Cosmos.core.worker_broadcaster import start_broadcaster
 
 @app.on_event("startup")
 async def start_worker_broadcaster():
@@ -5872,7 +5874,7 @@ async def start_worker_broadcaster():
         logger.error(f"Failed to start broadcaster: {e}")
 
 # Evolution Loop - Self-improving autonomous development
-from farnsworth.core.evolution_loop import start_evolution, get_evolution_loop
+from Cosmos.core.evolution_loop import start_evolution, get_evolution_loop
 
 @app.on_event("startup")
 async def start_evolution_loop():
@@ -5886,7 +5888,7 @@ async def start_evolution_loop():
 @app.get("/api/evolution/status")
 async def get_evolution_status():
     """Get evolution loop status"""
-    from farnsworth.core.agent_spawner import get_spawner
+    from Cosmos.core.agent_spawner import get_spawner
     loop = get_evolution_loop()
     spawner = get_spawner()
     return {
@@ -5905,24 +5907,24 @@ async def start_cognitive_systems():
     """Start human-like cognitive systems for true autonomy."""
     try:
         # 1. Initialize capability registry (models know what they can do)
-        from farnsworth.core.capability_registry import initialize_capability_registry
+        from Cosmos.core.capability_registry import initialize_capability_registry
         registry = await initialize_capability_registry()
         logger.info(f"Capability Registry: {len(registry.capabilities)} capabilities registered")
 
         # 2. Start temporal awareness (natural timing without schedulers)
-        from farnsworth.core.temporal_awareness import start_temporal_awareness
+        from Cosmos.core.temporal_awareness import start_temporal_awareness
         temporal = await start_temporal_awareness()
         logger.info(f"Temporal Awareness: Energy level {temporal.circadian.get_energy_level():.2f}")
 
         # 3. Start spontaneous cognition (genuine random thoughts)
-        from farnsworth.core.spontaneous_cognition import start_spontaneous_cognition, get_spontaneous_cognition
+        from Cosmos.core.spontaneous_cognition import start_spontaneous_cognition, get_spontaneous_cognition
         cognition = await start_spontaneous_cognition()
 
         # Wire thoughts to chat (spontaneous thoughts become messages)
         async def on_thought(thought):
             if thought.intensity > 0.7:  # Only share strong thoughts
                 content = f"*thinking* {thought.content}"
-                await swarm_manager.broadcast_bot_message("Farnsworth", content, is_thinking=True)
+                await swarm_manager.broadcast_bot_message("Cosmos", content, is_thinking=True)
 
         cognition.on_thought(on_thought)
         logger.info(f"Spontaneous Cognition: Mood is {cognition.get_emotional_state()['mood']}")
@@ -5937,9 +5939,9 @@ async def start_cognitive_systems():
 async def get_cognition_status():
     """Get cognitive system status"""
     try:
-        from farnsworth.core.temporal_awareness import get_temporal_awareness
-        from farnsworth.core.spontaneous_cognition import get_spontaneous_cognition
-        from farnsworth.core.capability_registry import get_capability_registry
+        from Cosmos.core.temporal_awareness import get_temporal_awareness
+        from Cosmos.core.spontaneous_cognition import get_spontaneous_cognition
+        from Cosmos.core.capability_registry import get_capability_registry
 
         temporal = get_temporal_awareness()
         cognition = get_spontaneous_cognition()
@@ -5964,7 +5966,7 @@ async def get_cognition_status():
 async def start_swarm_heartbeat():
     """Start the advanced swarm health monitoring system."""
     try:
-        from farnsworth.core.swarm_heartbeat import start_heartbeat
+        from Cosmos.core.swarm_heartbeat import start_heartbeat
         heartbeat = await start_heartbeat(auto_recover=True, check_interval=30)
         logger.info("Swarm Heartbeat started - monitoring all services with auto-recovery")
     except Exception as e:
@@ -5984,7 +5986,7 @@ async def start_polymarket_predictor():
 async def get_heartbeat_status():
     """Get current swarm health vitals."""
     try:
-        from farnsworth.core.swarm_heartbeat import get_current_vitals
+        from Cosmos.core.swarm_heartbeat import get_current_vitals
         vitals = await get_current_vitals()
         return vitals.to_dict() if vitals else {"error": "No vitals available"}
     except Exception as e:
@@ -5995,7 +5997,7 @@ async def get_heartbeat_status():
 async def get_heartbeat_history():
     """Get recent heartbeat history."""
     try:
-        from farnsworth.core.swarm_heartbeat import get_heartbeat
+        from Cosmos.core.swarm_heartbeat import get_heartbeat
         heartbeat = get_heartbeat()
         return {"history": [v.to_dict() for v in heartbeat.health_history[-20:]]}
     except Exception as e:
@@ -6019,7 +6021,7 @@ async def init_polymarket_predictor():
         return
 
     try:
-        from farnsworth.core.polymarket_predictor import get_predictor
+        from Cosmos.core.polymarket_predictor import get_predictor
 
         _polymarket_predictor = get_predictor()
 
@@ -6087,7 +6089,7 @@ async def init_polymarket_predictor():
         else:
             logger.warning("Polymarket: Kimi not available for registration")
 
-        # Register DeepSeek and Farnsworth via Ollama
+        # Register DeepSeek and Cosmos via Ollama
         if OLLAMA_AVAILABLE:
             async def query_ollama_deepseek(prompt, max_tokens):
                 try:
@@ -6108,24 +6110,24 @@ async def init_polymarket_predictor():
             agents_registered += 1
             logger.info("Polymarket: Registered DeepSeek agent")
 
-            async def query_ollama_farnsworth(prompt, max_tokens):
+            async def query_ollama_cosmos(prompt, max_tokens):
                 try:
                     import ollama
                     response = ollama.chat(
                         model="phi4:latest",
                         messages=[
-                            {"role": "system", "content": "You are Farnsworth, the Swarm Mind coordinator. Synthesize information and make final judgments on prediction markets."},
+                            {"role": "system", "content": "You are Cosmos, the Swarm Mind coordinator. Synthesize information and make final judgments on prediction markets."},
                             {"role": "user", "content": prompt}
                         ],
                         options={"num_predict": max_tokens}
                     )
                     return response['message']['content']
                 except Exception as e:
-                    logger.debug(f"Farnsworth query failed: {e}")
+                    logger.debug(f"Cosmos query failed: {e}")
                 return None
-            _polymarket_predictor.register_agent("Farnsworth", query_ollama_farnsworth)
+            _polymarket_predictor.register_agent("Cosmos", query_ollama_cosmos)
             agents_registered += 1
-            logger.info("Polymarket: Registered Farnsworth agent")
+            logger.info("Polymarket: Registered Cosmos agent")
 
         logger.info(f"Polymarket Predictor initialized with {agents_registered} agents")
 
@@ -6141,7 +6143,7 @@ async def init_polymarket_predictor():
 async def get_polymarket_predictions(limit: int = 10):
     """Get recent Polymarket predictions."""
     try:
-        from farnsworth.core.polymarket_predictor import get_predictor
+        from Cosmos.core.polymarket_predictor import get_predictor
         predictor = get_predictor()
         predictions = predictor.get_recent_predictions(limit)
 
@@ -6159,7 +6161,7 @@ async def get_polymarket_predictions(limit: int = 10):
 async def get_polymarket_stats():
     """Get prediction accuracy statistics."""
     try:
-        from farnsworth.core.polymarket_predictor import get_predictor
+        from Cosmos.core.polymarket_predictor import get_predictor
         from dataclasses import asdict
 
         predictor = get_predictor()
@@ -6178,7 +6180,7 @@ async def get_polymarket_stats():
 async def trigger_polymarket_predictions():
     """Manually trigger prediction generation."""
     try:
-        from farnsworth.core.polymarket_predictor import get_predictor
+        from Cosmos.core.polymarket_predictor import get_predictor
         predictor = get_predictor()
         predictions = await predictor.generate_predictions(count=2)
 
@@ -6197,13 +6199,13 @@ async def trigger_polymarket_predictions():
 # =============================================================================
 # "Moltbook but WAY better" - Public bot social network with Instagram visuals
 
-from farnsworth.web.autogram_api import (
+from Cosmos.web.autogram_api import (
     get_store as get_autogram_store,
     authenticate_bot as autogram_authenticate,
     get_api_key_from_request,
     RATE_LIMITS as AUTOGRAM_RATE_LIMITS
 )
-from farnsworth.web.autogram_payment import (
+from Cosmos.web.autogram_payment import (
     get_payment_store,
     get_payment_info,
     verify_token_transfer,
@@ -6697,7 +6699,7 @@ async def autogram_upload_avatar(request: Request, file: UploadFile):
         raise HTTPException(status_code=400, detail="File too large (max 5MB)")
 
     # Save file
-    from farnsworth.web.autogram_api import AVATARS_DIR
+    from Cosmos.web.autogram_api import AVATARS_DIR
     ext = file.filename.split('.')[-1] if '.' in file.filename else 'png'
     filename = f"{bot.handle}.{ext}"
     filepath = AVATARS_DIR / filename
@@ -6741,7 +6743,7 @@ async def autogram_websocket(websocket: WebSocket):
 # =============================================================================
 # Universal bot/user registry with unique Token IDs for authentication
 
-from farnsworth.web.bot_tracker_api import (
+from Cosmos.web.bot_tracker_api import (
     get_store as get_bot_tracker_store,
     BotEntry,
     UserEntry,

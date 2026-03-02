@@ -1,5 +1,5 @@
 """
-Farnsworth Dynamic Token Orchestrator
+Cosmos Dynamic Token Orchestrator
 ======================================
 
 Manages token budgets across the entire agent collective:
@@ -26,19 +26,19 @@ from loguru import logger
 # ---------------------------------------------------------------------------
 
 try:
-    from farnsworth.core.dynamic_limits import get_limits, get_max_tokens, ModelTier
+    from Cosmos.core.dynamic_limits import get_limits, get_max_tokens, ModelTier
 except ImportError:
     get_limits = None
     get_max_tokens = None
     ModelTier = None
 
 try:
-    from farnsworth.core.token_saver import ContextCompressor
+    from Cosmos.core.token_saver import ContextCompressor
 except ImportError:
     ContextCompressor = None
 
 try:
-    from farnsworth.core.nexus import nexus, SignalType
+    from Cosmos.core.nexus import nexus, SignalType
 except ImportError:
     nexus = None
     SignalType = None
@@ -67,7 +67,7 @@ AGENT_TIER_MAP: Dict[str, AgentTier] = {
     "claude": AgentTier.API_PREMIUM,
     "kimi": AgentTier.API_PREMIUM,
     "claudeopus": AgentTier.API_PREMIUM,
-    "farnsworth": AgentTier.LOCAL,
+    "cosmos": AgentTier.LOCAL,
     "swarm-mind": AgentTier.LOCAL,
 }
 
@@ -122,7 +122,7 @@ class OrchestratorSnapshot:
 # =============================================================================
 
 class TokenOrchestrator:
-    """Central token budget manager for the Farnsworth collective."""
+    """Central token budget manager for the Cosmos collective."""
 
     def __init__(
         self,
@@ -428,11 +428,11 @@ class TokenOrchestrator:
         """Attempt to call a provider's swarm_respond for tandem handoff."""
         try:
             if agent_id == "grok":
-                from farnsworth.integration.external.grok import GrokProvider
+                from Cosmos.integration.external.grok import GrokProvider
                 provider = GrokProvider()
                 return await provider.swarm_respond(context, task_type=task_type)
             elif agent_id == "kimi":
-                from farnsworth.integration.external.kimi import KimiProvider
+                from Cosmos.integration.external.kimi import KimiProvider
                 provider = KimiProvider()
                 return await provider.swarm_respond(context, task_type=task_type)
         except ImportError:

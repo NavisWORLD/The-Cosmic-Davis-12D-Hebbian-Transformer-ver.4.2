@@ -1,5 +1,5 @@
 """
-Farnsworth Swarm Session - CLI to Swarm A2A Integration.
+Cosmos Swarm Session - CLI to Swarm A2A Integration.
 
 AGI v1.8.4 Feature: Enables CLI users to interact directly with the
 agent swarm through A2A sessions.
@@ -235,7 +235,7 @@ class SwarmSession:
     async def _connect_deliberation_room(self) -> None:
         """Try to connect to the deliberation room."""
         try:
-            from farnsworth.core.collective.deliberation import DeliberationRoom
+            from Cosmos.core.collective.deliberation import DeliberationRoom
             self._deliberation_room = DeliberationRoom()
             logger.debug("Connected to deliberation room")
         except ImportError:
@@ -409,10 +409,10 @@ class SwarmSession:
     ) -> Optional[str]:
         """Direct query to agent via integration modules."""
         agent_modules = {
-            "grok": "farnsworth.integration.external.grok",
-            "gemini": "farnsworth.integration.external.gemini",
-            "claude": "farnsworth.integration.external.claude",
-            "kimi": "farnsworth.integration.external.kimi",
+            "grok": "cosmos.integration.external.grok",
+            "gemini": "cosmos.integration.external.gemini",
+            "claude": "cosmos.integration.external.claude",
+            "kimi": "cosmos.integration.external.kimi",
         }
 
         if agent_id not in agent_modules:
@@ -669,7 +669,7 @@ class SwarmSession:
             return
 
         try:
-            from farnsworth.core.nexus import SignalType
+            from Cosmos.core.nexus import SignalType
 
             signal_enum = getattr(SignalType, signal_type, None)
             if signal_enum:

@@ -685,7 +685,7 @@ class CognitiveFeedbackLoop:
     ):
         """Log self-evaluation as InternalMonologue thoughts."""
         try:
-            from cosmos.core.internal_monologue import internal_monologue
+            from Cosmos.core.internal_monologue import internal_monologue
             if internal_monologue is None:
                 return
 
@@ -745,7 +745,7 @@ class CognitiveFeedbackLoop:
             return
 
         try:
-            from cosmos.core.internal_monologue import internal_monologue
+            from Cosmos.core.internal_monologue import internal_monologue
 
             for insight in insights:
                 # Log as architecture probe thought
@@ -765,7 +765,7 @@ class CognitiveFeedbackLoop:
 
             # Record insights in EvolutionEngine
             try:
-                from cosmos.core.collective.evolution import evolution_engine
+                from Cosmos.core.collective.evolution import evolution_engine
                 if evolution_engine:
                     for insight in insights:
                         evolution_engine.record_interaction(

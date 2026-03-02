@@ -67,7 +67,7 @@ class MemoryChunk:
 class BotMemoryPackage:
     """Complete memory package for a bot."""
     bot_name: str
-    bot_type: str  # "farnsworth" or "openclaw"
+    bot_type: str  # "cosmos" or "openclaw"
     version: str
     created_at: str
     chunks: List[MemoryChunk]
@@ -95,7 +95,7 @@ class MemvidBridge:
     Bridge between bot memory and memvid MP4 encoding.
 
     Handles:
-    - Extracting memory from Farnsworth/OpenClaw format
+    - Extracting memory from Cosmos/OpenClaw format
     - Encoding to MP4 using memvid
     - Decoding MP4 back to memory format
     """
@@ -122,12 +122,12 @@ class MemvidBridge:
             self.memvid = None
 
     # -------------------------------------------------------------------------
-    # FARNSWORTH MEMORY EXTRACTION
+    # COSMOS MEMORY EXTRACTION
     # -------------------------------------------------------------------------
 
-    def extract_farnsworth_memory(self, memory_path: Optional[str] = None) -> BotMemoryPackage:
+    def extract_cosmos_memory(self, memory_path: Optional[str] = None) -> BotMemoryPackage:
         """
-        Extract memory from Farnsworth's memory system.
+        Extract memory from Cosmos's memory system.
 
         Reads from:
         - archival_memory.json (long-term storage)
@@ -136,7 +136,7 @@ class MemvidBridge:
         - personality evolved state
         """
         if memory_path is None:
-            # Default Farnsworth memory location
+            # Default Cosmos memory location
             memory_path = Path(__file__).parent.parent.parent / "memory"
 
         memory_path = Path(memory_path)
@@ -217,8 +217,8 @@ class MemvidBridge:
                 logger.error(f"Failed to read personality: {e}")
 
         return BotMemoryPackage(
-            bot_name="Farnsworth",
-            bot_type="farnsworth",
+            bot_name="Cosmos",
+            bot_type="cosmos",
             version="1.0",
             created_at=datetime.now().isoformat(),
             chunks=chunks,

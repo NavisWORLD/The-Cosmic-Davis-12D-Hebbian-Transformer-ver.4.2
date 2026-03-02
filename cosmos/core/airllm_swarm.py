@@ -248,7 +248,7 @@ OUTPUT FORMAT:
 ## Recommendations
 1. [Specific action] - [Expected outcome]""",
 
-                "default": """You are a helpful AI assistant for the Farnsworth swarm system.
+                "default": """You are a helpful AI assistant for the Cosmos swarm system.
 
 RESPONSE GUIDELINES:
 1. Be concise and direct

@@ -1,7 +1,7 @@
 """
-VTuber TTS - Streamlined voice synthesis for Farnsworth VTuber streaming.
+VTuber TTS - Streamlined voice synthesis for Cosmos VTuber streaming.
 
-Single voice (Farnsworth), F5-TTS voice cloning (primary) with XTTS v2 and Edge TTS fallbacks.
+Single voice (Cosmos), F5-TTS voice cloning (primary) with XTTS v2 and Edge TTS fallbacks.
 Pre-loads model at startup for zero-latency first generation.
 
 Priority: F5-TTS (fast, high quality) → XTTS v2 → Edge TTS (no cloning)
@@ -40,7 +40,7 @@ except ImportError:
 
 
 class VTuberTTS:
-    """Streamlined TTS for VTuber streaming - Farnsworth voice only.
+    """Streamlined TTS for VTuber streaming - Cosmos voice only.
 
     Priority chain:
     1. F5-TTS - Fast zero-shot voice cloning (2-3s generation)
@@ -123,7 +123,7 @@ class VTuberTTS:
         self._f5tts_model = await loop.run_in_executor(None, load_model)
 
         if self._f5tts_model is not None:
-            # Pre-transcribed reference text (Farnsworth voice clips)
+            # Pre-transcribed reference text (Cosmos voice clips)
             # Avoids needing Whisper model download at runtime
             self._ref_text = (
                 "Any more ridiculous ideas? Are you all right? Bad news, everyone. "
@@ -172,7 +172,7 @@ class VTuberTTS:
         """Generate speech audio for the given text.
 
         Returns path to WAV file, or None on failure.
-        All speech uses Farnsworth's cloned voice.
+        All speech uses Cosmos's cloned voice.
         """
         if not text or not text.strip():
             return None
@@ -319,8 +319,8 @@ class VTuberTTS:
 
     def _get_cache_path(self, text: str) -> Path:
         """Get deterministic cache path for text."""
-        text_hash = hashlib.md5(f"farnsworth:{text}".encode()).hexdigest()
-        return self._cache_dir / f"farnsworth_{text_hash}.wav"
+        text_hash = hashlib.md5(f"cosmos:{text}".encode()).hexdigest()
+        return self._cache_dir / f"cosmos_{text_hash}.wav"
 
     def get_audio_duration(self, audio_path: str) -> float:
         """Get duration of an audio file in seconds."""

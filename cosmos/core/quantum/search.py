@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/core/quantum/search.py
 cosmos Quantum-Inspired Search (Schrödinger's Query)
-=======
-Farnsworth Quantum-Inspired Search (Schrödinger's Query)
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/quantum/search.py
 --------------------------------------------------------
 
 "I finished the search before I even started it!"

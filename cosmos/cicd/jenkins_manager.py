@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/cicd/jenkins_manager.py
 cosmos Jenkins Integration
-=======
-Farnsworth Jenkins Integration
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cicd/jenkins_manager.py
 
 "Jenkins? Is he the janitor?"
 
@@ -22,11 +18,7 @@ try:
 except ImportError:
     HAS_HTTPX = False
 
-<<<<<<< HEAD:cosmos/cicd/jenkins_manager.py
-from cosmos.cicd.pipeline_manager import (
-=======
-from farnsworth.cicd.pipeline_manager import (
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/cicd/jenkins_manager.py
+from Cosmos.cicd.pipeline_manager import (
     CICDProvider,
     Pipeline,
     PipelineRun,

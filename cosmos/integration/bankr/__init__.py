@@ -1,5 +1,5 @@
 """
-Bankr API Integration for Farnsworth.
+Bankr API Integration for Cosmos.
 
 Provides crypto trading, DeFi operations, and Polymarket access via Bankr Agent API.
 
