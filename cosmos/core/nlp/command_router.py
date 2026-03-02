@@ -135,7 +135,7 @@ class CommandRouter:
         """Lazy load Bankr trading handler."""
         if self._bankr_trading is None:
             try:
-                from farnsworth.integration.bankr import BankrTrading, get_bankr_client
+                from Cosmos.integration.bankr import BankrTrading, get_bankr_client
                 client = get_bankr_client()
                 self._bankr_trading = BankrTrading(client)
             except ImportError:
@@ -147,7 +147,7 @@ class CommandRouter:
         """Lazy load Bankr Polymarket handler."""
         if self._bankr_polymarket is None:
             try:
-                from farnsworth.integration.bankr import BankrPolymarket, get_bankr_client
+                from Cosmos.integration.bankr import BankrPolymarket, get_bankr_client
                 client = get_bankr_client()
                 self._bankr_polymarket = BankrPolymarket(client)
             except ImportError:
@@ -195,7 +195,7 @@ class CommandRouter:
     async def _handle_crypto(self, intent: Intent, entities) -> Dict:
         """Handle crypto queries via Bankr."""
         try:
-            from farnsworth.integration.bankr import get_bankr_client
+            from Cosmos.integration.bankr import get_bankr_client
             client = get_bankr_client()
 
             # Get primary token from entities
@@ -289,7 +289,7 @@ class CommandRouter:
         """Handle code generation via evolution loop."""
         try:
             # Try to add to evolution loop
-            from farnsworth.core.evolution_loop import get_evolution_loop
+            from Cosmos.core.evolution_loop import get_evolution_loop
             evolution = get_evolution_loop()
 
             if evolution:
@@ -313,7 +313,7 @@ class CommandRouter:
     async def _handle_automation(self, intent: Intent, entities) -> Dict:
         """Handle browser automation."""
         try:
-            from farnsworth.agents.browser import get_browser_agent
+            from Cosmos.agents.browser import get_browser_agent
             agent = get_browser_agent()
 
             if agent:
@@ -336,7 +336,7 @@ class CommandRouter:
         """Handle research queries."""
         # Route to swarm for research
         try:
-            from farnsworth.web.server import generate_multi_model_response
+            from Cosmos.web.server import generate_multi_model_response
 
             response = await generate_multi_model_response(
                 intent.to_prompt(),

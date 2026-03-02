@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/core/fcp.py
 cosmos Cognitive Projection (FCP) Engine.
-=======
-Farnsworth Cognitive Projection (FCP) Engine.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/fcp.py
 
 "Good news, everyone! I've invented a device that projects my internal state directly into markdown!"
 
@@ -19,15 +15,9 @@ from typing import List, Optional, Dict
 from datetime import datetime, timedelta
 from loguru import logger
 
-<<<<<<< HEAD:cosmos/core/fcp.py
-from cosmos.core.nexus import nexus, Signal, SignalType
-from cosmos.core.resilience import projector_breaker
-from cosmos.memory.project_tracking import ProjectTracker, Project, TaskStatus
-=======
-from farnsworth.core.nexus import nexus, Signal, SignalType
-from farnsworth.core.resilience import projector_breaker
-from farnsworth.memory.project_tracking import ProjectTracker, Project, TaskStatus
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/fcp.py
+from Cosmos.core.nexus import nexus, Signal, SignalType
+from Cosmos.core.resilience import projector_breaker
+from Cosmos.memory.project_tracking import ProjectTracker, Project, TaskStatus
 
 class FCPEngine:
     """

@@ -114,7 +114,7 @@ CHAR_TO_PHONEME = {
 
 class LipSyncEngine:
     """
-    Multi-method lip sync engine for Farnsworth VTuber
+    Multi-method lip sync engine for Cosmos VTuber
 
     Generates viseme sequences from:
     - Audio files (amplitude or Rhubarb)

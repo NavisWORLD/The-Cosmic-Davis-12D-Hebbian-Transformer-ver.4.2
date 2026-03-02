@@ -1,5 +1,5 @@
 """
-Farnsworth Quantum Computing Integration
+Cosmos Quantum Computing Integration
 =========================================
 
 Provides quantum-enhanced capabilities via IBM Quantum Experience.
@@ -20,7 +20,7 @@ Error Mitigation (per IBM docs):
 - Level 2: TREX + ZNE + gate twirling (~3x overhead)
 
 Quick Start:
-    from farnsworth.integration.quantum import (
+    from Cosmos.integration.quantum import (
         initialize_quantum, quantum_evolve_agent,
         QuantumOptions, ResilienceLevel, ExecutionMode
     )

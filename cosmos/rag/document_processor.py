@@ -18,8 +18,8 @@ from typing import Optional, Any
 
 from loguru import logger
 
-from cosmos.rag.embeddings import EmbeddingManager
-from cosmos.rag.hybrid_retriever import Document
+from Cosmos.rag.embeddings import EmbeddingManager
+from Cosmos.rag.hybrid_retriever import Document
 
 
 @dataclass

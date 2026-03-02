@@ -1,6 +1,6 @@
 """
 Chat Reader - Reads live stream chat from Twitter/X and other platforms
-Routes messages to Farnsworth swarm for responses
+Routes messages to Cosmos swarm for responses
 """
 
 import asyncio
@@ -106,7 +106,7 @@ class ChatReaderConfig:
 
     # Keywords to prioritize
     priority_keywords: List[str] = field(default_factory=lambda: [
-        "farnsworth", "farns", "ai", "question", "help",
+        "cosmos", "farns", "ai", "question", "help",
         "what", "how", "why", "explain", "swarm", "collective"
     ])
 
@@ -211,7 +211,7 @@ class TwitterChatReader:
                 if self.config.broadcast_tweet_id:
                     await self._fetch_broadcast_replies()
 
-                # Also check mentions of @FarnsworthAI
+                # Also check mentions of @CosmosAI
                 await self._fetch_mentions()
 
                 await asyncio.sleep(self.config.poll_interval)
@@ -262,7 +262,7 @@ class TwitterChatReader:
             import tweepy
 
             # Search for tweets replying to our broadcast
-            query = f"to:FarnsworthAI -is:retweet"
+            query = f"to:CosmosAI -is:retweet"
             tweets = self._tweepy_client.search_recent_tweets(
                 query=query,
                 max_results=50,
@@ -317,7 +317,7 @@ class TwitterChatReader:
         logger.info(f"Now monitoring broadcast tweet: {tweet_id}")
 
     async def _fetch_mentions(self):
-        """Fetch recent mentions of @FarnsworthAI"""
+        """Fetch recent mentions of @CosmosAI"""
         if not self._session:
             return
 
@@ -325,7 +325,7 @@ class TwitterChatReader:
             # Search for mentions
             url = "https://api.twitter.com/2/tweets/search/recent"
             params = {
-                "query": "@FarnsworthAI -is:retweet",
+                "query": "@CosmosAI -is:retweet",
                 "max_results": 50,
                 "tweet.fields": "author_id,created_at,in_reply_to_user_id",
                 "user.fields": "name,username,verified",
@@ -548,7 +548,7 @@ class SimulatedChatReader:
             ("Questioner", "Can you explain quantum computing to me?"),
             ("Skeptic", "Is this actually AI or just pre-recorded?"),
             ("Developer", "What tech stack are you using for this?"),
-            ("MemeLord", "Based and Farnsworth-pilled"),
+            ("MemeLord", "Based and Cosmos-pilled"),
             ("Curious", "How many AI agents are in the swarm?"),
         ]
 

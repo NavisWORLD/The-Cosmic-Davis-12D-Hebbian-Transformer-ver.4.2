@@ -1,5 +1,5 @@
 """
-Farnsworth MCP Integration
+Cosmos MCP Integration
 ==========================
 
 Model Context Protocol (MCP) server management and tool routing.

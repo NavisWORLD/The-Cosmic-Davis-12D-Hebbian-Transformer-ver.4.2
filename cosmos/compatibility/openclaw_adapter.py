@@ -2,16 +2,16 @@
 OpenClaw Universal Adapter
 ===========================
 
-Translates OpenClaw tool calls and skills to Farnsworth equivalents.
+Translates OpenClaw tool calls and skills to Cosmos equivalents.
 
 This is the core of the Shadow Layer - it:
 1. Parses SKILL.md files
-2. Maps OpenClaw tools to Farnsworth agents/modules
+2. Maps OpenClaw tools to Cosmos agents/modules
 3. Translates input/output formats
 4. Provides a unified invocation interface
 
 OpenClaw Tool Groups Mapped:
-- group:fs → Farnsworth file operations
+- group:fs → Cosmos file operations
 - group:runtime → code_agent.py, subprocess execution
 - group:sessions → swarm_orchestrator + Nexus signals
 - group:memory → memory_system.py
@@ -104,11 +104,11 @@ class OpenClawAdapter:
     """
     Universal adapter for OpenClaw tool/skill compatibility.
 
-    Maps OpenClaw's 20+ built-in tools to Farnsworth equivalents,
-    providing seamless execution of OpenClaw skills in the Farnsworth swarm.
+    Maps OpenClaw's 20+ built-in tools to Cosmos equivalents,
+    providing seamless execution of OpenClaw skills in the Cosmos swarm.
     """
 
-    # Tool group to Farnsworth module mapping
+    # Tool group to Cosmos module mapping
     TOOL_MAPPINGS = {
         # Filesystem tools
         "read": ("filesystem", "_handle_read"),
@@ -159,14 +159,14 @@ class OpenClawAdapter:
         Initialize the OpenClaw adapter.
 
         Args:
-            workspace_path: Path to workspace (default: ~/.farnsworth/openclaw)
+            workspace_path: Path to workspace (default: ~/.cosmos/openclaw)
         """
-        self.workspace_path = Path(workspace_path or os.path.expanduser("~/.farnsworth/openclaw"))
+        self.workspace_path = Path(workspace_path or os.path.expanduser("~/.cosmos/openclaw"))
         self.skills_path = self.workspace_path / "skills"
         self.skills: Dict[str, OpenClawSkill] = {}
         self._initialized = False
 
-        # Lazy-loaded Farnsworth modules
+        # Lazy-loaded Cosmos modules
         self._memory_system = None
         self._nexus = None
         self._web_agent = None
@@ -186,8 +186,8 @@ class OpenClawAdapter:
             return True
 
         try:
-            # Load Farnsworth modules
-            await self._load_farnsworth_modules()
+            # Load Cosmos modules
+            await self._load_cosmos_modules()
 
             # Scan and load skills
             await self._scan_skills()
@@ -200,16 +200,16 @@ class OpenClawAdapter:
             logger.error(f"OpenClaw adapter initialization failed: {e}")
             return False
 
-    async def _load_farnsworth_modules(self):
-        """Lazy-load Farnsworth modules for tool execution."""
+    async def _load_cosmos_modules(self):
+        """Lazy-load Cosmos modules for tool execution."""
         try:
-            from farnsworth.memory.memory_system import get_memory_system
+            from Cosmos.memory.memory_system import get_memory_system
             self._memory_system = get_memory_system()
         except ImportError:
             logger.debug("Memory system not available")
 
         try:
-            from farnsworth.core.nexus import get_nexus
+            from Cosmos.core.nexus import get_nexus
             self._nexus = get_nexus()
         except ImportError:
             logger.debug("Nexus not available")
@@ -727,9 +727,9 @@ Execute this skill and provide the result."""
     # =========================================================================
 
     async def _handle_sessions_list(self, action: str, params: Dict) -> OpenClawToolResult:
-        """Handle session listing - maps to Farnsworth session manager."""
+        """Handle session listing - maps to Cosmos session manager."""
         try:
-            from farnsworth.core.collective.session_manager import get_session_manager
+            from Cosmos.core.collective.session_manager import get_session_manager
             manager = get_session_manager()
             stats = manager.get_session_stats()
 
@@ -762,7 +762,7 @@ Execute this skill and provide the result."""
             return OpenClawToolResult(success=False, tool="sessions_history", error="Missing sessionKey")
 
         try:
-            from farnsworth.core.collective.session_manager import get_session_manager
+            from Cosmos.core.collective.session_manager import get_session_manager
             manager = get_session_manager()
 
             if session_key in manager.sessions:
@@ -829,7 +829,7 @@ Execute this skill and provide the result."""
             return OpenClawToolResult(success=False, tool="sessions_send", error=str(e))
 
     async def _handle_sessions_spawn(self, action: str, params: Dict) -> OpenClawToolResult:
-        """Handle sub-agent spawning - maps to Farnsworth agent spawner."""
+        """Handle sub-agent spawning - maps to Cosmos agent spawner."""
         prompt = params.get("prompt")
         model = params.get("model")
         thinking_level = params.get("thinkingLevel")
@@ -838,7 +838,7 @@ Execute this skill and provide the result."""
             return OpenClawToolResult(success=False, tool="sessions_spawn", error="Missing prompt")
 
         try:
-            from farnsworth.core.agent_spawner import spawn_agent
+            from Cosmos.core.agent_spawner import spawn_agent
 
             result = await spawn_agent(
                 task=prompt,
@@ -861,7 +861,7 @@ Execute this skill and provide the result."""
     async def _handle_session_status(self, action: str, params: Dict) -> OpenClawToolResult:
         """Handle session status query."""
         try:
-            from farnsworth.core.collective.session_manager import get_session_manager
+            from Cosmos.core.collective.session_manager import get_session_manager
             manager = get_session_manager()
 
             return OpenClawToolResult(
@@ -881,7 +881,7 @@ Execute this skill and provide the result."""
     # =========================================================================
 
     async def _handle_memory_search(self, action: str, params: Dict) -> OpenClawToolResult:
-        """Handle memory search - maps to Farnsworth ArchivalMemory."""
+        """Handle memory search - maps to Cosmos ArchivalMemory."""
         query = params.get("query")
         limit = params.get("limit", 10)
 
@@ -947,7 +947,7 @@ Execute this skill and provide the result."""
     # =========================================================================
 
     async def _handle_web_search(self, action: str, params: Dict) -> OpenClawToolResult:
-        """Handle web search - maps to Farnsworth external APIs."""
+        """Handle web search - maps to Cosmos external APIs."""
         query = params.get("query")
         limit = params.get("limit", 10)
 
@@ -956,7 +956,7 @@ Execute this skill and provide the result."""
 
         try:
             # Try Grok/Gemini for web search
-            from farnsworth.integration.external.grok import grok_search
+            from Cosmos.integration.external.grok import grok_search
             results = await grok_search(query, limit=limit)
 
             return OpenClawToolResult(
@@ -1075,11 +1075,11 @@ Execute this skill and provide the result."""
     # =========================================================================
 
     async def _handle_cron(self, action: str, params: Dict) -> OpenClawToolResult:
-        """Handle cron scheduling - maps to Farnsworth scheduler."""
+        """Handle cron scheduling - maps to Cosmos scheduler."""
         cron_action = params.get("action", action)
 
         try:
-            from farnsworth.automation.scheduler import get_scheduler
+            from Cosmos.automation.scheduler import get_scheduler
             scheduler = get_scheduler()
 
             if cron_action == "list":
@@ -1108,12 +1108,12 @@ Execute this skill and provide the result."""
         gateway_action = params.get("action", action)
 
         if gateway_action == "config.get":
-            # Return Farnsworth config
+            # Return Cosmos config
             return OpenClawToolResult(
                 success=True,
                 tool="gateway",
                 action="config.get",
-                data={"config": {"adapter": "farnsworth", "version": "1.8"}}
+                data={"config": {"adapter": "cosmos", "version": "1.8"}}
             )
         else:
             return OpenClawToolResult(success=False, tool="gateway", error=f"Unknown action: {gateway_action}")
@@ -1132,9 +1132,9 @@ Execute this skill and provide the result."""
                 to = params.get("to")
                 text = params.get("text")
 
-                # Route to appropriate Farnsworth channel
+                # Route to appropriate Cosmos channel
                 if channel == "twitter" or channel == "x":
-                    from farnsworth.integration.x_automation.x_api_poster import XOAuth2Poster
+                    from Cosmos.integration.x_automation.x_api_poster import XOAuth2Poster
                     poster = XOAuth2Poster()
                     result = await poster.post_tweet(text)
                     return OpenClawToolResult(success=True, tool="message", action="send", data=result)
@@ -1220,8 +1220,8 @@ Execute this skill and provide the result."""
 
         try:
             if img_action == "understand" or img_action == "caption":
-                # Use Farnsworth image understanding (via Claude/Gemini)
-                from farnsworth.integration.external.gemini import gemini_understand_image
+                # Use Cosmos image understanding (via Claude/Gemini)
+                from Cosmos.integration.external.gemini import gemini_understand_image
                 result = await gemini_understand_image(path)
                 return OpenClawToolResult(success=True, tool="image", action=img_action, data=result)
 
@@ -1272,7 +1272,7 @@ class ClawHubClient:
     Client for OpenClaw's ClawHub skills marketplace.
 
     ClawHub hosts 700+ community-built skills that can be downloaded
-    and executed within Farnsworth's swarm.
+    and executed within Cosmos's swarm.
 
     API Endpoints (reverse-engineered from OpenClaw):
     - GET /skills - List all skills
@@ -1282,7 +1282,7 @@ class ClawHubClient:
     """
 
     BASE_URL = "https://clawhub.openclaw.dev/api/v1"
-    CACHE_DIR = Path(os.path.expanduser("~/.farnsworth/clawhub_cache"))
+    CACHE_DIR = Path(os.path.expanduser("~/.cosmos/clawhub_cache"))
 
     def __init__(self):
         self.CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -1377,12 +1377,12 @@ class ClawHubClient:
 
         Args:
             skill_name: Name of the skill to download
-            install_dir: Directory to install to (default: ~/.farnsworth/skills/)
+            install_dir: Directory to install to (default: ~/.cosmos/skills/)
 
         Returns:
             Path to installed skill directory, or None on failure
         """
-        install_dir = install_dir or Path(os.path.expanduser("~/.farnsworth/skills"))
+        install_dir = install_dir or Path(os.path.expanduser("~/.cosmos/skills"))
         install_dir.mkdir(parents=True, exist_ok=True)
 
         skill_dir = install_dir / skill_name
@@ -1477,7 +1477,7 @@ async def download_clawhub_skill(skill_name: str) -> Optional[Path]:
 
 async def install_and_load_skill(skill_name: str) -> Optional[OpenClawSkill]:
     """
-    Download a skill from ClawHub and load it into Farnsworth.
+    Download a skill from ClawHub and load it into Cosmos.
 
     Args:
         skill_name: Name of the skill to install

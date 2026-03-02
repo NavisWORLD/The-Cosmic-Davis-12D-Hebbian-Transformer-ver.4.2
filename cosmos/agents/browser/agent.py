@@ -1,5 +1,5 @@
 """
-Farnsworth Browser Agent.
+Cosmos Browser Agent.
 
 Autonomous browser agent for web tasks using browser-use.
 """
@@ -34,7 +34,7 @@ class BrowserResult:
     timestamp: datetime = field(default_factory=datetime.now)
 
 
-class FarnsworthBrowserAgent:
+class CosmosBrowserAgent:
     """
     Autonomous browser agent for web tasks.
 
@@ -225,7 +225,7 @@ class FarnsworthBrowserAgent:
         """Get default LLM for browser-use."""
         # Try to use local LLM first
         try:
-            from farnsworth.core.local_llm import get_local_llm
+            from Cosmos.core.local_llm import get_local_llm
             return get_local_llm()
         except Exception:
             pass

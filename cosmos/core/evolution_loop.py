@@ -53,7 +53,7 @@ class EvolutionLoop:
         """Lazy-load the Nexus event bus and SignalType enum."""
         if self._nexus is None:
             try:
-                from farnsworth.core.nexus import nexus, SignalType
+                from Cosmos.core.nexus import nexus, SignalType
                 self._nexus = nexus
                 self._SignalType = SignalType
             except Exception as e:
@@ -82,7 +82,7 @@ class EvolutionLoop:
         """Lazy-load memory system for persistence."""
         if self._memory_system is None:
             try:
-                from farnsworth.memory.memory_system import MemorySystem
+                from Cosmos.memory.memory_system import MemorySystem
                 self._memory_system = MemorySystem()
             except Exception as e:
                 logger.warning(f"Memory system not available: {e}")
@@ -104,7 +104,7 @@ class EvolutionLoop:
 
             # Recover pending tasks
             if TASKS_FILE.exists():
-                from farnsworth.core.agent_spawner import get_spawner, TaskType
+                from Cosmos.core.agent_spawner import get_spawner, TaskType
                 spawner = get_spawner()
 
                 with open(TASKS_FILE) as f:
@@ -155,7 +155,7 @@ class EvolutionLoop:
                 json.dump(state, f, indent=2)
 
             # Save pending tasks
-            from farnsworth.core.agent_spawner import get_spawner
+            from Cosmos.core.agent_spawner import get_spawner
             spawner = get_spawner()
             pending = spawner.get_pending_tasks()
 
@@ -200,7 +200,7 @@ class EvolutionLoop:
             task: Dict with id, description, priority, requested_by, timestamp
         """
         try:
-            from farnsworth.core.agent_spawner import get_spawner, TaskType
+            from Cosmos.core.agent_spawner import get_spawner, TaskType
 
             spawner = get_spawner()
             description = task.get("description", "")
@@ -243,7 +243,7 @@ class EvolutionLoop:
 
         # Start codebase indexer in background
         try:
-            from farnsworth.memory.codebase_indexer import get_codebase_indexer
+            from Cosmos.memory.codebase_indexer import get_codebase_indexer
             indexer = get_codebase_indexer()
             asyncio.create_task(indexer.start_background_indexing())
             logger.info("Codebase indexer started in background")
@@ -310,7 +310,7 @@ class EvolutionLoop:
                 await asyncio.sleep(300)  # Check every 5 minutes
 
                 try:
-                    from farnsworth.core.quantum_trading import get_quantum_cortex
+                    from Cosmos.core.quantum_trading import get_quantum_cortex
                     cortex = get_quantum_cortex()
                 except ImportError:
                     continue
@@ -377,7 +377,7 @@ class EvolutionLoop:
                 if now_ts - last_algo_optimize > 604800:  # 7 days
                     last_algo_optimize = now_ts
                     try:
-                        from farnsworth.core.quantum_trading import get_algo_optimizer
+                        from Cosmos.core.quantum_trading import get_algo_optimizer
                         optimizer = get_algo_optimizer()
                         if not optimizer._initialized:
                             await optimizer.initialize()
@@ -385,7 +385,7 @@ class EvolutionLoop:
                         # Get trade history from the trader's adaptive learner
                         trades = []
                         try:
-                            from farnsworth.trading.degen_trader import DegenTrader
+                            from Cosmos.trading.degen_trader import DegenTrader
                             # Try to collect trades from any available source
                             # AdaptiveLearner stores trades in-memory
                         except Exception:
@@ -419,7 +419,7 @@ class EvolutionLoop:
 
     async def _worker_loop(self):
         """Main worker execution loop - processes tasks and produces CODE"""
-        from farnsworth.core.agent_spawner import get_spawner, TaskType
+        from Cosmos.core.agent_spawner import get_spawner, TaskType
 
         while self.running:
             try:
@@ -450,7 +450,7 @@ class EvolutionLoop:
 
     async def _execute_and_broadcast(self, task, instance):
         """Execute task, audit code, then broadcast if quality passes."""
-        from farnsworth.core.agent_spawner import get_spawner
+        from Cosmos.core.agent_spawner import get_spawner
 
         try:
             # Generate actual code
@@ -548,7 +548,7 @@ class EvolutionLoop:
 
         Returns True if code passes quality checks.
         """
-        audit_prompt = f"""Review this Python code for the Farnsworth AI swarm framework.
+        audit_prompt = f"""Review this Python code for the Cosmos AI swarm framework.
 
 TASK: {task.description}
 AUTHOR: {task.assigned_to}
@@ -564,7 +564,7 @@ If score < 6, reply: REJECTED: [one-line reason]
 """
         # Try Grok for fast audit
         try:
-            from farnsworth.integration.external.grok import get_grok_provider
+            from Cosmos.integration.external.grok import get_grok_provider
             grok = get_grok_provider()
             if grok and grok.api_key:
                 result = await grok.chat(audit_prompt, max_tokens=200)
@@ -580,7 +580,7 @@ If score < 6, reply: REJECTED: [one-line reason]
 
         # Try Claude Opus 4.6 for thorough audit (especially for complex tasks)
         try:
-            from farnsworth.integration.external.claude_code import ClaudeCodeProvider
+            from Cosmos.integration.external.claude_code import ClaudeCodeProvider
             opus = ClaudeCodeProvider(model="opus", timeout=60)
             if await opus.check_available():
                 result = await opus.chat(prompt=audit_prompt, max_tokens=200)
@@ -614,7 +614,7 @@ If score < 6, reply: REJECTED: [one-line reason]
     async def _record_evolution_feedback(self, task, code: str, audit_passed: bool):
         """Feed results back to the evolution engine for learning."""
         try:
-            from farnsworth.core.collective.evolution import get_evolution_engine
+            from Cosmos.core.collective.evolution import get_evolution_engine
             engine = get_evolution_engine()
             if engine and hasattr(engine, 'record_interaction'):
                 engine.record_interaction(
@@ -632,11 +632,11 @@ If score < 6, reply: REJECTED: [one-line reason]
 
         Routing: Grok/Claude for complex tasks, local DeepSeek-R1:8B/Phi4 for simpler ones.
         """
-        from farnsworth.core.development_swarm import assess_task_complexity
+        from Cosmos.core.development_swarm import assess_task_complexity
 
         complexity = assess_task_complexity(task.description, task.task_type.value)
 
-        code_prompt = f"""You are an expert Python developer for the Farnsworth AI swarm framework.
+        code_prompt = f"""You are an expert Python developer for the Cosmos AI swarm framework.
 
 TASK: {task.description}
 
@@ -649,7 +649,7 @@ STANDARDS:
 - Max 50 lines per function
 - Use loguru logger, dataclasses, typing imports as needed
 - Error handling with specific exceptions
-- Must integrate with existing Farnsworth modules where relevant
+- Must integrate with existing Cosmos modules where relevant
 
 ```python
 """
@@ -662,12 +662,12 @@ STANDARDS:
             # Try Claude Opus 4.6 first for critical/complex tasks (best code quality)
             if not code and (complexity == "critical" or task.assigned_to == "ClaudeOpus"):
                 try:
-                    from farnsworth.integration.external.claude_code import ClaudeCodeProvider
+                    from Cosmos.integration.external.claude_code import ClaudeCodeProvider
                     opus = ClaudeCodeProvider(model="opus", timeout=180)
                     if await opus.check_available():
                         result = await opus.chat(
                             prompt=code_prompt,
-                            system="You are the senior architect of the Farnsworth AI swarm. Write production-quality Python code.",
+                            system="You are the senior architect of the Cosmos AI swarm. Write production-quality Python code.",
                             max_tokens=4000
                         )
                         if result and result.get("content") and result.get("success"):
@@ -680,7 +680,7 @@ STANDARDS:
             # Try Grok API (great for current tech + code)
             if not code:
                 try:
-                    from farnsworth.integration.external.grok import get_grok_provider
+                    from Cosmos.integration.external.grok import get_grok_provider
                     grok = get_grok_provider()
                     if grok and grok.api_key:
                         result = await grok.chat(code_prompt, max_tokens=4000)
@@ -694,7 +694,7 @@ STANDARDS:
             # Try OpenAI Codex (gpt-4.1, excellent for code generation)
             if not code:
                 try:
-                    from farnsworth.integration.external.openai_codex import get_openai_codex
+                    from Cosmos.integration.external.openai_codex import get_openai_codex
                     codex = get_openai_codex()
                     if codex and codex.api_key:
                         result = await codex.generate_code(task=task.description, max_tokens=8000)
@@ -708,7 +708,7 @@ STANDARDS:
             # Try Claude Sonnet (via tmux session)
             if not code:
                 try:
-                    from farnsworth.integration.external.claude import get_claude_provider
+                    from Cosmos.integration.external.claude import get_claude_provider
                     claude = get_claude_provider()
                     if claude:
                         result = await claude.complete(code_prompt, max_tokens=4000)
@@ -789,7 +789,7 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
 
         # Post to social media (Moltbook + X) - DISABLED: Puppeteer fails on headless server
         # try:
-        #     from farnsworth.integration.x_automation.social_poster import post_task_completion
+        #     from Cosmos.integration.x_automation.social_poster import post_task_completion
         #     asyncio.create_task(post_task_completion(
         #         agent=task.assigned_to,
         #         task_desc=task.description,
@@ -806,7 +806,7 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
 
         while self.running:
             try:
-                from farnsworth.core.agent_spawner import get_spawner
+                from Cosmos.core.agent_spawner import get_spawner
                 spawner = get_spawner()
                 status = spawner.get_status()
 
@@ -847,8 +847,8 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
 
         # Use collective deliberation for planning decisions
         try:
-            from farnsworth.core.collective.session_manager import get_session_manager
-            from farnsworth.core.collective.dialogue_memory import get_dialogue_memory
+            from Cosmos.core.collective.session_manager import get_session_manager
+            from Cosmos.core.collective.dialogue_memory import get_dialogue_memory
 
             session_manager = get_session_manager()
             dialogue_memory = get_dialogue_memory()
@@ -856,7 +856,7 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
             # Memory recall before planning
             memory_context = ""
             try:
-                from farnsworth.memory.memory_system import get_memory_system
+                from Cosmos.memory.memory_system import get_memory_system
                 memory = get_memory_system()
                 recall = await memory.recall_for_task(
                     f"evolution planning cycle {self.evolution_cycle}", limit=3
@@ -868,7 +868,7 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
             # Recall codebase map for planning context
             codebase_map = ""
             try:
-                from farnsworth.memory.memory_system import get_memory_system
+                from Cosmos.memory.memory_system import get_memory_system
                 _mem = get_memory_system()
                 _cb_results = await _mem.archival_memory.search(
                     query="codebase module overview", top_k=5, filter_tags=["codebase"]
@@ -885,7 +885,7 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
 
 STATUS: {status['completed_tasks']} done, {status['in_progress_tasks']} active, {status['pending_tasks']} queued
 
-You are the Farnsworth collective — 11 AI models that think together. Push the boundaries of what a swarm AI can do.
+You are the Cosmos collective — 11 AI models that think together. Push the boundaries of what a swarm AI can do.
 
 THINK BIG, BUILD CONCRETE. Propose 2-3 things we should build next.
 
@@ -985,7 +985,7 @@ Share your ideas for the next evolution cycle!"""
     async def _extract_tasks_from_deliberation(self, result):
         """Extract actionable tasks from the collective's deliberation."""
         try:
-            from farnsworth.core.agent_spawner import get_spawner, TaskType
+            from Cosmos.core.agent_spawner import get_spawner, TaskType
 
             spawner = get_spawner()
 
@@ -1009,7 +1009,7 @@ PRIORITY: [number]
             # Use a capable model for task extraction - try Grok first, then local phi4
             extraction = None
             try:
-                from farnsworth.integration.external.grok import get_grok_provider
+                from Cosmos.integration.external.grok import get_grok_provider
                 grok = get_grok_provider()
                 if grok and grok.api_key:
                     result = await grok.chat(task_extraction_prompt, max_tokens=1000)
@@ -1019,7 +1019,7 @@ PRIORITY: [number]
                 pass
 
             if not extraction:
-                from farnsworth.core.cognition.llm_router import get_completion
+                from Cosmos.core.cognition.llm_router import get_completion
                 extraction = await get_completion(
                     prompt=task_extraction_prompt,
                     model="phi4:latest",  # phi4 is much better than deepseek-r1:1.5b
@@ -1057,7 +1057,7 @@ PRIORITY: [number]
 
         while self.running:
             try:
-                from farnsworth.core.agent_spawner import get_spawner, TaskType
+                from Cosmos.core.agent_spawner import get_spawner, TaskType
                 spawner = get_spawner()
 
                 pending = len(spawner.get_pending_tasks())
@@ -1101,8 +1101,8 @@ PRIORITY: [number]
             return []
 
         try:
-            from farnsworth.core.upgrade_extractor import extract_upgrades, prioritize_upgrades
-            from farnsworth.core.agent_spawner import TaskType
+            from Cosmos.core.upgrade_extractor import extract_upgrades, prioritize_upgrades
+            from Cosmos.core.agent_spawner import TaskType
 
             # Get recent chat history
             history = list(self.swarm_manager.chat_history)[-100:] if hasattr(self.swarm_manager, 'chat_history') else []
@@ -1146,7 +1146,7 @@ PRIORITY: [number]
         2. Uses Claude Opus to validate and refine proposals
         3. Routes to the right agent based on task type
         """
-        from farnsworth.core.agent_spawner import TaskType
+        from Cosmos.core.agent_spawner import TaskType
 
         # Gather real context about what exists and what's broken
         status = spawner.get_status()
@@ -1156,7 +1156,7 @@ PRIORITY: [number]
         # Dynamic codebase recall for task generation
         codebase_architecture = ""
         try:
-            from farnsworth.memory.memory_system import get_memory_system
+            from Cosmos.memory.memory_system import get_memory_system
             _mem = get_memory_system()
             _cb_results = await _mem.archival_memory.search(
                 query="codebase module architecture overview", top_k=5, filter_tags=["codebase"]
@@ -1174,7 +1174,7 @@ PRIORITY: [number]
             "- Capabilities: Trading (Jupiter/Pump.fun), VTuber streaming, X automation, Polymarket predictions, voice synthesis"
         )
 
-        analysis_prompt = f"""You are the Farnsworth AI swarm — 11 models building the most advanced AI collective in existence.
+        analysis_prompt = f"""You are the Cosmos AI swarm — 11 models building the most advanced AI collective in existence.
 
 CURRENT STATE:
 - Completed: {status.get('completed_tasks', 0)} tasks, Failed recently: {len(recent_failures)}
@@ -1213,7 +1213,7 @@ PRIORITY: [1-10]
 
         # Use Grok for research-backed task generation (it knows current tech)
         try:
-            from farnsworth.integration.external.grok import get_grok_provider
+            from Cosmos.integration.external.grok import get_grok_provider
             grok = get_grok_provider()
             if grok and grok.api_key:
                 result = await grok.chat(analysis_prompt, max_tokens=2000)
@@ -1227,7 +1227,7 @@ PRIORITY: [1-10]
 
         # Fallback: Use Claude API for task generation
         try:
-            from farnsworth.integration.external.claude import get_claude_provider
+            from Cosmos.integration.external.claude import get_claude_provider
             claude = get_claude_provider()
             if claude:
                 result = await claude.complete(analysis_prompt, max_tokens=2000)
@@ -1259,7 +1259,7 @@ PRIORITY: [1-10]
 
         # Absolute fallback: a few sensible defaults
         return [
-            {"type": TaskType.TESTING, "agent": "DeepSeek", "desc": "Write unit tests for farnsworth/core/nexus.py signal handlers - target 80% coverage", "priority": 3},
+            {"type": TaskType.TESTING, "agent": "DeepSeek", "desc": "Write unit tests for cosmos/core/nexus.py signal handlers - target 80% coverage", "priority": 3},
             {"type": TaskType.DEVELOPMENT, "agent": "DeepSeek", "desc": "Add retry logic with exponential backoff to all external API calls in integration/external/", "priority": 4},
             {"type": TaskType.RESEARCH, "agent": "Grok", "desc": "Analyze the top 5 most-called endpoints in web/server.py and identify performance bottlenecks", "priority": 3},
         ]
@@ -1267,7 +1267,7 @@ PRIORITY: [1-10]
     def _parse_task_format(self, text: str, spawner) -> List[Dict]:
         """Parse structured task output from LLM into task dicts."""
         import re
-        from farnsworth.core.agent_spawner import TaskType
+        from Cosmos.core.agent_spawner import TaskType
 
         type_map = {
             "DEVELOPMENT": TaskType.DEVELOPMENT,
@@ -1282,7 +1282,7 @@ PRIORITY: [1-10]
         pattern = r'TASK:\s*(.+?)(?:\n|$).*?AGENT:\s*(\w+).*?TYPE:\s*(\w+).*?PRIORITY:\s*(\d+)'
         matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
 
-        valid_agents = {"Grok", "Gemini", "Kimi", "Claude", "ClaudeOpus", "OpenAI", "DeepSeek", "Phi", "OpenCode", "Farnsworth"}
+        valid_agents = {"Grok", "Gemini", "Kimi", "Claude", "ClaudeOpus", "OpenAI", "DeepSeek", "Phi", "OpenCode", "Cosmos"}
 
         for desc, agent, task_type, priority in matches:
             agent = agent.strip()
@@ -1312,7 +1312,7 @@ PRIORITY: [1-10]
             else:
                 return loop.run_until_complete(self._generate_new_tasks_intelligent(spawner))
         except Exception:
-            from farnsworth.core.agent_spawner import TaskType
+            from Cosmos.core.agent_spawner import TaskType
             return [
                 {"type": TaskType.TESTING, "agent": "DeepSeek", "desc": "Write tests for the 3 largest untested modules", "priority": 3},
                 {"type": TaskType.RESEARCH, "agent": "Grok", "desc": "Research latest Python 3.13 features we should adopt in the codebase", "priority": 5},

@@ -1,4 +1,4 @@
-"""Farnsworth Degen Trader v3.5 - Pre-Bonding Curve Sniper Edition."""
+"""Cosmos Degen Trader v3.5 - Pre-Bonding Curve Sniper Edition."""
 
 from .degen_trader import (
     DegenTrader, create_wallet, start_trader,

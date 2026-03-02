@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/tools/security/log_parser.py
 cosmos Security Log Parser
-=======
-Farnsworth Security Log Parser
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/security/log_parser.py
 
 "Good news, everyone! I can read logs faster than Bender drinks!"
 

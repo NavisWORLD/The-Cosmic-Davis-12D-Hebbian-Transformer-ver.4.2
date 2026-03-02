@@ -90,7 +90,7 @@ class UpgradeExtractor:
 
         Args:
             message: The chat message text
-            speaker: Who said it (affects priority - Farnsworth/Claude suggestions weighted higher)
+            speaker: Who said it (affects priority - Cosmos/Claude suggestions weighted higher)
 
         Returns:
             List of extracted upgrades with metadata
@@ -140,7 +140,7 @@ class UpgradeExtractor:
         # Speaker boost (core swarm members have more weight)
         if speaker:
             speaker_lower = speaker.lower()
-            if speaker_lower in ("farnsworth", "claude", "grok"):
+            if speaker_lower in ("cosmos", "claude", "grok"):
                 score += 2
             elif speaker_lower in ("kimi", "deepseek", "gemini"):
                 score += 1
@@ -275,7 +275,7 @@ def integrate_with_evolution_loop(evolution_loop, swarm_manager):
     async def enhanced_discovery():
         """Enhanced discovery that also checks chat for upgrade suggestions."""
         import asyncio
-        from farnsworth.core.agent_spawner import get_spawner, TaskType
+        from Cosmos.core.agent_spawner import get_spawner, TaskType
 
         await asyncio.sleep(120)  # Initial delay
 

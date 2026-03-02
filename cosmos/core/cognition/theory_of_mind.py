@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/core/cognition/theory_of_mind.py
 cosmos Theory of Mind (ToM) Engine: The Mirror Neuron Substrate.
-=======
-Farnsworth Theory of Mind (ToM) Engine: The Mirror Neuron Substrate.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/cognition/theory_of_mind.py
 
 "I know what you're thinking, because I'm simulating being you right now!"
 
@@ -29,11 +25,7 @@ from typing import List, Dict, Optional, Any
 from datetime import datetime
 from loguru import logger
 
-<<<<<<< HEAD:cosmos/core/cognition/theory_of_mind.py
-from cosmos.core.nexus import nexus, Signal, SignalType
-=======
-from farnsworth.core.nexus import nexus, Signal, SignalType
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/cognition/theory_of_mind.py
+from Cosmos.core.nexus import nexus, Signal, SignalType
 
 @dataclass
 class MentalState:

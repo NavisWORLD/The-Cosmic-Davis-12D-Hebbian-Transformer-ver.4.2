@@ -24,18 +24,15 @@ from datetime import datetime
 import yaml
 from loguru import logger
 
-from cosmos.core.llm_backend import (
+from Cosmos.core.llm_backend import (
     LLMBackend,
     OllamaBackend,
     LlamaCppBackend,
     BitNetBackend,
     CascadeBackend,
     OpenAICompatibleBackend,
-<<<<<<< HEAD:cosmos/core/model_manager.py
     GeminiBackend,
     CosmosBackend,
-=======
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/model_manager.py
     GenerationConfig,
     BackendType,
 )
@@ -403,7 +400,6 @@ class ModelManager:
                         base_url=model_config.get('api_base', 'https://api.deepinfra.com/v1/openai'),
                         config=config,
                     )
-<<<<<<< HEAD:cosmos/core/model_manager.py
                 elif backend_type == 'gemini':
                     # Get Gemini API key from environment
                     env_key = model_config.get('env_key', 'GEMINI_API_KEY')
@@ -434,8 +430,6 @@ class ModelManager:
                         model_preset=model_config.get('model_preset', 'tiny'),
                         device=model_config.get('device', 'auto'),
                     )
-=======
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/model_manager.py
                 else:
                     return ModelLoadResult(
                         success=False,

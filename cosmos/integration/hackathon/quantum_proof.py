@@ -37,7 +37,7 @@ class QuantumProof:
     Real IBM Quantum hardware integration.
 
     Submits actual quantum circuits to demonstrate
-    Farnsworth's quantum capabilities.
+    Cosmos's quantum capabilities.
     """
 
     def __init__(self):

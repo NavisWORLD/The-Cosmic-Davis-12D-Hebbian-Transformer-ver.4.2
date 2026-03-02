@@ -1,8 +1,8 @@
 """
-Farnsworth Signal Channel Adapter
+Cosmos Signal Channel Adapter
 ==================================
 
-Signal Messenger integration for the Farnsworth swarm.
+Signal Messenger integration for the Cosmos swarm.
 
 Features:
 - End-to-end encrypted messaging

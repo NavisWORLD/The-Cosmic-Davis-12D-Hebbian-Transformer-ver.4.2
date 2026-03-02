@@ -1,9 +1,9 @@
 """
-Farnsworth Embedded Prompting System.
+Cosmos Embedded Prompting System.
 
 "Good news, everyone! I've taught the robots how to think about thinking!"
 
-This module provides the instructional layer that bridges Farnsworth's architectural
+This module provides the instructional layer that bridges Cosmos's architectural
 components - memory systems, agent capabilities, swarm coordination, and integrations.
 Embedded prompts guide agents to fully leverage resources without relying solely on
 implicit logic.
@@ -125,7 +125,7 @@ MEMORY_ACCESS_PROMPT = PromptTemplate(
     requires_memory=True,
     template="""## Memory System Access Protocol
 
-You have access to Farnsworth's multi-layer memory system. Use it effectively:
+You have access to Cosmos's multi-layer memory system. Use it effectively:
 
 ### Memory Layers (Query in Order of Relevance)
 1. **Working Memory** (L1 Cache): Current task scratchpad. Update frequently with intermediate results.
@@ -172,7 +172,7 @@ SHARED_MEMORY_PROMPT = PromptTemplate(
     requires_memory=True,
     template="""## Collective Shared Memory Protocol
 
-As part of the Farnsworth collective, coordinate via shared memory:
+As part of the Cosmos collective, coordinate via shared memory:
 
 ### Shared Memory Rules
 1. **Read Before Write**: Query planetary shards before duplicating work.
@@ -351,7 +351,7 @@ AGENT_INITIALIZATION_PROMPT = PromptTemplate(
     description="Base initialization prompt for all agents",
     template="""## Agent Initialization Protocol
 
-You are **{agent_type}** in the Farnsworth Collective Intelligence System.
+You are **{agent_type}** in the Cosmos Collective Intelligence System.
 
 ### Your Identity
 - **Agent ID**: {agent_id}
@@ -865,7 +865,7 @@ Recovery Attempt: {attempt_number} of {max_attempts}"""
 
 class EmbeddedPromptManager:
     """
-    Manages embedded prompts for the Farnsworth system.
+    Manages embedded prompts for the Cosmos system.
 
     Provides prompt retrieval, composition, and evolution tracking.
     """

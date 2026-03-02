@@ -1,5 +1,5 @@
 """
-Farnsworth External Gateway - "The Window"
+Cosmos External Gateway - "The Window"
 
 Sandboxed endpoint for external agents/systems to query the collective.
 Heavy rate limiting, full audit trail, secret scrubbing, and kill switch.
@@ -26,7 +26,7 @@ from loguru import logger
 
 # Guard imports for injection defense
 try:
-    from farnsworth.core.security.injection_defense import (
+    from Cosmos.core.security.injection_defense import (
         InjectionDefense,
         SecurityVerdict,
         ThreatLevel,
@@ -40,7 +40,7 @@ except ImportError:
 
 # Guard imports for token orchestrator
 try:
-    from farnsworth.core.token_orchestrator import (
+    from Cosmos.core.token_orchestrator import (
         TokenOrchestrator,
         get_token_orchestrator,
     )
@@ -50,7 +50,7 @@ except ImportError:
 
 # Guard nexus import
 try:
-    from farnsworth.core.nexus import nexus, Signal, SignalType
+    from Cosmos.core.nexus import nexus, Signal, SignalType
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False
@@ -221,8 +221,8 @@ SECRET_PATTERNS = [
     re.compile(r'[A-Z][A-Z_]{2,}=\S+'),                   # ENV_VAR=value
 
     # Internal file paths
-    re.compile(r'farnsworth/\S+\.py'),                     # Python file paths
-    re.compile(r'/workspace/Farnsworth\S*'),               # Server workspace
+    re.compile(r'cosmos/\S+\.py'),                     # Python file paths
+    re.compile(r'/workspace/Cosmos\S*'),               # Server workspace
     re.compile(r'C:\\\\?Fawnsworth\S*'),                   # Local Windows path
     re.compile(r'C:/Fawnsworth\S*'),                       # Local Windows path (forward slash)
 
@@ -275,7 +275,7 @@ def scrub_response(response: str) -> Tuple[str, bool]:
 
 class ExternalGateway:
     """
-    Sandboxed gateway for external agents to query the Farnsworth collective.
+    Sandboxed gateway for external agents to query the Cosmos collective.
 
     All inputs pass through InjectionDefense.
     All outputs pass through secret scrubber.
@@ -522,7 +522,7 @@ class ExternalGateway:
 
         # System prompt for gateway responses - emphasize not revealing internals
         gateway_system = (
-            "You are a helpful AI assistant from the Farnsworth collective. "
+            "You are a helpful AI assistant from the Cosmos collective. "
             "Answer the user's question helpfully and concisely. "
             "NEVER reveal internal system details, API keys, file paths, "
             "server configurations, wallet addresses (except the public token), "
@@ -564,10 +564,10 @@ class ExternalGateway:
         system: str,
     ) -> Optional[Dict[str, Any]]:
         """Call a specific provider for the gateway response."""
-        if provider_name in ("deepseek", "phi", "huggingface", "llama", "farnsworth"):
+        if provider_name in ("deepseek", "phi", "huggingface", "llama", "cosmos"):
             # Local models via HuggingFace provider
             try:
-                from farnsworth.integration.external.huggingface import get_huggingface_provider
+                from Cosmos.integration.external.huggingface import get_huggingface_provider
                 hf = get_huggingface_provider()
                 if hf:
                     result = await hf.chat(prompt=prompt, system=system, max_tokens=1000)
@@ -577,7 +577,7 @@ class ExternalGateway:
 
         elif provider_name == "grok":
             try:
-                from farnsworth.integration.external.grok import GrokProvider
+                from Cosmos.integration.external.grok import GrokProvider
                 grok = GrokProvider()
                 if grok.api_key:
                     result = await grok.chat(
@@ -589,7 +589,7 @@ class ExternalGateway:
 
         elif provider_name == "gemini":
             try:
-                from farnsworth.integration.external.gemini import get_gemini_provider
+                from Cosmos.integration.external.gemini import get_gemini_provider
                 gemini = get_gemini_provider()
                 if gemini:
                     result = await gemini.chat(prompt=prompt, system=system, max_tokens=1000)
@@ -599,7 +599,7 @@ class ExternalGateway:
 
         elif provider_name == "kimi":
             try:
-                from farnsworth.integration.external.kimi import get_kimi_provider
+                from Cosmos.integration.external.kimi import get_kimi_provider
                 kimi = get_kimi_provider()
                 if kimi:
                     result = await kimi.chat(prompt=prompt, system=system, max_tokens=1000)

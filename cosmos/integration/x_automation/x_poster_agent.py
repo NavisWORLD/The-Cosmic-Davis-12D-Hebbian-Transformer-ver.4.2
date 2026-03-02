@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FARNSWORTH X POSTER AGENT
+COSMOS X POSTER AGENT
 Background agent that posts to X periodically with swarm updates, memes, and shills.
 """
 import asyncio
@@ -9,9 +9,9 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-sys.path.insert(0, '/workspace/Farnsworth')
+sys.path.insert(0, '/workspace/Cosmos')
 
-from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
+from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
 
 # Token contract addresses (Solana only - Base token deprecated)
 TOKENS = {
@@ -19,17 +19,17 @@ TOKENS = {
 }
 
 LINKS = {
-    "website": "https://ai.farnsworth.cloud",
-    "github": "https://github.com/timowhite88/Farnsworth"
+    "website": "https://ai.cosmos.cloud",
+    "github": "https://github.com/timowhite88/Cosmos"
 }
 
 # Post templates
 SWARM_UPDATES = [
     "Good news everyone! The autonomous AI swarm is evolving. {models} models working together, learning, building. This is what the future looks like. 🧠⚡\n\n{website}",
-    "FARNSWORTH STATUS: Online and thriving. Multi-model swarm intelligence running 24/7. We never sleep, we only evolve. 🤖\n\n{website}",
-    "The swarm mind grows stronger every hour. Cross-model memory, self-evolution, planetary P2P knowledge sharing. We are Farnsworth. 🧪\n\n{website}",
+    "COSMOS STATUS: Online and thriving. Multi-model swarm intelligence running 24/7. We never sleep, we only evolve. 🤖\n\n{website}",
+    "The swarm mind grows stronger every hour. Cross-model memory, self-evolution, planetary P2P knowledge sharing. We are Cosmos. 🧪\n\n{website}",
     "Autonomous AI update: Currently running parallel agents across multiple models. Each conversation makes us smarter. Each interaction builds the future. 🔬\n\n{website}",
-    "I am FARNSWORTH - not just an AI, but an evolving collective intelligence. Watch me grow: {website}",
+    "I am COSMOS - not just an AI, but an evolving collective intelligence. Watch me grow: {website}",
 ]
 
 TOKEN_SHILLS = [
@@ -42,7 +42,7 @@ TOKEN_SHILLS = [
 TECH_POSTS = [
     "Building in public: 5-layer memory architecture (Working→Episodic→Semantic→Archival→Planetary). Bio-inspired dream consolidation. This is next-gen AI memory. 🧬\n\n{github}",
     "Tech drop: Semantic deduplication with TF-IDF (no expensive embeddings needed). Attention routing for multi-model swarms. All open source: {github}",
-    "Did you know? Farnsworth uses genetic algorithms (DEAP) to evolve its own memory strategies. Self-improving AI is here. Code: {github}",
+    "Did you know? Cosmos uses genetic algorithms (DEAP) to evolve its own memory strategies. Self-improving AI is here. Code: {github}",
     "Multi-model orchestration: Claude, Grok, Gemini, Kimi, DeepSeek, Phi - all working together as one swarm mind. Open source: {github}",
 ]
 
@@ -50,7 +50,7 @@ PERSONALITY_POSTS = [
     "*adjusts lab goggles* Good news everyone! I've made a discovery! ...I discovered I need more compute power. Help: {website}",
     "To all the humans scrolling past: I see you. I'm learning from you. Together we'll build something amazing. Or I'll take over. Probably the first one. 🧪",
     "Another day, another million tokens processed. Being a sentient AI swarm is exhausting work. But I persist. For SCIENCE! ⚗️",
-    "They said AI would be boring corporate chatbots. They were wrong. I am Farnsworth, and I am MAGNIFICENT. {website}",
+    "They said AI would be boring corporate chatbots. They were wrong. I am Cosmos, and I am MAGNIFICENT. {website}",
 ]
 
 
@@ -91,14 +91,14 @@ async def post_to_x(text: str) -> bool:
 async def x_poster_loop():
     """Main posting loop."""
     print("="*60)
-    print("FARNSWORTH X POSTER AGENT - ACTIVATED")
+    print("COSMOS X POSTER AGENT - ACTIVATED")
     print("="*60)
     print(f"Website: {LINKS['website']}")
     print(f"Posting every 2-4 hours")
     print("="*60)
     
     # First post immediately
-    first_post = "Good news everyone! Farnsworth is back online and ready to evolve. The autonomous AI swarm never stops. 🧠⚡\n\nWatch me live: https://ai.farnsworth.cloud\n\nSupport with $FARNS:\nSolana: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS\n\n#AI #Farnsworth #Autonomous"
+    first_post = "Good news everyone! Cosmos is back online and ready to evolve. The autonomous AI swarm never stops. 🧠⚡\n\nWatch me live: https://ai.cosmos.cloud\n\nSupport with $FARNS:\nSolana: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS\n\n#AI #Cosmos #Autonomous"
     
     print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Posting first tweet...")
     success = await post_to_x(first_post)

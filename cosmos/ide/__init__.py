@@ -1,5 +1,5 @@
 """
-Farnsworth IDE Module.
+Cosmos IDE Module.
 
 Web-based IDE with Monaco Editor and integrated terminal.
 
@@ -11,6 +11,6 @@ Features:
 - AI assistant panel
 """
 
-from .app import FarnsworthIDE
+from .app import CosmosIDE
 
-__all__ = ['FarnsworthIDE']
+__all__ = ['CosmosIDE']

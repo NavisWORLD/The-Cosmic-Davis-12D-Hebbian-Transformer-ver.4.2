@@ -27,18 +27,18 @@ def start_bot_with_chain_memory():
 
     This should be called before your bot's main initialization.
     """
-    from farnsworth.integration.chain_memory import (
+    from Cosmos.integration.chain_memory import (
         prompt_memory_load,
         auto_load_memories
     )
 
     print("\n" + "=" * 60)
-    print("  FARNSWORTH AI - Starting Up")
+    print("  COSMOS AI - Starting Up")
     print("=" * 60 + "\n")
 
     # Step 1: Prompt user for chain memory
     memories_to_load = prompt_memory_load(
-        bot_type="farnsworth",
+        bot_type="cosmos",
         auto_detect_wallet=True
     )
 
@@ -52,7 +52,7 @@ def start_bot_with_chain_memory():
         success = asyncio.run(
             auto_load_memories(
                 tx_ids_or_wallet=memories_to_load,
-                bot_type="farnsworth",
+                bot_type="cosmos",
                 on_progress=progress_callback
             )
         )
@@ -66,20 +66,20 @@ def start_bot_with_chain_memory():
     print("Continuing with normal startup...\n")
 
     # Your bot's initialization code here...
-    # from farnsworth.core import FarnsworthBot
-    # bot = FarnsworthBot()
+    # from Cosmos.core import CosmosBot
+    # bot = CosmosBot()
     # bot.run()
 
 
 def quick_push_example():
     """Quick example of pushing current memory to chain."""
-    from farnsworth.integration.chain_memory import ChainMemory
+    from Cosmos.integration.chain_memory import ChainMemory
 
     async def push():
         # Initialize with your wallet key
         cm = ChainMemory(
             wallet_key=os.getenv("MONAD_PRIVATE_KEY"),
-            bot_type="farnsworth"
+            bot_type="cosmos"
         )
 
         # Estimate cost first
@@ -102,7 +102,7 @@ def quick_push_example():
             print(f"  [{current}/{total}] {status}")
 
         record = await cm.push_memory(
-            title="My Farnsworth Memory Backup",
+            title="My Cosmos Memory Backup",
             on_progress=progress
         )
 
@@ -130,10 +130,10 @@ def quick_push_example():
 
 def quick_pull_example():
     """Quick example of pulling memory from chain."""
-    from farnsworth.integration.chain_memory import ChainMemory
+    from Cosmos.integration.chain_memory import ChainMemory
 
     async def pull():
-        cm = ChainMemory(bot_type="farnsworth")
+        cm = ChainMemory(bot_type="cosmos")
 
         # Option 1: Pull from specific TX hashes
         tx_hashes = [
@@ -162,10 +162,10 @@ def quick_pull_example():
         print(f"  Chunks: {len(package.chunks)}")
         print(f"  Has personality: {package.personality is not None}")
 
-        # Load into Farnsworth
-        confirm = input("\nLoad into Farnsworth memory? (y/n): ")
+        # Load into Cosmos
+        confirm = input("\nLoad into Cosmos memory? (y/n): ")
         if confirm.lower() == 'y':
-            cm.load_into_farnsworth(package, merge=True)
+            cm.load_into_cosmos(package, merge=True)
             print("Memory loaded!")
 
     asyncio.run(pull())

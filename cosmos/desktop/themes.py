@@ -1,5 +1,5 @@
 """
-Farnsworth Desktop Themes.
+Cosmos Desktop Themes.
 """
 
 

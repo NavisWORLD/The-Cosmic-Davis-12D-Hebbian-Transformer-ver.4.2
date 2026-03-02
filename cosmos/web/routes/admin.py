@@ -29,7 +29,7 @@ router = APIRouter()
 
 def _get_shared():
     """Import shared state from server module lazily."""
-    from farnsworth.web import server
+    from Cosmos.web import server
     return server
 
 
@@ -40,7 +40,7 @@ def _get_shared():
 @router.get("/api/workers/status")
 async def get_workers_status():
     """Get parallel worker system status."""
-    from farnsworth.core.agent_spawner import get_spawner
+    from Cosmos.core.agent_spawner import get_spawner
     spawner = get_spawner()
     return {
         "spawner": spawner.get_status(),
@@ -62,7 +62,7 @@ async def get_workers_status():
 @router.post("/api/workers/init-tasks")
 async def init_tasks():
     """Initialize the 20 development tasks."""
-    from farnsworth.core.agent_spawner import initialize_development_tasks
+    from Cosmos.core.agent_spawner import initialize_development_tasks
     status = initialize_development_tasks()
     return {"status": "initialized", "info": status}
 
@@ -71,7 +71,7 @@ async def init_tasks():
 async def start_workers():
     """Start the parallel worker system."""
     try:
-        from farnsworth.core.parallel_workers import start_parallel_workers
+        from Cosmos.core.parallel_workers import start_parallel_workers
         manager = await start_parallel_workers()
         return {"status": "started", "info": manager.get_status()}
     except Exception as e:
@@ -82,7 +82,7 @@ async def start_workers():
 async def get_staging_files():
     """List files in the staging directory."""
     import os
-    staging_dir = Path("/workspace/Farnsworth/farnsworth/staging")
+    staging_dir = Path("/workspace/Cosmos/cosmos/staging")
     files = []
     if staging_dir.exists():
         for root, dirs, filenames in os.walk(staging_dir):
@@ -103,8 +103,8 @@ async def get_staging_files():
 @router.get("/api/evolution/loop-status")
 async def get_evolution_loop_status():
     """Get evolution loop status."""
-    from farnsworth.core.agent_spawner import get_spawner
-    from farnsworth.core.evolution_loop import get_evolution_loop
+    from Cosmos.core.agent_spawner import get_spawner
+    from Cosmos.core.evolution_loop import get_evolution_loop
     loop = get_evolution_loop()
     spawner = get_spawner()
     return {
@@ -123,9 +123,9 @@ async def get_evolution_loop_status():
 async def get_cognition_status():
     """Get cognitive system status."""
     try:
-        from farnsworth.core.temporal_awareness import get_temporal_awareness
-        from farnsworth.core.spontaneous_cognition import get_spontaneous_cognition
-        from farnsworth.core.capability_registry import get_capability_registry
+        from Cosmos.core.temporal_awareness import get_temporal_awareness
+        from Cosmos.core.spontaneous_cognition import get_spontaneous_cognition
+        from Cosmos.core.capability_registry import get_capability_registry
 
         temporal = get_temporal_awareness()
         cognition = get_spontaneous_cognition()
@@ -150,7 +150,7 @@ async def get_cognition_status():
 async def get_heartbeat_status():
     """Get current swarm health vitals."""
     try:
-        from farnsworth.core.swarm_heartbeat import get_current_vitals
+        from Cosmos.core.swarm_heartbeat import get_current_vitals
         vitals = await get_current_vitals()
         return vitals.to_dict() if vitals else {"error": "No vitals available"}
     except Exception as e:
@@ -161,7 +161,7 @@ async def get_heartbeat_status():
 async def get_heartbeat_history():
     """Get recent heartbeat history."""
     try:
-        from farnsworth.core.swarm_heartbeat import get_heartbeat
+        from Cosmos.core.swarm_heartbeat import get_heartbeat
         heartbeat = get_heartbeat()
         return {"history": [v.to_dict() for v in heartbeat.health_history[-20:]]}
     except Exception as e:
@@ -176,7 +176,7 @@ async def get_heartbeat_history():
 async def get_dlq_metrics():
     """Get Dead Letter Queue metrics - failed signal counts, retry rates, breakdowns."""
     try:
-        from farnsworth.core.dlq import get_dlq
+        from Cosmos.core.dlq import get_dlq
         dlq = get_dlq()
         return dlq.get_metrics()
     except Exception as e:
@@ -190,7 +190,7 @@ async def get_dlq_metrics():
 async def get_dlq_pending(limit: int = 50):
     """Get pending (unresolved) DLQ entries awaiting retry."""
     try:
-        from farnsworth.core.dlq import get_dlq
+        from Cosmos.core.dlq import get_dlq
         dlq = get_dlq()
         return {"pending": dlq.get_pending_entries(limit=min(limit, 200))}
     except Exception as e:
@@ -204,7 +204,7 @@ async def get_dlq_pending(limit: int = 50):
 async def get_dlq_recent(limit: int = 50):
     """Get recent DLQ entries (resolved and unresolved)."""
     try:
-        from farnsworth.core.dlq import get_dlq
+        from Cosmos.core.dlq import get_dlq
         dlq = get_dlq()
         return {"entries": dlq.get_recent_entries(limit=min(limit, 200))}
     except Exception as e:
@@ -218,7 +218,7 @@ async def get_dlq_recent(limit: int = 50):
 async def purge_dlq(older_than_hours: int = 24):
     """Purge resolved DLQ entries older than the given age."""
     try:
-        from farnsworth.core.dlq import get_dlq
+        from Cosmos.core.dlq import get_dlq
         dlq = get_dlq()
         removed = dlq.purge_resolved(older_than_hours=older_than_hours)
         return {"purged": removed, "remaining": len(dlq._entries)}

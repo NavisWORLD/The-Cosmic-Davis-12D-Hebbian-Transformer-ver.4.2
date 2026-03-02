@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/os_integration/agentic_os.py
 cosmos Agentic OS Bridge - Advanced System Control.
-=======
-Farnsworth Agentic OS Bridge - Advanced System Control.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/os_integration/agentic_os.py
 
 "I am the master of my process, the captain of my kernel."
 

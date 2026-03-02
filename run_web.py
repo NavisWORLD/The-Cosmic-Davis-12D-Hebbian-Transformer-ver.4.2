@@ -38,17 +38,9 @@ try:
 except ImportError:
     pass
 
-# FORCE LOCAL IMPORT PRIORITY
-# Add critical debugging to confirm path and loaded module
-current_dir = os.path.dirname(os.path.abspath(__file__))
-if current_dir not in sys.path:
-    sys.path.insert(0, current_dir)
-print(f"DEBUG: RunWeb CWD: {os.getcwd()}")
-print(f"DEBUG: RunWeb Dir: {current_dir}")
-
 try:
-    import cosmos.web.server
-    print(f"DEBUG: Loaded Server Module: {cosmos.web.server.__file__}")
+    import Cosmos.web.server
+    print(f"DEBUG: Loaded Server Module: {Cosmos.web.server.__file__}")
 except ImportError as e:
     print(f"DEBUG: Server Import Failed: {e}")
 
@@ -142,7 +134,7 @@ def main():
     # -------------------------------------------------------------
     print("    [INIT]  Testing Quantum Bridge Connection...")
     try:
-        from cosmos.core.quantum_bridge import get_quantum_bridge
+        from Cosmos.core.quantum_bridge import get_quantum_bridge
         qb = get_quantum_bridge()
         if qb and qb.connect():
              entropy = qb.get_entropy()
@@ -166,13 +158,24 @@ def main():
         time.sleep(1)  # Give it time to start
     
     # Start main web server
-    uvicorn.run(
-        "cosmos.web.server:app",
-        host=args.host,
-        port=args.port,
-        reload=args.reload,
-        log_level="info"
-    )
+    if args.reload:
+        print("    [WARN]  Reload is enabled, passing module string (this may fail if PYTHONPATH is ignored by Uvicorn workers).")
+        uvicorn.run(
+            "Cosmos.web.server:app",
+            host=args.host,
+            port=args.port,
+            reload=True,
+            log_level="info"
+        )
+    else:
+        # Pass the instantiated app directly to avoid module discovery issues in child processes
+        import Cosmos.web.server
+        uvicorn.run(
+            Cosmos.web.server.app,
+            host=args.host,
+            port=args.port,
+            log_level="info"
+        )
 
 
 if __name__ == "__main__":

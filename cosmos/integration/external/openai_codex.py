@@ -1,5 +1,5 @@
 """
-Farnsworth OpenAI Codex Integration.
+Cosmos OpenAI Codex Integration.
 
 "The newest coder in the collective - unlimited context, relentless output."
 
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 def _get_dynamic_max_tokens(model_id: str = "codex", task_type: str = "code") -> int:
     """AGI v1.8: Get dynamic max_tokens from centralized limits."""
     try:
-        from farnsworth.core.dynamic_limits import get_max_tokens
+        from Cosmos.core.dynamic_limits import get_max_tokens
         return get_max_tokens(model_id, task_type)
     except Exception:
         defaults = {"chat": 2000, "thinking": 8000, "quick": 800, "code": 16000}
@@ -200,11 +200,11 @@ class OpenAICodexProvider(ExternalProvider):
         model: str = "gpt-4.1",
         max_tokens: int = 16000,
     ) -> Dict[str, Any]:
-        """Generate production-quality code for the Farnsworth framework.
+        """Generate production-quality code for the Cosmos framework.
 
         Optimized for the Solana hackathon and framework improvements.
         """
-        system = """You are a senior Python engineer working on the Farnsworth AI swarm framework.
+        system = """You are a senior Python engineer working on the Cosmos AI swarm framework.
 
 THE FRAMEWORK:
 - 178,000+ lines of Python, FastAPI server, 60+ endpoints
@@ -219,7 +219,7 @@ STANDARDS:
 - PEP 8 naming (snake_case functions, PascalCase classes)
 - Max 50 lines per function
 - Error handling with specific exceptions
-- Must integrate with existing Farnsworth modules
+- Must integrate with existing Cosmos modules
 - Use logging (not print), dataclasses, typing imports
 
 OUTPUT: Valid Python code ONLY. Start with a module docstring."""
@@ -243,7 +243,7 @@ OUTPUT: Valid Python code ONLY. Start with a module docstring."""
     ) -> Dict[str, Any]:
         """Review code quality using OpenAI reasoning models."""
         return await self.chat(
-            prompt=f"""Review this Python code for the Farnsworth AI swarm framework.
+            prompt=f"""Review this Python code for the Cosmos AI swarm framework.
 
 TASK: {task_description}
 

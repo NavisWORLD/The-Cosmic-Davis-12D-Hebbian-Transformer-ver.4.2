@@ -1,5 +1,5 @@
 """
 Chain Memory Examples
 
-Example integrations for Farnsworth and OpenClaw bots.
+Example integrations for Cosmos and OpenClaw bots.
 """

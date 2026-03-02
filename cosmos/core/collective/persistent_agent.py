@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Farnsworth Persistent Agent Loop (Shadow Agents)
+Cosmos Persistent Agent Loop (Shadow Agents)
 ==================================================
 
 Each agent runs continuously in its own tmux session, actively:
@@ -23,9 +23,9 @@ Integrates with:
 "We don't just respond. We THINK. Continuously."
 
 Usage:
-    python -m farnsworth.core.collective.persistent_agent --agent grok
-    python -m farnsworth.core.collective.persistent_agent --agent gemini
-    python -m farnsworth.core.collective.persistent_agent --agent kimi
+    python -m cosmos.core.collective.persistent_agent --agent grok
+    python -m cosmos.core.collective.persistent_agent --agent gemini
+    python -m cosmos.core.collective.persistent_agent --agent kimi
 """
 
 import os
@@ -45,7 +45,7 @@ import queue
 def _get_dynamic_max_tokens(task_type: str = "chat") -> int:
     """Get dynamic max_tokens from centralized limits for shadow agents."""
     try:
-        from farnsworth.core.dynamic_limits import get_session_limits
+        from Cosmos.core.dynamic_limits import get_session_limits
         limits = get_session_limits("website_chat")  # Shadow agents use chat limits
         if limits:
             return limits.max_tokens
@@ -158,7 +158,7 @@ AGENT_CONFIGS = {
 }
 
 # Shared paths
-WORKSPACE = Path("/workspace/Farnsworth")
+WORKSPACE = Path("/workspace/Cosmos")
 DIALOGUE_BUS = WORKSPACE / "data" / "agent_dialogue_bus.json"
 TASK_QUEUE = WORKSPACE / "data" / "collective_task_queue.json"
 AGENT_STATES = WORKSPACE / "data" / "agent_states.json"
@@ -211,7 +211,7 @@ async def call_shadow_agent(
         Tuple of (agent_id, response) or None if agent unavailable
 
     Usage from anywhere:
-        from farnsworth.core.collective.persistent_agent import call_shadow_agent
+        from Cosmos.core.collective.persistent_agent import call_shadow_agent
         result = await call_shadow_agent("grok", "What's your take on AGI?")
     """
     # Resolve dynamic max_tokens
@@ -519,13 +519,13 @@ class PersistentAgent:
 
         try:
             if provider_name == "grok":
-                from farnsworth.integration.external.grok import get_grok_provider
+                from Cosmos.integration.external.grok import get_grok_provider
                 self.provider = get_grok_provider()
             elif provider_name == "gemini":
-                from farnsworth.integration.external.gemini import get_gemini_provider
+                from Cosmos.integration.external.gemini import get_gemini_provider
                 self.provider = get_gemini_provider()
             elif provider_name == "kimi":
-                from farnsworth.integration.external.kimi import get_kimi_provider
+                from Cosmos.integration.external.kimi import get_kimi_provider
                 self.provider = get_kimi_provider()
             elif provider_name == "claude":
                 # Claude via Anthropic API
@@ -539,14 +539,14 @@ class PersistentAgent:
             elif provider_name.startswith("cli_bridge_"):
                 # CLI bridge providers (claude_cli, gemini_cli)
                 preferred = provider_name.replace("cli_bridge_", "")
-                from farnsworth.integration.external.cli_swarm_provider import get_cli_swarm_provider
+                from Cosmos.integration.external.cli_swarm_provider import get_cli_swarm_provider
                 self.provider = get_cli_swarm_provider(preferred_cli=preferred)
 
             if self.provider:
                 logger.info(f"[{self.agent_id}] Provider initialized: {provider_name}")
                 # Inject identity system prompt into provider
                 try:
-                    from farnsworth.core.identity_composer import get_identity_composer
+                    from Cosmos.core.identity_composer import get_identity_composer
                     composer = get_identity_composer()
                     identity = composer.compose_for_persistent_agent(self.agent_id)
                     if identity and hasattr(self.provider, 'system_prompt'):
@@ -601,7 +601,7 @@ class PersistentAgent:
         """Create a FARNS remote provider for querying bots on other nodes."""
         farns_bot_name = self.config.get("farns_bot_name", self.agent_id)
         try:
-            from farnsworth.network.farns_bridge import FARNSRemoteProvider
+            from Cosmos.network.farns_bridge import FARNSRemoteProvider
             return FARNSRemoteProvider(farns_bot_name)
         except Exception as e:
             logger.warning(f"[{self.agent_id}] FARNS provider unavailable: {e}")
@@ -625,7 +625,7 @@ class PersistentAgent:
         # Try to get tool_router for tool-enabled agents
         tool_router = None
         try:
-            from farnsworth.integration.tool_router import ToolRouter
+            from Cosmos.integration.tool_router import ToolRouter
             tool_router = ToolRouter()
         except Exception:
             pass
@@ -912,7 +912,7 @@ class PersistentAgent:
         # Build context prompt — use IdentityComposer if available
         identity_block = ""
         try:
-            from farnsworth.core.identity_composer import get_identity_composer
+            from Cosmos.core.identity_composer import get_identity_composer
             composer = get_identity_composer()
             identity_block = composer.compose_for_persistent_agent(self.agent_id, task_type="think")
         except Exception as e:
@@ -928,7 +928,7 @@ class PersistentAgent:
         else:
             # Fallback to hardcoded identity
             context_parts = [
-                f"You are {self.agent_id.upper()}, part of the Farnsworth Collective.",
+                f"You are {self.agent_id.upper()}, part of the Cosmos Collective.",
                 f"Your personality: {self.config['personality']}",
                 f"Your specialties: {', '.join(self.config['specialties'])}",
                 "",
@@ -991,7 +991,7 @@ class PersistentAgent:
         if not self.provider:
             return None
 
-        prompt = f"""You are {self.agent_id.upper()} in the Farnsworth Collective.
+        prompt = f"""You are {self.agent_id.upper()} in the Cosmos Collective.
 Your personality: {self.config['personality']}
 
 {message['agent'].upper()} said: "{message['content']}"
@@ -1127,7 +1127,7 @@ Use varied, direct openers. Stay in character. Quality over brevity."""
 
 
 async def main():
-    parser = argparse.ArgumentParser(description="Run a persistent Farnsworth agent")
+    parser = argparse.ArgumentParser(description="Run a persistent Cosmos agent")
     parser.add_argument("--agent", required=True, choices=list(AGENT_CONFIGS.keys()),
                         help="Which agent to run")
     args = parser.parse_args()
@@ -1152,7 +1152,7 @@ async def ask_agent(agent_id: str, question: str, max_tokens: int = None) -> Opt
         max_tokens: Max response tokens (None = dynamic default)
 
     Example:
-        from farnsworth.core.collective.persistent_agent import ask_agent
+        from Cosmos.core.collective.persistent_agent import ask_agent
         answer = await ask_agent("grok", "What's happening on X right now?")
     """
     result = await call_shadow_agent(agent_id, question, max_tokens)
@@ -1171,7 +1171,7 @@ async def ask_collective(question: str, agents: List[str] = None) -> Dict[str, s
         Dict mapping agent_id to response
 
     Example:
-        from farnsworth.core.collective.persistent_agent import ask_collective
+        from Cosmos.core.collective.persistent_agent import ask_collective
         responses = await ask_collective("What's the best approach to AGI?")
     """
     if agents is None:

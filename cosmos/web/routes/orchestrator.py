@@ -1,5 +1,5 @@
 """
-Farnsworth Token Orchestrator Routes
+Cosmos Token Orchestrator Routes
 
 API endpoints for monitoring and controlling the dynamic token orchestrator.
 
@@ -20,7 +20,7 @@ from loguru import logger
 
 # Guard orchestrator import
 try:
-    from farnsworth.core.token_orchestrator import get_token_orchestrator
+    from Cosmos.core.token_orchestrator import get_token_orchestrator
     ORCHESTRATOR_AVAILABLE = True
 except ImportError:
     ORCHESTRATOR_AVAILABLE = False

@@ -1,5 +1,5 @@
 """
-Farnsworth Dynamic Handler Benchmarking System.
+Cosmos Dynamic Handler Benchmarking System.
 
 "I'm going to make them compete! May the best robot win!"
 
@@ -593,7 +593,7 @@ class HandlerBenchmarkEngine:
         """
         # Import nexus dynamically to avoid circular imports
         try:
-            from farnsworth.core.nexus import nexus, SignalType
+            from Cosmos.core.nexus import nexus, SignalType
 
             # Emit evaluation signal
             await nexus.emit(

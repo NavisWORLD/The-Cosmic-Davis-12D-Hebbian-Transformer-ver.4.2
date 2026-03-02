@@ -1,5 +1,5 @@
 """
-Farnsworth Injection Defense - 5-layer anti-injection system.
+Cosmos Injection Defense - 5-layer anti-injection system.
 
 Layers:
   1. Structural  (0.25) - Regex/pattern matching, homoglyphs, invisible chars
@@ -25,7 +25,7 @@ try:
     from loguru import logger
 except ImportError:
     import logging
-    logger = logging.getLogger("farnsworth.security")
+    logger = logging.getLogger("cosmos.security")
 
 try:
     import numpy as np
@@ -789,17 +789,17 @@ class CollectiveLayer:
         providers = []
         # Try to import available providers
         try:
-            from farnsworth.integration.external.deepseek import DeepSeekProvider
+            from Cosmos.integration.external.deepseek import DeepSeekProvider
             providers.append(("deepseek", DeepSeekProvider))
         except ImportError:
             pass
         try:
-            from farnsworth.integration.external.huggingface import HuggingFaceProvider
+            from Cosmos.integration.external.huggingface import HuggingFaceProvider
             providers.append(("huggingface", HuggingFaceProvider))
         except ImportError:
             pass
         try:
-            from farnsworth.core.agent_spawner import get_agent_spawner
+            from Cosmos.core.agent_spawner import get_agent_spawner
             providers.append(("phi", None))  # Marker for phi via spawner
         except ImportError:
             pass
@@ -871,7 +871,7 @@ LAYER_WEIGHTS = {
 
 
 class InjectionDefense:
-    """5-layer anti-injection defense system for the Farnsworth collective."""
+    """5-layer anti-injection defense system for the Cosmos collective."""
 
     def __init__(self) -> None:
         self._structural = StructuralLayer()

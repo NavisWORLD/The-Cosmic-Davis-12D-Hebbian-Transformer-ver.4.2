@@ -22,7 +22,7 @@ router = APIRouter()
 async def get_polymarket_predictions(limit: int = 10):
     """Get recent Polymarket predictions."""
     try:
-        from farnsworth.core.polymarket_predictor import get_predictor
+        from Cosmos.core.polymarket_predictor import get_predictor
         predictor = get_predictor()
         predictions = predictor.get_recent_predictions(limit)
 
@@ -40,7 +40,7 @@ async def get_polymarket_predictions(limit: int = 10):
 async def get_polymarket_stats():
     """Get prediction accuracy statistics."""
     try:
-        from farnsworth.core.polymarket_predictor import get_predictor
+        from Cosmos.core.polymarket_predictor import get_predictor
         from dataclasses import asdict
 
         predictor = get_predictor()
@@ -59,7 +59,7 @@ async def get_polymarket_stats():
 async def trigger_polymarket_predictions():
     """Manually trigger prediction generation."""
     try:
-        from farnsworth.core.polymarket_predictor import get_predictor
+        from Cosmos.core.polymarket_predictor import get_predictor
         predictor = get_predictor()
         predictions = await predictor.generate_predictions(count=2)
 

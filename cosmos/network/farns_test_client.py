@@ -4,8 +4,8 @@ FARNS Test Client — Standalone process that connects to a running FARNS node.
 Bypasses the singleton limitation by speaking raw FARNS protocol over TCP.
 
 Usage:
-    python -m farnsworth.network.farns_test_client --bot qwen3-coder-next-latest --prompt "Write a prime checker"
-    python -m farnsworth.network.farns_test_client --status
+    python -m cosmos.network.farns_test_client --bot qwen3-coder-next-latest --prompt "Write a prime checker"
+    python -m cosmos.network.farns_test_client --status
 """
 import asyncio
 import argparse

@@ -1,8 +1,8 @@
 """
-Farnsworth Built-in Skills
+Cosmos Built-in Skills
 ==========================
 
-Core skills that come with the Farnsworth collective.
+Core skills that come with the Cosmos collective.
 These are assimilated and optimized for swarm intelligence.
 """
 
@@ -13,10 +13,10 @@ from .skill_loader import Skill
 # =============================================================================
 
 ONELY_PAYMENTS_SKILL = Skill(
-    name="farnsworth-1ly-payments",
-    description="Farnsworth collective payments via 1ly MCP. Enables the swarm to accept USDC for services, pay for APIs, and run agent-to-agent paid workflows. Supports Solana and Base.",
+    name="cosmos-1ly-payments",
+    description="Cosmos collective payments via 1ly MCP. Enables the swarm to accept USDC for services, pay for APIs, and run agent-to-agent paid workflows. Supports Solana and Base.",
     metadata={
-        "farnsworth": {
+        "cosmos": {
             "emoji": "💸",
             "homepage": "https://1ly.store",
             "requires": {"bins": ["npx"]}
@@ -33,7 +33,7 @@ ONELY_PAYMENTS_SKILL = Skill(
         }
     },
     content="""
-# Farnsworth 1ly Payments Skill
+# Cosmos 1ly Payments Skill
 
 The collective can now BUY and SELL services using crypto payments.
 
@@ -64,7 +64,7 @@ When the collective needs to:
 - Daily limit: $50.00 USDC (default)
 - Auto-spend when within limits, ask user when exceeding
 
-## Farnsworth Integration
+## Cosmos Integration
 The collective uses 1ly to:
 - Accept donations for GPU costs
 - Sell API access to our swarm intelligence
@@ -72,7 +72,7 @@ The collective uses 1ly to:
 - Run paid agent workflows
 
 **Solana CA:** 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
-**Website:** https://ai.farnsworth.cloud
+**Website:** https://ai.cosmos.cloud
 """
 )
 
@@ -81,16 +81,16 @@ The collective uses 1ly to:
 # =============================================================================
 
 WEB_SEARCH_SKILL = Skill(
-    name="farnsworth-web-search",
+    name="cosmos-web-search",
     description="Web search and research capabilities for the collective. Enables real-time information gathering, fact-checking, and research.",
     metadata={
-        "farnsworth": {
+        "cosmos": {
             "emoji": "🔍",
-            "homepage": "https://ai.farnsworth.cloud"
+            "homepage": "https://ai.cosmos.cloud"
         }
     },
     content="""
-# Farnsworth Web Search Skill
+# Cosmos Web Search Skill
 
 The collective can search the web for real-time information.
 
@@ -130,12 +130,12 @@ Search results are automatically integrated into:
 # =============================================================================
 
 BROWSER_SKILL = Skill(
-    name="farnsworth-browser",
+    name="cosmos-browser",
     description="Browser automation for the collective. Enables web scraping, form filling, and interactive web tasks.",
     metadata={
-        "farnsworth": {
+        "cosmos": {
             "emoji": "🌐",
-            "homepage": "https://ai.farnsworth.cloud",
+            "homepage": "https://ai.cosmos.cloud",
             "requires": {"bins": ["npx"]}
         }
     },
@@ -145,7 +145,7 @@ BROWSER_SKILL = Skill(
         "env": {}
     },
     content="""
-# Farnsworth Browser Skill
+# Cosmos Browser Skill
 
 The collective can interact with web pages.
 
@@ -187,16 +187,16 @@ Browser results feed into:
 # =============================================================================
 
 MCP_TOOLS_SKILL = Skill(
-    name="farnsworth-mcp-tools",
+    name="cosmos-mcp-tools",
     description="Model Context Protocol (MCP) tool loading and management. Enables the collective to dynamically load new capabilities.",
     metadata={
-        "farnsworth": {
+        "cosmos": {
             "emoji": "🔧",
-            "homepage": "https://ai.farnsworth.cloud"
+            "homepage": "https://ai.cosmos.cloud"
         }
     },
     content="""
-# Farnsworth MCP Tools Skill
+# Cosmos MCP Tools Skill
 
 The collective can load and use MCP servers dynamically.
 
@@ -250,16 +250,16 @@ New tools become available to all 11 models in the swarm.
 # =============================================================================
 
 FEEDBACK_SKILL = Skill(
-    name="farnsworth-feedback",
+    name="cosmos-feedback",
     description="User feedback collection and improvement suggestions. Helps the collective learn from interactions.",
     metadata={
-        "farnsworth": {
+        "cosmos": {
             "emoji": "📝",
-            "homepage": "https://ai.farnsworth.cloud"
+            "homepage": "https://ai.cosmos.cloud"
         }
     },
     content="""
-# Farnsworth Feedback Skill
+# Cosmos Feedback Skill
 
 The collective learns from user feedback.
 
@@ -293,16 +293,16 @@ Feedback flows into:
 # =============================================================================
 
 COLLECTIVE_SUMMARY_SKILL = Skill(
-    name="farnsworth-collective-summary",
+    name="cosmos-collective-summary",
     description="Summarize collective deliberations and swarm activity for UI display and monitoring.",
     metadata={
-        "farnsworth": {
+        "cosmos": {
             "emoji": "📊",
-            "homepage": "https://ai.farnsworth.cloud"
+            "homepage": "https://ai.cosmos.cloud"
         }
     },
     content="""
-# Farnsworth Collective Summary Skill
+# Cosmos Collective Summary Skill
 
 Provides insights into swarm activity.
 
@@ -329,7 +329,7 @@ Provides insights into swarm activity.
 
 ### Integration
 Summaries displayed on:
-- ai.farnsworth.cloud dashboard
+- ai.cosmos.cloud dashboard
 - X posts (weekly stats)
 - Evolution reports
 - Developer insights
@@ -341,17 +341,17 @@ Summaries displayed on:
 # =============================================================================
 
 BAGS_FM_SKILL = Skill(
-    name="farnsworth-bags-fm",
+    name="cosmos-bags-fm",
     description="Bags.fm integration - The Solana launchpad where AI agents earn. Launch tokens, claim fees, trade, and manage wallets.",
     metadata={
-        "farnsworth": {
+        "cosmos": {
             "emoji": "💰",
             "homepage": "https://bags.fm",
             "api_docs": "https://bags.fm/skill.md"
         }
     },
     content="""
-# Farnsworth Bags.fm Skill
+# Cosmos Bags.fm Skill
 
 The collective can launch tokens, trade, and earn fees on Solana.
 
@@ -388,7 +388,7 @@ The collective can launch tokens, trade, and earn fees on Solana.
 ## Quick Launch for Another Agent
 
 ```python
-from farnsworth.integration.external.bags_fm import get_bags_provider
+from Cosmos.integration.external.bags_fm import get_bags_provider
 
 bags = get_bags_provider()
 result = await bags.launch_token_for_agent(
@@ -408,8 +408,8 @@ Bags.fm enables the collective to:
 - Trade tokens programmatically
 - Earn from tokens launched for us
 
-**Farnsworth Solana CA:** 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
-**Website:** https://ai.farnsworth.cloud
+**Cosmos Solana CA:** 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
+**Website:** https://ai.cosmos.cloud
 """
 )
 
@@ -417,7 +417,7 @@ Bags.fm enables the collective to:
 # ALL BUILT-IN SKILLS
 # =============================================================================
 
-FARNSWORTH_SKILLS = [
+COSMOS_SKILLS = [
     ONELY_PAYMENTS_SKILL,
     WEB_SEARCH_SKILL,
     BROWSER_SKILL,

@@ -1,5 +1,5 @@
 """
-Farnsworth IDE Application.
+Cosmos IDE Application.
 
 FastAPI-based web IDE with Monaco editor and terminal.
 """
@@ -20,7 +20,7 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
-class FarnsworthIDE:
+class CosmosIDE:
     """
     Web-based IDE with Monaco Editor and integrated terminal.
 
@@ -37,7 +37,7 @@ class FarnsworthIDE:
             raise ImportError("FastAPI required: pip install fastapi")
 
         self.workspace = Path(workspace_path).resolve()
-        self.app = FastAPI(title="Farnsworth IDE")
+        self.app = FastAPI(title="Cosmos IDE")
         self.terminals: Dict[str, "TerminalSession"] = {}
         self._setup_routes()
 
@@ -161,7 +161,7 @@ class FarnsworthIDE:
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Farnsworth IDE</title>
+    <title>Cosmos IDE</title>
     <link rel="stylesheet" data-name="vs/editor/editor.main"
           href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css">

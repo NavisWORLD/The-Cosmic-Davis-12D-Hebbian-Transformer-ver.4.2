@@ -1,5 +1,5 @@
 """
-Farnsworth System Tray Integration.
+Cosmos System Tray Integration.
 """
 
 try:
@@ -23,8 +23,8 @@ class SystemTrayIcon(QSystemTrayIcon if PYSIDE_AVAILABLE else object):
         self.app = app
 
         # Set icon (using a placeholder - would use actual icon file)
-        # self.setIcon(QIcon(":/icons/farnsworth.png"))
-        self.setToolTip("Farnsworth AI")
+        # self.setIcon(QIcon(":/icons/cosmos.png"))
+        self.setToolTip("Cosmos AI")
 
         # Create context menu
         self._create_menu()
@@ -37,7 +37,7 @@ class SystemTrayIcon(QSystemTrayIcon if PYSIDE_AVAILABLE else object):
         menu = QMenu()
 
         # Show/Hide
-        show_action = QAction("Open Farnsworth", menu)
+        show_action = QAction("Open Cosmos", menu)
         show_action.triggered.connect(self._show_main)
         menu.addAction(show_action)
 

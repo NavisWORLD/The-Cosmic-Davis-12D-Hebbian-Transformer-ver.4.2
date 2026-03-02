@@ -185,7 +185,7 @@ class FallbackManager:
 
         try:
             if backend == "bankr":
-                from farnsworth.integration.bankr import get_bankr_client
+                from Cosmos.integration.bankr import get_bankr_client
                 client = get_bankr_client()
                 is_healthy = await client.health_check()
                 health.status = BackendStatus.HEALTHY if is_healthy else BackendStatus.UNHEALTHY

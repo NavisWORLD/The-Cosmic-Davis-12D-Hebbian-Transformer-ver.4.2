@@ -29,9 +29,9 @@ class OpenCodeWorker:
     OpenCode is an open-source AI coding agent that supports 75+ LLM providers.
     """
 
-    def __init__(self, workspace: str = "/workspace/Farnsworth"):
+    def __init__(self, workspace: str = "/workspace/Cosmos"):
         self.workspace = Path(workspace)
-        self.staging_dir = self.workspace / "farnsworth" / "staging" / "opencode"
+        self.staging_dir = self.workspace / "cosmos" / "staging" / "opencode"
         self.staging_dir.mkdir(parents=True, exist_ok=True)
         self.active_processes: Dict[str, subprocess.Popen] = {}
 
@@ -87,7 +87,7 @@ class OpenCodeWorker:
                 return None
 
         # Build the prompt for OpenCode
-        prompt = f"""You are a Python developer working on the Farnsworth AI Swarm project.
+        prompt = f"""You are a Python developer working on the Cosmos AI Swarm project.
 
 TASK: {task_description}
 

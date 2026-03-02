@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/health/providers/__init__.py
 cosmos Health Providers
-=======
-Farnsworth Health Providers
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/providers/__init__.py
 
 Multi-provider health data integration supporting Apple Health, Fitbit, Oura, WHOOP, and more.
 """

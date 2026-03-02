@@ -1,18 +1,10 @@
 """
-<<<<<<< HEAD:cosmos/core/memory/planetary/akashic.py
 cosmos Planetary Memory (The Akashic Record)
-=======
-Farnsworth Planetary Memory (The Akashic Record)
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/akashic.py
 ------------------------------------------------
 
 "A place where all knowledge flows together... like a giant soup of brains!"
 
-<<<<<<< HEAD:cosmos/core/memory/planetary/akashic.py
 This module implements a privacy-preserving global vector store that allows cosmos instances
-=======
-This module implements a privacy-preserving global vector store that allows Farnsworth instances
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/akashic.py
 to share "Skill Vectors" (generalized solutions) without sharing sensitive data.
 
 Features:
@@ -33,11 +25,7 @@ from loguru import logger
 
 # Try to import Nexus for signal handling
 try:
-<<<<<<< HEAD:cosmos/core/memory/planetary/akashic.py
-    from cosmos.core.nexus import nexus, SignalType
-=======
-    from farnsworth.core.nexus import nexus, SignalType
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/akashic.py
+    from Cosmos.core.nexus import nexus, SignalType
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False
@@ -147,11 +135,7 @@ class PlanetaryMemory:
     async def _broadcast_to_swarm(self, skill: SkillVector):
         """Broadcast skill to P2P swarm network."""
         try:
-<<<<<<< HEAD:cosmos/core/memory/planetary/akashic.py
-            from cosmos.core.swarm.p2p import swarm_fabric
-=======
-            from farnsworth.core.swarm.p2p import swarm_fabric
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/memory/planetary/akashic.py
+            from Cosmos.core.swarm.p2p import swarm_fabric
 
             # Serialize skill for transmission
             skill_data = {

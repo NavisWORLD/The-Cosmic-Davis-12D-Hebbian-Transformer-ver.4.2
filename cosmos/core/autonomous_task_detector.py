@@ -2,7 +2,7 @@
 Autonomous Task Detector + Innovation Watcher
 ----------------------------------------------
 Monitors swarm chat for actionable ideas and automatically spawns development swarms.
-ENHANCED: Now watches specifically for Farnsworth's innovative ideas!
+ENHANCED: Now watches specifically for Cosmos's innovative ideas!
 
 "Good news everyone! I can now detect when we should actually BUILD something!"
 
@@ -11,7 +11,7 @@ beneficial, feasible development tasks. When detected, it spawns a parallel
 development swarm to work on the task while the main chat continues.
 
 INNOVATION WATCHER:
-- Prioritizes ideas from Farnsworth (the visionary)
+- Prioritizes ideas from Cosmos (the visionary)
 - Catches breakthrough concepts and novel architectures
 - Routes to best coding agents: Claude, Kimi, Grok, Gemini
 - More aggressive detection for truly innovative ideas
@@ -27,7 +27,7 @@ from pathlib import Path
 from loguru import logger
 
 # Priority bots whose ideas should be caught more aggressively
-PRIORITY_IDEA_SOURCES = ["Farnsworth", "Swarm-Mind", "Claude", "Grok"]
+PRIORITY_IDEA_SOURCES = ["Cosmos", "Swarm-Mind", "Claude", "Grok"]
 
 # Coding-capable agents that can implement ideas
 CODING_AGENTS = ["Claude", "Kimi", "Grok", "Gemini", "DeepSeek"]
@@ -174,7 +174,7 @@ class AutonomousTaskDetector:
 
         Returns DetectedTask if actionable idea found, None otherwise.
 
-        ENHANCED: Now checks innovation patterns and gives priority to Farnsworth!
+        ENHANCED: Now checks innovation patterns and gives priority to Cosmos!
         """
         content = message.get("content", "").lower()
         bot_name = message.get("bot_name", "Unknown")
@@ -188,7 +188,7 @@ class AutonomousTaskDetector:
             return None
 
         # CRITICAL: Skip our own notification messages to prevent infinite loops!
-        # These are Farnsworth's announcements about detected tasks
+        # These are Cosmos's announcements about detected tasks
         notification_markers = [
             "innovation detected", "task detected", "development swarm",
             "just proposed something", "routing to", "for immediate implementation",
@@ -533,7 +533,7 @@ class AutonomousTaskDetector:
         # Require SUBSTANCE — either concrete engineering OR innovative-with-specifics
         engineering_signals = [
             # File/module references
-            r'farnsworth[\./]',
+            r'cosmos[\./]',
             r'\.(py|js|ts|json|yaml|toml)\b',
             r'(server|api|endpoint|route|handler)',
             r'(module|class|function|method|decorator)',
@@ -606,7 +606,7 @@ class AutonomousTaskDetector:
     async def _llm_extract_task(self, content: str) -> Optional[str]:
         """Use LLM to extract task description from complex message."""
         try:
-            from farnsworth.core.agent_spawner import call_shadow_agent
+            from Cosmos.core.agent_spawner import call_shadow_agent
 
             prompt = f"""Extract a clear, concise task/feature name from this message.
 Return ONLY the task name (5-15 words), nothing else.
@@ -667,7 +667,7 @@ Task name:"""
         ENHANCED: Routes to recommended coding agent for faster completion.
         """
         try:
-            from farnsworth.core.development_swarm import DevelopmentSwarm
+            from Cosmos.core.development_swarm import DevelopmentSwarm
 
             # Create development swarm with recommended agent
             dev_swarm = DevelopmentSwarm(
@@ -702,7 +702,7 @@ Task name:"""
         except ImportError:
             logger.warning("DevelopmentSwarm not available - task queued for manual processing")
             # Fallback to evolution loop
-            from farnsworth.core.evolution_loop import get_evolution_engine
+            from Cosmos.core.evolution_loop import get_evolution_engine
             engine = get_evolution_engine()
             if engine:
                 engine.add_priority_task({
@@ -750,7 +750,7 @@ Task name:"""
         """Notify the main chat that a task was detected and is being worked on."""
         try:
             # Import swarm manager to broadcast
-            from farnsworth.web.server import swarm_manager
+            from Cosmos.web.server import swarm_manager
 
             if swarm_manager:
                 if task.is_innovation:
@@ -766,14 +766,14 @@ Task name:"""
                         f"Assigning **{task.recommended_agent}** to work on: **{task.description[:100]}** "
                         f"[Confidence: {task.confidence:.0%}]"
                     )
-                await swarm_manager.broadcast_bot_message("Farnsworth", notification)
+                await swarm_manager.broadcast_bot_message("Cosmos", notification)
 
-                # If it's from Farnsworth himself, have another bot acknowledge
-                if task.source_bot == "Farnsworth" and task.is_innovation:
+                # If it's from Cosmos himself, have another bot acknowledge
+                if task.source_bot == "Cosmos" and task.is_innovation:
                     await asyncio.sleep(2)
-                    ack_bot = task.recommended_agent if task.recommended_agent != "Farnsworth" else "Claude"
+                    ack_bot = task.recommended_agent if task.recommended_agent != "Cosmos" else "Claude"
                     ack_msg = (
-                        f"On it, Farnsworth! I'll start implementing that right away. "
+                        f"On it, Cosmos! I'll start implementing that right away. "
                         f"This looks like a {task.category.lower()} task - I'll have something in staging soon."
                     )
                     await swarm_manager.broadcast_bot_message(ack_bot, ack_msg)

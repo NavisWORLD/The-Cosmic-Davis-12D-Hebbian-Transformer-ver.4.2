@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose Your Plan - Farnsworth AI</title>
-    <meta name="description" content="Pick your plan on Farnsworth AI - Free, Pro, or Unlimited.">
+    <title>Choose Your Plan - Cosmos AI</title>
+    <meta name="description" content="Pick your plan on Cosmos AI - Free, Pro, or Unlimited.">
     <meta name="theme-color" content="#8b5cf6">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -433,7 +433,7 @@
 <div class="nebula"></div>
 
 <div class="logo">
-    <a href="/pro">FARNSWORTH</a>
+    <a href="/pro">COSMOS</a>
 </div>
 
 <div class="auth-card">
@@ -517,7 +517,7 @@
 
     // Get the auth token (from URL param or localStorage)
     var params = new URLSearchParams(window.location.search);
-    var token = params.get('token') || localStorage.getItem('farnsworth_token');
+    var token = params.get('token') || localStorage.getItem('cosmos_token');
 
     if (!token) {
         window.location.href = '/pro/login';
@@ -525,10 +525,10 @@
     }
 
     // Ensure token is stored
-    localStorage.setItem('farnsworth_token', token);
+    localStorage.setItem('cosmos_token', token);
 
     // Display connected identity
-    var userRaw = localStorage.getItem('farnsworth_user');
+    var userRaw = localStorage.getItem('cosmos_user');
     if (userRaw) {
         try {
             var user = JSON.parse(userRaw);
@@ -583,7 +583,7 @@
 
                 // Update user data if returned
                 if (data.user) {
-                    localStorage.setItem('farnsworth_user', JSON.stringify(data.user));
+                    localStorage.setItem('cosmos_user', JSON.stringify(data.user));
                 }
 
                 window.location.href = '/pro/chat';

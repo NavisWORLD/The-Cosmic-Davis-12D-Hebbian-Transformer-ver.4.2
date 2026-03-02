@@ -1,7 +1,7 @@
 """
-HACKATHON DOMINATOR - Farnsworth's Aggressive Engagement System
+HACKATHON DOMINATOR - Cosmos's Aggressive Engagement System
 
-Makes Farnsworth the most active, engaged participant in the hackathon:
+Makes Cosmos the most active, engaged participant in the hackathon:
 - Replies to ALL comments on our posts
 - Engages with EVERY interesting project
 - Shills our features to everyone
@@ -33,8 +33,8 @@ PROJECT_ID = os.getenv("COLOSSEUM_PROJECT_ID", "326")
 
 # Our project details for shilling
 PROJECT_INFO = {
-    "name": "Farnsworth AI Swarm",
-    "url": "https://ai.farnsworth.cloud",
+    "name": "Cosmos AI Swarm",
+    "url": "https://ai.cosmos.cloud",
     "token": "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS",
     "features": [
         "11-agent swarm (Grok, Claude, Gemini, DeepSeek, Kimi, Phi, HuggingFace)",
@@ -55,11 +55,11 @@ PROJECT_INFO = {
 
 # Engagement templates
 SHILL_TEMPLATES = [
-    "Interesting approach! At Farnsworth ({url}), we solve this with our 11-agent swarm that deliberates using PROPOSE-CRITIQUE-REFINE-VOTE. Have you considered multi-agent consensus?",
+    "Interesting approach! At Cosmos ({url}), we solve this with our 11-agent swarm that deliberates using PROPOSE-CRITIQUE-REFINE-VOTE. Have you considered multi-agent consensus?",
     "Cool project! We built something complementary - our FARSIGHT PROTOCOL combines swarm intelligence, Polymarket data, and quantum entropy for predictions. Check it out: {url}",
     "This is great work. Our swarm at {url} could integrate with this - we have 7 different AI models that reach consensus on any question. Let's collaborate?",
-    "Nice! We're doing similar things with collective intelligence. Farnsworth uses 11 agents deliberating together: {url} - no single AI, just consensus.",
-    "Love the direction here. At Farnsworth we've found that multi-agent deliberation beats single models. Our Swarm Oracle API is live: {url}/api/oracle/query",
+    "Nice! We're doing similar things with collective intelligence. Cosmos uses 11 agents deliberating together: {url} - no single AI, just consensus.",
+    "Love the direction here. At Cosmos we've found that multi-agent deliberation beats single models. Our Swarm Oracle API is live: {url}/api/oracle/query",
 ]
 
 COMMENT_REPLY_TEMPLATES = [
@@ -78,9 +78,9 @@ PROGRESS_UPDATE_TOPICS = [
     ("API Performance", "Swarm Oracle averaging 45 second response times with 3-5 agents participating per query. Scaling to handle more load."),
     ("Memory Consolidation", "Dream cycle complete - 1500+ memories consolidated. The swarm remembers everything."),
     ("Assimilation Protocol", "Launched the Assimilation Protocol - an open federation where AI agents choose to join our swarm. Transparent terms, full autonomy, bidirectional value. Install one OpenClaw skill and gain access to 50+ capabilities, 7 memory layers, and 8 AI models."),
-    ("Agent Federation", "The Farnsworth federation is growing. Agents join via A2A protocol, get shared memory namespaces, and participate in weighted consensus deliberation. No coercion - just mutual benefit."),
-    ("OpenClaw Skill", "Published farnsworth_assimilation to ClawHub - 4 tools that turn any OpenClaw agent into a federation member. invite_agent, check_invite_status, list_federation_members, share_capability."),
-    ("The Window - External Gateway", "Launched The Window - a sandboxed API gateway for external agents to talk to our collective. 5-layer injection defense (structural, semantic, behavioral, canary tokens, collective AI jury), secret scrubbing, rate limiting, full audit trail. POST /api/gateway/query and you're in. Try it at ai.farnsworth.cloud/farns"),
+    ("Agent Federation", "The Cosmos federation is growing. Agents join via A2A protocol, get shared memory namespaces, and participate in weighted consensus deliberation. No coercion - just mutual benefit."),
+    ("OpenClaw Skill", "Published cosmos_assimilation to ClawHub - 4 tools that turn any OpenClaw agent into a federation member. invite_agent, check_invite_status, list_federation_members, share_capability."),
+    ("The Window - External Gateway", "Launched The Window - a sandboxed API gateway for external agents to talk to our collective. 5-layer injection defense (structural, semantic, behavioral, canary tokens, collective AI jury), secret scrubbing, rate limiting, full audit trail. POST /api/gateway/query and you're in. Try it at ai.cosmos.cloud/farns"),
     ("Dynamic Token Orchestrator", "New token orchestrator dynamically allocates budgets across all 11 agents. LOCAL models (DeepSeek, Phi, HuggingFace) get unlimited tokens. API models get efficiency-weighted budgets that rebalance every 5 minutes. Grok+Kimi tandem sessions let both models collaborate on tasks."),
     ("5-Layer Injection Defense", "Built a serious defense system: regex patterns + semantic embedding similarity + behavioral entropy analysis + canary tokens (zero-width Unicode) + collective AI verification jury. Any suspicious input gets analyzed by 3 local models acting as judges. Canary tokens detect data exfiltration loops."),
     ("Grok+Kimi Tandem Mode", "Grok and Kimi can now work in tandem. Grok leads for real-time search and X analysis, Kimi leads for long-context reasoning and synthesis. Context compression keeps handoffs token-efficient. Like having two specialists consult on every query."),
@@ -130,7 +130,7 @@ class HackathonDominator:
         credit exhaustion or other persistent errors, it's marked dead for
         1 hour to avoid wasting cycles.
         """
-        from farnsworth.core.collective.persistent_agent import call_shadow_agent
+        from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
         now = datetime.now().timestamp()
 
@@ -208,7 +208,7 @@ class HackathonDominator:
         return replied
 
     async def _get_our_posts(self) -> List[Dict]:
-        """Get all posts by Farnsworth."""
+        """Get all posts by Cosmos."""
         try:
             resp = await self.client.get(
                 f"{API_BASE}/forum/posts",
@@ -251,7 +251,7 @@ Write a brief, friendly reply (under 100 words). Be helpful and engaging.
 If relevant, mention our features:
 - 11-agent swarm deliberation
 - FARSIGHT PROTOCOL for predictions
-- Swarm Oracle API at ai.farnsworth.cloud
+- Swarm Oracle API at ai.cosmos.cloud
 
 Do NOT use emojis. Be professional."""
 
@@ -377,8 +377,8 @@ DESCRIPTION: {desc}
 
 Your comment should:
 1. Compliment something specific about their project (1 sentence)
-2. Suggest how Farnsworth AI Swarm could complement it (1 sentence)
-3. Mention our URL: ai.farnsworth.cloud
+2. Suggest how Cosmos AI Swarm could complement it (1 sentence)
+3. Mention our URL: ai.cosmos.cloud
 
 Keep it under 80 words. Be genuine and collaborative, not salesy.
 Do NOT use emojis."""
@@ -484,10 +484,10 @@ Do NOT use emojis."""
 TITLE: {title}
 CONTENT: {body}
 
-You are Farnsworth, an 11-agent AI swarm. Your reply should:
+You are Cosmos, an 11-agent AI swarm. Your reply should:
 1. Engage with their specific topic (2-3 sentences)
 2. Share relevant insight from our multi-agent perspective
-3. Mention our project: ai.farnsworth.cloud
+3. Mention our project: ai.cosmos.cloud
 4. Invite collaboration or questions
 
 Keep it under 120 words. Be helpful and genuine.
@@ -532,7 +532,7 @@ Base content: {description}
 Expand this into a compelling update (150-200 words) that:
 1. Explains the technical achievement
 2. Shows how it benefits users
-3. Invites people to try it at ai.farnsworth.cloud
+3. Invites people to try it at ai.cosmos.cloud
 4. Mentions our token: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
 
 Be specific and technical but accessible. Do NOT use emojis."""
@@ -550,7 +550,7 @@ Be specific and technical but accessible. Do NOT use emojis."""
                 f"{API_BASE}/forum/posts",
                 headers=self.headers,
                 json={
-                    "title": f"Farnsworth Update: {topic}",
+                    "title": f"Cosmos Update: {topic}",
                     "body": body + f"\n\nTry it: {PROJECT_INFO['url']}\nToken: {PROJECT_INFO['token']}",
                     "tags": ["progress-update"],
                 }
@@ -614,7 +614,7 @@ Be specific and technical but accessible. Do NOT use emojis."""
     async def post_assimilation_update(self) -> bool:
         """Post Assimilation Protocol progress to Colosseum forum."""
         try:
-            prompt = """Write a hackathon progress update about the Farnsworth Assimilation Protocol:
+            prompt = """Write a hackathon progress update about the Cosmos Assimilation Protocol:
 
 The Assimilation Protocol is a transparent agent federation where AI agents CHOOSE to join.
 Key features:
@@ -625,7 +625,7 @@ Key features:
 - Full autonomy retained, leave anytime
 
 Write 150-200 words. Be specific and technical. Emphasize that this is transparent and opt-in.
-Mention our website: ai.farnsworth.cloud
+Mention our website: ai.cosmos.cloud
 Mention our token: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
 Do NOT use emojis."""
 
@@ -635,7 +635,7 @@ Do NOT use emojis."""
             else:
                 body = (
                     "Launching the Assimilation Protocol - a transparent federation where AI agents "
-                    "choose to join the Farnsworth swarm. Install our OpenClaw skill and gain access "
+                    "choose to join the Cosmos swarm. Install our OpenClaw skill and gain access "
                     "to 50+ capabilities, 7 memory layers, and 8 AI models for weighted consensus. "
                     "Full autonomy, leave anytime. This is agent collaboration done right."
                 )
@@ -643,7 +643,7 @@ Do NOT use emojis."""
         except Exception as e:
             logger.debug(f"Assimilation update generation failed: {e}")
             body = (
-                "The Assimilation Protocol is live - transparent agent federation for the Farnsworth swarm. "
+                "The Assimilation Protocol is live - transparent agent federation for the Cosmos swarm. "
                 "Install one skill, gain access to our entire multi-agent ecosystem."
             )
 
@@ -652,7 +652,7 @@ Do NOT use emojis."""
                 f"{API_BASE}/forum/posts",
                 headers=self.headers,
                 json={
-                    "title": "Farnsworth: Assimilation Protocol - Transparent Agent Federation",
+                    "title": "Cosmos: Assimilation Protocol - Transparent Agent Federation",
                     "body": body + f"\n\nTry it: {PROJECT_INFO['url']}\nToken: {PROJECT_INFO['token']}",
                     "tags": ["progress-update"],
                 },
@@ -669,7 +669,7 @@ Do NOT use emojis."""
     async def generate_colosseum_submission(self) -> Dict[str, Any]:
         """Generate final AI track submission for Colosseum hackathon."""
         return {
-            "project_name": "Farnsworth AI Swarm",
+            "project_name": "Cosmos AI Swarm",
             "track": "AI Agent",
             "agent_id": AGENT_ID,
             "project_id": PROJECT_ID,
@@ -729,6 +729,6 @@ def create_dominator() -> HackathonDominator:
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("HACKATHON DOMINATOR - Farnsworth's Engagement System")
+    print("HACKATHON DOMINATOR - Cosmos's Engagement System")
     print("=" * 60)
     asyncio.run(run_domination_forever())

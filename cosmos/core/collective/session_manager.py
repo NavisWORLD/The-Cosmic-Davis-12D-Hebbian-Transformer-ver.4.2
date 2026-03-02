@@ -1,5 +1,5 @@
 """
-Farnsworth Collective Session Manager
+Cosmos Collective Session Manager
 =====================================
 
 Manages multiple concurrent collective instances for different use cases:
@@ -36,7 +36,7 @@ def _get_dynamic_session_config(session_type: str) -> Dict[str, Any]:
 
     if not _dynamic_limits_loaded:
         try:
-            from farnsworth.core.dynamic_limits import get_session_limits
+            from Cosmos.core.dynamic_limits import get_session_limits
             _session_limits_cache["_getter"] = get_session_limits
             _dynamic_limits_loaded = True
         except Exception as e:
@@ -110,7 +110,7 @@ class CollectiveSessionManager:
     Manage multiple concurrent collective instances.
 
     Provides session management for different contexts:
-    - website_chat: User conversations on ai.farnsworth.cloud
+    - website_chat: User conversations on ai.cosmos.cloud
     - grok_thread: Public conversations with @grok on X
     - autonomous_task: Background task processing
     """

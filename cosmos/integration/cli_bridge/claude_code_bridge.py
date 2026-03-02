@@ -54,7 +54,7 @@ class ClaudeCodeBridge(CLIBridge):
             executable=executable,
             max_concurrent=max_concurrent,
             default_timeout=default_timeout,
-            working_dir=working_dir or "/workspace/Farnsworth",
+            working_dir=working_dir or "/workspace/Cosmos",
         )
 
         self.model = model

@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/memory/project_tracking.py
 cosmos Project Tracking - Track projects with automatic detection and cross-project knowledge transfer
-=======
-Farnsworth Project Tracking - Track projects with automatic detection and cross-project knowledge transfer
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/project_tracking.py
 
 Features:
 - Automatic project detection from conversations

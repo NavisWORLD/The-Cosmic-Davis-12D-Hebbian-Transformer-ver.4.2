@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/core/wsl_bridge.py
 cosmos WSL Bridge
-=======
-Farnsworth WSL Bridge
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/wsl_bridge.py
 
 "Good news, everyone! I've bridged the gap between Windows and Linux!"
 

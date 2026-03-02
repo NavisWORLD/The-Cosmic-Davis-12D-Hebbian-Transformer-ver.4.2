@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/compliance/policy_engine.py
 cosmos Policy Engine
-=======
-Farnsworth Policy Engine
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/compliance/policy_engine.py
 
 "Every action must be approved by at least three forms filled in triplicate!"
 

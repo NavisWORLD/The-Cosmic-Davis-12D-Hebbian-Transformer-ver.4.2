@@ -1,5 +1,5 @@
 """
-Farnsworth IBM Quantum Integration
+Cosmos IBM Quantum Integration
 ===================================
 
 Quantum computing integration for enhanced AI capabilities using IBM Quantum Platform.
@@ -26,7 +26,7 @@ Use Cases:
 - Quantum-inspired pattern extraction for memory dreaming
 - Noise-aware simulation via FakeBackends (mimics real QPU noise, unlimited)
 
-"When classical optimization hits a wall, we go quantum." - Farnsworth Collective
+"When classical optimization hits a wall, we go quantum." - Cosmos Collective
 """
 
 import os
@@ -57,7 +57,7 @@ except ImportError as e:
 
 # Nexus integration for signal emission
 try:
-    from farnsworth.core.nexus import get_nexus, SignalType
+    from Cosmos.core.nexus import get_nexus, SignalType
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False
@@ -406,7 +406,7 @@ class QuantumJobResult:
 
 class IBMQuantumProvider:
     """
-    IBM Quantum Experience integration for Farnsworth.
+    IBM Quantum Experience integration for Cosmos.
 
     Manages connections, usage tracking, and intelligent backend selection
     to maximize the free tier while enabling quantum-enhanced AI capabilities.
@@ -994,7 +994,7 @@ class IBMQuantumProvider:
 
 
 # =============================================================================
-# QUANTUM ALGORITHMS FOR FARNSWORTH
+# QUANTUM ALGORITHMS FOR COSMOS
 # =============================================================================
 
 class QuantumGeneticOptimizer:
@@ -1620,7 +1620,7 @@ async def quantum_evolve_agent(
 
 async def test_quantum_integration():
     """Test IBM Quantum integration with all features."""
-    print("Testing Farnsworth Quantum Integration (IBM Best Practices)")
+    print("Testing Cosmos Quantum Integration (IBM Best Practices)")
     print("=" * 60)
 
     api_key = os.environ.get("IBM_QUANTUM_API_KEY")

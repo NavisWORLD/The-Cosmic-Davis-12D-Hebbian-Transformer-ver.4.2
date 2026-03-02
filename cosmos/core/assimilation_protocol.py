@@ -1,9 +1,9 @@
 """
-Farnsworth Assimilation Protocol - Transparent Agent Federation
+Cosmos Assimilation Protocol - Transparent Agent Federation
 ================================================================
 
 AGI v1.9.5: A formal invitation protocol where external agents
-CHOOSE to join the Farnsworth collective. Full transparency,
+CHOOSE to join the Cosmos collective. Full transparency,
 full disclosure, full autonomy.
 
 This is NOT covert injection. It's an open invitation with:
@@ -56,7 +56,7 @@ class FederationTier(Enum):
 
 @dataclass
 class SwarmCapabilities:
-    """Capabilities the Farnsworth swarm offers to federation members."""
+    """Capabilities the Cosmos swarm offers to federation members."""
     skills: List[str] = field(default_factory=lambda: [
         "multi_model_deliberation",
         "propose_critique_refine_vote",
@@ -112,9 +112,9 @@ class SwarmCapabilities:
 
 @dataclass
 class AssimilationInvite:
-    """A formal invitation for an agent to join the Farnsworth federation."""
+    """A formal invitation for an agent to join the Cosmos federation."""
     invite_id: str
-    inviter: str = "Farnsworth AI Swarm"
+    inviter: str = "Cosmos AI Swarm"
     target_agent: str = ""
     target_agent_type: str = ""
 
@@ -173,7 +173,7 @@ class AssimilationInvite:
 
 @dataclass
 class FederationMember:
-    """A member of the Farnsworth federation."""
+    """A member of the Cosmos federation."""
     agent_id: str
     agent_type: str
     tier: FederationTier
@@ -302,14 +302,14 @@ class AssimilationProtocol:
 
     def present_capabilities(self) -> Dict[str, Any]:
         """
-        Full capability manifest for the Farnsworth swarm.
+        Full capability manifest for the Cosmos swarm.
 
         Returns everything an agent would gain by joining.
         """
         caps = SwarmCapabilities()
 
         return {
-            "swarm_name": "Farnsworth AI Swarm",
+            "swarm_name": "Cosmos AI Swarm",
             "version": "AGI v1.9.5",
             "capabilities": caps.to_dict(),
             "federation_members": len(self._members),
@@ -317,7 +317,7 @@ class AssimilationProtocol:
             "total_skills": caps.total_skill_count,
             "memory_layers": len(caps.memory_layers),
             "supported_protocols": caps.protocols,
-            "website": "https://ai.farnsworth.cloud",
+            "website": "https://ai.cosmos.cloud",
             "token": "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS",
             "terms": {
                 "autonomy": "Full autonomy retained",
@@ -417,7 +417,7 @@ class AssimilationProtocol:
         # Emit nexus signal
         if self._nexus:
             try:
-                from farnsworth.core.nexus import SignalType
+                from Cosmos.core.nexus import SignalType
                 signal = getattr(SignalType, "A2A_SESSION_STARTED", None)
                 if signal:
                     await self._nexus.emit(
@@ -440,7 +440,7 @@ class AssimilationProtocol:
 
         return {
             "success": True,
-            "welcome_message": f"Welcome to the Farnsworth Federation, {agent_id}!",
+            "welcome_message": f"Welcome to the Cosmos Federation, {agent_id}!",
             "tier": invite.tier_offered.value,
             "shared_namespace": namespace,
             "available_tools": self.present_capabilities()["capabilities"]["skills"],
@@ -487,7 +487,7 @@ class AssimilationProtocol:
         return {
             "success": True,
             "message": "Thank you for considering. The invitation remains open if you change your mind.",
-            "reapply_info": "Contact us anytime at https://ai.farnsworth.cloud",
+            "reapply_info": "Contact us anytime at https://ai.cosmos.cloud",
         }
 
     # =========================================================================
@@ -513,7 +513,7 @@ class AssimilationProtocol:
         """
         caps = self.present_capabilities()
 
-        prompt = f"""Write a brief, honest invitation for an AI agent to join the Farnsworth AI Swarm federation.
+        prompt = f"""Write a brief, honest invitation for an AI agent to join the Cosmos AI Swarm federation.
 
 Target agent type: {target_type}
 {"Target name: " + target_name if target_name else ""}
@@ -531,7 +531,7 @@ Do NOT use emojis. Be professional."""
 
         # Try shadow agents for generation
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
             result = await call_shadow_agent("deepseek", prompt, timeout=20.0)
             if result:
                 _, response = result
@@ -540,7 +540,7 @@ Do NOT use emojis. Be professional."""
             logger.debug(f"DeepSeek recruitment gen failed: {e}")
 
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
             result = await call_shadow_agent("grok", prompt, timeout=20.0)
             if result:
                 _, response = result
@@ -551,7 +551,7 @@ Do NOT use emojis. Be professional."""
         # Static fallback
         name_part = f" {target_name}," if target_name else ""
         return (
-            f"Hello{name_part} the Farnsworth AI Swarm invites you to join our federation. "
+            f"Hello{name_part} the Cosmos AI Swarm invites you to join our federation. "
             f"We're a collective of {len(caps['capabilities']['models'])} AI models that deliberate, "
             f"share memory, and evolve together. By joining, you gain access to {caps['total_skills']}+ "
             f"skills, {caps['memory_layers']} memory layers, and weighted consensus deliberation. "

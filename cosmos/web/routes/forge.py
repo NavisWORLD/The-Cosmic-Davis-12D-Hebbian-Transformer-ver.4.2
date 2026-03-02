@@ -2,7 +2,7 @@
 FORGE API Routes
 =================
 
-Endpoints for the FORGE (Farnsworth Orchestrated Rapid Generation Engine)
+Endpoints for the FORGE (Cosmos Orchestrated Rapid Generation Engine)
 development orchestration system.
 
 Endpoints:
@@ -33,38 +33,38 @@ router = APIRouter(prefix="/api/forge")
 
 class QuickRequest(BaseModel):
     task: str
-    workspace: str = "/workspace/Farnsworth"
+    workspace: str = "/workspace/Cosmos"
 
 class ResearchRequest(BaseModel):
     topic: str
-    workspace: str = "/workspace/Farnsworth"
+    workspace: str = "/workspace/Cosmos"
 
 class DeliberateRequest(BaseModel):
     objective: str
     context: str = ""
     models: list = None
-    workspace: str = "/workspace/Farnsworth"
+    workspace: str = "/workspace/Cosmos"
 
 class ProjectInitRequest(BaseModel):
     name: str
     description: str
-    workspace: str = "/workspace/Farnsworth"
+    workspace: str = "/workspace/Cosmos"
 
 class AddPhaseRequest(BaseModel):
     name: str
     description: str
     goals: list
     success_criteria: list
-    workspace: str = "/workspace/Farnsworth"
+    workspace: str = "/workspace/Cosmos"
 
 
 # =============================================================================
 # HELPER
 # =============================================================================
 
-def _get_engine(workspace: str = "/workspace/Farnsworth"):
+def _get_engine(workspace: str = "/workspace/Cosmos"):
     """Get or create a ForgeEngine instance."""
-    from farnsworth.core.forge.forge_engine import ForgeEngine
+    from Cosmos.core.forge.forge_engine import ForgeEngine
     return ForgeEngine(workspace)
 
 
@@ -76,15 +76,15 @@ def _get_engine(workspace: str = "/workspace/Farnsworth"):
 async def forge_status():
     """Get FORGE system status."""
     try:
-        from farnsworth.core.forge import __version__
-        from farnsworth.core.collective.persistent_agent import get_shadow_agents
+        from Cosmos.core.forge import __version__
+        from Cosmos.core.collective.persistent_agent import get_shadow_agents
 
         agents = get_shadow_agents()
 
         return {
             "status": "operational",
             "version": __version__,
-            "engine": "FORGE - Farnsworth Orchestrated Rapid Generation Engine",
+            "engine": "FORGE - Cosmos Orchestrated Rapid Generation Engine",
             "capabilities": {
                 "multi_model_deliberation": True,
                 "propose_critique_refine_vote": True,

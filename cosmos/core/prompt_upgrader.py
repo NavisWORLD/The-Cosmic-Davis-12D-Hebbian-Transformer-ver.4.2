@@ -69,7 +69,7 @@ class PromptUpgrader:
         """Lazy load Grok provider."""
         if self._grok is None:
             try:
-                from farnsworth.integration.external.grok import get_grok_provider
+                from Cosmos.integration.external.grok import get_grok_provider
                 self._grok = get_grok_provider()
             except Exception as e:
                 logger.debug(f"Grok not available: {e}")
@@ -79,7 +79,7 @@ class PromptUpgrader:
         """Lazy load Gemini provider."""
         if self._gemini is None:
             try:
-                from farnsworth.integration.external.gemini import get_gemini_provider
+                from Cosmos.integration.external.gemini import get_gemini_provider
                 self._gemini = get_gemini_provider()
             except Exception as e:
                 logger.debug(f"Gemini not available: {e}")

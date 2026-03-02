@@ -1,8 +1,8 @@
 """
-Farnsworth Discord Channel Adapter
+Cosmos Discord Channel Adapter
 ===================================
 
-Discord Bot API integration for the Farnsworth swarm.
+Discord Bot API integration for the Cosmos swarm.
 
 Features:
 - Gateway and REST API support
@@ -127,8 +127,8 @@ class DiscordChannel(BaseChannel):
                 await self._handle_interaction(interaction)
 
             # Register default slash commands
-            @self._bot.tree.command(name="farnsworth", description="Chat with Farnsworth AI")
-            async def farnsworth_cmd(interaction: discord.Interaction, message: str):
+            @self._bot.tree.command(name="cosmos", description="Chat with Cosmos AI")
+            async def cosmos_cmd(interaction: discord.Interaction, message: str):
                 await interaction.response.defer(thinking=True)
                 # Create channel message and process
                 msg = ChannelMessage(
@@ -145,10 +145,10 @@ class DiscordChannel(BaseChannel):
                 )
                 await self._handle_inbound(msg)
 
-            @self._bot.tree.command(name="status", description="Check Farnsworth swarm status")
+            @self._bot.tree.command(name="status", description="Check Cosmos swarm status")
             async def status_cmd(interaction: discord.Interaction):
                 embed = discord.Embed(
-                    title="✅ Farnsworth Status",
+                    title="✅ Cosmos Status",
                     description="The swarm is operational",
                     color=discord.Color.green()
                 )
@@ -157,17 +157,17 @@ class DiscordChannel(BaseChannel):
                 embed.add_field(name="Agents", value="Active", inline=True)
                 await interaction.response.send_message(embed=embed)
 
-            @self._bot.tree.command(name="help", description="Get help with Farnsworth")
+            @self._bot.tree.command(name="help", description="Get help with Cosmos")
             async def help_cmd(interaction: discord.Interaction):
                 embed = discord.Embed(
-                    title="📚 Farnsworth Help",
+                    title="📚 Cosmos Help",
                     description="Commands and usage",
                     color=discord.Color.blue()
                 )
                 embed.add_field(
                     name="Commands",
                     value=(
-                        "`/farnsworth <message>` - Chat with the swarm\n"
+                        "`/cosmos <message>` - Chat with the swarm\n"
                         "`/status` - Check system status\n"
                         "`/help` - This message"
                     ),

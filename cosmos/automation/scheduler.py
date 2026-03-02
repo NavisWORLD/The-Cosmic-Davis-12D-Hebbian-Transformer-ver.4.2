@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/automation/scheduler.py
 cosmos Task Scheduler
-=======
-Farnsworth Task Scheduler
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/scheduler.py
 
 "I've scheduled everything! Even my morning coffee is on autopilot!"
 
@@ -127,11 +123,7 @@ class TaskExecution:
 
 class TaskScheduler:
     """
-<<<<<<< HEAD:cosmos/automation/scheduler.py
     Advanced task scheduler for cosmos.
-=======
-    Advanced task scheduler for Farnsworth.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/scheduler.py
 
     Features:
     - Cron expressions

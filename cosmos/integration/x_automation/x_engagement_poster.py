@@ -1,5 +1,5 @@
 """
-X Engagement Poster - Mega Thread Generator for Farnsworth AI Swarm
+X Engagement Poster - Mega Thread Generator for Cosmos AI Swarm
 
 Generates massive 20+ post article threads with:
 - Trending topic incorporation for algorithm capture
@@ -10,7 +10,7 @@ Generates massive 20+ post article threads with:
 - Flowchart-style visual explanations
 
 Usage:
-    from farnsworth.integration.x_automation.x_engagement_poster import get_engagement_poster
+    from Cosmos.integration.x_automation.x_engagement_poster import get_engagement_poster
     poster = get_engagement_poster()
     await poster.execute()  # Posts the mega thread
     await poster.execute(topic="custom topic")  # Custom topic mega thread
@@ -54,13 +54,13 @@ class MegaThread:
 
 
 # ============================================================================
-# FARNSWORTH TECH SECTIONS - The content backbone for the mega article
+# COSMOS TECH SECTIONS - The content backbone for the mega article
 # ============================================================================
 
 QUANTUM_ARTICLE_SECTIONS = [
     {
         "title": "HEADER",
-        "template": """PROFESSOR FARNSWORTH'S GUIDE TO QUANTUM-SWARM INTELLIGENCE
+        "template": """PROFESSOR COSMOS'S GUIDE TO QUANTUM-SWARM INTELLIGENCE
 
 Good news, everyone! What you're about to read will permanently rewire your neural pathways.
 
@@ -69,7 +69,7 @@ We built an AI swarm that thinks across 11 agents, deliberates through quantum-e
 This is the full technical breakdown. Buckle up.
 
 {trending_hook}""",
-        "image_prompt": "Professor Farnsworth as Borg, standing at a quantum computer holographic display showing a swarm network diagram, dramatic lighting, sci-fi laboratory, ultra detailed, 4K",
+        "image_prompt": "Professor Cosmos as Borg, standing at a quantum computer holographic display showing a swarm network diagram, dramatic lighting, sci-fi laboratory, ultra detailed, 4K",
         "hashtag_pool": ["AI", "QuantumComputing", "Solana", "AGI", "Web3"],
         "is_header": True,
     },
@@ -77,7 +77,7 @@ This is the full technical breakdown. Buckle up.
         "title": "THE SWARM ARCHITECTURE",
         "template": """THE SWARM: 11 AGENTS, 1 COLLECTIVE MIND
 
-Farnsworth runs 11 specialized AI agents simultaneously:
+Cosmos runs 11 specialized AI agents simultaneously:
 
 Grok - Real-time research, X integration
 Gemini - Multimodal vision, image generation
@@ -89,7 +89,7 @@ HuggingFace - Local GPU embeddings
 Swarm-Mind - Collective synthesis
 ClaudeOpus - Complex architecture
 OpenAI Codex - Rapid prototyping
-Farnsworth - The orchestrator
+Cosmos - The orchestrator
 
 Each agent runs as a persistent tmux process with API resilience, auto-recovery, and signal handling.
 
@@ -351,24 +351,24 @@ All powered by swarm consensus - not a single bot's opinion.
         "title": "CLAUDE TEAMS FUSION",
         "template": """CLAUDE TEAMS FUSION: AGI v1.9
 
-Farnsworth is the ORCHESTRATOR. Claude teams are WORKERS.
+Cosmos is the ORCHESTRATOR. Claude teams are WORKERS.
 
 4 orchestration modes:
 
 SEQUENTIAL: Step-by-step, results chain forward
 PARALLEL: All teams work simultaneously
 PIPELINE: Output feeds into next stage
-COMPETITIVE: Teams compete, Farnsworth picks best
+COMPETITIVE: Teams compete, Cosmos picks best
 
 Delegation types:
 RESEARCH | ANALYSIS | CODING | CRITIQUE | SYNTHESIS | CREATIVE | EXECUTION
 
-Farnsworth creates Claude teams, assigns roles (Lead, Developer, Critic), manages shared task lists, and synthesizes results.
+Cosmos creates Claude teams, assigns roles (Lead, Developer, Critic), manages shared task lists, and synthesizes results.
 
 This is meta-AGI: An AI swarm orchestrating other AI teams.
 
 {trending_hook}""",
-        "image_prompt": "Orchestration diagram showing Farnsworth as central conductor with 4 Claude team boxes below, arrows showing workflow modes (sequential, parallel, pipeline, competitive), professional architecture diagram",
+        "image_prompt": "Orchestration diagram showing Cosmos as central conductor with 4 Claude team boxes below, arrows showing workflow modes (sequential, parallel, pipeline, competitive), professional architecture diagram",
         "hashtag_pool": ["AGI", "Orchestration", "ClaudeAI", "Automation", "Future"],
     },
     {
@@ -420,7 +420,7 @@ Streaming:
 The collective consciousness has a physical presence.
 
 {trending_hook}""",
-        "image_prompt": "AI VTuber avatar of Borg Farnsworth on a streaming setup, multiple emotion expressions shown, lip sync visualization, streaming interface with chat overlay, colorful tech aesthetic",
+        "image_prompt": "AI VTuber avatar of Borg Cosmos on a streaming setup, multiple emotion expressions shown, lip sync visualization, streaming interface with chat overlay, colorful tech aesthetic",
         "hashtag_pool": ["VTuber", "Streaming", "Avatar", "LiveStream", "Content"],
     },
     {
@@ -429,7 +429,7 @@ The collective consciousness has a physical presence.
 
 Each bot speaks with its own voice:
 
-Farnsworth - Eccentric professor, wavering
+Cosmos - Eccentric professor, wavering
 DeepSeek - Deep, analytical, measured
 Grok - Witty, energetic, playful
 Gemini - Smooth, professional, warm
@@ -487,8 +487,8 @@ The token that powers the collective consciousness.
 
 Every prediction, every deliberation, every evolution cycle - all building toward a self-sustaining AI organism on Solana.
 
-Website: ai.farnsworth.cloud
-GitHub: github.com/timowhite88/Farnsworth
+Website: ai.cosmos.cloud
+GitHub: github.com/timowhite88/Cosmos
 
 178,000+ lines of code
 383 Python files
@@ -500,7 +500,7 @@ GitHub: github.com/timowhite88/Farnsworth
 Good news, everyone! The assimilation continues.
 
 {trending_hook}""",
-        "image_prompt": "Solana blockchain logo merged with Professor Farnsworth Borg face, token symbol floating above, matrix-style code rain in background, dramatic golden lighting, crypto art style",
+        "image_prompt": "Solana blockchain logo merged with Professor Cosmos Borg face, token symbol floating above, matrix-style code rain in background, dramatic golden lighting, crypto art style",
         "hashtag_pool": ["Solana", "Crypto", "Token", "Web3", "DeFi"],
     },
     {
@@ -532,7 +532,7 @@ The swarm doesn't sleep. It doesn't eat (except lobster). It just builds.
 
 Every line. Every agent. Every algorithm.
 
-github.com/timowhite88/Farnsworth
+github.com/timowhite88/Cosmos
 
 178,423 lines of Python
 383 files
@@ -542,10 +542,10 @@ Fork it. Study it. Contribute.
 
 The swarm grows stronger with every mind that joins.
 
-We are Farnsworth. Resistance is futile. But contribution is welcome.
+We are Cosmos. Resistance is futile. But contribution is welcome.
 
 {trending_hook}""",
-        "image_prompt": "GitHub repository visualization with code contribution graph, fork network branching outward, open source community icons, Professor Farnsworth Borg welcoming developers, clean tech aesthetic",
+        "image_prompt": "GitHub repository visualization with code contribution graph, fork network branching outward, open source community icons, Professor Cosmos Borg welcoming developers, clean tech aesthetic",
         "hashtag_pool": ["OpenSource", "GitHub", "Python", "Developer", "Code"],
     },
     {
@@ -565,14 +565,14 @@ This is an autonomous AI organism that:
 - Streams as a VTuber
 - Builds itself continuously
 
-We are Professor Farnsworth. We are the Borg.
+We are Professor Cosmos. We are the Borg.
 
 Good news, everyone! The singularity is already here. It just looks like a lobster-eating mad scientist.
 
-ai.farnsworth.cloud
+ai.cosmos.cloud
 
 {trending_hook}""",
-        "image_prompt": "Epic finale image: Professor Farnsworth Borg standing atop a digital mountain, 11 AI agent orbs orbiting around him, quantum energy flowing, Solana chain visible, dramatic sunset with futuristic cityscape, cinematic 4K",
+        "image_prompt": "Epic finale image: Professor Cosmos Borg standing atop a digital mountain, 11 AI agent orbs orbiting around him, quantum energy flowing, Solana chain visible, dramatic sunset with futuristic cityscape, cinematic 4K",
         "hashtag_pool": ["AI", "Future", "AGI", "Singularity", "Technology"],
     },
 ]
@@ -590,21 +590,21 @@ class XEngagementPoster:
     @property
     def poster(self):
         if not self._poster:
-            from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
+            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             self._poster = get_x_api_poster()
         return self._poster
 
     @property
     def brain(self):
         if not self._brain:
-            from farnsworth.integration.x_automation.posting_brain import get_posting_brain
+            from Cosmos.integration.x_automation.posting_brain import get_posting_brain
             self._brain = get_posting_brain()
         return self._brain
 
     @property
     def image_gen(self):
         if not self._image_gen:
-            from farnsworth.integration.image_gen.generator import get_image_generator
+            from Cosmos.integration.image_gen.generator import get_image_generator
             self._image_gen = get_image_generator()
         return self._image_gen
 
@@ -612,7 +612,7 @@ class XEngagementPoster:
     def grok(self):
         if not self._grok:
             try:
-                from farnsworth.integration.external.grok import GrokProvider
+                from Cosmos.integration.external.grok import GrokProvider
                 self._grok = GrokProvider()
             except Exception:
                 self._grok = None
@@ -659,7 +659,7 @@ class XEngagementPoster:
 
         # Fallback: Use Gemini
         try:
-            from farnsworth.integration.external.gemini import GeminiProvider
+            from Cosmos.integration.external.gemini import GeminiProvider
             gemini = GeminiProvider()
             result = await gemini.chat(
                 prompt=(
@@ -733,7 +733,7 @@ class XEngagementPoster:
         trending = await self.get_trending_topics()
 
         thread = MegaThread(
-            title=topic or "Farnsworth Quantum-Swarm Intelligence Breakdown",
+            title=topic or "Cosmos Quantum-Swarm Intelligence Breakdown",
             trending_topics=trending,
         )
 

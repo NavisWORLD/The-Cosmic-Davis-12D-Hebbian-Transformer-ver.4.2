@@ -1,5 +1,5 @@
 """
-Farnsworth Unified Trading Interface.
+Cosmos Unified Trading Interface.
 
 Provides a unified trading API that:
 1. Uses Bankr as the primary trading engine for simplicity

@@ -1,7 +1,7 @@
 """
-Farnsworth Knowledge Base
+Cosmos Knowledge Base
 
-This module provides access to Farnsworth's knowledge files for the memory system.
+This module provides access to Cosmos's knowledge files for the memory system.
 Knowledge is loaded into the retrieval database so bots know what capabilities exist.
 ALWAYS APPENDS to memory - never overwrites.
 """

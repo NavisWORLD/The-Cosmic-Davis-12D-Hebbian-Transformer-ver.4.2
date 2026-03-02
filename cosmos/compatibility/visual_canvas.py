@@ -1,5 +1,5 @@
 """
-Farnsworth Visual Canvas - OpenClaw A2UI Compatibility
+Cosmos Visual Canvas - OpenClaw A2UI Compatibility
 =======================================================
 
 Provides an agent-driven visual workspace matching OpenClaw's Canvas/A2UI system.
@@ -255,9 +255,9 @@ class VisualCanvas:
         Initialize visual canvas.
 
         Args:
-            output_dir: Directory for canvas output (default: ~/.farnsworth/canvas)
+            output_dir: Directory for canvas output (default: ~/.cosmos/canvas)
         """
-        self.output_dir = Path(output_dir or os.path.expanduser("~/.farnsworth/canvas"))
+        self.output_dir = Path(output_dir or os.path.expanduser("~/.cosmos/canvas"))
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
         self.state = CanvasState()
@@ -458,7 +458,7 @@ class VisualCanvas:
             y_pos = self._render_component(ax, comp, y_pos)
 
         # Add title
-        ax.text(50, 98, "Farnsworth Canvas", ha='center', va='top',
+        ax.text(50, 98, "Cosmos Canvas", ha='center', va='top',
                fontsize=12, color='#666666', style='italic')
 
         fig.savefig(filepath, dpi=150, bbox_inches='tight',

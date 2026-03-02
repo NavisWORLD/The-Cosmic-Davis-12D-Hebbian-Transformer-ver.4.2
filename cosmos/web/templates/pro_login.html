@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In - Farnsworth AI</title>
-    <meta name="description" content="Connect to Farnsworth AI - The Neural Swarm platform.">
+    <title>Sign In - Cosmos AI</title>
+    <meta name="description" content="Connect to Cosmos AI - The Neural Swarm platform.">
     <meta name="theme-color" content="#8b5cf6">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -344,11 +344,11 @@
 <div class="nebula"></div>
 
 <div class="logo">
-    <a href="/pro">FARNSWORTH</a>
+    <a href="/pro">COSMOS</a>
 </div>
 
 <div class="auth-card">
-    <h1>Welcome to Farnsworth</h1>
+    <h1>Welcome to Cosmos</h1>
     <p class="subtitle">Connect to start chatting with 11 AI agents</p>
 
     <div class="error-msg" id="errorMsg"></div>
@@ -403,10 +403,10 @@
 
     function storeAuthAndRedirect(data) {
         if (data.token) {
-            localStorage.setItem('farnsworth_token', data.token);
+            localStorage.setItem('cosmos_token', data.token);
         }
         if (data.user) {
-            localStorage.setItem('farnsworth_user', JSON.stringify(data.user));
+            localStorage.setItem('cosmos_user', JSON.stringify(data.user));
         }
         // If new user, redirect to plan selection; otherwise go to chat
         if (data.new_user) {
@@ -423,13 +423,13 @@
     var newUserParam = params.get('new_user');
 
     if (tokenParam) {
-        localStorage.setItem('farnsworth_token', tokenParam);
+        localStorage.setItem('cosmos_token', tokenParam);
         if (userParam) {
             try {
                 var decoded = decodeURIComponent(userParam);
-                localStorage.setItem('farnsworth_user', decoded);
+                localStorage.setItem('cosmos_user', decoded);
             } catch (e) {
-                localStorage.setItem('farnsworth_user', userParam);
+                localStorage.setItem('cosmos_user', userParam);
             }
         }
         if (newUserParam === 'true') {
@@ -467,7 +467,7 @@
             var publicKey = resp.publicKey.toString();
 
             // Sign a message to prove ownership
-            var message = 'Sign in to Farnsworth AI';
+            var message = 'Sign in to Cosmos AI';
             var encodedMessage = new TextEncoder().encode(message);
             var signedMessage = await provider.signMessage(encodedMessage, 'utf8');
 
@@ -507,7 +507,7 @@
     });
 
     // Check if already authenticated
-    var existingToken = localStorage.getItem('farnsworth_token');
+    var existingToken = localStorage.getItem('cosmos_token');
     if (existingToken && !tokenParam) {
         fetch('/api/pro/auth/verify', {
             headers: { 'Authorization': 'Bearer ' + existingToken }

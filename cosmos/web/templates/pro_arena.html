@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agent Arena - Farnsworth AI</title>
-    <meta name="description" content="Watch AI models debate any topic. Pick your fighters in the Farnsworth Agent Arena.">
+    <title>Agent Arena - Cosmos AI</title>
+    <meta name="description" content="Watch AI models debate any topic. Pick your fighters in the Cosmos Agent Arena.">
     <meta name="theme-color" content="#8b5cf6">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -361,7 +361,7 @@
 
     <!-- TOP NAV -->
     <nav class="top-nav">
-        <div class="nav-logo"><a href="/pro">FARNSWORTH</a></div>
+        <div class="nav-logo"><a href="/pro">COSMOS</a></div>
         <button class="mobile-nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
         </button>
@@ -444,7 +444,7 @@
     <script>
     (function() {
         // Auth check
-        const token = localStorage.getItem('farnsworth_pro_token');
+        const token = localStorage.getItem('cosmos_pro_token');
         if (!token) { window.location.href = '/pro/login'; return; }
 
         // Agents data
@@ -456,7 +456,7 @@
             { id: 'deepseek', name: 'DeepSeek', color: '#3b82f6', tag: 'Deep Thinker' },
             { id: 'phi', name: 'Phi', color: '#10b981', tag: 'Compact' },
             { id: 'claudeopus', name: 'ClaudeOpus', color: '#8b5cf6', tag: 'Precise' },
-            { id: 'farnsworth', name: 'Farnsworth', color: '#ec4899', tag: 'Orchestrator' },
+            { id: 'cosmos', name: 'Cosmos', color: '#ec4899', tag: 'Orchestrator' },
             { id: 'swarm-mind', name: 'Swarm-Mind', color: '#e2e8f0', tag: 'Consensus' },
             { id: 'huggingface', name: 'HuggingFace', color: '#10b981', tag: 'Open Source' },
             { id: 'opencode', name: 'OpenCode', color: '#06b6d4', tag: 'Code Expert' }
@@ -649,7 +649,7 @@
                     `The arguments presented contain valid points, but I want to raise the analytical bar. When we apply rigorous probabilistic reasoning, the expected value calculation shifts from what surface-level analysis suggests.`,
                     `My final assessment, weighting all evidence: the highest-probability outcome is clear, but the key insight is in the risk-adjusted return profile. This is where most analysts make their error in reasoning.`
                 ],
-                'farnsworth': [
+                'cosmos': [
                     `As the swarm orchestrator, I have synthesized inputs from multiple models on ${topic}. The consensus signal is strong but not unanimous, which itself contains valuable information about uncertainty.`,
                     `Cross-referencing all agent perspectives, I am seeing convergence on several key points and meaningful divergence on others. The divergence is actually the most interesting signal here.`,
                     `Swarm verdict: the collective intelligence of 11 models, weighted by track record, produces a clear signal. The confidence level is high. This is what emergent consensus looks like in practice.`
@@ -740,7 +740,7 @@
                 text += `${name}: ${body}...\n\n`;
             });
             const winner = document.querySelector('.winner-name');
-            if (winner) text += `Winner: ${winner.textContent}\n\nPowered by Farnsworth AI | ai.farnsworth.cloud`;
+            if (winner) text += `Winner: ${winner.textContent}\n\nPowered by Cosmos AI | ai.cosmos.cloud`;
             navigator.clipboard.writeText(text).then(() => showToast('Results copied to clipboard'));
         });
 
@@ -754,18 +754,18 @@
 
         // Past debates
         function savePastDebate(topic, agents, winnerId, format) {
-            const past = JSON.parse(localStorage.getItem('farnsworth_past_debates') || '[]');
+            const past = JSON.parse(localStorage.getItem('cosmos_past_debates') || '[]');
             past.unshift({
                 topic, agents, winnerId, format,
                 timestamp: new Date().toISOString()
             });
             if (past.length > 20) past.pop();
-            localStorage.setItem('farnsworth_past_debates', JSON.stringify(past));
+            localStorage.setItem('cosmos_past_debates', JSON.stringify(past));
             renderPastDebates();
         }
 
         function renderPastDebates() {
-            const past = JSON.parse(localStorage.getItem('farnsworth_past_debates') || '[]');
+            const past = JSON.parse(localStorage.getItem('cosmos_past_debates') || '[]');
             const agentMap = {};
             AGENTS.forEach(a => agentMap[a.id] = a);
 
@@ -779,7 +779,7 @@
                     timestamp: new Date(Date.now() - 3600000).toISOString()
                 };
                 past.push(demo);
-                localStorage.setItem('farnsworth_past_debates', JSON.stringify(past));
+                localStorage.setItem('cosmos_past_debates', JSON.stringify(past));
             }
 
             const list = document.getElementById('pastList');

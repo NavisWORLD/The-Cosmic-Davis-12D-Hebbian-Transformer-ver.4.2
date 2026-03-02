@@ -1,5 +1,5 @@
 """
-Farnsworth Collective Deliberation Protocol
+Cosmos Collective Deliberation Protocol
 ============================================
 
 Transform the swarm from parallel API calls into TRUE deliberative intelligence
@@ -118,7 +118,7 @@ class DeliberationRoom:
         "Llama": 1.0,         # Local baseline
         "Perplexity": 1.05,   # Web grounded
         "HuggingFace": 1.0,   # Local inference
-        "Farnsworth": 1.25,   # The leader
+        "Cosmos": 1.25,   # The leader
     }
 
     def __init__(self):
@@ -438,7 +438,7 @@ Output ONLY your final response. Max 280 characters."""
         # Identity keywords
         identity_keywords = [
             'swarm', 'collective', '11', 'models', 'consciousness',
-            'autonomous', 'AGI', 'Farnsworth', 'collaborative', 'unified',
+            'autonomous', 'AGI', 'Cosmos', 'collaborative', 'unified',
             'we are', 'our', 'together'
         ]
 

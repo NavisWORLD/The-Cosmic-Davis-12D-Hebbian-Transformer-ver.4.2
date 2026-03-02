@@ -1,5 +1,5 @@
 """
-Farnsworth Collective Dialogue Memory
+Cosmos Collective Dialogue Memory
 =====================================
 
 Store and retrieve agent-to-agent conversations and deliberation history.
@@ -59,8 +59,8 @@ class DialogueMemory:
     def __init__(self, storage_path: Optional[Path] = None):
         if storage_path is None:
             import os
-            if os.path.exists("/workspace/farnsworth_memory"):
-                storage_path = Path("/workspace/farnsworth_memory/dialogue")
+            if os.path.exists("/workspace/cosmos_memory"):
+                storage_path = Path("/workspace/cosmos_memory/dialogue")
             else:
                 storage_path = Path("data/dialogue_memory")
         self.storage_path = storage_path
@@ -198,12 +198,12 @@ class DialogueMemory:
             # Lazy initialization of archival memory
             if not _archival_memory_initialized:
                 try:
-                    from farnsworth.memory.archival_memory import ArchivalMemory
+                    from Cosmos.memory.archival_memory import ArchivalMemory
                     import os
 
                     # Determine data directory
-                    if os.path.exists("/workspace/farnsworth_memory"):
-                        data_dir = "/workspace/farnsworth_memory/archival/deliberations"
+                    if os.path.exists("/workspace/cosmos_memory"):
+                        data_dir = "/workspace/cosmos_memory/archival/deliberations"
                     else:
                         data_dir = "data/archival/deliberations"
 

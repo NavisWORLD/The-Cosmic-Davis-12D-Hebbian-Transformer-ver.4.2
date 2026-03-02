@@ -9,10 +9,10 @@ Tests all four new subsystems:
   4. Swarm Memory Crystallization — propose & verify knowledge
 
 Usage:
-    python -m farnsworth.network.farns_v2_test --host 127.0.0.1
-    python -m farnsworth.network.farns_v2_test --test latent
-    python -m farnsworth.network.farns_v2_test --test poi
-    python -m farnsworth.network.farns_v2_test --test all
+    python -m cosmos.network.farns_v2_test --host 127.0.0.1
+    python -m cosmos.network.farns_v2_test --test latent
+    python -m cosmos.network.farns_v2_test --test poi
+    python -m cosmos.network.farns_v2_test --test all
 """
 import asyncio
 import argparse

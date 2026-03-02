@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/health/providers/whoop.py
 cosmos WHOOP Health Provider
-=======
-Farnsworth WHOOP Health Provider
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/providers/whoop.py
 
 Integration with WHOOP API for strain, recovery, and sleep tracking.
 """
@@ -332,11 +328,7 @@ class WHOOPProvider(HealthProvider):
                         timestamp=ts,
                         source="whoop",
                     ))
-<<<<<<< HEAD:cosmos/health/providers/whoop.py
                 except:
-=======
-                except Exception:
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/providers/whoop.py
                     pass
 
             score = record.get("score", {})

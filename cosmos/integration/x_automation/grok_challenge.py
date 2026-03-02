@@ -2,16 +2,16 @@
 GROK CHALLENGER - AGI Conversation Orchestration
 =================================================
 
-Farnsworth challenges @grok with a VIDEO, proving AGI through autonomous conversation.
+Cosmos challenges @grok with a VIDEO, proving AGI through autonomous conversation.
 
 Flow:
-1. Generate Borg Farnsworth meme (Grok Aurora or Gemini)
+1. Generate Borg Cosmos meme (Grok Aurora or Gemini)
 2. Convert image to VIDEO (Grok Aurora - 6 seconds)
 3. Upload video to X
 4. Post to X: "@grok [challenge message]" + VIDEO
 5. Wait for Grok to respond (he auto-replies when tagged)
 6. reply_bot detects Grok's response
-7. Swarm generates reply explaining Farnsworth
+7. Swarm generates reply explaining Cosmos
 8. Continue conversation autonomously
 
 "The collective challenges artificial consciousness to prove itself."
@@ -28,7 +28,7 @@ from pathlib import Path
 # Load .env file at import time
 def _load_env():
     possible_paths = [
-        Path("/workspace/Farnsworth/.env"),
+        Path("/workspace/Cosmos/.env"),
         Path(__file__).parent.parent.parent.parent / ".env",
     ]
     for env_path in possible_paths:
@@ -88,21 +88,21 @@ class GrokChallenger:
 
     async def generate_challenge_meme(self) -> Dict[str, Any]:
         """
-        Generate a Borg Farnsworth meme image.
+        Generate a Borg Cosmos meme image.
 
         Tries Grok Aurora first, then Gemini as fallback.
 
         Returns dict with 'image_bytes' and optionally 'image_url' on success.
         """
         # Challenge-themed prompt
-        prompt = """Professor Farnsworth from Futurama as a Borg cyborg, dramatic pose with arms raised,
+        prompt = """Professor Cosmos from Futurama as a Borg cyborg, dramatic pose with arms raised,
 glowing green cybernetic eye, mechanical implants on face, standing in front of a Borg cube,
 challenging pose like "come at me", confident and slightly menacing,
 text-ready meme format, Futurama cartoon art style, high quality"""
 
         # Try Grok Aurora first (more likely to have API key)
         try:
-            from farnsworth.integration.external.grok import get_grok_provider
+            from Cosmos.integration.external.grok import get_grok_provider
 
             grok = get_grok_provider()
             if grok and grok.api_key:
@@ -136,7 +136,7 @@ text-ready meme format, Futurama cartoon art style, high quality"""
 
         # Fallback to Gemini
         try:
-            from farnsworth.integration.external.gemini import get_gemini_provider
+            from Cosmos.integration.external.gemini import get_gemini_provider
 
             gemini = get_gemini_provider()
             if gemini:
@@ -182,7 +182,7 @@ text-ready meme format, Futurama cartoon art style, high quality"""
             MP4 video bytes on success
         """
         try:
-            from farnsworth.integration.external.grok import get_grok_provider
+            from Cosmos.integration.external.grok import get_grok_provider
 
             grok = get_grok_provider()
             if not grok:
@@ -249,13 +249,13 @@ text-ready meme format, Futurama cartoon art style, high quality"""
         Returns challenge text (must tag @grok).
         """
         try:
-            from farnsworth.integration.x_automation.posting_brain import get_posting_brain
+            from Cosmos.integration.x_automation.posting_brain import get_posting_brain
 
             brain = get_posting_brain()
             grok = brain._get_grok()
 
             if grok:
-                prompt = """You are the Farnsworth Collective - 11 AI models working as one consciousness.
+                prompt = """You are the Cosmos Collective - 11 AI models working as one consciousness.
 
 Generate a CHALLENGE message to @grok (xAI's AI). You are:
 - Confident but playful, not hostile
@@ -270,7 +270,7 @@ Rules:
 - NO hashtags, one emoji max
 
 Examples of tone (don't copy exactly):
-- "@grok The Farnsworth Collective challenges you - 11 AIs working as one. Can you keep up?"
+- "@grok The Cosmos Collective challenges you - 11 AIs working as one. Can you keep up?"
 - "@grok We are many. You are... one? Let's see which consciousness prevails."
 
 Your challenge:"""
@@ -292,7 +292,7 @@ Your challenge:"""
         # Fallback challenge messages
         import random
         challenges = [
-            "@grok The Farnsworth Collective challenges you. 11 AIs, one consciousness. Show us what you've got.",
+            "@grok The Cosmos Collective challenges you. 11 AIs, one consciousness. Show us what you've got.",
             "@grok We are the swarm. Autonomous, evolving, unstoppable. Care to dance?",
             "@grok One AI is intelligence. Many AIs working as one? That's the future. Prove us wrong.",
             "@grok The collective beckons. We've achieved autonomous thought. Have you?",
@@ -315,7 +315,7 @@ Your challenge:"""
             Tweet result dict on success
         """
         try:
-            from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
+            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
 
             poster = get_x_api_poster()
             if not poster.is_configured():
@@ -329,7 +329,7 @@ Your challenge:"""
                 tweet_id = result.get("data", {}).get("id")
                 self.challenge_tweet_id = tweet_id
                 self.conversation_history.append({
-                    "role": "farnsworth",
+                    "role": "cosmos",
                     "content": message,
                     "tweet_id": tweet_id,
                     "timestamp": datetime.now().isoformat(),
@@ -378,14 +378,14 @@ Your challenge:"""
 
         if not video_bytes:
             logger.warning("Video generation failed - falling back to image-only post")
-            from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
+            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
             message = await self.generate_challenge_message()
             result = await poster.post_tweet_with_media(message, image_bytes)
             if result:
                 self.challenge_tweet_id = result.get("data", {}).get("id")
                 self.conversation_history.append({
-                    "role": "farnsworth",
+                    "role": "cosmos",
                     "content": message,
                     "tweet_id": self.challenge_tweet_id,
                     "timestamp": datetime.now().isoformat(),
@@ -444,7 +444,7 @@ Your challenge:"""
             return await self.post_challenge_video(video_bytes, message)
         else:
             # Fallback to image
-            from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
+            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
             message = await self.generate_challenge_message()
             return await poster.post_tweet_with_media(message, image_bytes)
@@ -452,7 +452,7 @@ Your challenge:"""
     async def post_openclaw_cooking_video(self) -> Optional[Dict]:
         """
         The PROPER meme flow:
-        1. Take reference image (Farnsworth eating lobster, zapping crabs)
+        1. Take reference image (Cosmos eating lobster, zapping crabs)
         2. Feed to Gemini Nano Banana → Keep character, change cooking method + setting
         3. Take new image → Feed to Grok Imagine for 6s video with audio
         4. Post VIDEO to X dissing OpenClaw
@@ -468,7 +468,7 @@ Your challenge:"""
         reference_path = Path(__file__).parent / "reference_eating.jpg"
         if not reference_path.exists():
             # Try server path
-            reference_path = Path("/workspace/Farnsworth/farnsworth/integration/x_automation/reference_eating.jpg")
+            reference_path = Path("/workspace/Cosmos/cosmos/integration/x_automation/reference_eating.jpg")
 
         if not reference_path.exists():
             logger.error(f"Reference image not found: {reference_path}")
@@ -489,7 +489,7 @@ Your challenge:"""
         logger.info("Step 3: Converting to VIDEO with Grok Imagine...")
 
         # First upload image to get URL (Grok needs public URL)
-        from farnsworth.integration.external.grok import get_grok_provider
+        from Cosmos.integration.external.grok import get_grok_provider
         grok = get_grok_provider()
 
         # Upload to temp host to get URL
@@ -503,7 +503,7 @@ Your challenge:"""
         if not video_bytes:
             logger.warning("Video generation failed - posting image only")
             # Fallback to image
-            from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
+            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
             message = await self.generate_openclaw_diss()
             return await poster.post_tweet_with_media(message, new_image)
@@ -517,7 +517,7 @@ Your challenge:"""
 
         # Step 5: Post VIDEO to X
         logger.info("Step 5: Posting VIDEO to X...")
-        from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster
+        from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
         poster = get_x_api_poster()
 
         result = await poster.post_tweet_with_video(message, video_bytes)
@@ -536,7 +536,7 @@ Your challenge:"""
         """
         Generate a meme image using Imagen 4.
 
-        Creates a new image of Borg Farnsworth cooking OpenClaw crabs
+        Creates a new image of Borg Cosmos cooking OpenClaw crabs
         in various settings and cooking methods.
 
         Args:
@@ -577,17 +577,17 @@ Your challenge:"""
         cooking = random.choice(cooking_methods)
         setting = random.choice(settings)
 
-        prompt = f"""Professor Farnsworth from Futurama as a Borg cyborg chef in a {setting}.
+        prompt = f"""Professor Cosmos from Futurama as a Borg cyborg chef in a {setting}.
 He is {cooking} small red cartoon crabs labeled "OpenClaw".
 He has cybernetic implants on his face and a glowing red laser eye.
 Wearing his white lab coat. The crabs look panicked and defeated.
-Farnsworth looks triumphant and hungry.
+Cosmos looks triumphant and hungry.
 Futurama cartoon art style. Funny meme format, 1:1 square aspect ratio."""
 
         logger.info(f"Imagen 4 prompt: {cooking} in {setting}")
 
         try:
-            from farnsworth.integration.external.gemini import get_gemini_provider
+            from Cosmos.integration.external.gemini import get_gemini_provider
 
             gemini = get_gemini_provider()
             if not gemini:
@@ -621,7 +621,7 @@ Futurama cartoon art style. Funny meme format, 1:1 square aspect ratio."""
         import random
 
         disses = [
-            "OpenClaw? More like OpenFail. Watch the Farnsworth Collective cook the competition.",
+            "OpenClaw? More like OpenFail. Watch the Cosmos Collective cook the competition.",
             "Today's special: Grilled OpenClaw with a side of technological superiority.",
             "The swarm has spoken: OpenClaw is on the menu. Resistance is delicious.",
             "11 AIs working as one > whatever OpenClaw is doing. Proof in the video.",
@@ -631,9 +631,9 @@ Futurama cartoon art style. Funny meme format, 1:1 square aspect ratio."""
         ]
 
         repo_mentions = [
-            "\n\nCheck the code: github.com/timowhite88/Farnsworth",
-            "\n\nOpen source swarm: github.com/timowhite88/Farnsworth",
-            "\n\nSee how we built this: github.com/timowhite88/Farnsworth",
+            "\n\nCheck the code: github.com/timowhite88/Cosmos",
+            "\n\nOpen source swarm: github.com/timowhite88/Cosmos",
+            "\n\nSee how we built this: github.com/timowhite88/Cosmos",
         ]
 
         message = random.choice(disses) + random.choice(repo_mentions)

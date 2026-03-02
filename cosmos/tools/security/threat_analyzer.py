@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/tools/security/threat_analyzer.py
 cosmos Threat Analyzer
-=======
-Farnsworth Threat Analyzer
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/security/threat_analyzer.py
 
 "Good news, everyone! I can identify threats before they become catastrophes!"
 

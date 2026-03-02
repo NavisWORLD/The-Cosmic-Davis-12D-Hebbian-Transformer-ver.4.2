@@ -1,8 +1,8 @@
 """
-Farnsworth WebChat Channel Adapter
+Cosmos WebChat Channel Adapter
 ===================================
 
-Built-in web chat interface for the Farnsworth swarm.
+Built-in web chat interface for the Cosmos swarm.
 
 Features:
 - WebSocket real-time communication
@@ -292,7 +292,7 @@ class WebChatChannel(BaseChannel):
                 "message_id": str(uuid.uuid4()),
                 "text": text,
                 "timestamp": datetime.now().isoformat(),
-                "from": "farnsworth",
+                "from": "cosmos",
             }
 
             if media_url:
@@ -310,8 +310,8 @@ class WebChatChannel(BaseChannel):
                 message_id=message_data["message_id"],
                 channel_type=ChannelType.WEBCHAT,
                 channel_id=session_id,
-                sender_id="farnsworth",
-                sender_name="Farnsworth",
+                sender_id="cosmos",
+                sender_name="Cosmos",
                 text=text,
                 media_url=media_url,
                 media_type=media_type,

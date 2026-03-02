@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/memory/sharding.py
 cosmos Sharding Module - Distributed Memory Interface
-=======
-Farnsworth Sharding Module - Distributed Memory Interface
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/memory/sharding.py
 
 Provides interfaces for sharded memory storage to support:
 - Horizontal scaling

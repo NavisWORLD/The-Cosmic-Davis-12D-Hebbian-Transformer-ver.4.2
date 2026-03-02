@@ -1,5 +1,5 @@
 """
-Farnsworth Cross-Agent Memory - Memory Engineering for Agent Collaboration.
+Cosmos Cross-Agent Memory - Memory Engineering for Agent Collaboration.
 
 AGI v1.8 Feature: Enables sophisticated memory sharing and context
 handoffs between agents during collaborative tasks.
@@ -670,7 +670,7 @@ class CrossAgentMemory:
             return
 
         try:
-            from farnsworth.core.nexus import SignalType
+            from Cosmos.core.nexus import SignalType
 
             signal_enum = getattr(SignalType, signal_type, None)
             if signal_enum:

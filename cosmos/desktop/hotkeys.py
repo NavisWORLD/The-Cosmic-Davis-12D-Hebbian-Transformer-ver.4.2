@@ -1,5 +1,5 @@
 """
-Global Hotkey Handler for Farnsworth Desktop.
+Global Hotkey Handler for Cosmos Desktop.
 """
 
 import logging

@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/tools/productivity/boomerang.py
 cosmos Boomerang - Task Resurfacer
-=======
-Farnsworth Boomerang - Task Resurfacer
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/productivity/boomerang.py
 -------------------------------------
 
 "I'm back, baby!"

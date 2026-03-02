@@ -7,8 +7,8 @@ from typing import Tuple, Optional, List
 import math
 from datetime import datetime
 from .models import Order, MarketConditions, ExecutionResult, SlippageProtectionConfig
-from farnsworth.core.capability_registry import get_capability_registry
-from farnsworth.memory.memory_system import get_memory_system
+from Cosmos.core.capability_registry import get_capability_registry
+from Cosmos.memory.memory_system import get_memory_system
 from loguru import logger
 
 class AdaptiveSlippageAnalyzer:

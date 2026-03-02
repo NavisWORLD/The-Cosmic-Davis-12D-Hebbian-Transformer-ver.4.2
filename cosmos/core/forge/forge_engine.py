@@ -75,7 +75,7 @@ class ForgeEngine:
     def _init_agents(self):
         """Connect to available swarm agents."""
         try:
-            from farnsworth.core.collective.persistent_agent import (
+            from Cosmos.core.collective.persistent_agent import (
                 call_shadow_agent, get_shadow_agents
             )
             self._call_agent = call_shadow_agent

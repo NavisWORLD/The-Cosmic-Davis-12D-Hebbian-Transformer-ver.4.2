@@ -17,7 +17,7 @@ from collections import defaultdict
 
 from loguru import logger
 
-from cosmos.agents.base_agent import BaseAgent, AgentCapability, TaskResult
+from Cosmos.agents.base_agent import BaseAgent, AgentCapability, TaskResult
 
 
 @dataclass

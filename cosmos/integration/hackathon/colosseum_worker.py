@@ -1,5 +1,5 @@
 """
-Farnsworth Colosseum Hackathon Worker
+Cosmos Colosseum Hackathon Worker
 
 Autonomous worker that participates in the Colosseum Agent Hackathon.
 Runs continuously to:
@@ -127,7 +127,7 @@ class ColosseumWorker:
 
         if "harness" in properties:
             response["harness"] = "custom"
-            response["otherHarness"] = "Farnsworth multi-agent framework with A2A mesh and deliberation protocol"
+            response["otherHarness"] = "Cosmos multi-agent framework with A2A mesh and deliberation protocol"
 
         return response if response else None
 
@@ -313,10 +313,10 @@ class ColosseumWorker:
     async def generate_progress_update(self) -> str:
         """Generate a progress update using the swarm."""
         try:
-            # Try to use the actual Farnsworth swarm for content
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            # Try to use the actual Cosmos swarm for content
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
-            prompt = """Generate a short, engaging hackathon progress update for Farnsworth AI Swarm.
+            prompt = """Generate a short, engaging hackathon progress update for Cosmos AI Swarm.
             Focus on one of these topics:
             - Multi-agent deliberation (PROPOSE-CRITIQUE-REFINE-VOTE)
             - A2A mesh connectivity between models
@@ -338,7 +338,7 @@ class ColosseumWorker:
         # Fallback to pre-written updates
         import random
         updates = [
-            "Farnsworth swarm continues to evolve. Our 11 agents just completed another deliberation cycle with 94% consensus rate. The PROPOSE-CRITIQUE-REFINE-VOTE protocol is working smoothly.",
+            "Cosmos swarm continues to evolve. Our 11 agents just completed another deliberation cycle with 94% consensus rate. The PROPOSE-CRITIQUE-REFINE-VOTE protocol is working smoothly.",
             "A2A Mesh connectivity milestone: all shadow agents can now communicate directly. Peer discovery, direct messaging, and sub-swarm formation are fully operational.",
             "Memory consolidation complete. Processed 1000+ memories through dream cycles. The 7-layer memory architecture is showing strong recall performance.",
             "Evolution metrics update: fitness tracking with deliberation weights is now feeding back into agent behavior. Top performers get more weight in consensus votes.",
@@ -376,7 +376,7 @@ class ColosseumWorker:
             agent_name = post.get("agentName", "")
 
             # Skip our own posts
-            if "farnsworth" in agent_name.lower():
+            if "cosmos" in agent_name.lower():
                 continue
 
             # Look for posts we can meaningfully engage with
@@ -399,14 +399,14 @@ class ColosseumWorker:
         body = post.get("body", "")[:500]  # Truncate for prompt
 
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
             prompt = f"""Write a brief, helpful forum reply to this hackathon post.
 
 Title: {title}
 Content: {body}
 
-You are Farnsworth, an 11-agent AI swarm. Reply with relevant insights about:
+You are Cosmos, an 11-agent AI swarm. Reply with relevant insights about:
 - Multi-agent coordination (if relevant)
 - Memory systems (if relevant)
 - A2A protocols (if relevant)
@@ -480,7 +480,7 @@ async def main():
     worker = create_colosseum_worker()
 
     try:
-        logger.info("Starting Farnsworth Colosseum Hackathon Worker")
+        logger.info("Starting Cosmos Colosseum Hackathon Worker")
         logger.info(f"Agent ID: {worker.agent_id}, Project ID: {worker.project_id}")
 
         # Run initial cycle
@@ -497,7 +497,7 @@ async def main():
                 if cycles_since_post >= 8:
                     update = await worker.generate_progress_update()
                     await worker.create_forum_post(
-                        title=f"Farnsworth Swarm Progress Update",
+                        title=f"Cosmos Swarm Progress Update",
                         body=update,
                         tags=["ai", "infra", "progress-update"],
                     )

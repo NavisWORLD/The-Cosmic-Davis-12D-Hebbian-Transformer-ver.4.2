@@ -1,24 +1,14 @@
 """
-<<<<<<< HEAD:cosmos/interfaces/messaging/whatsapp_adapter.py
 cosmos WhatsApp Adapter
 ---------------------------
 Connects cosmos to WhatsApp via Twilio's WhatsApp API.
-=======
-Farnsworth WhatsApp Adapter
----------------------------
-Connects Farnsworth to WhatsApp via Twilio's WhatsApp API.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/whatsapp_adapter.py
 
 Usage:
     export TWILIO_ACCOUNT_SID=your_account_sid
     export TWILIO_AUTH_TOKEN=your_auth_token
     export TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886  # Twilio sandbox number
 
-<<<<<<< HEAD:cosmos/interfaces/messaging/whatsapp_adapter.py
-    from cosmos.interfaces.messaging.whatsapp_adapter import WhatsAppAdapter
-=======
-    from farnsworth.interfaces.messaging.whatsapp_adapter import WhatsAppAdapter
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/whatsapp_adapter.py
+    from Cosmos.interfaces.messaging.whatsapp_adapter import WhatsAppAdapter
 
     adapter = WhatsAppAdapter()
     adapter.set_callback(my_message_handler)
@@ -33,11 +23,7 @@ from datetime import datetime
 from typing import Optional, Callable, Awaitable
 from loguru import logger
 
-<<<<<<< HEAD:cosmos/interfaces/messaging/whatsapp_adapter.py
-from cosmos.interfaces.messaging.base import (
-=======
-from farnsworth.interfaces.messaging.base import (
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/whatsapp_adapter.py
+from Cosmos.interfaces.messaging.base import (
     MessagingProvider,
     IncomingMessage,
     OutgoingMessage,
@@ -56,11 +42,7 @@ except ImportError:
 
 class WhatsAppAdapter(MessagingProvider):
     """
-<<<<<<< HEAD:cosmos/interfaces/messaging/whatsapp_adapter.py
     WhatsApp messaging adapter for cosmos via Twilio.
-=======
-    WhatsApp messaging adapter for Farnsworth via Twilio.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/whatsapp_adapter.py
 
     Provides:
     - Send messages to WhatsApp users
@@ -81,11 +63,7 @@ class WhatsAppAdapter(MessagingProvider):
         self.client: Optional[TwilioClient] = None
         self._running = False
 
-<<<<<<< HEAD:cosmos/interfaces/messaging/whatsapp_adapter.py
         # cosmos persona
-=======
-        # Farnsworth persona
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/whatsapp_adapter.py
         self.persona_prefix = "*adjusts spectacles* "
 
     async def connect(self):
@@ -125,11 +103,7 @@ class WhatsAppAdapter(MessagingProvider):
             if not to_number.startswith("whatsapp:"):
                 to_number = f"whatsapp:{to_number}"
 
-<<<<<<< HEAD:cosmos/interfaces/messaging/whatsapp_adapter.py
             # Add cosmos persona flavor
-=======
-            # Add Farnsworth persona flavor
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/whatsapp_adapter.py
             content = message.content
             if not content.startswith("*"):
                 content = self.persona_prefix + content
@@ -192,11 +166,7 @@ class WhatsAppAdapter(MessagingProvider):
             if self._on_message_callback:
                 await self._on_message_callback(incoming)
 
-<<<<<<< HEAD:cosmos/interfaces/messaging/whatsapp_adapter.py
             # Return TwiML response (empty = no auto-reply, cosmos will reply via send_message)
-=======
-            # Return TwiML response (empty = no auto-reply, Farnsworth will reply via send_message)
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/whatsapp_adapter.py
             return None
 
         except Exception as e:
@@ -208,11 +178,7 @@ class WhatsAppAdapter(MessagingProvider):
         Returns FastAPI route for WhatsApp webhook.
 
         Usage:
-<<<<<<< HEAD:cosmos/interfaces/messaging/whatsapp_adapter.py
-            from cosmos.interfaces.messaging.whatsapp_adapter import WhatsAppAdapter
-=======
-            from farnsworth.interfaces.messaging.whatsapp_adapter import WhatsAppAdapter
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/whatsapp_adapter.py
+            from Cosmos.interfaces.messaging.whatsapp_adapter import WhatsAppAdapter
 
             adapter = WhatsAppAdapter()
             app.include_router(adapter.get_webhook_route())
@@ -246,11 +212,7 @@ async def test_send():
 
         await adapter.send_message(OutgoingMessage(
             channel_id=test_number,
-<<<<<<< HEAD:cosmos/interfaces/messaging/whatsapp_adapter.py
             content="Good news, everyone! This is a test message from cosmos!"
-=======
-            content="Good news, everyone! This is a test message from Farnsworth!"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/whatsapp_adapter.py
         ))
 
 

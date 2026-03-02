@@ -19,7 +19,7 @@ def load_env():
     possible_paths = [
         Path(__file__).parent.parent.parent.parent / ".env",  # Project root
         Path(__file__).parent.parent.parent / ".env",
-        Path("/workspace/Farnsworth/.env"),  # Docker/cloud
+        Path("/workspace/Cosmos/.env"),  # Docker/cloud
     ]
 
     for env_path in possible_paths:
@@ -38,7 +38,7 @@ load_env()
 CONFIG = {
     "client_id": os.environ.get("X_CLIENT_ID", "OUJSQ3BEX0Npc3pxZm1HcmxxWDc6MTpjaQ"),
     "client_secret": os.environ.get("X_CLIENT_SECRET", "3-7lG5ethJte5qPpk4H-PoT8V1gOVtMcMUZUrrK1AdxRQWciVV"),
-    "redirect_uri": "https://ai.farnsworth.cloud/callback",
+    "redirect_uri": "https://ai.cosmos.cloud/callback",
     "token_file": Path(__file__).parent / "oauth2_tokens.json",  # Same dir as this file
 }
 

@@ -1,5 +1,5 @@
 """
-FORGE - Farnsworth Orchestrated Rapid Generation Engine
+FORGE - Cosmos Orchestrated Rapid Generation Engine
 ========================================================
 
 A swarm-powered development orchestration system that uses multi-model

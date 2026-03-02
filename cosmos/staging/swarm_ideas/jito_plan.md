@@ -2,18 +2,18 @@
 
 Task: Implement logic within the swapping process that leverages jito's features
 
-To implement logic within the swapping process that leverages Jito's features, we will create a new module under `farnsworth/integration/` to handle integration with Jito. This module will be responsible for facilitating trading operations by leveraging specific features offered by Jito. Below is a detailed plan:
+To implement logic within the swapping process that leverages Jito's features, we will create a new module under `cosmos/integration/` to handle integration with Jito. This module will be responsible for facilitating trading operations by leveraging specific features offered by Jito. Below is a detailed plan:
 
 ### 1. Files to Create
 
-- **File Path:** `farnsworth/integration/jito_integration.py`
+- **File Path:** `cosmos/integration/jito_integration.py`
   
 ### 2. Functions to Implement
 
 #### Function Signatures and Descriptions
 
 ```python
-# farnsworth/integration/jito_integration.py
+# cosmos/integration/jito_integration.py
 
 from typing import List, Dict
 import aiohttp
@@ -42,7 +42,7 @@ async def swap_assets(api_key: str, from_asset: str, to_asset: str, amount: floa
 
 ### 3. Imports Required
 
-- From existing farnsworth modules:
+- From existing cosmos modules:
   - `aiohttp`: For making asynchronous HTTP requests.
 
 ```python
@@ -53,10 +53,10 @@ import aiohttp
 
 #### Modifications to Existing Files:
 
-1. **File:** `farnsworth/integration/api_integration.py`
+1. **File:** `cosmos/integration/api_integration.py`
    - Integrate the new Jito features by importing and calling functions from `jito_integration.py`.
 
-2. **File:** `farnsworth/web/server.py`
+2. **File:** `cosmos/web/server.py`
    - Add endpoints for fetching assets and executing swaps, utilizing the newly created functions.
 
 #### Example Modifications:
@@ -65,7 +65,7 @@ import aiohttp
 
 ```python
 # Importing the new jito integration module
-from farnsworth.integration import jito_integration
+from cosmos.integration import jito_integration
 
 # Use the fetch_jito_assets function where needed
 assets = await jito_integration.fetch_jito_assets(api_key)
@@ -104,7 +104,7 @@ To verify the implementation works as expected:
 # tests/test_jito_integration.py
 
 import pytest
-from farnsworth.integration import jito_integration
+from cosmos.integration import jito_integration
 
 @pytest.mark.asyncio
 async def test_fetch_jito_assets():
@@ -126,7 +126,7 @@ async def test_swap_assets():
 
    - Start the FastAPI application using:
      ```bash
-     uvicorn farnsworth.web.server:app --reload
+     uvicorn cosmos.web.server:app --reload
      ```
 
    - Test API endpoints with tools like `curl` or Postman.
@@ -139,4 +139,4 @@ async def test_swap_assets():
 pytest tests/test_jito_integration.py
 ```
 
-This plan provides a concrete approach to integrating Jito's trading features into the existing Farnsworth structure, ensuring that each step is clearly defined with specific paths, function signatures, and test methods.
+This plan provides a concrete approach to integrating Jito's trading features into the existing Cosmos structure, ensuring that each step is clearly defined with specific paths, function signatures, and test methods.

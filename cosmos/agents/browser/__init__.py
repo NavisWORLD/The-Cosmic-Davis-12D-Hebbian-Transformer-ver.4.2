@@ -1,5 +1,5 @@
 """
-Farnsworth Agentic Browser Module.
+Cosmos Agentic Browser Module.
 
 Provides autonomous web browsing capabilities using Browser-Use with Playwright.
 Can navigate, fill forms, click buttons, extract data, and complete multi-step web tasks.
@@ -8,24 +8,24 @@ Requires: browser-use, playwright
 Note: Requires Python 3.11+
 """
 
-from .agent import FarnsworthBrowserAgent, BrowserResult
+from .agent import CosmosBrowserAgent, BrowserResult
 from .controller import BrowserController
 from .stealth import StealthBrowser
 
 __all__ = [
-    'FarnsworthBrowserAgent',
+    'CosmosBrowserAgent',
     'BrowserResult',
     'BrowserController',
     'StealthBrowser',
     'get_browser_agent',
 ]
 
-_agent: "FarnsworthBrowserAgent" = None
+_agent: "CosmosBrowserAgent" = None
 
 
-def get_browser_agent() -> "FarnsworthBrowserAgent":
+def get_browser_agent() -> "CosmosBrowserAgent":
     """Get or create the global browser agent."""
     global _agent
     if _agent is None:
-        _agent = FarnsworthBrowserAgent()
+        _agent = CosmosBrowserAgent()
     return _agent

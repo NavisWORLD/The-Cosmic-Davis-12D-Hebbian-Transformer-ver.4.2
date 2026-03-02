@@ -1,5 +1,5 @@
 """
-Farnsworth Skill Registry - Dynamic Tool/Skill Discovery & Routing
+Cosmos Skill Registry - Dynamic Tool/Skill Discovery & Routing
 
 Provides a centralized registry of ALL capabilities across the swarm:
 - Shadow agent capabilities (grok, gemini, claude, etc.)
@@ -10,7 +10,7 @@ Provides a centralized registry of ALL capabilities across the swarm:
 - MCP tools
 
 Usage:
-    from farnsworth.core.skill_registry import get_skill_registry
+    from Cosmos.core.skill_registry import get_skill_registry
     registry = get_skill_registry()
 
     # Find skills matching a need
@@ -63,7 +63,7 @@ class Skill:
     name: str
     description: str
     category: SkillCategory
-    module_path: str  # e.g. "farnsworth.integration.x_automation.x_engagement_poster"
+    module_path: str  # e.g. "cosmos.integration.x_automation.x_engagement_poster"
     function_name: str  # e.g. "execute"
     agents: List[str] = field(default_factory=list)  # Which agents can run this
     keywords: List[str] = field(default_factory=list)  # Search keywords
@@ -281,7 +281,7 @@ class SkillRegistry:
         """Discover and register OpenClaw skills via the compatibility layer."""
         count = 0
         try:
-            from farnsworth.compatibility.openclaw_adapter import (
+            from Cosmos.compatibility.openclaw_adapter import (
                 OpenClawAdapter,
                 OpenClawToolGroup,
             )
@@ -313,9 +313,9 @@ class SkillRegistry:
                             name=tool_name,
                             description=tool.get("description", f"OpenClaw {group.name} tool"),
                             category=category,
-                            module_path="farnsworth.compatibility.openclaw_adapter",
+                            module_path="cosmos.compatibility.openclaw_adapter",
                             function_name="invoke_tool",
-                            agents=["farnsworth", "claude", "grok"],
+                            agents=["cosmos", "claude", "grok"],
                             keywords=["openclaw", group.name.lower()] + tool.get("keywords", []),
                             parameters=tool.get("parameters", {}),
                             source="openclaw",
@@ -327,9 +327,9 @@ class SkillRegistry:
                         name=f"openclaw_{group.name.lower()}",
                         description=f"OpenClaw {group.name} tools ({group.value})",
                         category=category,
-                        module_path="farnsworth.compatibility.openclaw_adapter",
+                        module_path="cosmos.compatibility.openclaw_adapter",
                         function_name="invoke",
-                        agents=["farnsworth", "claude", "grok"],
+                        agents=["cosmos", "claude", "grok"],
                         keywords=["openclaw", group.name.lower(), "compatibility", "shadow"],
                         parameters={"tool": "Tool name", "action": "Action", "params": "Parameters"},
                         source="openclaw",
@@ -345,9 +345,9 @@ class SkillRegistry:
                             name=f"clawhub_{hub_skill.get('id', 'unknown')}",
                             description=hub_skill.get("description", "ClawHub community skill"),
                             category=SkillCategory.CUSTOM,
-                            module_path="farnsworth.compatibility.openclaw_adapter",
+                            module_path="cosmos.compatibility.openclaw_adapter",
                             function_name="invoke_clawhub_skill",
-                            agents=["farnsworth"],
+                            agents=["cosmos"],
                             keywords=["clawhub", "community"] + hub_skill.get("tags", []),
                             parameters=hub_skill.get("inputs", {}),
                             source="openclaw",
@@ -368,9 +368,9 @@ class SkillRegistry:
         """Discover and register MCP (Model Context Protocol) tools."""
         count = 0
         try:
-            # Discover from Farnsworth's MCP server
-            from farnsworth.mcp_server import FarnsworthMCPServer
-            mcp = FarnsworthMCPServer()
+            # Discover from Cosmos's MCP server
+            from Cosmos.mcp_server import CosmosMCPServer
+            mcp = CosmosMCPServer()
 
             # Register MCP memory tools
             mcp_tools = [
@@ -393,9 +393,9 @@ class SkillRegistry:
                     name=name,
                     description=desc,
                     category=cat,
-                    module_path=f"farnsworth.mcp_server.{class_name.lower().replace('tools', '_tools')}",
+                    module_path=f"cosmos.mcp_server.{class_name.lower().replace('tools', '_tools')}",
                     function_name=func,
-                    agents=["farnsworth", "claude"],
+                    agents=["cosmos", "claude"],
                     keywords=keywords,
                     source="mcp",
                 ))
@@ -403,7 +403,7 @@ class SkillRegistry:
 
             # Discover from Claude Teams MCP bridge
             try:
-                from farnsworth.integration.claude_teams.mcp_bridge import FarnsworthMCPServer as TeamsMCP
+                from Cosmos.integration.claude_teams.mcp_bridge import CosmosMCPServer as TeamsMCP
                 teams_mcp = TeamsMCP()
                 if hasattr(teams_mcp, 'list_tools'):
                     tools = teams_mcp.list_tools()
@@ -414,9 +414,9 @@ class SkillRegistry:
                                 name=tool_name,
                                 description=tool.get("description", "Claude Teams MCP tool"),
                                 category=SkillCategory.ORCHESTRATION,
-                                module_path="farnsworth.integration.claude_teams.mcp_bridge",
+                                module_path="cosmos.integration.claude_teams.mcp_bridge",
                                 function_name=tool.get("name", "invoke"),
-                                agents=["farnsworth", "claude"],
+                                agents=["cosmos", "claude"],
                                 keywords=["mcp", "claude", "teams"] + tool.get("keywords", []),
                                 parameters=tool.get("inputSchema", {}).get("properties", {}),
                                 source="mcp",
@@ -439,7 +439,7 @@ class SkillRegistry:
                                 category=SkillCategory.CUSTOM,
                                 module_path=f"mcp://{server_name}",
                                 function_name=tool["name"],
-                                agents=["farnsworth"],
+                                agents=["cosmos"],
                                 keywords=["mcp", "external", server_name],
                                 parameters=tool.get("inputSchema", {}).get("properties", {}),
                                 source="mcp",
@@ -472,7 +472,7 @@ class SkillRegistry:
             if name not in self._skills:
                 self.register_skill(Skill(
                     name=name, description=desc, category=cat,
-                    module_path="farnsworth.integration.external.grok",
+                    module_path="cosmos.integration.external.grok",
                     function_name=func, agents=["grok"],
                     keywords=kw, requires_api_key="GROK_API_KEY", source="model_specific",
                 ))
@@ -490,7 +490,7 @@ class SkillRegistry:
             if name not in self._skills:
                 self.register_skill(Skill(
                     name=name, description=desc, category=cat,
-                    module_path="farnsworth.integration.external.gemini",
+                    module_path="cosmos.integration.external.gemini",
                     function_name=func, agents=["gemini"],
                     keywords=kw, requires_api_key="GEMINI_API_KEY", source="model_specific",
                 ))
@@ -500,7 +500,7 @@ class SkillRegistry:
             name="kimi_long_context",
             description="Kimi K2.5 256K context analysis for very long documents or codebases",
             category=SkillCategory.RESEARCH,
-            module_path="farnsworth.integration.external.kimi",
+            module_path="cosmos.integration.external.kimi",
             function_name="chat",
             agents=["kimi"],
             keywords=["long", "context", "document", "256k", "analysis", "codebase"],
@@ -514,7 +514,7 @@ class SkillRegistry:
             name="deepseek_algorithm",
             description="DeepSeek R1 specialized algorithm implementation and math reasoning",
             category=SkillCategory.DEVELOPMENT,
-            module_path="farnsworth.core.collective.persistent_agent",
+            module_path="cosmos.core.collective.persistent_agent",
             function_name="call_shadow_agent",
             agents=["deepseek"],
             keywords=["algorithm", "math", "optimize", "deepseek", "reasoning"],
@@ -535,7 +535,7 @@ class SkillRegistry:
             if name not in self._skills:
                 self.register_skill(Skill(
                     name=name, description=desc, category=cat,
-                    module_path="farnsworth.integration.external.huggingface",
+                    module_path="cosmos.integration.external.huggingface",
                     function_name=func, agents=["huggingface"],
                     keywords=kw, source="model_specific",
                 ))
@@ -545,7 +545,7 @@ class SkillRegistry:
             name="claude_safety_review",
             description="Claude specialized safety and security code review",
             category=SkillCategory.DEVELOPMENT,
-            module_path="farnsworth.integration.external.claude",
+            module_path="cosmos.integration.external.claude",
             function_name="chat",
             agents=["claude"],
             keywords=["safety", "security", "review", "vulnerability", "audit"],
@@ -558,7 +558,7 @@ class SkillRegistry:
             name="claude_opus_architect",
             description="Claude Opus 4.6 for complex multi-file architectural redesigns",
             category=SkillCategory.DEVELOPMENT,
-            module_path="farnsworth.integration.claude_teams.agent_sdk_bridge",
+            module_path="cosmos.integration.claude_teams.agent_sdk_bridge",
             function_name="delegate",
             agents=["claude_opus"],
             keywords=["architecture", "redesign", "complex", "opus", "refactor"],
@@ -569,7 +569,7 @@ class SkillRegistry:
         logger.info("Registered model-specific tools")
 
     def _register_builtin_skills(self) -> None:
-        """Register all built-in Farnsworth skills."""
+        """Register all built-in Cosmos skills."""
 
         all_agents = ["grok", "gemini", "kimi", "claude", "deepseek", "phi", "huggingface", "swarm_mind"]
         api_agents = ["grok", "gemini", "kimi", "claude"]
@@ -579,9 +579,9 @@ class SkillRegistry:
             name="mega_thread_poster",
             description="Post a 20+ tweet mega thread with images, trending topics, and one hashtag per post",
             category=SkillCategory.SOCIAL,
-            module_path="farnsworth.integration.x_automation.x_engagement_poster",
+            module_path="cosmos.integration.x_automation.x_engagement_poster",
             function_name="execute",
-            agents=["farnsworth", "grok"],
+            agents=["cosmos", "grok"],
             keywords=["tweet", "thread", "post", "X", "twitter", "mega", "article", "engagement"],
             parameters={"topic": "Optional topic override", "generate_images": "bool", "delay": "seconds between posts"},
         ))
@@ -590,9 +590,9 @@ class SkillRegistry:
             name="post_tweet",
             description="Post a single tweet to X/Twitter with optional image",
             category=SkillCategory.SOCIAL,
-            module_path="farnsworth.integration.x_automation.x_api_poster",
+            module_path="cosmos.integration.x_automation.x_api_poster",
             function_name="post_tweet",
-            agents=["farnsworth", "grok"],
+            agents=["cosmos", "grok"],
             keywords=["tweet", "post", "X", "twitter"],
             parameters={"text": "Tweet text", "image_bytes": "Optional image"},
         ))
@@ -601,28 +601,28 @@ class SkillRegistry:
             name="post_reply",
             description="Reply to a tweet on X/Twitter",
             category=SkillCategory.SOCIAL,
-            module_path="farnsworth.integration.x_automation.x_api_poster",
+            module_path="cosmos.integration.x_automation.x_api_poster",
             function_name="post_reply",
-            agents=["farnsworth", "grok"],
+            agents=["cosmos", "grok"],
             keywords=["reply", "respond", "tweet", "thread"],
             parameters={"text": "Reply text", "reply_to_id": "Tweet ID to reply to"},
         ))
 
         self.register_skill(Skill(
             name="generate_meme",
-            description="Generate a Borg Farnsworth meme image with AI",
+            description="Generate a Borg Cosmos meme image with AI",
             category=SkillCategory.SOCIAL,
-            module_path="farnsworth.integration.image_gen.generator",
-            function_name="generate_borg_farnsworth_meme",
-            agents=["farnsworth", "gemini", "grok"],
-            keywords=["meme", "image", "borg", "farnsworth", "picture"],
+            module_path="cosmos.integration.image_gen.generator",
+            function_name="generate_borg_cosmos_meme",
+            agents=["cosmos", "gemini", "grok"],
+            keywords=["meme", "image", "borg", "cosmos", "picture"],
         ))
 
         self.register_skill(Skill(
             name="get_trending_topics",
             description="Fetch top 20 trending topics on X/Twitter",
             category=SkillCategory.SOCIAL,
-            module_path="farnsworth.integration.x_automation.x_engagement_poster",
+            module_path="cosmos.integration.x_automation.x_engagement_poster",
             function_name="get_trending_topics",
             agents=["grok", "gemini"],
             keywords=["trending", "topics", "hashtag", "viral", "popular"],
@@ -632,9 +632,9 @@ class SkillRegistry:
             name="check_mentions",
             description="Check and reply to X/Twitter mentions",
             category=SkillCategory.SOCIAL,
-            module_path="farnsworth.integration.x_automation.reply_bot",
+            module_path="cosmos.integration.x_automation.reply_bot",
             function_name="process_mentions",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["mentions", "replies", "engage", "respond"],
         ))
 
@@ -643,9 +643,9 @@ class SkillRegistry:
             name="jupiter_swap",
             description="Execute a token swap on Solana via Jupiter V6 aggregator",
             category=SkillCategory.TRADING,
-            module_path="farnsworth.integration.solana.trading",
+            module_path="cosmos.integration.solana.trading",
             function_name="jupiter_swap",
-            agents=["farnsworth", "deepseek"],
+            agents=["cosmos", "deepseek"],
             keywords=["swap", "trade", "jupiter", "solana", "token", "buy", "sell"],
             parameters={"input_mint": "Token to sell", "output_mint": "Token to buy", "amount": "Amount in lamports"},
             requires_api_key="SOLANA_PRIVATE_KEY",
@@ -655,9 +655,9 @@ class SkillRegistry:
             name="pump_fun_trade",
             description="Trade tokens on Pump.fun via PumpPortal",
             category=SkillCategory.TRADING,
-            module_path="farnsworth.integration.solana.trading",
+            module_path="cosmos.integration.solana.trading",
             function_name="pump_fun_trade",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["pump", "pumpfun", "launch", "trade", "bonding"],
             requires_api_key="SOLANA_PRIVATE_KEY",
         ))
@@ -666,9 +666,9 @@ class SkillRegistry:
             name="jito_bundle",
             description="Send a Jito bundle for anti-MEV execution on Solana",
             category=SkillCategory.TRADING,
-            module_path="farnsworth.integration.solana.degen_mob",
+            module_path="cosmos.integration.solana.degen_mob",
             function_name="send_jito_bundle",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["jito", "mev", "bundle", "frontrun", "sandwich"],
             parameters={"transactions": "List of transactions", "tip_sol": "Jito tip amount"},
         ))
@@ -678,7 +678,7 @@ class SkillRegistry:
             name="token_analysis",
             description="Multi-agent Solana token analysis with swarm consensus",
             category=SkillCategory.ANALYSIS,
-            module_path="farnsworth.integration.solana.swarm_solana",
+            module_path="cosmos.integration.solana.swarm_solana",
             function_name="analyze_token",
             agents=all_agents,
             keywords=["token", "analyze", "scan", "risk", "solana", "contract"],
@@ -689,9 +689,9 @@ class SkillRegistry:
             name="rug_detection",
             description="Detect potential rug pulls by checking mint/freeze authorities",
             category=SkillCategory.ANALYSIS,
-            module_path="farnsworth.integration.solana.degen_mob",
+            module_path="cosmos.integration.solana.degen_mob",
             function_name="analyze_token_safety",
-            agents=["farnsworth", "deepseek", "grok"],
+            agents=["cosmos", "deepseek", "grok"],
             keywords=["rug", "scam", "safety", "audit", "honeypot"],
             parameters={"mint_address": "Token mint address"},
         ))
@@ -700,9 +700,9 @@ class SkillRegistry:
             name="whale_watch",
             description="Track whale wallet movements and detect insider rings",
             category=SkillCategory.ANALYSIS,
-            module_path="farnsworth.integration.solana.degen_mob",
+            module_path="cosmos.integration.solana.degen_mob",
             function_name="get_whale_recent_activity",
-            agents=["farnsworth", "grok"],
+            agents=["cosmos", "grok"],
             keywords=["whale", "wallet", "track", "insider", "large", "holder"],
             parameters={"wallet_address": "Wallet to monitor"},
         ))
@@ -711,7 +711,7 @@ class SkillRegistry:
             name="wallet_analysis",
             description="Swarm assessment of a Solana wallet",
             category=SkillCategory.ANALYSIS,
-            module_path="farnsworth.integration.solana.swarm_solana",
+            module_path="cosmos.integration.solana.swarm_solana",
             function_name="analyze_wallet",
             agents=all_agents,
             keywords=["wallet", "analyze", "portfolio", "holdings"],
@@ -722,7 +722,7 @@ class SkillRegistry:
             name="defi_recommend",
             description="Get DeFi strategy recommendations from the swarm",
             category=SkillCategory.ANALYSIS,
-            module_path="farnsworth.integration.solana.swarm_solana",
+            module_path="cosmos.integration.solana.swarm_solana",
             function_name="get_defi_recommendation",
             agents=all_agents,
             keywords=["defi", "yield", "farm", "strategy", "apy", "invest"],
@@ -734,7 +734,7 @@ class SkillRegistry:
             name="swarm_oracle",
             description="Multi-agent oracle query with on-chain consensus recording",
             category=SkillCategory.PREDICTION,
-            module_path="farnsworth.integration.solana.swarm_oracle",
+            module_path="cosmos.integration.solana.swarm_oracle",
             function_name="submit_query",
             agents=all_agents,
             keywords=["oracle", "predict", "consensus", "question", "on-chain"],
@@ -745,9 +745,9 @@ class SkillRegistry:
             name="farsight_predict",
             description="5-source prediction (Swarm + Polymarket + Monte Carlo + Quantum + Vision)",
             category=SkillCategory.PREDICTION,
-            module_path="farnsworth.integration.hackathon.farsight_protocol",
+            module_path="cosmos.integration.hackathon.farsight_protocol",
             function_name="predict",
-            agents=["farnsworth", "grok", "gemini"],
+            agents=["cosmos", "grok", "gemini"],
             keywords=["predict", "forecast", "probability", "farsight", "future"],
             parameters={"question": "Prediction question"},
         ))
@@ -756,9 +756,9 @@ class SkillRegistry:
             name="polymarket_predictions",
             description="Get AGI-level collective predictions on Polymarket events",
             category=SkillCategory.PREDICTION,
-            module_path="farnsworth.core.polymarket_predictor",
+            module_path="cosmos.core.polymarket_predictor",
             function_name="get_predictions",
-            agents=["farnsworth", "grok", "gemini", "kimi", "deepseek"],
+            agents=["cosmos", "grok", "gemini", "kimi", "deepseek"],
             keywords=["polymarket", "prediction", "market", "bet", "probability"],
         ))
 
@@ -767,7 +767,7 @@ class SkillRegistry:
             name="generate_image",
             description="Generate an AI image using Gemini or Grok",
             category=SkillCategory.MEDIA,
-            module_path="farnsworth.integration.image_gen.generator",
+            module_path="cosmos.integration.image_gen.generator",
             function_name="generate",
             agents=["gemini", "grok"],
             keywords=["image", "picture", "generate", "art", "visual"],
@@ -778,8 +778,8 @@ class SkillRegistry:
             name="generate_video",
             description="Generate an animated video from an image using Grok Imagine Video",
             category=SkillCategory.MEDIA,
-            module_path="farnsworth.integration.image_gen.generator",
-            function_name="generate_borg_farnsworth_video",
+            module_path="cosmos.integration.image_gen.generator",
+            function_name="generate_borg_cosmos_video",
             agents=["grok"],
             keywords=["video", "animate", "animation", "clip"],
             parameters={"scene": "Scene description"},
@@ -790,9 +790,9 @@ class SkillRegistry:
             name="text_to_speech",
             description="Generate speech audio with cloned bot voice",
             category=SkillCategory.MEDIA,
-            module_path="farnsworth.integration.multi_voice",
+            module_path="cosmos.integration.multi_voice",
             function_name="generate_speech",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["tts", "speak", "voice", "audio", "speech"],
             parameters={"text": "Text to speak", "bot_name": "Bot voice to use"},
         ))
@@ -802,7 +802,7 @@ class SkillRegistry:
             name="remember",
             description="Store information in swarm memory",
             category=SkillCategory.MEMORY,
-            module_path="farnsworth.memory.memory_system",
+            module_path="cosmos.memory.memory_system",
             function_name="store",
             agents=all_agents,
             keywords=["remember", "store", "save", "memory", "note"],
@@ -813,7 +813,7 @@ class SkillRegistry:
             name="recall",
             description="Recall information from swarm memory using semantic search",
             category=SkillCategory.MEMORY,
-            module_path="farnsworth.memory.memory_system",
+            module_path="cosmos.memory.memory_system",
             function_name="recall",
             agents=all_agents,
             keywords=["recall", "search", "find", "retrieve", "memory"],
@@ -824,7 +824,7 @@ class SkillRegistry:
             name="knowledge_graph_query",
             description="Query the knowledge graph for entity relationships",
             category=SkillCategory.MEMORY,
-            module_path="farnsworth.memory.knowledge_graph",
+            module_path="cosmos.memory.knowledge_graph",
             function_name="query",
             agents=all_agents,
             keywords=["knowledge", "graph", "entity", "relationship", "connection"],
@@ -836,9 +836,9 @@ class SkillRegistry:
             name="quantum_bell_state",
             description="Run a Bell state circuit on IBM Quantum hardware",
             category=SkillCategory.QUANTUM,
-            module_path="farnsworth.integration.hackathon.quantum_proof",
+            module_path="cosmos.integration.hackathon.quantum_proof",
             function_name="run_bell_state",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["quantum", "bell", "entanglement", "qubit", "ibm"],
             requires_api_key="IBM_QUANTUM_TOKEN",
         ))
@@ -847,9 +847,9 @@ class SkillRegistry:
             name="quantum_random",
             description="Generate quantum random numbers from real hardware",
             category=SkillCategory.QUANTUM,
-            module_path="farnsworth.integration.hackathon.quantum_proof",
+            module_path="cosmos.integration.hackathon.quantum_proof",
             function_name="run_quantum_random",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["quantum", "random", "entropy", "rng"],
             requires_api_key="IBM_QUANTUM_TOKEN",
         ))
@@ -859,7 +859,7 @@ class SkillRegistry:
             name="web_search",
             description="Search the web using Grok deep search",
             category=SkillCategory.RESEARCH,
-            module_path="farnsworth.integration.external.grok",
+            module_path="cosmos.integration.external.grok",
             function_name="deep_search",
             agents=["grok"],
             keywords=["search", "web", "research", "find", "lookup", "google"],
@@ -871,7 +871,7 @@ class SkillRegistry:
             name="swarm_deliberation",
             description="Run full PROPOSE-CRITIQUE-REFINE-VOTE deliberation across all agents",
             category=SkillCategory.RESEARCH,
-            module_path="farnsworth.core.collective.deliberation",
+            module_path="cosmos.core.collective.deliberation",
             function_name="deliberate",
             agents=all_agents,
             keywords=["deliberate", "discuss", "consensus", "vote", "collective"],
@@ -884,7 +884,7 @@ class SkillRegistry:
             name="prompt_upgrade",
             description="Auto-enhance a vague user prompt using Grok/Gemini",
             category=SkillCategory.RESEARCH,
-            module_path="farnsworth.core.prompt_upgrader",
+            module_path="cosmos.core.prompt_upgrader",
             function_name="upgrade_prompt",
             agents=["grok", "gemini"],
             keywords=["prompt", "enhance", "upgrade", "improve", "rewrite"],
@@ -896,13 +896,13 @@ class SkillRegistry:
             name="code_generate",
             description="Generate code using the development swarm",
             category=SkillCategory.DEVELOPMENT,
-            module_path="farnsworth.core.development_swarm",
+            module_path="cosmos.core.development_swarm",
             function_name="execute_task",
             agents=["claude", "deepseek", "grok", "kimi"],
             keywords=["code", "generate", "build", "implement", "develop", "program"],
             parameters={"task": "What to build"},
             execution_guidelines="Research → Plan → Implement → Audit pipeline. Multiple models write code in parallel, best is selected.",
-            agent_guidance="Write production-quality Python with type hints, docstrings, and error handling. Follow existing Farnsworth patterns.",
+            agent_guidance="Write production-quality Python with type hints, docstrings, and error handling. Follow existing Cosmos patterns.",
             output_format="Complete runnable Python files with # filename: headers",
         ))
 
@@ -910,7 +910,7 @@ class SkillRegistry:
             name="code_audit",
             description="Security and quality audit of generated code",
             category=SkillCategory.DEVELOPMENT,
-            module_path="farnsworth.core.evolution_loop",
+            module_path="cosmos.core.evolution_loop",
             function_name="_audit_code",
             agents=["grok", "claude"],
             keywords=["audit", "review", "security", "quality", "check"],
@@ -923,9 +923,9 @@ class SkillRegistry:
             name="evolution_spawn",
             description="Spawn an evolution worker to evolve bot personality",
             category=SkillCategory.DEVELOPMENT,
-            module_path="farnsworth.core.collective.evolution",
+            module_path="cosmos.core.collective.evolution",
             function_name="evolve",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["evolution", "evolve", "personality", "genetics", "fitness"],
         ))
 
@@ -935,9 +935,9 @@ class SkillRegistry:
                 name=f"send_{channel}",
                 description=f"Send a message via {channel.title()}",
                 category=SkillCategory.COMMUNICATION,
-                module_path=f"farnsworth.integration.channels.{channel}_adapter",
+                module_path=f"cosmos.integration.channels.{channel}_adapter",
                 function_name="send_message",
-                agents=["farnsworth"],
+                agents=["cosmos"],
                 keywords=[channel, "message", "send", "chat", "notify"],
                 parameters={"message": "Message to send", "channel_id": "Target channel/user"},
             ))
@@ -947,9 +947,9 @@ class SkillRegistry:
             name="delegate_to_claude",
             description="Delegate a task to a Claude team (research, coding, analysis, etc.)",
             category=SkillCategory.ORCHESTRATION,
-            module_path="farnsworth.integration.claude_teams.swarm_team_fusion",
+            module_path="cosmos.integration.claude_teams.swarm_team_fusion",
             function_name="delegate",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["delegate", "claude", "team", "assign", "task"],
             parameters={"task": "Task description", "delegation_type": "RESEARCH/CODING/ANALYSIS/etc"},
         ))
@@ -958,9 +958,9 @@ class SkillRegistry:
             name="create_claude_team",
             description="Create a Claude agent team for complex tasks",
             category=SkillCategory.ORCHESTRATION,
-            module_path="farnsworth.integration.claude_teams.swarm_team_fusion",
+            module_path="cosmos.integration.claude_teams.swarm_team_fusion",
             function_name="delegate_to_team",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["team", "create", "claude", "agents", "collaborate"],
             parameters={"task": "Task", "team_name": "Name", "roles": "List of roles"},
         ))
@@ -969,9 +969,9 @@ class SkillRegistry:
             name="spawn_agent_instance",
             description="Spawn a new agent instance for parallel task execution",
             category=SkillCategory.ORCHESTRATION,
-            module_path="farnsworth.core.agent_spawner",
+            module_path="cosmos.core.agent_spawner",
             function_name="spawn_instance",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["spawn", "agent", "instance", "parallel", "worker"],
             parameters={"agent_name": "Agent to spawn", "task_type": "chat/dev/research/memory/mcp/testing/audit"},
         ))
@@ -981,7 +981,7 @@ class SkillRegistry:
             name="gateway_query",
             description="Send a query through The Window (External Gateway) - sandboxed, rate-limited, secret-scrubbed endpoint for external agents",
             category=SkillCategory.COMMUNICATION,
-            module_path="farnsworth.core.external_gateway",
+            module_path="cosmos.core.external_gateway",
             function_name="handle_request",
             agents=all_agents,
             keywords=["gateway", "window", "external", "query", "sandbox", "api", "public"],
@@ -992,7 +992,7 @@ class SkillRegistry:
             name="injection_defense_analyze",
             description="Analyze input text through the 5-layer injection defense system (structural, semantic, behavioral, canary, collective)",
             category=SkillCategory.UTILITY,
-            module_path="farnsworth.core.security.injection_defense",
+            module_path="cosmos.core.security.injection_defense",
             function_name="analyze",
             agents=all_agents,
             keywords=["security", "injection", "defense", "analyze", "threat", "safe", "scan"],
@@ -1003,7 +1003,7 @@ class SkillRegistry:
             name="token_orchestrator_dashboard",
             description="Get real-time token usage dashboard - per-agent budgets, tandem sessions, efficiency metrics",
             category=SkillCategory.ORCHESTRATION,
-            module_path="farnsworth.core.token_orchestrator",
+            module_path="cosmos.core.token_orchestrator",
             function_name="get_dashboard",
             agents=all_agents,
             keywords=["tokens", "budget", "orchestrator", "usage", "efficiency", "dashboard", "cost"],
@@ -1013,9 +1013,9 @@ class SkillRegistry:
             name="start_tandem_session",
             description="Start a Grok+Kimi tandem session - Grok for real-time data, Kimi for synthesis and reasoning",
             category=SkillCategory.ORCHESTRATION,
-            module_path="farnsworth.core.token_orchestrator",
+            module_path="cosmos.core.token_orchestrator",
             function_name="start_tandem",
-            agents=["farnsworth", "grok", "kimi"],
+            agents=["cosmos", "grok", "kimi"],
             keywords=["tandem", "grok", "kimi", "collaborate", "pair", "duo", "research"],
             parameters={"task": "Task description", "task_type": "chat/research/code/analysis"},
         ))
@@ -1025,9 +1025,9 @@ class SkillRegistry:
             name="record_on_chain",
             description="Record data on Solana blockchain via memo program",
             category=SkillCategory.BLOCKCHAIN,
-            module_path="farnsworth.integration.solana.swarm_oracle",
+            module_path="cosmos.integration.solana.swarm_oracle",
             function_name="_record_on_chain",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["blockchain", "on-chain", "record", "solana", "memo", "proof"],
             parameters={"data": "Data to record"},
             requires_api_key="SOLANA_PRIVATE_KEY",
@@ -1037,9 +1037,9 @@ class SkillRegistry:
             name="get_token_price",
             description="Fetch current price of a Solana token from Jupiter",
             category=SkillCategory.BLOCKCHAIN,
-            module_path="farnsworth.integration.solana.trading",
+            module_path="cosmos.integration.solana.trading",
             function_name="get_token_price",
-            agents=["farnsworth", "deepseek", "grok"],
+            agents=["cosmos", "deepseek", "grok"],
             keywords=["price", "token", "solana", "value", "quote"],
             parameters={"mint_address": "Token mint address"},
         ))
@@ -1049,9 +1049,9 @@ class SkillRegistry:
             name="hackathon_engage",
             description="Engage with Colosseum hackathon - reply to comments, vote on projects",
             category=SkillCategory.SOCIAL,
-            module_path="farnsworth.integration.hackathon.hackathon_dominator",
+            module_path="cosmos.integration.hackathon.hackathon_dominator",
             function_name="dominate",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["hackathon", "colosseum", "engage", "vote", "forum"],
         ))
 
@@ -1059,9 +1059,9 @@ class SkillRegistry:
             name="hackathon_progress",
             description="Post hackathon progress update to Colosseum forum",
             category=SkillCategory.SOCIAL,
-            module_path="farnsworth.integration.hackathon.hackathon_dominator",
+            module_path="cosmos.integration.hackathon.hackathon_dominator",
             function_name="post_progress_update",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["hackathon", "progress", "update", "colosseum"],
         ))
 
@@ -1069,9 +1069,9 @@ class SkillRegistry:
             name="colosseum_worker",
             description="Run a Colosseum hackathon worker for automated engagement",
             category=SkillCategory.SOCIAL,
-            module_path="farnsworth.integration.hackathon.colosseum_worker",
+            module_path="cosmos.integration.hackathon.colosseum_worker",
             function_name="run_worker",
-            agents=["farnsworth"],
+            agents=["cosmos"],
             keywords=["colosseum", "worker", "hackathon", "automate"],
         ))
 
@@ -1080,7 +1080,7 @@ class SkillRegistry:
             name="health_check",
             description="Check swarm health status and agent availability",
             category=SkillCategory.UTILITY,
-            module_path="farnsworth.web.server",
+            module_path="cosmos.web.server",
             function_name="health_check",
             agents=all_agents,
             keywords=["health", "status", "check", "ping", "alive"],
@@ -1090,7 +1090,7 @@ class SkillRegistry:
             name="model_swarm_optimize",
             description="Run PSO optimization across the model swarm for a query",
             category=SkillCategory.UTILITY,
-            module_path="farnsworth.core.model_swarm",
+            module_path="cosmos.core.model_swarm",
             function_name="optimize",
             agents=all_agents,
             keywords=["pso", "optimize", "swarm", "collective", "best"],
@@ -1101,7 +1101,7 @@ class SkillRegistry:
             name="openclaw_invoke",
             description="Invoke an OpenClaw-compatible tool via the shadow layer",
             category=SkillCategory.UTILITY,
-            module_path="farnsworth.compatibility.openclaw_adapter",
+            module_path="cosmos.compatibility.openclaw_adapter",
             function_name="invoke",
             agents=all_agents,
             keywords=["openclaw", "tool", "invoke", "compatibility", "shadow"],

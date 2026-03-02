@@ -1,8 +1,8 @@
 """
-Farnsworth Dynamic UI Manager
+Cosmos Dynamic UI Manager
 =============================
 
-Manages dynamic, expandable UI sections for the Farnsworth web interface.
+Manages dynamic, expandable UI sections for the Cosmos web interface.
 Supports collapsible panels, real-time updates, and interactive content.
 
 "Good news everyone! The UI now responds to your every whim!"
@@ -84,7 +84,7 @@ class InteractivePanel:
 
 class DynamicUIManager:
     """
-    Manages dynamic UI panels and sections for Farnsworth.
+    Manages dynamic UI panels and sections for Cosmos.
 
     Features:
     - Create/update/delete panels and sections
@@ -106,7 +106,7 @@ class DynamicUIManager:
         # Main conversation panel
         main_panel = InteractivePanel(
             panel_id="main",
-            title="Farnsworth Swarm",
+            title="Cosmos Swarm",
             layout="vertical"
         )
         main_panel.add_section(UISection(

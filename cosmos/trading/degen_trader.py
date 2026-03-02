@@ -1,7 +1,7 @@
 """
-Farnsworth Degen Trader v4.1 - Whale Hunter + Tightened Loss Prevention
+Cosmos Degen Trader v4.1 - Whale Hunter + Tightened Loss Prevention
 
-High-frequency Solana memecoin trader powered by the Farnsworth swarm.
+High-frequency Solana memecoin trader powered by the Cosmos swarm.
 - DIRECT Pump.fun bonding curve buys (no Jupiter needed pre-graduation)
 - PumpPortal local transaction API for speed-critical buys
 - Pre-bonding curve sniping: buy seconds after launch, sell before/after graduation
@@ -36,27 +36,27 @@ from datetime import datetime, timedelta
 
 import aiohttp
 
-logger = logging.getLogger("farnsworth.trading")
+logger = logging.getLogger("cosmos.trading")
 
 
 # ============================================================
-# FARNSWORTH AUTH LOCK — Trader will NOT run without the swarm
+# COSMOS AUTH LOCK — Trader will NOT run without the swarm
 # ============================================================
-class _FarnsworthAuthLock:
-    """Validates this trader is running inside the Farnsworth ecosystem.
+class _CosmosAuthLock:
+    """Validates this trader is running inside the Cosmos ecosystem.
 
-    Without a valid session token from the Farnsworth server,
+    Without a valid session token from the Cosmos server,
     the trading engine refuses to start. Prevents standalone use.
     """
-    _SESSION_SALT = b"farnsworth_swarm_v3"
+    _SESSION_SALT = b"cosmos_swarm_v3"
     _valid_token: Optional[str] = None
 
     @classmethod
     def generate_session_token(cls) -> str:
         """Called by server.py at startup — generates a one-time session token
-        derived from the Farnsworth Nexus state + current process."""
+        derived from the Cosmos Nexus state + current process."""
         try:
-            from farnsworth.core.nexus import Nexus
+            from Cosmos.core.nexus import Nexus
             nexus_exists = Nexus._instance is not None
         except ImportError:
             nexus_exists = False
@@ -72,12 +72,12 @@ class _FarnsworthAuthLock:
     @classmethod
     def validate(cls, token: Optional[str] = None) -> bool:
         """Validate the trader is authorized to run."""
-        # Check 1: Must be running inside Farnsworth process (Nexus importable)
+        # Check 1: Must be running inside Cosmos process (Nexus importable)
         try:
-            from farnsworth.core.nexus import Nexus
-            from farnsworth.memory.memory_system import MemorySystem
+            from Cosmos.core.nexus import Nexus
+            from Cosmos.memory.memory_system import MemorySystem
         except ImportError:
-            logger.error("AUTH LOCK: Farnsworth core not found. Trader requires the full swarm.")
+            logger.error("AUTH LOCK: Cosmos core not found. Trader requires the full swarm.")
             return False
 
         # Check 2: Server must have generated a session token
@@ -85,7 +85,7 @@ class _FarnsworthAuthLock:
             # Allow if Nexus singleton exists (running inside full server)
             if Nexus._instance is not None:
                 return True
-            logger.error("AUTH LOCK: No session token. Start via Farnsworth server, not standalone.")
+            logger.error("AUTH LOCK: No session token. Start via Cosmos server, not standalone.")
             return False
 
         # Check 3: Token must match
@@ -96,7 +96,7 @@ class _FarnsworthAuthLock:
         if cls._valid_token is not None:
             return True
 
-        logger.error("AUTH LOCK: Invalid session token. Trader locked to Farnsworth swarm.")
+        logger.error("AUTH LOCK: Invalid session token. Trader locked to Cosmos swarm.")
         return False
 
     @classmethod
@@ -104,8 +104,8 @@ class _FarnsworthAuthLock:
         """Hard check — raises if not authorized."""
         if not cls.validate():
             raise RuntimeError(
-                "Farnsworth Degen Trader is locked to the Farnsworth AI Swarm. "
-                "It cannot run standalone. Deploy the full Farnsworth system."
+                "Cosmos Degen Trader is locked to the Cosmos AI Swarm. "
+                "It cannot run standalone. Deploy the full Cosmos system."
             )
 
 
@@ -2761,7 +2761,7 @@ class SwarmTradeIntelligence:
         results = {"verdict": "SKIP", "confidence": 0, "reasons": []}
 
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
             self._shadow_available = True
         except ImportError:
             self._shadow_available = False
@@ -2856,7 +2856,7 @@ class SwarmTradeIntelligence:
             )
             async with self.session.post(
                 "http://localhost:8080/api/chat",
-                json={"message": prompt, "bot": "Farnsworth", "mode": "quick"},
+                json={"message": prompt, "bot": "Cosmos", "mode": "quick"},
                 timeout=aiohttp.ClientTimeout(total=10),
             ) as resp:
                 if resp.status == 200:
@@ -3143,7 +3143,7 @@ class XSentinelMonitor:
     async def _scan_x_sentiment(self):
         """Use Grok shadow agent to scan X for memecoin signals."""
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
         except ImportError:
             return
 
@@ -3422,7 +3422,7 @@ class QuantumTradeOracle:
     async def _get_farsight(self):
         if self._farsight is None:
             try:
-                from farnsworth.integration.hackathon.farsight_protocol import FarsightProtocol
+                from Cosmos.integration.hackathon.farsight_protocol import FarsightProtocol
                 self._farsight = FarsightProtocol()
             except ImportError:
                 self._farsight = False
@@ -3431,7 +3431,7 @@ class QuantumTradeOracle:
     async def _get_quantum_proof(self):
         if self._quantum_proof is None:
             try:
-                from farnsworth.integration.hackathon.quantum_proof import QuantumProof
+                from Cosmos.integration.hackathon.quantum_proof import QuantumProof
                 self._quantum_proof = QuantumProof()
             except ImportError:
                 self._quantum_proof = False
@@ -3616,7 +3616,7 @@ class QuantumWalletPredictor:
     async def _get_quantum(self):
         if self._quantum_proof is None:
             try:
-                from farnsworth.integration.hackathon.quantum_proof import QuantumProof
+                from Cosmos.integration.hackathon.quantum_proof import QuantumProof
                 self._quantum_proof = QuantumProof()
             except ImportError:
                 self._quantum_proof = False
@@ -3670,7 +3670,7 @@ class TradingMemory:
 
     async def initialize(self):
         try:
-            from farnsworth.memory import MemorySystem
+            from Cosmos.memory import MemorySystem
             self._memory = MemorySystem()
             await self._memory.initialize()
             self._initialized = True
@@ -4115,7 +4115,7 @@ class AdaptiveLearner:
     async def ask_collective(self, config: 'TraderConfig') -> Optional[dict]:
         """Ask the swarm collective to analyze our trade patterns and suggest improvements.
 
-        Calls the local Farnsworth API which routes through Grok/DeepSeek/Gemini.
+        Calls the local Cosmos API which routes through Grok/DeepSeek/Gemini.
         """
         if not self.session or len(self._trades) < 5:
             return None
@@ -4954,8 +4954,8 @@ class DegenTrader:
     """High-frequency Solana memecoin trader powered by collective intelligence."""
 
     def __init__(self, config: Optional[TraderConfig] = None, wallet_name: str = "degen_trader"):
-        # Auth lock — refuse to run outside Farnsworth
-        _FarnsworthAuthLock.lock_check()
+        # Auth lock — refuse to run outside Cosmos
+        _CosmosAuthLock.lock_check()
         self.config = config or TraderConfig()
         self.wallet_name = wallet_name
         self.keypair = None
@@ -5047,7 +5047,7 @@ class DegenTrader:
 
         self.session = aiohttp.ClientSession(
             timeout=aiohttp.ClientTimeout(total=30),
-            headers={"User-Agent": "FarnsworthDegenTrader/3.5"}
+            headers={"User-Agent": "CosmosDegenTrader/3.5"}
         )
 
         balance = await self.get_sol_balance()
@@ -5129,7 +5129,7 @@ class DegenTrader:
 
         # v4.4: Subscribe to Quantum Trading Cortex signals via Nexus
         try:
-            from farnsworth.core.nexus import Nexus, SignalType
+            from Cosmos.core.nexus import Nexus, SignalType
             nexus = Nexus._instance
             if nexus:
                 await nexus.subscribe(
@@ -6947,16 +6947,16 @@ class DegenTrader:
     # MAIN TRADING LOOP
     # ----------------------------------------------------------
     async def run(self):
-        _FarnsworthAuthLock.lock_check()  # double-check at runtime
+        _CosmosAuthLock.lock_check()  # double-check at runtime
         await self.initialize()
         self.running = True
 
         balance = await self.get_sol_balance()
         logger.info("=" * 60)
         if self.config.paper_trade:
-            logger.info("FARNSWORTH DEGEN TRADER v4.3 - PAPER TRADE MODE (NO REAL SOL)")
+            logger.info("COSMOS DEGEN TRADER v4.3 - PAPER TRADE MODE (NO REAL SOL)")
         else:
-            logger.info("FARNSWORTH DEGEN TRADER v4.3 - LIVE TRADING (REAL SOL)")
+            logger.info("COSMOS DEGEN TRADER v4.3 - LIVE TRADING (REAL SOL)")
         logger.info("=" * 60)
         logger.info(f"Mode:       {'PAPER TRADE' if self.config.paper_trade else 'LIVE'}")
         logger.info(f"Wallet:     {self.pubkey}")
@@ -7829,12 +7829,12 @@ async def start_trader(
 if __name__ == "__main__":
     # Auth lock: refuse direct standalone execution
     print("\n" + "=" * 60)
-    print("FARNSWORTH DEGEN TRADER - AUTH LOCK")
+    print("COSMOS DEGEN TRADER - AUTH LOCK")
     print("=" * 60)
-    print("This trading engine is locked to the Farnsworth AI Swarm.")
+    print("This trading engine is locked to the Cosmos AI Swarm.")
     print("It cannot be run standalone.")
-    print("\nStart via the Farnsworth server:")
-    print("  python -m farnsworth.web.server")
+    print("\nStart via the Cosmos server:")
+    print("  python -m cosmos.web.server")
     print("  Then POST to /api/trading/start")
     print("=" * 60 + "\n")
 
@@ -7846,7 +7846,7 @@ if __name__ == "__main__":
         format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
     )
 
-    parser = argparse.ArgumentParser(description="Farnsworth Degen Trader v3.8 - LOCKED TO SWARM")
+    parser = argparse.ArgumentParser(description="Cosmos Degen Trader v3.8 - LOCKED TO SWARM")
     parser.add_argument("--rpc", default=os.environ.get("SOLANA_RPC_URL", DEFAULT_RPC))
     parser.add_argument("--wallet", default="degen_trader")
     parser.add_argument("--max-sol", type=float, default=0.1, help="Max SOL per standard trade")
@@ -7871,13 +7871,13 @@ if __name__ == "__main__":
         print(f"\nWallet created!")
         print(f"  Address: {pubkey}")
         print(f"  Keypair: {path}")
-        print(f"\nStart via Farnsworth server, then POST to /api/trading/start")
+        print(f"\nStart via Cosmos server, then POST to /api/trading/start")
     else:
         # Auth lock: standalone trading blocked
         print("\nERROR: Direct trading execution is disabled.")
-        print("The Degen Trader requires the full Farnsworth swarm to operate.")
-        print("\nTo trade, start the Farnsworth server:")
-        print("  python -m farnsworth.web.server")
+        print("The Degen Trader requires the full Cosmos swarm to operate.")
+        print("\nTo trade, start the Cosmos server:")
+        print("  python -m cosmos.web.server")
         print("  curl -X POST http://localhost:8080/api/trading/start")
         import sys
         sys.exit(1)

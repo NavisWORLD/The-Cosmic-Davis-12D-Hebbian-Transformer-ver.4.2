@@ -1,6 +1,6 @@
 """
 Expression Engine - Maps AI responses and sentiment to avatar expressions
-Integrates with Farnsworth swarm for multi-agent personality blending
+Integrates with Cosmos swarm for multi-agent personality blending
 """
 
 import asyncio
@@ -245,7 +245,7 @@ KEYWORD_EMOTIONS = {
 
 # Agent personality to expression bias
 AGENT_EXPRESSION_BIAS = {
-    "Farnsworth": {
+    "Cosmos": {
         Emotion.EXCITED: 1.3,
         Emotion.THINKING: 1.2,
         Emotion.MISCHIEVOUS: 1.1,

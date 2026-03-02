@@ -10,7 +10,7 @@ Token: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
 To compile for distribution:
     python scripts/build_protected.py --method cython
 
-Copyright (c) 2026 Farnsworth AI. All rights reserved.
+Copyright (c) 2026 Cosmos AI. All rights reserved.
 """
 
 from .core import (

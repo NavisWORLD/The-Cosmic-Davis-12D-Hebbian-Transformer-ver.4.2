@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/incidents/runbook_executor.py
 cosmos Runbook Executor
-=======
-Farnsworth Runbook Executor
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/runbook_executor.py
 
 "Just follow the instructions... what could possibly go wrong?"
 
@@ -721,30 +717,15 @@ steps:
         condition: str,
         execution: RunbookExecution,
     ) -> bool:
-<<<<<<< HEAD:cosmos/incidents/runbook_executor.py
         """Evaluate a step condition."""
         # Simple variable substitution and evaluation
         try:
-=======
-        """Evaluate a step condition (sandboxed)."""
-        from farnsworth.core.safe_eval import safe_eval
-
-        try:
-            # Variable substitution
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/runbook_executor.py
             for key, value in execution.variables.items():
                 condition = condition.replace(f"${{{key}}}", str(value))
             for key, value in execution.outputs.items():
                 condition = condition.replace(f"${{outputs.{key}}}", str(value))
 
-<<<<<<< HEAD:cosmos/incidents/runbook_executor.py
             return eval(condition)  # In production, use a safe expression evaluator
-=======
-            return bool(safe_eval(condition, {
-                "variables": execution.variables,
-                "outputs": execution.outputs,
-            }))
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/runbook_executor.py
         except Exception as e:
             logger.error(f"Failed to evaluate condition: {e}")
             return False

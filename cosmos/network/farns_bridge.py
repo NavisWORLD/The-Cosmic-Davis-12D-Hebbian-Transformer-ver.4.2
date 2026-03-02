@@ -1,5 +1,5 @@
 """
-FARNS Bridge — Connects FARNS mesh to existing Farnsworth systems.
+FARNS Bridge — Connects FARNS mesh to existing Cosmos systems.
 
 Bridges:
   - PersistentAgent shadow agents → remote bots via FARNS
@@ -52,11 +52,11 @@ def register_farns_bots_as_shadow_agents():
     Register all remote FARNS bots as shadow agents in the PersistentAgent system.
 
     This makes remote bots callable via:
-        from farnsworth.core.collective.persistent_agent import call_shadow_agent
+        from Cosmos.core.collective.persistent_agent import call_shadow_agent
         result = await call_shadow_agent("qwen3-coder-next", "Write a parser")
     """
     try:
-        from farnsworth.core.collective.persistent_agent import (
+        from Cosmos.core.collective.persistent_agent import (
             AGENT_CONFIGS, PersistentAgent, _SHADOW_AGENTS, _SHADOW_LOCK,
         )
 
@@ -85,7 +85,7 @@ def register_farns_bots_with_spawner():
     Register remote FARNS bots with the AgentSpawner system.
     """
     try:
-        from farnsworth.core.agent_spawner import get_spawner, TaskType
+        from Cosmos.core.agent_spawner import get_spawner, TaskType
 
         spawner = get_spawner()
         client = get_farns_client()
@@ -112,7 +112,7 @@ async def start_farns_bridge():
     Initialize the FARNS bridge.
 
     Call this after the FARNS node is started and connected to peers.
-    Registers remote bots with all Farnsworth systems.
+    Registers remote bots with all Cosmos systems.
     """
     # Wait a moment for peer discovery
     await asyncio.sleep(5)
@@ -124,7 +124,7 @@ async def start_farns_bridge():
     node = get_farns_node()
     if node:
         try:
-            from farnsworth.core.collective.persistent_agent import (
+            from Cosmos.core.collective.persistent_agent import (
                 call_shadow_agent, get_shadow_agents,
             )
             for agent_id in get_shadow_agents():

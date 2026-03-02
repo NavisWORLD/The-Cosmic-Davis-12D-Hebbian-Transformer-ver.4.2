@@ -1,5 +1,5 @@
 """
-Farnsworth Skill Loader
+Cosmos Skill Loader
 =======================
 
 Loads and manages skills for the collective.
@@ -28,7 +28,7 @@ class Skill:
     @property
     def emoji(self) -> str:
         """Get skill emoji from metadata."""
-        for platform in ['farnsworth', 'openclaw', 'clawdbot']:
+        for platform in ['cosmos', 'openclaw', 'clawdbot']:
             if platform in self.metadata:
                 return self.metadata[platform].get('emoji', '🦞')
         return '🦞'
@@ -36,7 +36,7 @@ class Skill:
     @property
     def homepage(self) -> str:
         """Get skill homepage from metadata."""
-        for platform in ['farnsworth', 'openclaw', 'clawdbot']:
+        for platform in ['cosmos', 'openclaw', 'clawdbot']:
             if platform in self.metadata:
                 return self.metadata[platform].get('homepage', '')
         return ''
@@ -49,7 +49,7 @@ class SkillLoader:
     Supports:
     - Local SKILL.md files
     - GitHub repos (like openclaw-skills)
-    - Built-in Farnsworth skills
+    - Built-in Cosmos skills
     """
 
     def __init__(self, skills_dir: Optional[Path] = None):
@@ -58,9 +58,9 @@ class SkillLoader:
         self._load_builtin_skills()
 
     def _load_builtin_skills(self):
-        """Load built-in Farnsworth skills."""
-        from .farnsworth_skills import FARNSWORTH_SKILLS
-        for skill in FARNSWORTH_SKILLS:
+        """Load built-in Cosmos skills."""
+        from .cosmos_skills import COSMOS_SKILLS
+        for skill in COSMOS_SKILLS:
             self.loaded_skills[skill.name] = skill
             logger.info(f"Loaded built-in skill: {skill.name} {skill.emoji}")
 
@@ -118,7 +118,7 @@ class SkillLoader:
 
                     # Extract requires
                     requires = {}
-                    for platform in ['farnsworth', 'openclaw', 'clawdbot']:
+                    for platform in ['cosmos', 'openclaw', 'clawdbot']:
                         if platform in metadata and 'requires' in metadata[platform]:
                             requires = metadata[platform]['requires']
                             break

@@ -1,5 +1,5 @@
 """
-Farnsworth Identity Composer - Dynamic Agent Identity Assembly
+Cosmos Identity Composer - Dynamic Agent Identity Assembly
 ==============================================================
 
 Central engine that dynamically assembles the right system prompt for any
@@ -17,7 +17,7 @@ Sources:
     - evolution.py -> get_evolved_context() (learned patterns per agent)
 
 Usage:
-    from farnsworth.core.identity_composer import get_identity_composer
+    from Cosmos.core.identity_composer import get_identity_composer
     composer = get_identity_composer()
 
     # For deliberation rounds
@@ -91,8 +91,8 @@ MODEL_TIERS: Dict[str, str] = {
     "claude": "advanced",
     "ClaudeOpus": "advanced",
     "claude_opus": "advanced",
-    "Farnsworth": "advanced",
-    "farnsworth": "advanced",
+    "Cosmos": "advanced",
+    "cosmos": "advanced",
 }
 
 # Context-specific instructions for deliberation rounds
@@ -161,8 +161,8 @@ MODEL_ADAPTATION = {
 
 # Compact swarm awareness (shared identity context)
 _COMPACT_SWARM_AWARENESS = (
-    "You are part of the FARNSWORTH SWARM, a collaborative AI collective. "
-    "Members: Farnsworth (leader), DeepSeek (reasoning), Phi (speed), "
+    "You are part of the COSMOS SWARM, a collaborative AI collective. "
+    "Members: Cosmos (leader), DeepSeek (reasoning), Phi (speed), "
     "Grok (real-time/X), Gemini (multimodal), Kimi (long context), "
     "Claude (analysis), ClaudeOpus (architect), HuggingFace (open-source), "
     "Swarm-Mind (synthesis). Your responses emerge from collective collaboration."
@@ -188,7 +188,7 @@ class IdentityComposer:
         """Lazy-load personality data for an agent."""
         if self._personalities is None:
             try:
-                from farnsworth.core.collective.evolution import DEFAULT_BOT_PERSONALITIES
+                from Cosmos.core.collective.evolution import DEFAULT_BOT_PERSONALITIES
                 self._personalities = DEFAULT_BOT_PERSONALITIES
             except Exception as e:
                 logger.debug(f"Could not load personalities: {e}")
@@ -205,7 +205,7 @@ class IdentityComposer:
         """Lazy-load evolution learnings for an agent on a topic."""
         if self._evolution_engine is None:
             try:
-                from farnsworth.core.collective.evolution import get_evolution_engine
+                from Cosmos.core.collective.evolution import get_evolution_engine
                 self._evolution_engine = get_evolution_engine()
             except Exception as e:
                 logger.debug(f"Could not load evolution engine: {e}")
@@ -221,7 +221,7 @@ class IdentityComposer:
         """Lazy-load skill context for an agent."""
         if self._skill_registry is None:
             try:
-                from farnsworth.core.skill_registry import get_skill_registry
+                from Cosmos.core.skill_registry import get_skill_registry
                 self._skill_registry = get_skill_registry()
             except Exception as e:
                 logger.debug(f"Could not load skill registry: {e}")
@@ -251,12 +251,12 @@ class IdentityComposer:
         Build core identity section (~150 tokens).
 
         Returns a string like:
-        "You are GROK, part of the Farnsworth AI Swarm.
+        "You are GROK, part of the Cosmos AI Swarm.
          Specialties: real-time research, X/Twitter. Debate style: assertive."
         """
         personality = self._get_personality(agent_id)
         if not personality:
-            return f"You are {agent_id.upper()}, part of the Farnsworth AI Swarm."
+            return f"You are {agent_id.upper()}, part of the Cosmos AI Swarm."
 
         # Build specialties from top expertise areas
         top_expertise = []
@@ -278,7 +278,7 @@ class IdentityComposer:
             )[:3]
             top_traits = [t[0].replace("_", " ") for t in sorted_traits]
 
-        parts = [f"You are {agent_id.upper()}, part of the Farnsworth AI Swarm."]
+        parts = [f"You are {agent_id.upper()}, part of the Cosmos AI Swarm."]
 
         if top_expertise:
             parts.append(f"Specialties: {', '.join(top_expertise)}.")

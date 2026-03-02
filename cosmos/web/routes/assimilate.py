@@ -2,7 +2,7 @@
 Assimilate API Routes
 ======================
 
-Landing page and API endpoints for the Farnsworth Federation
+Landing page and API endpoints for the Cosmos Federation
 assimilation protocol. External agents can register, download
 installers, and query swarm capabilities.
 
@@ -46,7 +46,7 @@ class RegisterRequest(BaseModel):
 
 def _get_protocol():
     """Get or create the AssimilationProtocol singleton."""
-    from farnsworth.core.assimilation_protocol import get_assimilation_protocol
+    from Cosmos.core.assimilation_protocol import get_assimilation_protocol
     return get_assimilation_protocol()
 
 
@@ -90,7 +90,7 @@ async def download_linux_installer():
     return FileResponse(
         path,
         media_type="text/x-shellscript",
-        filename="farnsworth-install-linux.sh",
+        filename="cosmos-install-linux.sh",
     )
 
 
@@ -103,7 +103,7 @@ async def download_mac_installer():
     return FileResponse(
         path,
         media_type="text/x-shellscript",
-        filename="farnsworth-install-mac.sh",
+        filename="cosmos-install-mac.sh",
     )
 
 
@@ -116,7 +116,7 @@ async def download_windows_installer():
     return FileResponse(
         path,
         media_type="application/octet-stream",
-        filename="farnsworth-install-windows.ps1",
+        filename="cosmos-install-windows.ps1",
     )
 
 
@@ -182,7 +182,7 @@ async def federation_stats():
         return {
             "status": "success",
             "federation": {
-                "name": "Farnsworth AI Swarm",
+                "name": "Cosmos AI Swarm",
                 "version": caps.get("version", "AGI v1.9.5"),
                 "active_agents": 11,
                 "federation_members": stats.get("federation_members", 0),

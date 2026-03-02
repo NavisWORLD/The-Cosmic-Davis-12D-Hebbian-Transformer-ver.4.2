@@ -1,36 +1,10 @@
 """
-<<<<<<< HEAD:cosmos/client.py
 cosmos Python SDK
-=====================
-
-A client library for interacting with the cosmos system.
-
-Usage:
-    from cosmos.client import cosmosClient
-
-    # Async usage
-    async with cosmosClient() as client:
-=======
-Farnsworth Python SDK
-=====================
-
-A client library for interacting with the Farnsworth system.
-
-Usage:
-    from farnsworth.client import FarnsworthClient
-
-    # Async usage
-    async with FarnsworthClient() as client:
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/client.py
         await client.remember("My favorite color is blue")
         memories = await client.recall("What is my favorite color?")
 
     # Sync usage (convenience wrapper)
-<<<<<<< HEAD:cosmos/client.py
     client = cosmosClient()
-=======
-    client = FarnsworthClient()
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/client.py
     client.connect()
     client.remember_sync("My favorite color is blue")
     memories = client.recall_sync("favorite color")
@@ -46,11 +20,7 @@ from loguru import logger
 
 @dataclass
 class Memory:
-<<<<<<< HEAD:cosmos/client.py
-    """A retrieved memory from cosmos."""
-=======
-    """A retrieved memory from Farnsworth."""
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/client.py
+    """A retrieved memory from Cosmos."""
     content: str
     score: float
     source: str
@@ -67,15 +37,9 @@ class DelegationResult:
     execution_time: Optional[float] = None
 
 
-<<<<<<< HEAD:cosmos/client.py
 class cosmosClient:
     """
     Client for interacting with cosmos.
-=======
-class FarnsworthClient:
-    """
-    Client for interacting with Farnsworth.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/client.py
 
     Supports both async and sync operations. For best performance,
     use the async methods directly.
@@ -88,11 +52,7 @@ class FarnsworthClient:
         server_url: str = "http://localhost:8000",
     ):
         """
-<<<<<<< HEAD:cosmos/client.py
         Initialize cosmos client.
-=======
-        Initialize Farnsworth client.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/client.py
 
         Args:
             data_dir: Directory for local data storage
@@ -119,23 +79,14 @@ class FarnsworthClient:
         await self.disconnect_async()
 
     async def connect_async(self):
-<<<<<<< HEAD:cosmos/client.py
         """Connect to cosmos system asynchronously."""
-=======
-        """Connect to Farnsworth system asynchronously."""
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/client.py
         if self._initialized:
             return
 
         if self.local_mode:
             try:
-<<<<<<< HEAD:cosmos/client.py
-                from cosmos.memory.memory_system import MemorySystem
-                from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
-=======
-                from farnsworth.memory.memory_system import MemorySystem
-                from farnsworth.agents.swarm_orchestrator import SwarmOrchestrator
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/client.py
+                from Cosmos.memory.memory_system import MemorySystem
+                from Cosmos.agents.swarm_orchestrator import SwarmOrchestrator
 
                 self._memory_system = MemorySystem(data_dir=str(self.data_dir))
                 await self._memory_system.initialize()
@@ -143,7 +94,6 @@ class FarnsworthClient:
                 self._swarm_orchestrator = SwarmOrchestrator()
 
                 self._initialized = True
-<<<<<<< HEAD:cosmos/client.py
                 logger.info(f"cosmos client connected (local mode, data_dir={self.data_dir})")
 
             except Exception as e:
@@ -155,29 +105,11 @@ class FarnsworthClient:
             self._initialized = True
 
     async def disconnect_async(self):
-        """Disconnect from cosmos system."""
+        """Disconnect from Cosmos system."""
         if self._memory_system:
             await self._memory_system.shutdown()
         self._initialized = False
         logger.info("cosmos client disconnected")
-=======
-                logger.info(f"Farnsworth client connected (local mode, data_dir={self.data_dir})")
-
-            except Exception as e:
-                logger.error(f"Failed to initialize Farnsworth: {e}")
-                raise
-        else:
-            # Remote mode - would use HTTP/WebSocket
-            logger.info(f"Farnsworth client connected to {self.server_url}")
-            self._initialized = True
-
-    async def disconnect_async(self):
-        """Disconnect from Farnsworth system."""
-        if self._memory_system:
-            await self._memory_system.shutdown()
-        self._initialized = False
-        logger.info("Farnsworth client disconnected")
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/client.py
 
     def connect(self):
         """Synchronous connect (convenience wrapper)."""
@@ -410,14 +342,8 @@ class FarnsworthClient:
 
 
 # Convenience function for quick usage
-<<<<<<< HEAD:cosmos/client.py
 def create_client(data_dir: str = "./data") -> cosmosClient:
     """Create and connect a cosmos client."""
     client = cosmosClient(data_dir=data_dir)
-=======
-def create_client(data_dir: str = "./data") -> FarnsworthClient:
-    """Create and connect a Farnsworth client."""
-    client = FarnsworthClient(data_dir=data_dir)
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/client.py
     client.connect()
     return client

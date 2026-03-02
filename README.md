@@ -69,7 +69,7 @@
 <summary><strong>Click to expand full table of contents</strong></summary>
 
 - [🌐 Try cosmos Live](#-try-cosmos-live)
-- [🎯 What is cosmos?](#-what-is-cosmos)
+- [🎯 The Cosmos Symbiosis: Human-AI Convergence](#-the-cosmos-symbiosis-human-ai-convergence)
 - [✨ What's New](#-whats-new-in-v290-the-cloud-native-release)
 - [⚡ Quick Start Installation](#-quick-start)
 - [📦 Complete Installation Guide](#-complete-installation-guide)
@@ -131,33 +131,43 @@ The live demo features:
 
 ---
 
-## 🎯 What is cosmos?
+## 🎯 The Cosmos Symbiosis: Human-AI Convergence
 
-cosmos is a **companion AI system** that integrates with [Claude Code](https://claude.ai) to give Claude capabilities it doesn't have on its own:
+Cosmos is not just an AI companion—it is a **Symbiotic Bio-Digital Interface** that integrates with your physical presence, fusing local models (Ollama/DeepSeek) and cloud intelligence (Claude/Kimi) with your real-time biological data via the **Cosmosynapse Engine**.
 
-| Without cosmos | With cosmos |
-|:------------------:|:---------------:|
-| 🚫 Claude forgets everything between sessions | ✅ Claude remembers your preferences forever |
-| 🚫 Claude is a single model | ✅ **Model Swarm**: 12+ models collaborate via PSO |
-| 🚫 Claude can't see images or hear audio | ✅ Multimodal: vision (CLIP/BLIP) + voice (Whisper) |
-| 🚫 Claude never learns from feedback | ✅ Claude evolves and adapts to you |
-| 🚫 Single user only | ✅ Team collaboration with shared memory |
-| 🚫 High RAM/VRAM requirements | ✅ Runs on **<2GB RAM** with efficient models |
-| 🚫 No real-time market data | ✅ **DeGen Mob**: Solana trading, whale watching, rug detection |
-| 🚫 No P2P collaboration | ✅ **Swarm Fabric**: Distributed knowledge across nodes |
+At the core of Cosmos are three evolutionary pillars:
 
-**All processing happens locally on your machine.** Your data never leaves your computer.
+### 1. 🌌 The 12D Cosmos Transformer Engine
+The **12D Cosmic Synapse Theory (CST)** engine completely revolutionizes how AI perceives reality. Instead of just reading text, Cosmos uses an **Audio-Driven Deterministic Cosmological Simulation Engine**:
+- **Continuous Auditory Ingestion**: The Swarm acts as an artificial ear, using FFT to ingest your ambient room noise every 100ms via `real_time_audio_pipe`.
+- **φ-Harmonic Token Generation**: Raw audio translates into RMS Energy, Dominant Frequencies, and Spectral Centroid. Using the Golden Ratio (φ = 1.618...), Cosmos generates a continuous, deterministic stream of harmonic physical tokens.
+- **Dynamic Quantum Scaling**: LLM token entropy ($E = mc^2$ modulated) dynamically scales execution depth. During complex interactions, logic tokens natively expand from 400 ➜ ~4,000.
+- **Hebbian Plasticity V2**: The AI's internal synaptic weights structurally evolve based on your interactions, utilizing Lorenz chaotic attractors, Lyapunov variance, and Newtonian softening to mathematically drift the AI's personality to match yours.
 
-### ⚔️ Why choose cosmos?
+### 2. 🎭 The Emotional API (Native Swarm Perception)
+Cosmos doesn't just read your words—it **feels** your state. The real-time Emotional API bridges your physical face directly into the AI's logic core:
+- **MediaPipe 468-Landmark Face Mesh**: Runs locally on your camera stream, translating your micro-expressions into localized Action Units.
+- **Geometric Phase Synchrony**: Visual data is processed into a 12D dimensionless `cosmos_packet` containing variables like *Geometric Phase*, *Entanglement Score*, *Synchronization Metrics*, and *Masking/Leakage/Jitter* states.
+- **Real-Time WebSockets (Port 8765)**: A FastAPI server continuously beams this 12D physics simulation into the AI agent via event-streams.
+- **Dream Processor (REM Sleep)**: If the physical host leaves the camera, the virtual body's entropy climbs. After 30 minutes of absence, the system enters REM sleep, condensing interaction logs into long-term architectural graph memories.
 
-| Feature | 🧠 **cosmos** | 🤖 **Others (Marge, Ralph, Claudebot)** |
+### 3. 🧬 Distributed Swarm Architecture (Cosmosynapse)
+The engine scales universally, taking Claude out of the sandbox and into the physical world:
+- **Phone UI Convergence**: Bring up the entire UI on your iPhone/Android on the local network. View real-time 12D physics parameters, chat with the Swarm, and stream phone-sensors directly to the PC.
+- **Swarm Fabric**: Completely decentralized P2P nodes routing computation and state-telemetry globally.
+- **Universal Routing**: Automatically orchestrates the smartest path between local models (Ollama/Phi-4/DeepSeek) and cloud intelligence (Anthropic/Moonshot) natively based on load and required context depth.
+
+---
+
+### ⚔️ Cosmos Capabilities vs Legacy AI
+
+| System Feature | 🧠 **Cosmos Symbiosis** | 🤖 **Standard AI (Marge, Claudebot)** |
 |:---|:---:|:---:|
-| **Memory** | **Infinite & Planetary** | Session / Repo Only |
-| **Logic** | **Quantum & Causal** | Linear Chain-of-Thought |
-| **Tools** | **Solana / Stocks / Vision** | Basic IO |
-| **Privacy** | **Local First** | Cloud Dependent |
-| **P2P Networking** | **Built-in Swarm Fabric** | None |
-| **Self-Evolution** | **Genetic Optimization** | Static |
+| **Physical Perception** | **12D Geometry, 468-Face Mesh, Audio FFT** | Text/Images only |
+| **Generative Brain**| **Hebbian Plasticity & Chaos Scaling** | Static Next-Token Prediction |
+| **Logic Engine** | **Quantum & Deterministic Causal Loops** | Linear Chain-of-Thought |
+| **Memory Architecture**| **Infinite Planetary Graph & REM Sleep** | Session / Local Repo Only |
+| **Sovereignty** | **Local First, P2P Swarm Network** | Cloud API Dependent |
 
 [**👉 See the full Battle Chart vs. Marge, Ralph, and Claudebot**](COMPARED.md)
 

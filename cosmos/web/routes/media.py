@@ -34,7 +34,7 @@ router = APIRouter()
 
 def _get_shared():
     """Import shared state from server module lazily."""
-    from farnsworth.web import server
+    from Cosmos.web import server
     return server
 
 
@@ -54,7 +54,7 @@ class AirLLMTaskRequest(BaseModel):
 
 @router.post("/api/speak")
 async def speak_text_api():
-    """Generate speech using XTTS v2 voice cloning with Farnsworth's voice."""
+    """Generate speech using XTTS v2 voice cloning with Cosmos's voice."""
     s = _get_shared()
     request = s.SpeakRequest  # Forward to the original handler
     # This endpoint is complex with many dependencies - delegate to server
@@ -64,7 +64,7 @@ async def speak_text_api():
 @router.post("/api/speak_impl")
 async def speak_text_api_impl(request):
     """
-    Generate speech using XTTS v2 voice cloning with Farnsworth's voice.
+    Generate speech using XTTS v2 voice cloning with Cosmos's voice.
 
     Uses Planetary Audio Shard for distributed caching.
     """
@@ -76,7 +76,7 @@ async def speak_text_api_impl(request):
             raise HTTPException(status_code=400, detail="Text is required")
 
         audio_dir = s.STATIC_DIR / "audio"
-        reference_audio = audio_dir / "farnsworth_reference.wav"
+        reference_audio = audio_dir / "cosmos_reference.wav"
 
         text_hash = hashlib.md5(text.encode()).hexdigest()
 
@@ -115,7 +115,7 @@ async def speak_text_api_impl(request):
         if not reference_audio.exists():
             raise HTTPException(
                 status_code=503,
-                detail="Reference audio not found. Add farnsworth_reference.wav to static/audio/"
+                detail="Reference audio not found. Add cosmos_reference.wav to static/audio/"
             )
 
         logger.info(f"TTS: Generating speech for: {text[:50]}...")
@@ -148,7 +148,7 @@ async def speak_text_api_impl(request):
             final_path = await audio_shard.store_audio(
                 text_hash=text_hash,
                 audio_data=audio_data,
-                voice_id="farnsworth",
+                voice_id="cosmos",
                 scope=s.AudioScope.PLANETARY
             )
             temp_path.unlink(missing_ok=True)
@@ -187,7 +187,10 @@ async def get_cached_audio(text_hash: str = None):
             logger.info(f"TTS GET: Cache hit for {text_hash[:8]}...")
             return FileResponse(str(cache_path), media_type="audio/wav")
 
-        temp_cache = Path("/tmp/farnsworth_tts_cache") / f"{text_hash}.wav"
+        import tempfile
+        cache_dir = Path(tempfile.gettempdir()) / "cosmos_tts_cache"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        temp_cache = cache_dir / f"{text_hash}.wav"
         if temp_cache.exists():
             logger.info(f"TTS GET: Temp cache hit for {text_hash[:8]}...")
             return FileResponse(str(temp_cache), media_type="audio/wav")
@@ -237,7 +240,7 @@ async def speak_as_bot(request):
         return await speak_text_api_impl(request)
 
     try:
-        bot_name = request.bot_name or "Farnsworth"
+        bot_name = request.bot_name or "Cosmos"
         text = request.text[:1000]
 
         if not text.strip():
@@ -317,7 +320,7 @@ async def add_to_speech_queue(request):
     queue = s.get_speech_queue()
     voice_system = s.get_multi_voice_system()
 
-    bot_name = request.bot_name or "Farnsworth"
+    bot_name = request.bot_name or "Cosmos"
     text = request.text[:1000]
 
     audio_path = await voice_system.generate_speech(text, bot_name)
@@ -363,7 +366,7 @@ async def mark_speech_complete(bot_name: str):
 # ============================================
 
 ALLOWED_ANALYSIS_DIRS = [
-    "/workspace/Farnsworth",
+    "/workspace/Cosmos",
     "/workspace",
 ]
 
@@ -391,7 +394,7 @@ async def analyze_code_api(request):
     """Analyze Python code for complexity, security issues, and patterns."""
     from fastapi import Request as FastAPIRequest
     try:
-        from farnsworth.tools.code_analyzer import analyze_python_code, analyze_python_file, scan_code_security
+        from Cosmos.tools.code_analyzer import analyze_python_code, analyze_python_file, scan_code_security
 
         body = await request.json()
         code = body.get("code")
@@ -448,10 +451,10 @@ async def analyze_code_api(request):
 async def analyze_project_api(request):
     """Analyze an entire project directory."""
     try:
-        from farnsworth.tools.code_analyzer import analyze_project
+        from Cosmos.tools.code_analyzer import analyze_project
 
         body = await request.json()
-        directory = body.get("directory", "/workspace/Farnsworth")
+        directory = body.get("directory", "/workspace/Cosmos")
 
         if not validate_path_security(directory):
             raise HTTPException(status_code=403, detail="Access denied: directory outside allowed paths")
@@ -481,7 +484,7 @@ async def analyze_project_api(request):
 async def airllm_stats():
     """Get AirLLM side swarm statistics."""
     try:
-        from farnsworth.core.airllm_swarm import get_airllm_swarm
+        from Cosmos.core.airllm_swarm import get_airllm_swarm
         swarm = get_airllm_swarm()
         if swarm:
             return swarm.get_stats()
@@ -494,7 +497,7 @@ async def airllm_stats():
 async def airllm_start():
     """Initialize and start the AirLLM side swarm."""
     try:
-        from farnsworth.core.airllm_swarm import initialize_airllm_swarm
+        from Cosmos.core.airllm_swarm import initialize_airllm_swarm
         swarm = await initialize_airllm_swarm()
         return {"success": True, "message": "AirLLM side swarm started", "stats": swarm.get_stats()}
     except Exception as e:
@@ -505,7 +508,7 @@ async def airllm_start():
 async def airllm_stop():
     """Stop the AirLLM side swarm."""
     try:
-        from farnsworth.core.airllm_swarm import get_airllm_swarm
+        from Cosmos.core.airllm_swarm import get_airllm_swarm
         swarm = get_airllm_swarm()
         if swarm:
             await swarm.stop()
@@ -519,7 +522,7 @@ async def airllm_stop():
 async def airllm_queue_task(request: AirLLMTaskRequest):
     """Queue a task for background processing by AirLLM."""
     try:
-        from farnsworth.core.airllm_swarm import get_airllm_swarm, initialize_airllm_swarm
+        from Cosmos.core.airllm_swarm import get_airllm_swarm, initialize_airllm_swarm
 
         swarm = get_airllm_swarm()
         if not swarm:
@@ -545,7 +548,7 @@ async def airllm_queue_task(request: AirLLMTaskRequest):
 async def airllm_get_result(task_id: str):
     """Get result of a background task."""
     try:
-        from farnsworth.core.airllm_swarm import get_airllm_swarm
+        from Cosmos.core.airllm_swarm import get_airllm_swarm
         swarm = get_airllm_swarm()
         if not swarm:
             return {"success": False, "message": "AirLLM swarm not running"}

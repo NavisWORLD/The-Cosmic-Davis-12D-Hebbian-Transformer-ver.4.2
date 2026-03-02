@@ -17,7 +17,7 @@ from loguru import logger
 
 # Import unified memory system
 try:
-    from farnsworth.memory.unified_memory import (
+    from Cosmos.memory.unified_memory import (
         UnifiedMemoryAPI,
         get_unified_memory_api,
         SessionReference,
@@ -218,7 +218,7 @@ class MemoryTools:
         Set a value in working memory.
         """
         try:
-            from cosmos.memory.working_memory import SlotType
+            from Cosmos.memory.working_memory import SlotType
 
             type_map = {
                 "text": SlotType.TEXT,

@@ -106,9 +106,9 @@ class ForgeStateManager:
         self._init_memory()
 
     def _init_memory(self):
-        """Connect to Farnsworth memory system if available."""
+        """Connect to Cosmos memory system if available."""
         try:
-            from farnsworth.memory.memory_system import get_memory_system
+            from Cosmos.memory.memory_system import get_memory_system
             self._memory = get_memory_system()
         except Exception:
             self._memory = None

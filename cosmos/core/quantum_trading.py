@@ -1,7 +1,7 @@
 """
-Farnsworth Quantum Trading Cortex — AGI v2.1
+Cosmos Quantum Trading Cortex — AGI v2.1
 
-A new cortex for the Farnsworth organism: quantum-enhanced trading intelligence.
+A new cortex for the Cosmos organism: quantum-enhanced trading intelligence.
 Fuses EMA momentum, quantum simulation, and collective deliberation into
 actionable trading signals. Signals feed back into memory and evolution,
 making the whole system smarter over time.
@@ -386,7 +386,7 @@ class SignalAccuracyTracker:
 
 class QuantumTradingCortex:
     """
-    A new cortex for the Farnsworth organism — quantum-enhanced trading intelligence.
+    A new cortex for the Cosmos organism — quantum-enhanced trading intelligence.
 
     Wires into existing infrastructure:
     - Nexus event bus for signal emission
@@ -423,7 +423,7 @@ class QuantumTradingCortex:
             # Try to connect to IBM Quantum
             if self.quantum is None:
                 try:
-                    from farnsworth.integration.quantum.ibm_quantum import get_quantum_provider
+                    from Cosmos.integration.quantum.ibm_quantum import get_quantum_provider
                     self.quantum = get_quantum_provider()
                 except ImportError:
                     logger.warning("QuantumCortex: IBM Quantum not available, using classical fallback")
@@ -623,7 +623,7 @@ class QuantumTradingCortex:
 
         try:
             from qiskit import QuantumCircuit
-            from farnsworth.integration.quantum.ibm_quantum import QuantumTaskType
+            from Cosmos.integration.quantum.ibm_quantum import QuantumTaskType
         except ImportError:
             return None
 
@@ -754,7 +754,7 @@ class QuantumTradingCortex:
         result = {"direction": "neutral", "confidence": 0.0, "agents": []}
 
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
         except ImportError:
             return result
 
@@ -897,7 +897,7 @@ class QuantumTradingCortex:
 
         try:
             from qiskit import QuantumCircuit
-            from farnsworth.integration.quantum.ibm_quantum import QuantumTaskType
+            from Cosmos.integration.quantum.ibm_quantum import QuantumTaskType
 
             # Bell state circuit — uses simulator (hardware reserved for algo optimization)
             qc = QuantumCircuit(2, 2)
@@ -950,7 +950,7 @@ class QuantumTradingCortex:
 
         try:
             from qiskit import QuantumCircuit
-            from farnsworth.integration.quantum.ibm_quantum import QuantumTaskType
+            from Cosmos.integration.quantum.ibm_quantum import QuantumTaskType
 
             # 3-qubit circuit: encode bull/bear/sideways scenarios in superposition
             qc = QuantumCircuit(3, 3)
@@ -1038,7 +1038,7 @@ class QuantumTradingCortex:
             return
 
         try:
-            from farnsworth.evolution.quantum_evolution import get_quantum_evolution_engine
+            from Cosmos.evolution.quantum_evolution import get_quantum_evolution_engine
 
             engine = get_quantum_evolution_engine()
             if not engine._initialized:
@@ -1156,7 +1156,7 @@ class QuantumTradingCortex:
         if not self.nexus:
             return
         try:
-            from farnsworth.core.nexus import SignalType, Signal
+            from Cosmos.core.nexus import SignalType, Signal
             signal_type = SignalType[signal_type_name]
             signal = Signal(
                 id=str(uuid.uuid4()),
@@ -1267,7 +1267,7 @@ class QuantumAlgoOptimizer:
         """Connect to IBM Quantum for hardware access."""
         if self.quantum is None:
             try:
-                from farnsworth.integration.quantum.ibm_quantum import get_quantum_provider
+                from Cosmos.integration.quantum.ibm_quantum import get_quantum_provider
                 self.quantum = get_quantum_provider()
             except ImportError:
                 logger.warning("QuantumAlgoOptimizer: IBM Quantum not available")
@@ -1286,7 +1286,7 @@ class QuantumAlgoOptimizer:
         """Pull trade history from DegenTrader's AdaptiveLearner."""
         try:
             # Try to get from running trader instance
-            from farnsworth.trading.degen_trader import DegenTrader
+            from Cosmos.trading.degen_trader import DegenTrader
             # Check if there's a running instance with trades
             # This is best-effort — returns empty list if no trader running
             return []
@@ -1443,7 +1443,7 @@ class QuantumAlgoOptimizer:
             return None
 
         try:
-            from farnsworth.integration.quantum.ibm_quantum import QuantumTaskType
+            from Cosmos.integration.quantum.ibm_quantum import QuantumTaskType
 
             # Budget check — this is where hardware budget is spent
             if hasattr(self.quantum, 'budget'):
@@ -1457,7 +1457,7 @@ class QuantumAlgoOptimizer:
                     )
                     return await self._optimize_with_simulator(trades)
 
-            from farnsworth.integration.quantum.ibm_quantum import QAOAOptimizer
+            from Cosmos.integration.quantum.ibm_quantum import QAOAOptimizer
 
             qaoa = QAOAOptimizer(self.quantum)
 
@@ -1579,7 +1579,7 @@ class QuantumAlgoOptimizer:
         Best used for weekly optimization runs.
         """
         try:
-            from farnsworth.evolution.quantum_evolution import get_quantum_evolution_engine
+            from Cosmos.evolution.quantum_evolution import get_quantum_evolution_engine
 
             engine = get_quantum_evolution_engine()
             if not engine._initialized:

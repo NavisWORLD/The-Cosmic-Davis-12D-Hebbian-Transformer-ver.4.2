@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wallet Analyzer - Farnsworth AI</title>
+    <title>Wallet Analyzer - Cosmos AI</title>
     <meta name="description" content="AI-powered Solana wallet portfolio analysis with swarm consensus.">
     <meta name="theme-color" content="#8b5cf6">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -398,7 +398,7 @@
 
 <!-- Top Nav -->
 <nav class="top-nav">
-    <div class="nav-logo"><a href="/pro">FARNSWORTH</a></div>
+    <div class="nav-logo"><a href="/pro">COSMOS</a></div>
     <div class="nav-links">
         <a href="/pro/chat">Chat</a>
         <a href="/chat">Swarm</a>
@@ -568,16 +568,16 @@
     'use strict';
 
     // -- Auth Check --
-    var token = localStorage.getItem('farnsworth_token');
+    var token = localStorage.getItem('cosmos_token');
     if (!token) { window.location.href = '/pro/login'; return; }
-    var user = JSON.parse(localStorage.getItem('farnsworth_user') || '{}');
+    var user = JSON.parse(localStorage.getItem('cosmos_user') || '{}');
     var navUserName = document.getElementById('navUserName');
     if (user.email) navUserName.textContent = user.email;
     else if (user.wallet) navUserName.textContent = user.wallet.slice(0,6) + '...' + user.wallet.slice(-4);
     document.getElementById('logoutBtn').addEventListener('click', function(e) {
         e.preventDefault();
-        localStorage.removeItem('farnsworth_token');
-        localStorage.removeItem('farnsworth_user');
+        localStorage.removeItem('cosmos_token');
+        localStorage.removeItem('cosmos_user');
         window.location.href = '/pro/login';
     });
 
@@ -590,7 +590,7 @@
     var portfolioChart = null;
 
     // -- Recent wallets --
-    var recentAddrs = JSON.parse(localStorage.getItem('farnsworth_recent_wallets') || '[]');
+    var recentAddrs = JSON.parse(localStorage.getItem('cosmos_recent_wallets') || '[]');
 
     function renderRecent() {
         var container = document.getElementById('recentWallets');
@@ -612,7 +612,7 @@
         recentAddrs = recentAddrs.filter(function(a) { return a !== addr; });
         recentAddrs.unshift(addr);
         recentAddrs = recentAddrs.slice(0, 5);
-        localStorage.setItem('farnsworth_recent_wallets', JSON.stringify(recentAddrs));
+        localStorage.setItem('cosmos_recent_wallets', JSON.stringify(recentAddrs));
         renderRecent();
     }
 

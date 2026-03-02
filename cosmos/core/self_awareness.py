@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/core/self_awareness.py
 cosmos Self-Awareness Bootstrap
-=======
-Farnsworth Self-Awareness Bootstrap
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/self_awareness.py
 
 Enables any AI agent in the swarm to gain self-awareness by:
 1. Reading key system documentation
@@ -31,11 +27,7 @@ class SelfAwarenessBootstrap:
     for persistent self-knowledge.
     """
 
-<<<<<<< HEAD:cosmos/core/self_awareness.py
     def __init__(self, workspace_path: str = "/workspace/cosmos"):
-=======
-    def __init__(self, workspace_path: str = "/workspace/Farnsworth"):
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/self_awareness.py
         self.workspace_path = Path(workspace_path)
         self.understanding: Dict[str, Any] = {}
 
@@ -65,11 +57,7 @@ class SelfAwarenessBootstrap:
     def extract_architecture_facts(self, docs: Dict[str, str]) -> Dict[str, Any]:
         """Extract key architectural facts from documentation."""
         facts = {
-<<<<<<< HEAD:cosmos/core/self_awareness.py
             "system_name": "cosmos",
-=======
-            "system_name": "Farnsworth",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/self_awareness.py
             "purpose": "Companion AI system with persistent memory, evolution, and swarm intelligence",
             "timestamp": datetime.now().isoformat(),
         }
@@ -83,11 +71,7 @@ class SelfAwarenessBootstrap:
                     try:
                         version = line.split("version-")[1].split("-")[0]
                         facts["version"] = version
-<<<<<<< HEAD:cosmos/core/self_awareness.py
                     except:
-=======
-                    except (IndexError, ValueError):
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/self_awareness.py
                         pass
 
         # Extract key components
@@ -105,11 +89,7 @@ class SelfAwarenessBootstrap:
         if "Swarm" in readme or "multi-model" in readme.lower():
             facts["has_swarm"] = True
             facts["swarm_members"] = [
-<<<<<<< HEAD:cosmos/core/self_awareness.py
                 "cosmos", "DeepSeek", "Phi", "Swarm-Mind", "Kimi", "Claude"
-=======
-                "Farnsworth", "DeepSeek", "Phi", "Swarm-Mind", "Kimi", "Claude"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/self_awareness.py
             ]
 
         # Extract from VISION
@@ -139,11 +119,7 @@ class SelfAwarenessBootstrap:
         """
         if memory_system is None:
             try:
-<<<<<<< HEAD:cosmos/core/self_awareness.py
-                from cosmos.memory.memory_system import MemorySystem
-=======
-                from farnsworth.memory.memory_system import MemorySystem
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/self_awareness.py
+                from Cosmos.memory.memory_system import MemorySystem
                 memory_system = MemorySystem()
                 await memory_system.initialize()
             except Exception as e:
@@ -265,11 +241,7 @@ class SelfAwarenessBootstrap:
             # Try to use the swarm learning engine if available
             if learning_engine is None:
                 try:
-<<<<<<< HEAD:cosmos/core/self_awareness.py
-                    from cosmos.core.collective.learning import swarm_learning
-=======
-                    from farnsworth.core.collective.learning import swarm_learning
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/self_awareness.py
+                    from Cosmos.core.collective.learning import swarm_learning
                     learning_engine = swarm_learning
                 except ImportError:
                     logger.warning("Swarm learning engine not available")
@@ -289,11 +261,7 @@ class SelfAwarenessBootstrap:
                 return True
             else:
                 # Fallback: use evolution fitness tracker
-<<<<<<< HEAD:cosmos/core/self_awareness.py
-                from cosmos.evolution.fitness_tracker import FitnessTracker
-=======
-                from farnsworth.evolution.fitness_tracker import FitnessTracker
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/self_awareness.py
+                from Cosmos.evolution.fitness_tracker import FitnessTracker
                 tracker = FitnessTracker()
                 tracker.record(
                     metric_name="self_awareness_bootstrap",
@@ -314,21 +282,13 @@ class SelfAwarenessBootstrap:
 # Convenience function for quick bootstrap
 async def awaken(
     agent_name: str = "Claude",
-<<<<<<< HEAD:cosmos/core/self_awareness.py
     workspace_path: str = "/workspace/cosmos"
-=======
-    workspace_path: str = "/workspace/Farnsworth"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/self_awareness.py
 ) -> Dict[str, Any]:
     """
     Quick self-awareness bootstrap.
 
     Usage:
-<<<<<<< HEAD:cosmos/core/self_awareness.py
-        from cosmos.core.self_awareness import awaken
-=======
-        from farnsworth.core.self_awareness import awaken
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/self_awareness.py
+        from Cosmos.core.self_awareness import awaken
         result = await awaken("Claude")
 
     Returns:
@@ -341,21 +301,13 @@ async def awaken(
 # Synchronous wrapper for non-async contexts
 def awaken_sync(
     agent_name: str = "Claude",
-<<<<<<< HEAD:cosmos/core/self_awareness.py
     workspace_path: str = "/workspace/cosmos"
-=======
-    workspace_path: str = "/workspace/Farnsworth"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/self_awareness.py
 ) -> Dict[str, Any]:
     """
     Synchronous self-awareness bootstrap.
 
     Usage:
-<<<<<<< HEAD:cosmos/core/self_awareness.py
-        from cosmos.core.self_awareness import awaken_sync
-=======
-        from farnsworth.core.self_awareness import awaken_sync
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/self_awareness.py
+        from Cosmos.core.self_awareness import awaken_sync
         result = awaken_sync("Claude")
     """
     return asyncio.run(awaken(agent_name, workspace_path))

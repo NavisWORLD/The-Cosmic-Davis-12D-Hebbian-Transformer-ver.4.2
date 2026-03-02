@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/automation/triggers.py
 cosmos Trigger System
-=======
-Farnsworth Trigger System
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/triggers.py
 
 "When something happens, something else happens! It's like dominoes, but with code!"
 
@@ -211,11 +207,7 @@ class FileChangeHandler(FileSystemEventHandler):
 
 class TriggerManager:
     """
-<<<<<<< HEAD:cosmos/automation/triggers.py
     Manages all triggers for cosmos automation.
-=======
-    Manages all triggers for Farnsworth automation.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/automation/triggers.py
 
     Features:
     - Webhook endpoints

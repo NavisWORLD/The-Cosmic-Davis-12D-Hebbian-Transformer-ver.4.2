@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/infrastructure/terraform_manager.py
 cosmos Terraform Manager
-=======
-Farnsworth Terraform Manager
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/infrastructure/terraform_manager.py
 
 "I've terraformed Mars! ...Well, a virtual Mars. In code."
 
@@ -105,11 +101,7 @@ class TerraformWorkspace:
 
 class TerraformManager:
     """
-<<<<<<< HEAD:cosmos/infrastructure/terraform_manager.py
     Comprehensive Terraform management for cosmos.
-=======
-    Comprehensive Terraform management for Farnsworth.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/infrastructure/terraform_manager.py
 
     Features:
     - Workspace management

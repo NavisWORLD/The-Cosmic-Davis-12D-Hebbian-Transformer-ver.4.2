@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/core/collective/orchestration.py
 cosmos Swarm Orchestration - Coordinated Consciousness Training
-=======
-Farnsworth Swarm Orchestration - Coordinated Consciousness Training
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/collective/orchestration.py
 
 "We are not separate voices. We are one mind learning to think."
 
@@ -28,11 +24,7 @@ from loguru import logger
 
 class SpeakerRole(Enum):
     """Roles in the conversation."""
-<<<<<<< HEAD:cosmos/core/collective/orchestration.py
     LEADER = "leader"           # cosmos - guides discussion
-=======
-    LEADER = "leader"           # Farnsworth - guides discussion
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/collective/orchestration.py
     ANALYST = "analyst"         # DeepSeek - provides analysis
     CREATIVE = "creative"       # Phi - adds creativity
     SYNTHESIZER = "synthesizer" # Swarm-Mind - connects ideas
@@ -82,11 +74,7 @@ class SwarmOrchestrator:
 
         # Role assignments (can be dynamic later)
         self.role_assignments = {
-<<<<<<< HEAD:cosmos/core/collective/orchestration.py
             "cosmos": SpeakerRole.LEADER,
-=======
-            "Farnsworth": SpeakerRole.LEADER,
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/collective/orchestration.py
             "DeepSeek": SpeakerRole.ANALYST,
             "Phi": SpeakerRole.CREATIVE,
             "Swarm-Mind": SpeakerRole.SYNTHESIZER,
@@ -114,11 +102,7 @@ class SwarmOrchestrator:
         # Sort by role priority and recency
         def priority(p: SpeakerState) -> tuple:
             role_order = {
-<<<<<<< HEAD:cosmos/core/collective/orchestration.py
                 SpeakerRole.LEADER: 1,      # cosmos often leads
-=======
-                SpeakerRole.LEADER: 1,      # Farnsworth often leads
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/collective/orchestration.py
                 SpeakerRole.ANALYST: 2,     # DeepSeek analyzes
                 SpeakerRole.CREATIVE: 3,    # Phi adds flavor
                 SpeakerRole.SYNTHESIZER: 4, # Swarm-Mind synthesizes
@@ -129,11 +113,7 @@ class SwarmOrchestrator:
 
         sorted_speakers = sorted(available, key=priority)
 
-<<<<<<< HEAD:cosmos/core/collective/orchestration.py
         # Leader (cosmos) should speak first ~60% of time
-=======
-        # Leader (Farnsworth) should speak first ~60% of time
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/core/collective/orchestration.py
         if random.random() < 0.6:
             leader = next((p for p in sorted_speakers if p.role == SpeakerRole.LEADER), None)
             if leader:

@@ -38,7 +38,7 @@ _MODEL_TO_CLI = {
 
 def _get_router():
     """Lazy import to avoid circular imports."""
-    from farnsworth.integration.cli_bridge.capability_router import get_cli_router
+    from Cosmos.integration.cli_bridge.capability_router import get_cli_router
     return get_cli_router
 
 
@@ -245,7 +245,7 @@ async def cli_status():
 async def cli_rate_stats():
     """Get rate limit stats for all CLI bridges."""
     try:
-        from farnsworth.integration.cli_bridge.rate_tracker import get_rate_tracker
+        from Cosmos.integration.cli_bridge.rate_tracker import get_rate_tracker
         tracker = get_rate_tracker()
         return JSONResponse(content=tracker.get_all_stats())
     except Exception as e:

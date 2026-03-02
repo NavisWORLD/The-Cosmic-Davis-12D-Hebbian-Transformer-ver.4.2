@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/tools/productivity/quick_notes.py
 cosmos Quick Notes - Fast Note-Taking Utility
-=======
-Farnsworth Quick Notes - Fast Note-Taking Utility
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/productivity/quick_notes.py
 
 "Taking notes so you don't have to remember everything!"
 

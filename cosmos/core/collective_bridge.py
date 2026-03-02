@@ -1,5 +1,5 @@
 """
-Farnsworth Collective Bridge - Collective to Swarm Communication.
+Cosmos Collective Bridge - Collective to Swarm Communication.
 
 AGI v1.8.4 Feature: Bridge between the deliberation collective and
 individual shadow agents in the swarm.
@@ -803,7 +803,7 @@ class CollectiveBridge:
             return
 
         try:
-            from farnsworth.core.nexus import SignalType
+            from Cosmos.core.nexus import SignalType
 
             signal_enum = getattr(SignalType, signal_type, None)
             if signal_enum:

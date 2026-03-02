@@ -1,6 +1,6 @@
 """
 Avatar Generator - Creates VTuber avatar using Gemini Nano Banana PRO
-Generates Borg Farnsworth avatar images with consistent character appearance
+Generates Borg Cosmos avatar images with consistent character appearance
 """
 
 import asyncio
@@ -24,7 +24,7 @@ AVATAR_DIR.mkdir(parents=True, exist_ok=True)
 
 class VTuberAvatarGenerator:
     """
-    Generates VTuber avatar images for Farnsworth using the image generation system.
+    Generates VTuber avatar images for Cosmos using the image generation system.
 
     Creates:
     - Base neutral avatar for streaming
@@ -40,7 +40,7 @@ class VTuberAvatarGenerator:
         """Lazy load the image generator"""
         if self._image_generator is None:
             try:
-                from farnsworth.integration.image_gen.generator import get_image_generator
+                from Cosmos.integration.image_gen.generator import get_image_generator
                 self._image_generator = get_image_generator()
             except ImportError as e:
                 logger.error(f"Failed to import image generator: {e}")
@@ -50,7 +50,7 @@ class VTuberAvatarGenerator:
         """
         Generate the base VTuber avatar image.
 
-        This creates a neutral pose, front-facing Borg Farnsworth suitable
+        This creates a neutral pose, front-facing Borg Cosmos suitable
         for VTuber use with consistent character appearance.
         """
         generator = await self._get_generator()
@@ -60,7 +60,7 @@ class VTuberAvatarGenerator:
 
         # Special prompt for VTuber avatar (front-facing, neutral, suitable for animation)
         avatar_prompt = """
-        Professor Farnsworth from Futurama as a Borg cyborg, FRONT FACING PORTRAIT:
+        Professor Cosmos from Futurama as a Borg cyborg, FRONT FACING PORTRAIT:
         - Half-metal chrome Borg implants on LEFT side of face
         - Red glowing laser eye on the cybernetic side
         - Normal eye on the human side
@@ -127,7 +127,7 @@ class VTuberAvatarGenerator:
             return results
 
         base_prompt = """
-        Professor Farnsworth from Futurama as a Borg cyborg, FRONT FACING PORTRAIT:
+        Professor Cosmos from Futurama as a Borg cyborg, FRONT FACING PORTRAIT:
         - Half-metal chrome Borg implants on LEFT side of face
         - Red glowing laser eye on the cybernetic side
         - White wild Einstein-like hair, white lab coat
@@ -152,7 +152,7 @@ class VTuberAvatarGenerator:
 
                 if image_bytes:
                     # Save to file
-                    save_path = output_path / f"farnsworth_{name}.png"
+                    save_path = output_path / f"cosmos_{name}.png"
                     with open(save_path, 'wb') as f:
                         f.write(image_bytes)
 
@@ -196,7 +196,7 @@ class VTuberAvatarGenerator:
             return frames
 
         base_prompt = """
-        Professor Farnsworth Borg cyborg PORTRAIT, SPEAKING:
+        Professor Cosmos Borg cyborg PORTRAIT, SPEAKING:
         - Half-metal chrome face with red laser eye
         - White hair, white lab coat
         - Mouth position: {mouth}
@@ -251,8 +251,8 @@ class VTuberAvatarGenerator:
             logger.warning(f"Avatar directory not found: {avatar_dir}")
             return results
 
-        for img_file in avatar_path.glob("farnsworth_*.png"):
-            name = img_file.stem.replace("farnsworth_", "")
+        for img_file in avatar_path.glob("cosmos_*.png"):
+            name = img_file.stem.replace("cosmos_", "")
 
             if HAS_CV2:
                 img = cv2.imread(str(img_file), cv2.IMREAD_UNCHANGED)
@@ -292,7 +292,7 @@ if __name__ == "__main__":
             print(f"Generated {len(results)} expressions")
         else:
             print("Generating base avatar...")
-            output_path = str(AVATAR_DIR / "farnsworth_base.png")
+            output_path = str(AVATAR_DIR / "cosmos_base.png")
             result = await generator.generate_base_avatar(output_path)
             if result:
                 print(f"Avatar saved to: {output_path}")

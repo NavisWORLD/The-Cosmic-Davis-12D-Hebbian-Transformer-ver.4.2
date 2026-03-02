@@ -1,7 +1,7 @@
 """
 Chain Memory Auto-Save
 
-Automatically backs up Farnsworth state to Monad blockchain.
+Automatically backs up Cosmos state to Monad blockchain.
 
 Features:
 - Periodic backups (configurable interval)
@@ -22,7 +22,7 @@ from typing import Optional, Callable
 from pathlib import Path
 
 from .config import get_config, ChainMemoryConfig, verify_farns_sync, check_monad_balance
-from .state_capture import StateCapture, FarnsworthState
+from .state_capture import StateCapture, CosmosState
 from .memory_manager import ChainMemory
 
 logger = logging.getLogger("chain_memory.auto_save")
@@ -38,17 +38,17 @@ class AutoSaveManager:
     def __init__(
         self,
         config: Optional[ChainMemoryConfig] = None,
-        farnsworth_root: Optional[str] = None
+        cosmos_root: Optional[str] = None
     ):
         """
         Initialize auto-save manager.
 
         Args:
             config: Configuration (uses global if not provided)
-            farnsworth_root: Root directory of Farnsworth
+            cosmos_root: Root directory of Cosmos
         """
         self.config = config or get_config()
-        self.capture = StateCapture(farnsworth_root)
+        self.capture = StateCapture(cosmos_root)
         self.chain_memory = None  # Lazy init
 
         self._running = False
@@ -154,7 +154,7 @@ class AutoSaveManager:
                 self.on_save_start()
 
             # Capture state
-            logger.info("Capturing Farnsworth state...")
+            logger.info("Capturing Cosmos state...")
             state = self.capture.capture_full_state()
 
             # Generate title
@@ -178,7 +178,7 @@ class AutoSaveManager:
             ))
 
             package = BotMemoryPackage(
-                bot_name="Farnsworth",
+                bot_name="Cosmos",
                 bot_type=self.config.bot_type,
                 version="1.0",
                 created_at=datetime.now().isoformat(),

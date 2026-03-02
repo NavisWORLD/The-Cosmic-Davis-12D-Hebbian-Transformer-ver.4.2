@@ -1,5 +1,5 @@
 """
-LLM Router for Farnsworth
+LLM Router for Cosmos
 Routes completion requests to the appropriate backend (Ollama, Kimi, Grok, Gemini, etc.)
 """
 
@@ -17,7 +17,7 @@ except ImportError:
     ollama = None
 
 # Default model from env
-PRIMARY_MODEL = os.environ.get("FARNSWORTH_PRIMARY_MODEL", "deepseek-r1:1.5b")
+PRIMARY_MODEL = os.environ.get("COSMOS_PRIMARY_MODEL", "deepseek-r1:1.5b")
 
 # Local models get UNLIMITED tokens - no restraints
 LOCAL_MODEL_MAX_TOKENS = 32000  # Let them cook
@@ -143,7 +143,7 @@ async def _completion_kimi(
 ) -> str:
     """Get completion from Kimi (Moonshot AI)."""
     try:
-        from farnsworth.integration.external.kimi import get_kimi_provider
+        from Cosmos.integration.external.kimi import get_kimi_provider
 
         provider = get_kimi_provider()
         if provider is None:
@@ -175,7 +175,7 @@ async def _completion_grok(
 ) -> str:
     """Get completion from Grok (xAI)."""
     try:
-        from farnsworth.integration.external.grok import GrokProvider
+        from Cosmos.integration.external.grok import GrokProvider
 
         grok = GrokProvider()
         if not await grok.connect():
@@ -204,7 +204,7 @@ async def _completion_gemini(
 ) -> str:
     """Get completion from Gemini (Google AI)."""
     try:
-        from farnsworth.integration.external.gemini import get_gemini_provider
+        from Cosmos.integration.external.gemini import get_gemini_provider
 
         provider = get_gemini_provider()
         if provider is None:

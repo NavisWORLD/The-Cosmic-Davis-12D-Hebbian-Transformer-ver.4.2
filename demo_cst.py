@@ -25,7 +25,7 @@ def demo_frequency_analyzer():
     print("1. FREQUENCY ANALYZER - Audio to Emotional Mass")
     print("="*60)
     
-    from cosmos.core.cst_sensory_bridge import FrequencyAnalyzer
+    from Cosmos.core.cst_sensory_bridge import FrequencyAnalyzer
     
     analyzer = FrequencyAnalyzer(sample_rate=16000)
     
@@ -57,7 +57,7 @@ def demo_geometric_phase():
     print("2. GEOMETRIC PHASE MAPPER - Face to Phase Angle")
     print("="*60)
     
-    from cosmos.core.cst_sensory_bridge import GeometricPhaseMapper
+    from Cosmos.core.cst_sensory_bridge import GeometricPhaseMapper
     
     mapper = GeometricPhaseMapper()
     
@@ -103,7 +103,7 @@ def demo_cst_state():
     print("3. CST STATE - Truth Probability & Intent Detection")
     print("="*60)
     
-    from cosmos.core.cst_sensory_bridge import CSTState, DetectedIntent
+    from Cosmos.core.cst_sensory_bridge import CSTState, DetectedIntent
     
     # Coherent: both signals agree (high stress)
     coherent = CSTState(
@@ -133,7 +133,7 @@ def demo_phi_invariant_encoder():
     print("4. PHI-INVARIANT ENCODER - Memory Drift Validation")
     print("="*60)
     
-    from cosmos.memory.memory_system import PhiInvariantEncoder
+    from Cosmos.memory.memory_system import PhiInvariantEncoder
     
     encoder = PhiInvariantEncoder()
     
@@ -162,7 +162,7 @@ def demo_pso_constraints():
     print("5. PSO RELATIVISTIC CONSTRAINTS - Geodesic Movement")
     print("="*60)
     
-    from cosmos.core.model_swarm import ModelSwarm, ModelParticle, ModelRole
+    from Cosmos.core.model_swarm import ModelSwarm, ModelParticle, ModelRole
     
     swarm = ModelSwarm(pso_cognitive=2.0, pso_social=2.0)
     
@@ -199,7 +199,7 @@ def demo_cst_penalty():
     print("6. CST PENALTY - Suppressing Low-Effort Responses")
     print("="*60)
     
-    from cosmos.evolution.genetic_optimizer import Genome, Gene, cst_penalty
+    from Cosmos.evolution.genetic_optimizer import Genome, Gene, cst_penalty
     
     # Low complexity response
     low_effort = Genome(

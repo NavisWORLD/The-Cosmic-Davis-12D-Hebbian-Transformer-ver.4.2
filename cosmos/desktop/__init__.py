@@ -1,5 +1,5 @@
 """
-Farnsworth Windows Desktop Interface.
+Cosmos Windows Desktop Interface.
 
 A full-featured desktop application with:
 - System tray integration
@@ -12,14 +12,14 @@ A full-featured desktop application with:
 Requires: PySide6, keyboard, darkdetect
 """
 
-from .app import FarnsworthApp
+from .app import CosmosApp
 from .main_window import MainWindow
 
-__all__ = ['FarnsworthApp', 'MainWindow']
+__all__ = ['CosmosApp', 'MainWindow']
 
 
 def launch_desktop():
     """Launch the desktop application."""
     import sys
-    app = FarnsworthApp(sys.argv)
+    app = CosmosApp(sys.argv)
     return app.exec()

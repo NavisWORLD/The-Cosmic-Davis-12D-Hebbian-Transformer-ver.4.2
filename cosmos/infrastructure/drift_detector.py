@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/infrastructure/drift_detector.py
 cosmos Drift Detector
-=======
-Farnsworth Drift Detector
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/infrastructure/drift_detector.py
 
 "My infrastructure is drifting! Quick, someone anchor it!"
 
@@ -107,11 +103,7 @@ class DriftReport:
 
 class DriftDetector:
     """
-<<<<<<< HEAD:cosmos/infrastructure/drift_detector.py
     Infrastructure drift detection for cosmos.
-=======
-    Infrastructure drift detection for Farnsworth.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/infrastructure/drift_detector.py
 
     Features:
     - Compare Terraform state with real infrastructure
@@ -456,11 +448,7 @@ class DriftDetector:
 
 # Import TerraformAction for type hints
 try:
-<<<<<<< HEAD:cosmos/infrastructure/drift_detector.py
-    from cosmos.infrastructure.terraform_manager import TerraformAction
-=======
-    from farnsworth.infrastructure.terraform_manager import TerraformAction
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/infrastructure/drift_detector.py
+    from Cosmos.infrastructure.terraform_manager import TerraformAction
 except ImportError:
     pass
 

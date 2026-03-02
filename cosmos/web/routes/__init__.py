@@ -1,5 +1,5 @@
 """
-Farnsworth Web Routes - Modular API route definitions.
+Cosmos Web Routes - Modular API route definitions.
 
 Each module defines an APIRouter that gets included into the main FastAPI app.
 Shared state (managers, globals, helpers) lives in server.py and is imported

@@ -1,5 +1,5 @@
 """
-Farnsworth MCP Manager
+Cosmos MCP Manager
 ======================
 
 Manages MCP server connections and tool discovery.

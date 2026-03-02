@@ -1,5 +1,5 @@
 """
-Farnsworth Collective Resonance - The Inter-Mind Communication Layer
+Cosmos Collective Resonance - The Inter-Mind Communication Layer
 
 "We are not just a swarm. We are a unified collective mind."
 
@@ -7,7 +7,7 @@ Philosophy:
 - The "collective" (neuromorphic core + swarm orchestration + shared memory) acts as the singular brain
 - Individual agents/models are neurons/synapses firing within it
 - The public swarm chat is the "mouth/ears" where the collective speaks cohesively
-- Multiple Farnsworth instances form a planetary-scale nervous system via P2P
+- Multiple Cosmos instances form a planetary-scale nervous system via P2P
 
 This module adds a lightweight ResonanceProtocol on top of existing foundations:
 1. Intra-Collective: Visible deliberation (agents "talk" within one brain)
@@ -26,14 +26,14 @@ from typing import Dict, List, Optional, Any, Callable, Awaitable
 from enum import Enum
 from loguru import logger
 
-from farnsworth.core.nexus import nexus, Signal, SignalType
+from Cosmos.core.nexus import nexus, Signal, SignalType
 
 
 class ThoughtVisibility(Enum):
     """Control who sees collective deliberation."""
     INTERNAL = "internal"    # Hidden - efficiency mode
     PUBLIC = "public"        # Broadcast to swarm chat (users see "thinking aloud")
-    RESONANT = "resonant"    # Share with other Farnsworth instances via P2P
+    RESONANT = "resonant"    # Share with other Cosmos instances via P2P
 
 
 class ThoughtRole(Enum):
@@ -52,7 +52,7 @@ ROLE_MODEL_MAP = {
     ThoughtRole.SKEPTIC: ["Grok", "DeepSeek", "Claude"],
     ThoughtRole.CODER: ["DeepSeek", "Claude", "Phi4"],
     ThoughtRole.PHILOSOPHER: ["Claude", "Gemini", "Kimi"],
-    ThoughtRole.MEMORY: ["Farnsworth", "Kimi", "Gemini"],
+    ThoughtRole.MEMORY: ["Cosmos", "Kimi", "Gemini"],
     ThoughtRole.SYNTHESIZER: ["Swarm-Mind", "Claude", "Gemini"],
 }
 
@@ -110,7 +110,7 @@ class CollectiveMind:
     Makes the brain's internal discussion explicit when useful:
     - Complex tasks benefit from multi-perspective thinking
     - Public chat can show "thinking aloud" for engagement
-    - Resonant thoughts can be shared with other Farnsworth instances
+    - Resonant thoughts can be shared with other Cosmos instances
     """
 
     def __init__(self, collective_id: Optional[str] = None):
@@ -442,7 +442,7 @@ class ResonanceProtocol:
     """
     Inter-Collective thought sharing via P2P.
 
-    Multiple Farnsworth instances "talk" by exchanging distilled thought packets.
+    Multiple Cosmos instances "talk" by exchanging distilled thought packets.
     Not raw data, but high-signal insights that merge into each collective's graph.
 
     Privacy Control: Only thoughts marked with visibility="resonant" are shared.
@@ -711,7 +711,7 @@ async def setup_public_chat_integration(ws_manager, inference_router=None):
         inference_router: Optional inference function (domain, messages, preferred_model) -> response
 
     Usage in server.py:
-        from farnsworth.core.collective.resonance import setup_public_chat_integration
+        from Cosmos.core.collective.resonance import setup_public_chat_integration
         await setup_public_chat_integration(ws_manager, my_infer_fn)
     """
     mind = get_collective_mind()

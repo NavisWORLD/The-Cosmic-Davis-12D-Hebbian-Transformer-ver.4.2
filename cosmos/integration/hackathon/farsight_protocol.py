@@ -1,5 +1,5 @@
 """
-FARSIGHT PROTOCOL - Farnsworth's Ultimate Prediction & Intelligence System
+FARSIGHT PROTOCOL - Cosmos's Ultimate Prediction & Intelligence System
 
 Combines:
 - Swarm Oracle (11-agent deliberation consensus)
@@ -9,7 +9,7 @@ Combines:
 - Visual Prophecies (AI-generated prediction imagery)
 - Crypto Oracle (token/market analysis)
 
-This is Farnsworth's flagship hackathon feature - collective intelligence
+This is Cosmos's flagship hackathon feature - collective intelligence
 that no single AI can match.
 
 "We see further because we think together."
@@ -83,7 +83,7 @@ class FarsightPrediction:
 
 class FarsightProtocol:
     """
-    The Farsight Protocol - Farnsworth's ultimate prediction system.
+    The Farsight Protocol - Cosmos's ultimate prediction system.
 
     Combines multiple intelligence sources:
     1. Swarm Oracle - 11 AI agents deliberate
@@ -179,7 +179,7 @@ class FarsightProtocol:
     async def _get_swarm_consensus(self, question: str) -> Tuple[Optional[str], float]:
         """Get consensus from the Swarm Oracle."""
         try:
-            from farnsworth.integration.solana.swarm_oracle import get_swarm_oracle
+            from Cosmos.integration.solana.swarm_oracle import get_swarm_oracle
 
             oracle = get_swarm_oracle()
             result = await oracle.submit_query(question, "prediction", timeout=90.0)
@@ -228,7 +228,7 @@ class FarsightProtocol:
             outcomes = {}
 
             # Use swarm to define possible outcomes
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
             prompt = f"""For this question: "{question}"
 
@@ -311,7 +311,7 @@ Be realistic and specific."""
     async def _synthesize_prediction(self, prediction: FarsightPrediction) -> None:
         """Synthesize final Farsight prediction from all sources."""
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
             # Build synthesis prompt
             sources = []
@@ -329,7 +329,7 @@ Be realistic and specific."""
             if prediction.quantum_entropy:
                 sources.append(f"QUANTUM SEED: {prediction.quantum_entropy[:20]}...")
 
-            prompt = f"""You are the FARSIGHT PROTOCOL - Farnsworth's collective intelligence system.
+            prompt = f"""You are the FARSIGHT PROTOCOL - Cosmos's collective intelligence system.
 
 QUESTION: {prediction.question}
 
@@ -380,7 +380,7 @@ REASONING: [explanation]"""
     async def _generate_prophecy_image(self, prediction: FarsightPrediction) -> Optional[str]:
         """Generate a visual prophecy image using AI."""
         try:
-            from farnsworth.integration.external.grok import grok_provider
+            from Cosmos.integration.external.grok import grok_provider
 
             if not grok_provider:
                 return None
@@ -410,7 +410,7 @@ Text overlay: "FARSIGHT PROTOCOL - {prediction.farsight_confidence:.0%} CONFIDEN
     async def analyze_token(self, token_address: str) -> Dict[str, Any]:
         """Analyze a Solana token using the swarm."""
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
             prompt = f"""Analyze this Solana token: {token_address}
 

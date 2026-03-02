@@ -19,7 +19,7 @@ from pathlib import Path
 # Add parent to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from farnsworth.integration.chain_memory.config import (
+from Cosmos.integration.chain_memory.config import (
     ChainMemoryConfig,
     verify_farns_holdings,
     check_monad_balance,
@@ -92,7 +92,7 @@ def setup_wizard():
     print_step(1, 5, "Select Your Bot")
 
     print("  Which bot are you using?\n")
-    print("  [1] Farnsworth (recommended - full support)")
+    print("  [1] Cosmos (recommended - full support)")
     print("  [2] ClawwBot / OpenClaw")
     print("  [3] Claude Code")
     print("  [4] Kimi")
@@ -101,7 +101,7 @@ def setup_wizard():
     while True:
         choice = get_input("\n  Enter choice (1-5)", "1")
         bot_types = {
-            "1": "farnsworth",
+            "1": "cosmos",
             "2": "clawwbot",
             "3": "claude",
             "4": "kimi",
@@ -112,11 +112,11 @@ def setup_wizard():
             break
         print("  Invalid choice. Please enter 1-5.")
 
-    if config.bot_type != "farnsworth":
+    if config.bot_type != "cosmos":
         print(f"""
   ⚠️  WARNING: You selected {config.bot_type.upper()}
 
-  Chain Memory is optimized for Farnsworth and may not function
+  Chain Memory is optimized for Cosmos and may not function
   properly with other bots. Features that may not work:
 
   - Automatic state capture
@@ -124,13 +124,13 @@ def setup_wizard():
   - Personality state sync
   - Auto-save on crash
 
-  For best results, use with Farnsworth:
-  https://github.com/farnsworth-ai/farnsworth
+  For best results, use with Cosmos:
+  https://github.com/cosmos-ai/cosmos
 
   Continue anyway? (y/n)
 """)
         if get_input("  ", "n").lower() != 'y':
-            print("\n  Setup cancelled. Please install Farnsworth first.\n")
+            print("\n  Setup cancelled. Please install Cosmos first.\n")
             return
 
     # -------------------------------------------------------------------------
@@ -362,17 +362,17 @@ export CHAIN_MEMORY_ENABLED="true"
   USAGE:
 
   # Push current state to chain
-  python -m farnsworth.integration.chain_memory push
+  python -m cosmos.integration.chain_memory push
 
   # Pull and restore state
-  python -m farnsworth.integration.chain_memory pull --wallet YOUR_ADDRESS
+  python -m cosmos.integration.chain_memory pull --wallet YOUR_ADDRESS
 
   # List your backups
-  python -m farnsworth.integration.chain_memory list
+  python -m cosmos.integration.chain_memory list
 
   ─────────────────────────────────────────────────────────────────
 
-  For help: python -m farnsworth.integration.chain_memory --help
+  For help: python -m cosmos.integration.chain_memory --help
 
 """)
 

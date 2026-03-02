@@ -92,12 +92,12 @@ class QueryCache:
             "hit_rate": self._hits / total if total > 0 else 0,
         }
 
-from cosmos.memory.virtual_context import VirtualContext, MemoryBlock
-from cosmos.memory.working_memory import WorkingMemory, SlotType
-from cosmos.memory.archival_memory import ArchivalMemory, SearchResult
-from cosmos.memory.recall_memory import RecallMemory, ConversationTurn
-from cosmos.memory.knowledge_graph import KnowledgeGraph, Entity
-from cosmos.memory.memory_dreaming import MemoryDreamer
+from Cosmos.memory.virtual_context import VirtualContext, MemoryBlock
+from Cosmos.memory.working_memory import WorkingMemory, SlotType
+from Cosmos.memory.archival_memory import ArchivalMemory, SearchResult
+from Cosmos.memory.recall_memory import RecallMemory, ConversationTurn
+from Cosmos.memory.knowledge_graph import KnowledgeGraph, Entity
+from Cosmos.memory.memory_dreaming import MemoryDreamer
 
 # CST imports for phi-invariant encoding
 import math

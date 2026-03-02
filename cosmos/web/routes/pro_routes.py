@@ -1,5 +1,5 @@
 """
-Farnsworth Pro — API Routes
+Cosmos Pro — API Routes
 ============================
 Professional AI platform routes: auth, chat, scanner, wallet, arena, PnL, predictions.
 """
@@ -25,12 +25,12 @@ router = APIRouter()
 # ============================================================
 # Storage paths
 # ============================================================
-DATA_DIR = Path("/workspace/farnsworth_memory/pro") if Path("/workspace").exists() else Path("./data/pro")
+DATA_DIR = Path("/workspace/cosmos_memory/pro") if Path("/workspace").exists() else Path("./data/pro")
 USERS_FILE = DATA_DIR / "users.json"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # Simple JWT-like token (HMAC-based, no external deps)
-SECRET_KEY = os.environ.get("PRO_SECRET_KEY", "farnsworth-pro-secret-2026")
+SECRET_KEY = os.environ.get("PRO_SECRET_KEY", "cosmos-pro-secret-2026")
 
 # OAuth state storage (in-memory, cleared on restart)
 _oauth_states = {}
@@ -41,7 +41,7 @@ _oauth_states = {}
 # ============================================================
 def _get_templates():
     try:
-        from farnsworth.web.server import templates
+        from Cosmos.web.server import templates
         return templates
     except Exception:
         from fastapi.templating import Jinja2Templates
@@ -156,7 +156,7 @@ async def auth_x_login(request: Request):
     _oauth_states[state] = {"code_verifier": code_verifier, "ts": time.time()}
 
     client_id = os.environ.get("X_CLIENT_ID", "placeholder_client_id")
-    redirect_uri = "https://ai.farnsworth.cloud/callback"
+    redirect_uri = "https://ai.cosmos.cloud/callback"
 
     auth_url = (
         f"https://x.com/i/oauth2/authorize"
@@ -186,7 +186,7 @@ async def auth_x_callback(request: Request):
     # Exchange code for access token
     client_id = os.environ.get("X_CLIENT_ID", "placeholder_client_id")
     client_secret = os.environ.get("X_CLIENT_SECRET", "")
-    redirect_uri = "https://ai.farnsworth.cloud/callback"
+    redirect_uri = "https://ai.cosmos.cloud/callback"
 
     try:
         import aiohttp
@@ -227,8 +227,8 @@ async def auth_x_callback(request: Request):
         logger.error(f"X OAuth error: {e}")
         # Fallback for when X API isn't configured
         x_id = f"x_{secrets.token_hex(4)}"
-        x_username = "farnsworth_user"
-        x_name = "Farnsworth User"
+        x_username = "cosmos_user"
+        x_name = "Cosmos User"
 
     # Create or update user
     users = _load_users()
@@ -368,7 +368,7 @@ async def auth_select_plan(request: Request):
 def _get_farns_node():
     """Get the running FARNS node."""
     try:
-        from farnsworth.network.farns_node import get_farns_node
+        from Cosmos.network.farns_node import get_farns_node
         return get_farns_node()
     except Exception:
         return None
@@ -391,7 +391,7 @@ async def _mesh_query(prompt: str, model: str = "", timeout: float = 90.0):
     # Latent route or direct model selection
     routing_meta = {}
     bot_name = model
-    if node._latent_router and (not model or model == "farnsworth" or model not in available):
+    if node._latent_router and (not model or model == "cosmos" or model not in available):
         decision = node._latent_router.route(prompt, available)
         bot_name = decision.selected_bot
         routing_meta = {
@@ -436,7 +436,7 @@ async def pro_chat_api(request: Request):
     try:
         body = await request.json()
         message = body.get("message", "").strip()
-        model = body.get("model", "farnsworth").lower()
+        model = body.get("model", "cosmos").lower()
         mode = body.get("mode", "default")
         image_base64 = body.get("image_base64")
         conversation_id = body.get("conversation_id")
@@ -462,7 +462,7 @@ async def pro_chat_api(request: Request):
         # FALLBACK 1: Agent spawner (if mesh unavailable)
         if not response_text:
             try:
-                from farnsworth.core.agent_spawner import get_agent_spawner
+                from Cosmos.core.agent_spawner import get_agent_spawner
                 spawner = get_agent_spawner()
                 result = await spawner.call_agent(model, prompt)
                 if result and isinstance(result, dict):
@@ -476,7 +476,7 @@ async def pro_chat_api(request: Request):
         # FALLBACK 2: Model swarm
         if not response_text:
             try:
-                from farnsworth.core.model_swarm import get_model_swarm
+                from Cosmos.core.model_swarm import get_model_swarm
                 swarm = get_model_swarm()
                 result = await swarm.query(message, preferred_model=model)
                 response_text = result if isinstance(result, str) else str(result)
@@ -505,7 +505,7 @@ async def pro_chat_stream(request: Request):
     try:
         body = await request.json()
         message = body.get("message", "").strip()
-        model = body.get("model", "farnsworth").lower()
+        model = body.get("model", "cosmos").lower()
 
         if not message:
             return JSONResponse({"error": "Message required"}, status_code=400)
@@ -522,7 +522,7 @@ async def pro_chat_stream(request: Request):
                 else:
                     # Fallback to agent spawner
                     try:
-                        from farnsworth.core.agent_spawner import get_agent_spawner
+                        from Cosmos.core.agent_spawner import get_agent_spawner
                         spawner = get_agent_spawner()
                         result = await spawner.call_agent(model, message)
                         if result and isinstance(result, dict):
@@ -601,7 +601,7 @@ async def wallet_analyze(request: Request):
         # Try to get real wallet data
         wallet_data = None
         try:
-            from farnsworth.trading.degen_trader import DegenTrader
+            from Cosmos.trading.degen_trader import DegenTrader
             # Use Solana RPC to get token accounts
             import aiohttp
             async with aiohttp.ClientSession() as session:
@@ -623,7 +623,7 @@ async def wallet_analyze(request: Request):
         # Generate swarm analysis
         analysis = ""
         try:
-            from farnsworth.core.agent_spawner import get_agent_spawner
+            from Cosmos.core.agent_spawner import get_agent_spawner
             spawner = get_agent_spawner()
             prompt = f"Analyze this Solana wallet address: {address}. Provide a brief portfolio assessment, risk factors, and recommendations. Be concise and crypto-savvy."
             result = await spawner.call_agent("grok", prompt)
@@ -657,7 +657,7 @@ async def token_scan():
         # Try to get data from existing DEX system
         tokens = []
         try:
-            from farnsworth.dex.dex_engine import DexEngine
+            from Cosmos.dex.dex_engine import DexEngine
             engine = DexEngine()
             data = await engine.get_trending()
             if data:
@@ -704,7 +704,7 @@ async def arena_start(request: Request):
             round_responses = []
             for agent_name in agents[:5]:  # Max 5 agents
                 try:
-                    from farnsworth.core.agent_spawner import get_agent_spawner
+                    from Cosmos.core.agent_spawner import get_agent_spawner
                     spawner = get_agent_spawner()
 
                     round_context = f"Round {round_num}/3"
@@ -773,7 +773,7 @@ async def pnl_data():
         stats = {}
 
         try:
-            from farnsworth.trading.degen_trader import DegenTrader
+            from Cosmos.trading.degen_trader import DegenTrader
             trader = DegenTrader.__new__(DegenTrader)
             if hasattr(trader, "get_trade_history"):
                 trades = await trader.get_trade_history()
@@ -803,7 +803,7 @@ async def predictions_data():
         stats = {}
 
         try:
-            from farnsworth.integration.polymarket_integration import get_polymarket
+            from Cosmos.integration.polymarket_integration import get_polymarket
             pm = get_polymarket()
             if hasattr(pm, "get_predictions"):
                 predictions = await pm.get_predictions()
@@ -814,7 +814,7 @@ async def predictions_data():
 
         # Also get from deliberation stats
         try:
-            from farnsworth.core.deliberation_engine import get_deliberation_engine
+            from Cosmos.core.deliberation_engine import get_deliberation_engine
             engine = get_deliberation_engine()
             if hasattr(engine, "get_prediction_stats"):
                 delib_stats = engine.get_prediction_stats()
@@ -842,7 +842,7 @@ def _get_polymarket_api():
     """Singleton PolymarketAPI to avoid session leaks."""
     global _polymarket_api
     if _polymarket_api is None:
-        from farnsworth.integration.financial.polymarket import PolymarketAPI
+        from Cosmos.integration.financial.polymarket import PolymarketAPI
         _polymarket_api = PolymarketAPI()
     return _polymarket_api
 
@@ -919,7 +919,7 @@ async def polymarket_ai_predictions(request: Request):
         return JSONResponse({"error": "Unauthorized"}, status_code=401)
 
     try:
-        from farnsworth.core.polymarket_predictor import get_predictor
+        from Cosmos.core.polymarket_predictor import get_predictor
         predictor = get_predictor()
 
         limit = int(request.query_params.get("limit", "20"))

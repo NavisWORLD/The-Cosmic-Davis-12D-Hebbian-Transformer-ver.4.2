@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/health/providers/mock.py
 cosmos Mock Health Provider
-=======
-Farnsworth Mock Health Provider
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/health/providers/mock.py
 
 Simulated health data provider for testing without real hardware or APIs.
 Generates realistic health metrics for development and demonstration.

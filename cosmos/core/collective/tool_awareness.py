@@ -1,11 +1,11 @@
 """
-Farnsworth Collective Tool Awareness
+Cosmos Collective Tool Awareness
 ====================================
 
 Let agents know about available tools and collectively decide on tool usage.
 
 Tools available to the collective:
-- generate_image: Create Borg Farnsworth meme images (Gemini with references)
+- generate_image: Create Borg Cosmos meme images (Gemini with references)
 - generate_video: Animate images to 5-15 second videos (Grok Imagine Video)
 - post_to_x: Post tweets with text, image, or video
 
@@ -54,7 +54,7 @@ class CollectiveToolAwareness:
     AVAILABLE_TOOLS = {
         "generate_image": ToolDefinition(
             name="generate_image",
-            description="Generate Borg Farnsworth meme image",
+            description="Generate Borg Cosmos meme image",
             triggers=[
                 "visual", "show", "image", "picture", "meme", "see",
                 "look", "illustration", "graphic", "art", "photo"
@@ -109,7 +109,7 @@ class CollectiveToolAwareness:
         ),
         "recall_memory": ToolDefinition(
             name="recall_memory",
-            description="Recall from Farnsworth 7-layer memory system",
+            description="Recall from Cosmos 7-layer memory system",
             triggers=[
                 "remember", "recall", "memory", "past", "history",
                 "context", "previous", "learned"
@@ -329,10 +329,10 @@ The collective will vote on whether to use tools based on all suggestions.
 
         lines.append("")
         lines.append("To use a tool, include it as a Python import in your code:")
-        lines.append("  from farnsworth.integration.x_automation.x_api_poster import get_x_api_poster")
-        lines.append("  from farnsworth.memory.memory_system import get_memory_system")
-        lines.append("  from farnsworth.integration.hackathon.colosseum_worker import ColosseumWorker")
-        lines.append("  from farnsworth.core.collective.session_manager import get_session_manager")
+        lines.append("  from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster")
+        lines.append("  from Cosmos.memory.memory_system import get_memory_system")
+        lines.append("  from Cosmos.integration.hackathon.colosseum_worker import ColosseumWorker")
+        lines.append("  from Cosmos.core.collective.session_manager import get_session_manager")
 
         return "\n".join(lines)
 

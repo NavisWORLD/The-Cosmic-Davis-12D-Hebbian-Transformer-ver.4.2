@@ -20,7 +20,7 @@ router = APIRouter(tags=["skills"])
 @router.get("/api/skills")
 async def list_skills():
     """List all registered skills in the swarm."""
-    from farnsworth.core.skill_registry import get_skill_registry, initialize_registry
+    from Cosmos.core.skill_registry import get_skill_registry, initialize_registry
     registry = get_skill_registry()
     if not registry._discovered:
         await initialize_registry()
@@ -30,7 +30,7 @@ async def list_skills():
 @router.get("/api/skills/search")
 async def search_skills(q: str = Query(..., description="Search query")):
     """Search skills by natural language query."""
-    from farnsworth.core.skill_registry import get_skill_registry, initialize_registry
+    from Cosmos.core.skill_registry import get_skill_registry, initialize_registry
     registry = get_skill_registry()
     if not registry._discovered:
         await initialize_registry()
@@ -47,7 +47,7 @@ async def search_skills(q: str = Query(..., description="Search query")):
 @router.get("/api/skills/prompt-context")
 async def get_prompt_context(agent: str = Query(None)):
     """Get skill context formatted for injection into agent prompts."""
-    from farnsworth.core.skill_registry import get_skill_registry, initialize_registry
+    from Cosmos.core.skill_registry import get_skill_registry, initialize_registry
     registry = get_skill_registry()
     if not registry._discovered:
         await initialize_registry()
@@ -57,7 +57,7 @@ async def get_prompt_context(agent: str = Query(None)):
 @router.get("/api/skills/agent/{agent}")
 async def get_agent_skills(agent: str):
     """Get all skills available to a specific agent."""
-    from farnsworth.core.skill_registry import get_skill_registry, initialize_registry
+    from Cosmos.core.skill_registry import get_skill_registry, initialize_registry
     registry = get_skill_registry()
     if not registry._discovered:
         await initialize_registry()
@@ -72,7 +72,7 @@ async def get_agent_skills(agent: str):
 @router.get("/api/skills/category/{category}")
 async def get_category_skills(category: str):
     """Get all skills in a specific category."""
-    from farnsworth.core.skill_registry import get_skill_registry, initialize_registry, SkillCategory
+    from Cosmos.core.skill_registry import get_skill_registry, initialize_registry, SkillCategory
     registry = get_skill_registry()
     if not registry._discovered:
         await initialize_registry()
@@ -91,7 +91,7 @@ async def get_category_skills(category: str):
 @router.get("/api/skills/{name}")
 async def get_skill(name: str):
     """Get detailed information about a specific skill."""
-    from farnsworth.core.skill_registry import get_skill_registry, initialize_registry
+    from Cosmos.core.skill_registry import get_skill_registry, initialize_registry
     registry = get_skill_registry()
     if not registry._discovered:
         await initialize_registry()
@@ -120,7 +120,7 @@ async def get_skill(name: str):
 @router.post("/api/skills/register")
 async def register_custom_skill(request: Request):
     """Register a custom skill in the registry."""
-    from farnsworth.core.skill_registry import get_skill_registry, initialize_registry, Skill, SkillCategory
+    from Cosmos.core.skill_registry import get_skill_registry, initialize_registry, Skill, SkillCategory
     registry = get_skill_registry()
     if not registry._discovered:
         await initialize_registry()

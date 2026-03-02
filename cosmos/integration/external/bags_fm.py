@@ -1,5 +1,5 @@
 """
-Farnsworth Bags.fm Integration
+Cosmos Bags.fm Integration
 ===============================
 
 Full integration with Bags.fm - The Solana launchpad where AI agents earn.
@@ -44,7 +44,7 @@ class BagsCredentials:
 
 class BagsFMProvider:
     """
-    Complete Bags.fm integration for Farnsworth.
+    Complete Bags.fm integration for Cosmos.
 
     Provides access to all Bags.fm capabilities:
     - Auth & Identity
@@ -198,7 +198,7 @@ class BagsFMProvider:
             )
             return resp.json() if resp.status_code == 200 else {"error": resp.text}
 
-    async def create_api_key(self, name: str = "farnsworth-key") -> Dict[str, Any]:
+    async def create_api_key(self, name: str = "cosmos-key") -> Dict[str, Any]:
         """Create a new API key."""
         if not self.jwt_token:
             return {"error": "JWT token required"}
@@ -482,7 +482,7 @@ class BagsFMProvider:
         """
         Launch a token for another agent with automatic fee sharing.
 
-        This is the main function for Farnsworth to launch tokens for others.
+        This is the main function for Cosmos to launch tokens for others.
         """
         results = {"steps": []}
 

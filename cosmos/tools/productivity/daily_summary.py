@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/tools/productivity/daily_summary.py
 cosmos Daily Summary - Automated Activity Digest
-=======
-Farnsworth Daily Summary - Automated Activity Digest
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/tools/productivity/daily_summary.py
 
 "What did you accomplish today? Let me remind you!"
 

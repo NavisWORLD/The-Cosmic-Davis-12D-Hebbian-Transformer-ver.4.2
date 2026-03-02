@@ -74,7 +74,7 @@ def print_status(component: str, status: str, details: str = ""):
 
 async def run_setup_wizard():
     """Run granular setup wizard."""
-    from cosmos.core.setup_wizard import SetupWizard
+    from Cosmos.core.setup_wizard import SetupWizard
     wizard = SetupWizard(PROJECT_ROOT)
     await wizard.run()
 
@@ -84,7 +84,7 @@ async def run_mcp_server():
     print_status("MCP Server", "loading", "Starting...")
 
     try:
-        from cosmos.mcp_server.server import run_server
+        from Cosmos.mcp_server.server import run_server
         await run_server()
     except ImportError as e:
         print_status("MCP Server", "error", f"Import error: {e}")
@@ -115,9 +115,9 @@ async def run_cli_mode():
     print("Type 'help' for commands, 'exit' to quit.\n")
 
     # Initialize components
-    from cosmos.memory.memory_system import MemorySystem
-    from cosmos.evolution.fitness_tracker import FitnessTracker
-    from cosmos.evolution.genetic_optimizer import GeneticOptimizer
+    from Cosmos.memory.memory_system import MemorySystem
+    from Cosmos.evolution.fitness_tracker import FitnessTracker
+    from Cosmos.evolution.genetic_optimizer import GeneticOptimizer
 
     memory = MemorySystem(data_dir=str(PROJECT_ROOT / "data"))
     await memory.initialize()
@@ -261,7 +261,7 @@ Available Commands:
             elif cmd == "backup":
                 print("Creating backup...")
                 try:
-                    from cosmos.core.resilience import BackupManager
+                    from Cosmos.core.resilience import BackupManager
                     backup_mgr = BackupManager(
                         data_dir=str(PROJECT_ROOT / "data"),
                         backup_dir=str(PROJECT_ROOT / "backups")
@@ -282,7 +282,7 @@ Available Commands:
                         print("❌ Cannot start: cosmos_ISOLATED=true")
                         print("   Set cosmos_ISOLATED=false in .env to enable P2P")
                     else:
-                        from cosmos.core.swarm.p2p import swarm_fabric
+                        from Cosmos.core.swarm.p2p import swarm_fabric
                         if not hasattr(run_cli_mode, '_node_task') or run_cli_mode._node_task is None:
                             run_cli_mode._node_task = asyncio.create_task(swarm_fabric.start())
                             print(f"✅ P2P Node started: {swarm_fabric.node_id}")
@@ -306,7 +306,7 @@ Available Commands:
 
             elif cmd == "node status":
                 try:
-                    from cosmos.core.swarm.p2p import swarm_fabric
+                    from Cosmos.core.swarm.p2p import swarm_fabric
                     print(f"\n🌐 P2P Node Status")
                     print(f"   Node ID: {swarm_fabric.node_id}")
                     print(f"   Port: {swarm_fabric.port}")
@@ -327,7 +327,7 @@ Available Commands:
 
             elif cmd == "planetary":
                 try:
-                    from cosmos.core.memory.planetary.akashic import PlanetaryMemory
+                    from Cosmos.core.memory.planetary.akashic import PlanetaryMemory
                     pm = PlanetaryMemory(use_p2p=True)
                     print(f"\n🌍 Planetary Memory (Akashic Record)")
                     print(f"   Local Skills: {len(pm.local_skills)}")
@@ -343,7 +343,7 @@ Available Commands:
 
             elif cmd == "tokens":
                 try:
-                    from cosmos.core.token_saver import token_saver
+                    from Cosmos.core.token_saver import token_saver
                     status = token_saver.get_status()
                     budget = status["budget"]
                     print(f"\n💰 Token Budget Status")
@@ -367,7 +367,7 @@ Available Commands:
 
             elif cmd == "cache":
                 try:
-                    from cosmos.core.token_saver import token_saver
+                    from Cosmos.core.token_saver import token_saver
                     stats = token_saver.cache.stats()
                     print(f"\n📦 Response Cache")
                     print(f"   Entries: {stats['entries']} / {stats['max_size']}")
@@ -377,7 +377,7 @@ Available Commands:
 
             elif cmd == "notes":
                 try:
-                    from cosmos.tools.productivity.quick_notes import quick_notes
+                    from Cosmos.tools.productivity.quick_notes import quick_notes
                     recent = quick_notes.list_recent(10)
                     stats = quick_notes.stats()
                     print(f"\n📝 Quick Notes ({stats['active']} active, {stats['pinned']} pinned)")
@@ -393,7 +393,7 @@ Available Commands:
 
             elif cmd.startswith("note "):
                 try:
-                    from cosmos.tools.productivity.quick_notes import quick_notes
+                    from Cosmos.tools.productivity.quick_notes import quick_notes
                     content = cmd[5:]
                     # Extract tags from #hashtags
                     import re
@@ -406,7 +406,7 @@ Available Commands:
 
             elif cmd == "snippets":
                 try:
-                    from cosmos.tools.productivity.snippet_manager import snippet_manager
+                    from Cosmos.tools.productivity.snippet_manager import snippet_manager
                     popular = snippet_manager.list_popular(10)
                     stats = snippet_manager.stats()
                     print(f"\n📋 Code Snippets ({stats['total']} total, {stats['favorites']} favorites)")
@@ -421,7 +421,7 @@ Available Commands:
 
             elif cmd == "focus start":
                 try:
-                    from cosmos.tools.productivity.focus_timer import focus_timer
+                    from Cosmos.tools.productivity.focus_timer import focus_timer
                     asyncio.create_task(focus_timer.start_work())
                     print(f"🍅 Focus session started ({focus_timer.config.work_minutes} min)")
                 except Exception as e:
@@ -429,7 +429,7 @@ Available Commands:
 
             elif cmd == "focus stop":
                 try:
-                    from cosmos.tools.productivity.focus_timer import focus_timer
+                    from Cosmos.tools.productivity.focus_timer import focus_timer
                     asyncio.create_task(focus_timer.stop())
                     print("⏹️ Focus session stopped")
                 except Exception as e:
@@ -437,7 +437,7 @@ Available Commands:
 
             elif cmd == "focus" or cmd == "focus status":
                 try:
-                    from cosmos.tools.productivity.focus_timer import focus_timer
+                    from Cosmos.tools.productivity.focus_timer import focus_timer
                     status = focus_timer.get_status()
                     today = focus_timer.get_today_stats()
                     print(f"\n🍅 Focus Timer")
@@ -451,7 +451,7 @@ Available Commands:
 
             elif cmd == "summary":
                 try:
-                    from cosmos.tools.productivity.daily_summary import daily_summary
+                    from Cosmos.tools.productivity.daily_summary import daily_summary
                     print("Generating daily summary...")
                     s = await daily_summary.generate_summary(memory_system=memory)
                     print(daily_summary.format_summary(s))
@@ -460,7 +460,7 @@ Available Commands:
 
             elif cmd == "profile":
                 try:
-                    from cosmos.core.context_profiles import context_profiles
+                    from Cosmos.core.context_profiles import context_profiles
                     active = context_profiles.get_active_profile()
                     if active:
                         print(f"\n{active.icon} Active Profile: {active.name}")
@@ -475,7 +475,7 @@ Available Commands:
 
             elif cmd == "profiles":
                 try:
-                    from cosmos.core.context_profiles import context_profiles
+                    from Cosmos.core.context_profiles import context_profiles
                     profiles = context_profiles.list_profiles()
                     active_id = context_profiles.active_profile_id
                     print(f"\n📋 Context Profiles")
@@ -488,7 +488,7 @@ Available Commands:
 
             elif cmd.startswith("switch "):
                 try:
-                    from cosmos.core.context_profiles import context_profiles
+                    from Cosmos.core.context_profiles import context_profiles
                     profile_id = cmd[7:].strip()
                     profile = context_profiles.switch_profile(profile_id)
                     if profile:
@@ -533,10 +533,10 @@ async def run_p2p_node(port: int = 9999, enable_planetary: bool = True):
         return
 
     try:
-        from cosmos.core.swarm.p2p import SwarmFabric
-        from cosmos.core.swarm.dkg import DecentralizedKnowledgeGraph
-        from cosmos.core.memory.planetary.akashic import PlanetaryMemory
-        from cosmos.memory.memory_system import MemorySystem
+        from Cosmos.core.swarm.p2p import SwarmFabric
+        from Cosmos.core.swarm.dkg import DecentralizedKnowledgeGraph
+        from Cosmos.core.memory.planetary.akashic import PlanetaryMemory
+        from Cosmos.memory.memory_system import MemorySystem
 
         # Initialize memory system for planetary integration
         memory = MemorySystem(data_dir=str(PROJECT_ROOT / "data"))
@@ -589,7 +589,7 @@ async def run_node_with_dashboard(port: int = 9999):
         return
 
     try:
-        from cosmos.core.swarm.p2p import SwarmFabric
+        from Cosmos.core.swarm.p2p import SwarmFabric
 
         fabric = SwarmFabric(port=port)
 
@@ -626,7 +626,7 @@ async def run_user_cli_mode():
     print("\n User-Friendly CLI Mode")
 
     try:
-        from cosmos.cli.user_cli import run_user_cli
+        from Cosmos.cli.user_cli import run_user_cli
         await run_user_cli(data_dir=str(PROJECT_ROOT / "data"))
     except ImportError as e:
         print_status("User CLI", "error", f"Import error: {e}")
@@ -640,7 +640,7 @@ async def run_health_dashboard():
     print_status("Health Dashboard", "loading", "Starting on port 8081...")
 
     try:
-        from cosmos.health.dashboard.server import app
+        from Cosmos.health.dashboard.server import app
         import uvicorn
 
         config = uvicorn.Config(

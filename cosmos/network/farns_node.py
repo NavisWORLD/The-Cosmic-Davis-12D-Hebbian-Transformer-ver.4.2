@@ -12,7 +12,7 @@ The heart of the FARNS mesh. Each server runs one node that:
   - Processes PRO user join requests
 
 Usage:
-    python -m farnsworth.network.farns_node --name nexus-alpha
+    python -m cosmos.network.farns_node --name nexus-alpha
 """
 import os
 import sys

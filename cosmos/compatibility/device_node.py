@@ -1,5 +1,5 @@
 """
-Farnsworth Device Node - OpenClaw Node Compatibility
+Cosmos Device Node - OpenClaw Node Compatibility
 =====================================================
 
 Provides device-level capabilities matching OpenClaw's node system:
@@ -112,12 +112,12 @@ class DeviceNode:
         Initialize device node.
 
         Args:
-            output_dir: Directory for captured media (default: ~/.farnsworth/node_output)
+            output_dir: Directory for captured media (default: ~/.cosmos/node_output)
         """
-        self.output_dir = Path(output_dir or os.path.expanduser("~/.farnsworth/node_output"))
+        self.output_dir = Path(output_dir or os.path.expanduser("~/.cosmos/node_output"))
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-        self.node_id = f"farnsworth-{PLATFORM}-{os.getpid()}"
+        self.node_id = f"cosmos-{PLATFORM}-{os.getpid()}"
         self.permissions: Dict[str, bool] = {}
 
         # Detect available capabilities
@@ -562,7 +562,7 @@ class DeviceNode:
                     $textNodes.Item(0).AppendChild($template.CreateTextNode("{title}")) | Out-Null
                     $textNodes.Item(1).AppendChild($template.CreateTextNode("{body}")) | Out-Null
                     $toast = [Windows.UI.Notifications.ToastNotification]::new($template)
-                    [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Farnsworth").Show($toast)
+                    [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Cosmos").Show($toast)
                     """
                     subprocess.run(["powershell", "-Command", ps_cmd])
 

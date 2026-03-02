@@ -1,10 +1,10 @@
 """
-Farnsworth Dead Letter Queue (DLQ)
+Cosmos Dead Letter Queue (DLQ)
 
 Captures failed, dropped, and timed-out signals from the Nexus event bus.
 Provides retry logic with exponential backoff and metrics for monitoring.
 
-"No signal left behind - even failed thoughts deserve a second chance." - Farnsworth
+"No signal left behind - even failed thoughts deserve a second chance." - Cosmos
 
 AGI v1.9.1: Ensures 100% signal accountability across the event bus.
 """

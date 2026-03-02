@@ -88,15 +88,15 @@ class cosmosMCPServer:
 
         try:
             # Import resilience components first (needed early)
-            from cosmos.core.resilience import BackupManager, HealthMonitor
+            from Cosmos.core.resilience import BackupManager, HealthMonitor
 
             # Import here to avoid circular imports
-            from cosmos.memory.memory_system import MemorySystem
-            from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
-            from cosmos.agents.planner_agent import PlannerAgent
-            from cosmos.agents.proactive_agent import ProactiveAgent
-            from cosmos.evolution.fitness_tracker import FitnessTracker
-            from cosmos.core.model_manager import ModelManager
+            from Cosmos.memory.memory_system import MemorySystem
+            from Cosmos.agents.swarm_orchestrator import SwarmOrchestrator
+            from Cosmos.agents.planner_agent import PlannerAgent
+            from Cosmos.agents.proactive_agent import ProactiveAgent
+            from Cosmos.evolution.fitness_tracker import FitnessTracker
+            from Cosmos.core.model_manager import ModelManager
 
             # Initialize memory system
             self._memory_system = MemorySystem(data_dir=str(self.data_dir))
@@ -115,7 +115,7 @@ class cosmosMCPServer:
 
             # Initialize Vision Module
             try:
-                from cosmos.integration.vision import VisionModule
+                from Cosmos.integration.vision import VisionModule
                 self._vision_module = VisionModule()
             except ImportError as e:
                 logger.warning(f"Vision module not available: {e}")
@@ -123,7 +123,7 @@ class cosmosMCPServer:
 
             # Initialize Web Agent
             try:
-                from cosmos.agents.web_agent import WebAgent
+                from Cosmos.agents.web_agent import WebAgent
                 self._web_agent = WebAgent()
             except ImportError as e:
                 logger.warning(f"Web agent not available: {e}")
@@ -140,7 +140,7 @@ class cosmosMCPServer:
                 )
 
             # Initialize conversation exporter
-            from cosmos.memory.conversation_export import ConversationExporter
+            from Cosmos.memory.conversation_export import ConversationExporter
             self._conversation_exporter = ConversationExporter(
                 output_dir=str(self.data_dir / "exports"),
                 instance_id="cosmos",
@@ -153,7 +153,7 @@ class cosmosMCPServer:
             self._conversation_exporter.get_statistics_fn = self._get_memory_statistics
 
             # Initialize project tracker
-            from cosmos.memory.project_tracking import ProjectTracker
+            from Cosmos.memory.project_tracking import ProjectTracker
             self._project_tracker = ProjectTracker(
                 data_dir=str(self.data_dir),
             )
@@ -195,15 +195,15 @@ class cosmosMCPServer:
                     self._project_tracker.llm_fn = self._model_manager.generate
 
             # --- ACTIVATE COGNITIVE ENGINES (v1.4 - v1.9) ---
-            from cosmos.core.learning.synergy import create_synergy_engine
+            from Cosmos.core.learning.synergy import create_synergy_engine
             self._synergy_engine = create_synergy_engine(self._project_tracker)
             
             # Importing these modules triggers their Nexus subscriptions
-            import cosmos.core.neuromorphic.engine
-            import cosmos.core.learning.continual
-            import cosmos.core.reasoning.causal
-            import cosmos.core.cognition.theory_of_mind
-            import cosmos.os_integration.bridge
+            import Cosmos.core.neuromorphic.engine
+            import Cosmos.core.learning.continual
+            import Cosmos.core.reasoning.causal
+            import Cosmos.core.cognition.theory_of_mind
+            import Cosmos.os_integration.bridge
             
             # Start background loops where necessary
             # Swarm Fabric (v2.5) needs explicit start
@@ -212,14 +212,14 @@ class cosmosMCPServer:
             is_isolated = os.environ.get("cosmos_ISOLATED", "false").lower() == "true"
             
             if not is_isolated:
-                from cosmos.core.swarm.p2p import swarm_fabric
+                from Cosmos.core.swarm.p2p import swarm_fabric
                 asyncio.create_task(swarm_fabric.start())
                 logger.info("Swarm Fabric: Active (Collaborative Mode)")
             else:
                 logger.info("Swarm Fabric: Disabled (Isolated Mode)")
             
             # OS Bridge needs explicit start
-            from cosmos.os_integration.bridge import os_bridge
+            from Cosmos.os_integration.bridge import os_bridge
             await os_bridge.start_monitoring(interval=10.0)
             
             logger.info("cosmos Cognitive Cloud fully active.")
@@ -480,7 +480,7 @@ class cosmosMCPServer:
             if not self._conversation_exporter:
                 return {"success": False, "error": "Conversation exporter not initialized"}
 
-            from cosmos.memory.conversation_export import (
+            from Cosmos.memory.conversation_export import (
                 ConversationExportFormat,
                 ExportOptions,
             )
@@ -562,7 +562,7 @@ class cosmosMCPServer:
             if not self._project_tracker:
                 return {"success": False, "error": "Project tracker not initialized"}
 
-            from cosmos.memory.project_tracking import ProjectStatus
+            from Cosmos.memory.project_tracking import ProjectStatus
 
             status_map = {
                 "detected": ProjectStatus.DETECTED,
@@ -602,7 +602,7 @@ class cosmosMCPServer:
             if not self._project_tracker:
                 return {"success": False, "error": "Project tracker not initialized"}
 
-            from cosmos.memory.project_tracking import ProjectStatus
+            from Cosmos.memory.project_tracking import ProjectStatus
 
             project_status = None
             if status:
@@ -645,7 +645,7 @@ class cosmosMCPServer:
             if not self._project_tracker:
                 return {"success": False, "error": "Project tracker not initialized"}
 
-            from cosmos.memory.project_tracking import ProjectStatus
+            from Cosmos.memory.project_tracking import ProjectStatus
 
             parsed_status_filter = None
             if status_filter:
@@ -767,7 +767,7 @@ class cosmosMCPServer:
             if not self._project_tracker:
                 return {"success": False, "error": "Project tracker not initialized"}
 
-            from cosmos.memory.project_tracking import MilestoneType
+            from Cosmos.memory.project_tracking import MilestoneType
             from datetime import datetime
 
             type_map = {
@@ -836,7 +836,7 @@ class cosmosMCPServer:
             if not self._project_tracker:
                 return {"success": False, "error": "Project tracker not initialized"}
 
-            from cosmos.memory.project_tracking import LinkType
+            from Cosmos.memory.project_tracking import LinkType
 
             type_map = {
                 "depends_on": LinkType.DEPENDS_ON,

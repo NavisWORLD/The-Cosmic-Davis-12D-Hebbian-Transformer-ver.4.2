@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD:cosmos/incidents/opsgenie_integration.py
 cosmos OpsGenie Integration
-=======
-Farnsworth OpsGenie Integration
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/opsgenie_integration.py
 
 "Good news, everyone! The alerts are so loud, even Nibbler woke up!"
 
@@ -113,11 +109,7 @@ class OpsGenieIntegration:
         tags: List[str] = None,
         details: Dict = None,
         entity: str = None,
-<<<<<<< HEAD:cosmos/incidents/opsgenie_integration.py
         source: str = "cosmos",
-=======
-        source: str = "Farnsworth",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/opsgenie_integration.py
         priority: str = "P3",
         user: str = None,
         note: str = None,
@@ -210,11 +202,7 @@ class OpsGenieIntegration:
         identifier: str,
         identifier_type: str = "id",
         user: str = None,
-<<<<<<< HEAD:cosmos/incidents/opsgenie_integration.py
         source: str = "cosmos",
-=======
-        source: str = "Farnsworth",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/opsgenie_integration.py
         note: str = None,
     ) -> bool:
         """Acknowledge an alert."""
@@ -239,11 +227,7 @@ class OpsGenieIntegration:
         identifier: str,
         identifier_type: str = "id",
         user: str = None,
-<<<<<<< HEAD:cosmos/incidents/opsgenie_integration.py
         source: str = "cosmos",
-=======
-        source: str = "Farnsworth",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/opsgenie_integration.py
         note: str = None,
     ) -> bool:
         """Close an alert."""
@@ -269,11 +253,7 @@ class OpsGenieIntegration:
         end_time: datetime,
         identifier_type: str = "id",
         user: str = None,
-<<<<<<< HEAD:cosmos/incidents/opsgenie_integration.py
         source: str = "cosmos",
-=======
-        source: str = "Farnsworth",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/opsgenie_integration.py
         note: str = None,
     ) -> bool:
         """Snooze an alert until a specific time."""
@@ -302,11 +282,7 @@ class OpsGenieIntegration:
         note: str,
         identifier_type: str = "id",
         user: str = None,
-<<<<<<< HEAD:cosmos/incidents/opsgenie_integration.py
         source: str = "cosmos",
-=======
-        source: str = "Farnsworth",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/opsgenie_integration.py
     ) -> bool:
         """Add a note to an alert."""
         payload = {
@@ -332,11 +308,7 @@ class OpsGenieIntegration:
         escalation_id: str,
         identifier_type: str = "id",
         user: str = None,
-<<<<<<< HEAD:cosmos/incidents/opsgenie_integration.py
         source: str = "cosmos",
-=======
-        source: str = "Farnsworth",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/opsgenie_integration.py
         note: str = None,
     ) -> bool:
         """Escalate an alert to the next level."""
@@ -366,11 +338,7 @@ class OpsGenieIntegration:
         owner_type: str = "user",
         identifier_type: str = "id",
         user: str = None,
-<<<<<<< HEAD:cosmos/incidents/opsgenie_integration.py
         source: str = "cosmos",
-=======
-        source: str = "Farnsworth",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/opsgenie_integration.py
         note: str = None,
     ) -> bool:
         """Assign an alert to a user or team."""
@@ -402,11 +370,7 @@ class OpsGenieIntegration:
         tags: List[str],
         identifier_type: str = "id",
         user: str = None,
-<<<<<<< HEAD:cosmos/incidents/opsgenie_integration.py
         source: str = "cosmos",
-=======
-        source: str = "Farnsworth",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/incidents/opsgenie_integration.py
         note: str = None,
     ) -> bool:
         """Add tags to an alert."""

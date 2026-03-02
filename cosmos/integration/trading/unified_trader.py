@@ -92,8 +92,8 @@ class UnifiedTrader:
             return self._bankr_available
 
         try:
-            from farnsworth.integration.bankr import get_bankr_client
-            from farnsworth.integration.bankr.config import get_bankr_config
+            from Cosmos.integration.bankr import get_bankr_client
+            from Cosmos.integration.bankr.config import get_bankr_config
 
             config = get_bankr_config()
             if not config.api_key:
@@ -116,7 +116,7 @@ class UnifiedTrader:
         """Get Bankr trading instance."""
         if self._bankr_trading is None:
             try:
-                from farnsworth.integration.bankr import BankrTrading, get_bankr_client
+                from Cosmos.integration.bankr import BankrTrading, get_bankr_client
                 self._bankr_trading = BankrTrading(get_bankr_client())
             except ImportError:
                 return None
@@ -235,7 +235,7 @@ class UnifiedTrader:
     async def _execute_solana(self, request: TradeRequest) -> TradeResponse:
         """Fallback to direct Solana trading."""
         try:
-            from farnsworth.integration.solana.trading import solana_trader
+            from Cosmos.integration.solana.trading import solana_trader
 
             if request.action == "swap":
                 # Use Jupiter via existing implementation
@@ -373,7 +373,7 @@ class UnifiedTrader:
         # Try Bankr first
         if await self._check_bankr():
             try:
-                from farnsworth.integration.bankr import get_bankr_client
+                from Cosmos.integration.bankr import get_bankr_client
                 client = get_bankr_client()
                 return await client.get_price(token)
             except Exception as e:
@@ -381,7 +381,7 @@ class UnifiedTrader:
 
         # Fallback to DexScreener
         try:
-            from farnsworth.integration.financial.dexscreener import dex_screener
+            from Cosmos.integration.financial.dexscreener import dex_screener
             pairs = await dex_screener.search_pairs(token)
             if pairs:
                 return float(pairs[0].get("priceUsd", 0))

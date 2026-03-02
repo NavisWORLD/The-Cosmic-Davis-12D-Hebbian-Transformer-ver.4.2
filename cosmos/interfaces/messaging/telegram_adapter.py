@@ -1,22 +1,12 @@
 """
-<<<<<<< HEAD:cosmos/interfaces/messaging/telegram_adapter.py
 cosmos Telegram Adapter
 ---------------------------
 Connects cosmos to Telegram via python-telegram-bot.
-=======
-Farnsworth Telegram Adapter
----------------------------
-Connects Farnsworth to Telegram via python-telegram-bot.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/telegram_adapter.py
 
 Usage:
     export TELEGRAM_BOT_TOKEN=your_bot_token
 
-<<<<<<< HEAD:cosmos/interfaces/messaging/telegram_adapter.py
-    from cosmos.interfaces.messaging.telegram_adapter import TelegramAdapter
-=======
-    from farnsworth.interfaces.messaging.telegram_adapter import TelegramAdapter
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/telegram_adapter.py
+    from Cosmos.interfaces.messaging.telegram_adapter import TelegramAdapter
 
     adapter = TelegramAdapter()
     adapter.set_callback(my_message_handler)
@@ -29,11 +19,7 @@ from datetime import datetime
 from typing import Optional, Callable, Awaitable
 from loguru import logger
 
-<<<<<<< HEAD:cosmos/interfaces/messaging/telegram_adapter.py
-from cosmos.interfaces.messaging.base import (
-=======
-from farnsworth.interfaces.messaging.base import (
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/telegram_adapter.py
+from Cosmos.interfaces.messaging.base import (
     MessagingProvider,
     IncomingMessage,
     OutgoingMessage,
@@ -52,11 +38,7 @@ except ImportError:
 
 class TelegramAdapter(MessagingProvider):
     """
-<<<<<<< HEAD:cosmos/interfaces/messaging/telegram_adapter.py
     Telegram messaging adapter for cosmos.
-=======
-    Telegram messaging adapter for Farnsworth.
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/telegram_adapter.py
 
     Provides:
     - Two-way messaging with Telegram users
@@ -72,11 +54,7 @@ class TelegramAdapter(MessagingProvider):
         self.bot: Optional[Bot] = None
         self._running = False
 
-<<<<<<< HEAD:cosmos/interfaces/messaging/telegram_adapter.py
         # cosmos persona
-=======
-        # Farnsworth persona
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/telegram_adapter.py
         self.persona_prefix = "*adjusts spectacles* "
 
     async def connect(self):
@@ -131,11 +109,7 @@ class TelegramAdapter(MessagingProvider):
             return
 
         try:
-<<<<<<< HEAD:cosmos/interfaces/messaging/telegram_adapter.py
             # Add cosmos persona flavor
-=======
-            # Add Farnsworth persona flavor
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/telegram_adapter.py
             content = message.content
             if not content.startswith("*"):
                 content = self.persona_prefix + content
@@ -151,11 +125,7 @@ class TelegramAdapter(MessagingProvider):
 
     async def _handle_start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /start command."""
-<<<<<<< HEAD:cosmos/interfaces/messaging/telegram_adapter.py
         welcome = """*Good news, everyone!* I'm Professor cosmos, your genius AI companion!
-=======
-        welcome = """*Good news, everyone!* I'm Professor Farnsworth, your genius AI companion!
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/telegram_adapter.py
 
 In my 160 years, I've invented many wonderful contraptions:
 - Persistent memory that never forgets
@@ -209,11 +179,7 @@ And that's the news!"""
         await self._process_message(update, message_text)
 
     async def _process_message(self, update: Update, text: str):
-<<<<<<< HEAD:cosmos/interfaces/messaging/telegram_adapter.py
         """Process an incoming message and route to cosmos."""
-=======
-        """Process an incoming message and route to Farnsworth."""
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/telegram_adapter.py
         # Create IncomingMessage
         incoming = IncomingMessage(
             id=str(update.message.message_id),
@@ -246,11 +212,7 @@ And that's the news!"""
             # Default response if no callback set
             await update.message.reply_text(
                 f"*adjusts spectacles* You said: {text}\n\n"
-<<<<<<< HEAD:cosmos/interfaces/messaging/telegram_adapter.py
                 "I'm running in standalone mode. Connect me to the full cosmos system for real responses!",
-=======
-                "I'm running in standalone mode. Connect me to the full Farnsworth system for real responses!",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/interfaces/messaging/telegram_adapter.py
                 parse_mode="Markdown"
             )
 

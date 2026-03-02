@@ -17,26 +17,26 @@ Q2 2025 Additions:
 - Hierarchical Teams for coordinated execution
 """
 
-from cosmos.agents.base_agent import BaseAgent, AgentState, AgentCapability
-from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
-from cosmos.agents.specialist_agents import (
+from Cosmos.agents.base_agent import BaseAgent, AgentState, AgentCapability
+from Cosmos.agents.swarm_orchestrator import SwarmOrchestrator
+from Cosmos.agents.specialist_agents import (
     CodeAgent,
     ReasoningAgent,
     ResearchAgent,
     CreativeAgent,
 )
-from cosmos.agents.user_avatar import UserAvatar
-from cosmos.agents.meta_cognition import MetaCognitionAgent
+from Cosmos.agents.user_avatar import UserAvatar
+from Cosmos.agents.meta_cognition import MetaCognitionAgent
 
 # Q2 2025 - Advanced Agents
-from cosmos.agents.planner_agent import (
+from Cosmos.agents.planner_agent import (
     PlannerAgent,
     Plan,
     SubTask,
     TaskStatus,
     TaskPriority,
 )
-from cosmos.agents.critic_agent import (
+from Cosmos.agents.critic_agent import (
     CriticAgent,
     Review,
     QualityScore,
@@ -44,42 +44,38 @@ from cosmos.agents.critic_agent import (
     ReviewType,
     RefinementResult,
 )
-from cosmos.agents.web_agent import (
+from Cosmos.agents.web_agent import (
     WebAgent,
     BrowsingSession,
     PageState,
     WebAction,
     ActionType,
 )
-from cosmos.agents.filesystem_agent import (
+from Cosmos.agents.filesystem_agent import (
     FileSystemAgent,
     FileInfo,
     ProjectStructure,
     FileChange,
     SearchResult as FileSearchResult,
 )
-<<<<<<< HEAD:cosmos/agents/__init__.py
-from cosmos.agents.proactive_agent import ProactiveAgent, Suggestion
-=======
-from farnsworth.agents.proactive_agent import ProactiveAgent, Suggestion
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/agents/__init__.py
+from Cosmos.agents.proactive_agent import ProactiveAgent, Suggestion
 
 # Q2 2025 - Agent Collaboration
-from cosmos.agents.agent_debates import (
+from Cosmos.agents.agent_debates import (
     AgentDebates,
     Debate,
     Argument,
     DebateRole,
     ArgumentType,
 )
-from cosmos.agents.specialization_learning import (
+from Cosmos.agents.specialization_learning import (
     SpecializationLearning,
     AgentProfile,
     Skill,
     SkillLevel,
     TaskOutcome,
 )
-from cosmos.agents.hierarchical_teams import (
+from Cosmos.agents.hierarchical_teams import (
     HierarchicalTeams,
     Team,
     AgentNode,

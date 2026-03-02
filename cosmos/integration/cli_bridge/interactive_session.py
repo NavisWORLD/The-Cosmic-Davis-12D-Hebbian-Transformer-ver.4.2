@@ -21,7 +21,7 @@ from typing import Optional
 from loguru import logger
 
 
-WORKSPACE = Path("/workspace/Farnsworth")
+WORKSPACE = Path("/workspace/Cosmos")
 DIALOGUE_BUS = WORKSPACE / "data" / "agent_dialogue_bus.json"
 
 

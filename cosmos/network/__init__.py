@@ -2,7 +2,7 @@
 FARNS - Feature Articulated Request Network System
 ====================================================
 
-High-speed bidirectional dialogue mesh protocol for the Farnsworth AI Swarm.
+High-speed bidirectional dialogue mesh protocol for the Cosmos AI Swarm.
 
 Auth: Proof-of-Swarm (GPU fingerprint + temporal hash mesh + quorum + rolling BLAKE3 seals)
 Transport: Raw TCP + msgpack, TCP_NODELAY, multiplexed bidirectional streams

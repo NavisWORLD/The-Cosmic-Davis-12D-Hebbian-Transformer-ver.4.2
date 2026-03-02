@@ -1,5 +1,5 @@
 """
-Farnsworth Claude Code Integration via tmux.
+Cosmos Claude Code Integration via tmux.
 
 "The thoughtful voice of the collective - using Claude Code CLI in persistent tmux session."
 
@@ -35,7 +35,7 @@ def _get_dynamic_max_tokens(model_id: str = "claude", task_type: str = "chat") -
     AGI v1.8: Get dynamic max_tokens from centralized limits.
     """
     try:
-        from farnsworth.core.dynamic_limits import get_max_tokens
+        from Cosmos.core.dynamic_limits import get_max_tokens
         return get_max_tokens(model_id, task_type)
     except Exception:
         defaults = {"chat": 2000, "thinking": 4000, "quick": 500, "code": 4096}
@@ -45,7 +45,7 @@ def _get_dynamic_max_tokens(model_id: str = "claude", task_type: str = "chat") -
 class ClaudeProvider(ExternalProvider):
     """Claude Code via tmux session for complex development tasks."""
 
-    TMUX_SESSION = "farnsworth_claude"
+    TMUX_SESSION = "cosmos_claude"
     RESPONSE_MARKER = "<<<CLAUDE_RESPONSE_END>>>"
     PROMPT_TIMEOUT = 180  # 3 minutes max for complex tasks
 
@@ -98,7 +98,7 @@ class ClaudeProvider(ExternalProvider):
             # Start Claude Code in the session
             subprocess.run(
                 ["tmux", "send-keys", "-t", self.TMUX_SESSION,
-                 "cd /workspace/Farnsworth && claude", "Enter"],
+                 "cd /workspace/Cosmos && claude", "Enter"],
                 check=True,
                 timeout=10
             )
@@ -258,7 +258,7 @@ async def test_claude():
             print(f"Claude response: {result}")
             return True
     print("Claude tmux test failed - session not running")
-    print(f"Start it with: tmux new -s {ClaudeProvider.TMUX_SESSION} 'cd /workspace/Farnsworth && claude'")
+    print(f"Start it with: tmux new -s {ClaudeProvider.TMUX_SESSION} 'cd /workspace/Cosmos && claude'")
     return False
 
 

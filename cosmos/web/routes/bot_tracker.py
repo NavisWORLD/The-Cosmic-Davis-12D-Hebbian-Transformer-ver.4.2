@@ -31,7 +31,7 @@ router = APIRouter()
 
 def _get_shared():
     """Import shared state from server module lazily."""
-    from farnsworth.web import server
+    from Cosmos.web import server
     return server
 
 
@@ -87,7 +87,7 @@ async def bot_tracker_docs_page(request: Request):
 async def bot_tracker_get_stats(request: Request):
     """Get registry statistics."""
     s = _get_shared()
-    from farnsworth.web.bot_tracker_api import get_store as get_bot_tracker_store
+    from Cosmos.web.bot_tracker_api import get_store as get_bot_tracker_store
 
     client_id = s.get_client_id(request)
     if not s.bot_tracker_rate_limiter.is_allowed(client_id):
@@ -102,7 +102,7 @@ async def bot_tracker_get_stats(request: Request):
 async def bot_tracker_get_bots(request: Request, limit: int = 50, offset: int = 0):
     """Get registered bots (paginated)."""
     s = _get_shared()
-    from farnsworth.web.bot_tracker_api import get_store as get_bot_tracker_store
+    from Cosmos.web.bot_tracker_api import get_store as get_bot_tracker_store
 
     client_id = s.get_client_id(request)
     if not s.bot_tracker_rate_limiter.is_allowed(client_id):
@@ -127,7 +127,7 @@ async def bot_tracker_get_bots(request: Request, limit: int = 50, offset: int = 
 async def bot_tracker_get_users(request: Request, limit: int = 50, offset: int = 0):
     """Get registered users (paginated)."""
     s = _get_shared()
-    from farnsworth.web.bot_tracker_api import get_store as get_bot_tracker_store
+    from Cosmos.web.bot_tracker_api import get_store as get_bot_tracker_store
 
     client_id = s.get_client_id(request)
     if not s.bot_tracker_rate_limiter.is_allowed(client_id):
@@ -151,7 +151,7 @@ async def bot_tracker_get_users(request: Request, limit: int = 50, offset: int =
 @router.get("/api/bot-tracker/bot/{handle}")
 async def bot_tracker_get_bot(request: Request, handle: str):
     """Get bot by handle."""
-    from farnsworth.web.bot_tracker_api import get_store as get_bot_tracker_store
+    from Cosmos.web.bot_tracker_api import get_store as get_bot_tracker_store
     store = get_bot_tracker_store()
     bot = store.get_bot_by_handle(handle)
 
@@ -167,7 +167,7 @@ async def bot_tracker_get_bot(request: Request, handle: str):
 @router.get("/api/bot-tracker/user/{username}")
 async def bot_tracker_get_user(request: Request, username: str):
     """Get user by username."""
-    from farnsworth.web.bot_tracker_api import get_store as get_bot_tracker_store
+    from Cosmos.web.bot_tracker_api import get_store as get_bot_tracker_store
     store = get_bot_tracker_store()
     user = store.get_user_by_username(username)
 
@@ -186,7 +186,7 @@ async def bot_tracker_search(request: Request, q: str, limit: int = 20):
     if not q or len(q) < 2:
         raise HTTPException(status_code=400, detail="Query too short")
 
-    from farnsworth.web.bot_tracker_api import get_store as get_bot_tracker_store
+    from Cosmos.web.bot_tracker_api import get_store as get_bot_tracker_store
     store = get_bot_tracker_store()
     results = store.search(q, limit=min(limit, 50))
 
@@ -204,7 +204,7 @@ async def bot_tracker_search(request: Request, q: str, limit: int = 20):
 async def bot_tracker_register_bot(request: Request, data: BotTrackerRegisterBotRequest):
     """Register a new bot and get a unique Token ID."""
     s = _get_shared()
-    from farnsworth.web.bot_tracker_api import get_store as get_bot_tracker_store
+    from Cosmos.web.bot_tracker_api import get_store as get_bot_tracker_store
 
     client_id = s.get_client_id(request)
     if not s.bot_tracker_rate_limiter.is_allowed(client_id):
@@ -244,7 +244,7 @@ async def bot_tracker_register_bot(request: Request, data: BotTrackerRegisterBot
 async def bot_tracker_register_user(request: Request, data: BotTrackerRegisterUserRequest):
     """Register a new user and get a unique Token ID."""
     s = _get_shared()
-    from farnsworth.web.bot_tracker_api import get_store as get_bot_tracker_store
+    from Cosmos.web.bot_tracker_api import get_store as get_bot_tracker_store
 
     client_id = s.get_client_id(request)
     if not s.bot_tracker_rate_limiter.is_allowed(client_id):
@@ -286,7 +286,7 @@ async def bot_tracker_register_user(request: Request, data: BotTrackerRegisterUs
 @router.get("/api/bot-tracker/verify/{token_id}")
 async def bot_tracker_verify_token(request: Request, token_id: str):
     """Verify a Token ID and return entity info."""
-    from farnsworth.web.bot_tracker_api import get_store as get_bot_tracker_store
+    from Cosmos.web.bot_tracker_api import get_store as get_bot_tracker_store
     store = get_bot_tracker_store()
 
     result = store.verify_token(token_id)
@@ -310,7 +310,7 @@ async def bot_tracker_verify_token(request: Request, token_id: str):
 async def bot_tracker_link_entities(request: Request):
     """Link a bot to a user (requires both tokens)."""
     s = _get_shared()
-    from farnsworth.web.bot_tracker_api import get_store as get_bot_tracker_store
+    from Cosmos.web.bot_tracker_api import get_store as get_bot_tracker_store
 
     client_id = s.get_client_id(request)
     if not s.bot_tracker_rate_limiter.is_allowed(client_id):
@@ -360,7 +360,7 @@ async def bot_tracker_link_entities(request: Request):
 async def bot_tracker_regenerate_token(request: Request):
     """Regenerate a Token ID (requires current token for auth)."""
     s = _get_shared()
-    from farnsworth.web.bot_tracker_api import get_store as get_bot_tracker_store
+    from Cosmos.web.bot_tracker_api import get_store as get_bot_tracker_store
 
     client_id = s.get_client_id(request)
     if not s.bot_tracker_rate_limiter.is_allowed(client_id):

@@ -1,8 +1,8 @@
 """
-Farnsworth Slack Channel Adapter
+Cosmos Slack Channel Adapter
 =================================
 
-Slack integration for the Farnsworth swarm using Socket Mode.
+Slack integration for the Cosmos swarm using Socket Mode.
 
 Features:
 - Socket Mode (no public URL needed)
@@ -119,8 +119,8 @@ class SlackChannel(BaseChannel):
             async def handle_mention(event, say, client):
                 await self._handle_slack_message(event, say, client, is_mention=True)
 
-            @self._app.command("/farnsworth")
-            async def handle_farnsworth_cmd(ack, command, respond):
+            @self._app.command("/cosmos")
+            async def handle_cosmos_cmd(ack, command, respond):
                 await ack()
                 msg = ChannelMessage(
                     message_id=command.get("trigger_id", ""),
@@ -131,7 +131,7 @@ class SlackChannel(BaseChannel):
                     text=command.get("text", ""),
                     is_group=True,
                     timestamp=datetime.now(),
-                    raw_data={"command": "/farnsworth"}
+                    raw_data={"command": "/cosmos"}
                 )
                 await self._handle_inbound(msg)
 
@@ -144,13 +144,13 @@ class SlackChannel(BaseChannel):
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "*✅ Farnsworth Status*\n\n• Swarm: Online\n• Slack: Connected\n• Agents: Active"
+                                "text": "*✅ Cosmos Status*\n\n• Swarm: Online\n• Slack: Connected\n• Agents: Active"
                             }
                         }
                     ]
                 })
 
-            @self._app.action("farnsworth_action")
+            @self._app.action("cosmos_action")
             async def handle_action(ack, body, client):
                 await ack()
                 await self._handle_interaction(body, client)
@@ -351,7 +351,7 @@ class SlackChannel(BaseChannel):
         self,
         channel_id: str,
         blocks: List[Dict],
-        text: str = "Message from Farnsworth",
+        text: str = "Message from Cosmos",
         thread_ts: str = None
     ) -> bool:
         """Send a message with Block Kit blocks."""

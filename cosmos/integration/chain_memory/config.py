@@ -56,7 +56,7 @@ class ChainMemoryConfig:
     chunk_size_kb: int = 80
 
     # Bot type
-    bot_type: str = "farnsworth"  # farnsworth, clawwbot, claude, kimi, other
+    bot_type: str = "cosmos"  # cosmos, clawwbot, claude, kimi, other
 
     # FARNS verification
     farns_verified: bool = False

@@ -1,6 +1,6 @@
-# Farnsworth API Capabilities Knowledge Base
+# Cosmos API Capabilities Knowledge Base
 
-This document contains all available APIs and integration capabilities that Farnsworth and the swarm bots can use.
+This document contains all available APIs and integration capabilities that Cosmos and the swarm bots can use.
 
 ---
 
@@ -77,7 +77,7 @@ Search for tokens by name or symbol.
 - DEX and chain info
 
 ### Usage
-When a user drops a contract address (CA) in chat, Farnsworth automatically:
+When a user drops a contract address (CA) in chat, Cosmos automatically:
 1. Detects the CA (Solana base58 or EVM 0x format)
 2. Fetches token data from DexScreener
 3. Responds with formatted analysis including:
@@ -101,7 +101,7 @@ Uses Bankr x402 SDK:
 - Supports EVM chains (Base, Ethereum, Polygon)
 
 ### Server-Side (Monetizing Endpoints)
-Custom middleware to gate Farnsworth's API endpoints:
+Custom middleware to gate Cosmos's API endpoints:
 - Returns 402 Payment Required with payment instructions
 - Verifies payment signatures
 - Tracks revenue
@@ -224,7 +224,7 @@ Voice cloning for bot speech synthesis.
 - Multiple voice profiles
 
 ### Usage
-Farnsworth can speak in the swarm chat with cloned voice.
+Cosmos can speak in the swarm chat with cloned voice.
 
 ---
 
@@ -249,7 +249,7 @@ Autonomous web browsing agent.
 ## 12. MEMORY SYSTEM
 
 ### Overview
-Farnsworth's persistent memory.
+Cosmos's persistent memory.
 
 ### Types
 - **Working Memory**: Current conversation context
@@ -342,7 +342,7 @@ Use available LLMs in priority:
 ## ADDING NEW CAPABILITIES
 
 To add a new API integration:
-1. Create module in `farnsworth/integration/`
+1. Create module in `cosmos/integration/`
 2. Add optional import in `server.py`
 3. Register in NLP command router
 4. Document in this knowledge base

@@ -1,5 +1,5 @@
 /**
- * DEXAI v2.1 - Farnsworth Collective DEX Screener
+ * DEXAI v2.1 - Cosmos Collective DEX Screener
  * Powered by: Whale Hunter, Quantum FarSight, Collective Intelligence, Burn Economy
  */
 
@@ -15,7 +15,7 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });
 
 const PORT = process.env.DEXAI_PORT || 3847;
-const FARNSWORTH_API = process.env.FARNSWORTH_API || 'http://localhost:8080';
+const COSMOS_API = process.env.COSMOS_API || 'http://localhost:8080';
 const ECOSYSTEM_WALLET = '3fSS5RVErbgcJEDCQmCXpKsD2tWqfhxFZtkDUB8qw';
 const FARNS_TOKEN = '9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS';
 const BOOST_PRICES = { 1: 25, 2: 50, 3: 100 };
@@ -25,7 +25,7 @@ const EXTENDED_INFO_PRICE_USD = 10;
 // X OAuth 2.0 Configuration
 const X_CLIENT_ID = process.env.X_CLIENT_ID || 'OUJSQ3BEX0Npc3pxZm1HcmxxWDc6MTpjaQ';
 const X_CLIENT_SECRET = process.env.X_CLIENT_SECRET || '';
-const X_REDIRECT_URI = process.env.X_REDIRECT_URI || 'https://ai.farnsworth.cloud/dex/api/x/callback';
+const X_REDIRECT_URI = process.env.X_REDIRECT_URI || 'https://ai.cosmos.cloud/dex/api/x/callback';
 const X_SCOPES = 'tweet.read users.read follows.read';
 const BAGS_FM_API = 'https://public-api-v2.bags.fm/api/v1';
 
@@ -207,7 +207,7 @@ async function fetchTokenBatch(addresses) {
 async function fetchCollectiveData() {
     try {
         // 1. Whale Hunter data
-        const whaleData = await safeFetch(`${FARNSWORTH_API}/api/trading/whales`);
+        const whaleData = await safeFetch(`${COSMOS_API}/api/trading/whales`);
         if (whaleData && whaleData.status !== 'not_running') {
             collectiveData.whales = {
                 topWallets: whaleData.top_wallets || [],
@@ -233,7 +233,7 @@ async function fetchCollectiveData() {
         let traderData = null;
         try {
             const fs = require('fs');
-            const stateRaw = fs.readFileSync('/workspace/Farnsworth/farnsworth/trading/.trader_state.json', 'utf8');
+            const stateRaw = fs.readFileSync('/workspace/Cosmos/cosmos/trading/.trader_state.json', 'utf8');
             const state = JSON.parse(stateRaw);
             const positions = Object.entries(state.positions || {}).map(([addr, p]) => ({
                 mint: addr, symbol: p.symbol, entry_price: p.entry_price,
@@ -249,7 +249,7 @@ async function fetchCollectiveData() {
             };
         } catch (e) {
             // Fallback to API
-            traderData = await safeFetch(`${FARNSWORTH_API}/api/trading/status`);
+            traderData = await safeFetch(`${COSMOS_API}/api/trading/status`);
         }
         if (traderData && traderData.running) {
             collectiveData.trader = {
@@ -277,7 +277,7 @@ async function fetchCollectiveData() {
         }
 
         // 3. Adaptive learner insights
-        const learnerData = await safeFetch(`${FARNSWORTH_API}/api/trading/learner`);
+        const learnerData = await safeFetch(`${COSMOS_API}/api/trading/learner`);
         if (learnerData && learnerData.status !== 'not_running') {
             collectiveData.learner = {
                 bestCondition: learnerData.summary?.best_condition || null,
@@ -300,7 +300,7 @@ async function getQuantumPrediction(address) {
     const cached = collectiveData.quantumCache.get(address);
     if (cached && Date.now() - cached.ts < 300000) return cached;
 
-    const data = await safeFetch(`${FARNSWORTH_API}/api/farsight/crypto`, {
+    const data = await safeFetch(`${COSMOS_API}/api/farsight/crypto`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token_address: address, simulations: 1000 }),
@@ -335,7 +335,7 @@ async function batchQuantumScore() {
 }
 
 // ============================================================
-// COMPOSITE TRENDING ALGORITHM — Farnsworth Collective Score
+// COMPOSITE TRENDING ALGORITHM — Cosmos Collective Score
 // ============================================================
 function calculateTrendScore(token) {
     const addr = token.address;
@@ -352,7 +352,7 @@ function calculateTrendScore(token) {
 
     // ── COLLECTIVE INTELLIGENCE (25%) ──
     let collectiveScore = 0;
-    // AI score from Farnsworth collective
+    // AI score from Cosmos collective
     if (token.aiScore !== null) {
         collectiveScore += (token.aiScore / 100) * 15;  // 0-15 points
     }
@@ -532,14 +532,14 @@ async function updateTokenCache() {
 }
 
 // ============================================================
-// AI SCORING (Farnsworth Collective)
+// AI SCORING (Cosmos Collective)
 // ============================================================
 async function getAIScore(address) {
     const cached = aiScoreCache.get(address);
     if (cached && Date.now() - cached.ts < 300000) return cached.data;
 
     try {
-        const data = await safeFetch(`${FARNSWORTH_API}/api/tools/score-token`, {
+        const data = await safeFetch(`${COSMOS_API}/api/tools/score-token`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token_address: address }),
@@ -852,8 +852,8 @@ app.post('/api/boost/check-level', async (req, res) => {
     let reason = '';
 
     try {
-        // 1. Run deep analysis via Farnsworth collective
-        const analysis = await safeFetch(`${FARNSWORTH_API}/api/tools/deep-analyze`, {
+        // 1. Run deep analysis via Cosmos collective
+        const analysis = await safeFetch(`${COSMOS_API}/api/tools/deep-analyze`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -890,7 +890,7 @@ app.post('/api/boost/check-level', async (req, res) => {
             // X Engagement audit — search X for the token CA
             let xPassed = false;
             try {
-                const xData = await safeFetch(`${FARNSWORTH_API}/api/tools/search-x`, {
+                const xData = await safeFetch(`${COSMOS_API}/api/tools/search-x`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: address, type: 'token_audit' }),
@@ -914,7 +914,7 @@ app.post('/api/boost/check-level', async (req, res) => {
             // Collective approval — multi-agent consensus
             let collectivePassed = false;
             try {
-                const collectiveResult = await safeFetch(`${FARNSWORTH_API}/api/tools/score-token`, {
+                const collectiveResult = await safeFetch(`${COSMOS_API}/api/tools/score-token`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ token_address: address, deep: true }),
@@ -948,7 +948,7 @@ app.post('/api/boost/submit-for-approval', async (req, res) => {
     const { address } = req.body;
     if (!address) return res.status(400).json({ error: 'Token address required' });
 
-    const analysis = await safeFetch(`${FARNSWORTH_API}/api/tools/deep-analyze`, {
+    const analysis = await safeFetch(`${COSMOS_API}/api/tools/deep-analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token_address: address, checks: ['bundles', 'holder_distribution', 'creator_history', 'liquidity_locks'] }),
@@ -2111,9 +2111,9 @@ setInterval(() => {
 const X402_DISCOVERY = {
     x402Version: 2,
     provider: {
-        name: "Farnsworth AI Swarm",
+        name: "Cosmos AI Swarm",
         description: "Quantum-enhanced trading intelligence powered by IBM Quantum (simulator + real QPU hardware). Two tiers: Simulated Quantum (0.25 SOL) with hardware-optimized weights, and Real Quantum Hardware (1 SOL) on IBM QPU. Supports any Solana memecoin + BTC, ETH, SOL majors.",
-        url: process.env.FARNSWORTH_API_URL || "https://ai.farnsworth.cloud",
+        url: process.env.COSMOS_API_URL || "https://ai.cosmos.cloud",
         category: "trading",
         tags: ["solana", "quantum", "trading", "defi", "ai", "signals", "ibm-quantum", "x402"],
     },
@@ -2168,7 +2168,7 @@ app.post('/api/x402/quantum/analyze', async (req, res) => {
         const headers = { 'Content-Type': 'application/json' };
         if (req.headers['x-payment']) headers['X-PAYMENT'] = req.headers['x-payment'];
 
-        const upstream = `${FARNSWORTH_API}/api/x402/quantum/analyze`;
+        const upstream = `${COSMOS_API}/api/x402/quantum/analyze`;
         const resp = await fetch(upstream, {
             method: 'POST',
             headers,
@@ -2192,7 +2192,7 @@ app.post('/api/x402/quantum/analyze', async (req, res) => {
 
 app.get('/api/x402/quantum/pricing', async (req, res) => {
     res.json({
-        service: "Farnsworth Quantum Trading Intelligence",
+        service: "Cosmos Quantum Trading Intelligence",
         tiers: {
             simulated: {
                 price_sol: 0.25,
@@ -2222,7 +2222,7 @@ app.get('/api/x402/quantum/pricing', async (req, res) => {
 app.get('/api/x402/quantum/stats', async (req, res) => {
     try {
         const fetch = (await import('node-fetch')).default;
-        const resp = await fetch(`${FARNSWORTH_API}/api/x402/quantum/stats`);
+        const resp = await fetch(`${COSMOS_API}/api/x402/quantum/stats`);
         const data = await resp.json();
         res.json(data);
     } catch (err) {
@@ -2240,7 +2240,7 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.ht
 // START
 // ============================================================
 server.listen(PORT, () => {
-    console.log(`\n  DEXAI v2.1 — Farnsworth Collective DEX Screener`);
+    console.log(`\n  DEXAI v2.1 — Cosmos Collective DEX Screener`);
     console.log(`  Port: ${PORT} | Ecosystem: ${ECOSYSTEM_WALLET.slice(0, 8)}... | FARNS: ${FARNS_TOKEN.slice(0, 8)}...`);
     console.log(`  Trending: Market(35%) + Collective(25%) + Quantum(15%) + Whale(15%) + Burn(10%)`);
     console.log(`  Quantum Trading: Token-gated (${MIN_FARNS_HOLDING.toLocaleString()} FARNS) | WS /ws/quantum`);

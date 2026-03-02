@@ -8,7 +8,7 @@ WHO SHOULD RESPOND TO WHAT:
 - Philosophy → Kimi (Eastern philosophy expert)
 - Analysis → DeepSeek (pattern recognition)
 - Creative → Phi (novel perspectives)
-- Trading → Farnsworth (domain knowledge)
+- Trading → Cosmos (domain knowledge)
 - Synthesis → Swarm-Mind (connects ideas)
 - Code/Technical → Claude (programming)
 """
@@ -97,7 +97,7 @@ class AttentionRouter:
 
         # Speaker expertise profiles
         self.speaker_profiles = {
-            "Farnsworth": {
+            "Cosmos": {
                 "trading": 0.9,
                 "technical": 0.8,
                 "creative": 0.7,

@@ -106,8 +106,8 @@ class SmartTurnManager:
             duration = estimated_tokens / self.tokens_per_second
 
         # Add TTS overhead if this speaker uses voice
-        if speaker == "Farnsworth":
-            # Farnsworth has TTS, add speaking time
+        if speaker == "Cosmos":
+            # Cosmos has TTS, add speaking time
             words = len(content.split())
             speaking_time = words / 2.5  # ~150 words per minute
             duration += speaking_time

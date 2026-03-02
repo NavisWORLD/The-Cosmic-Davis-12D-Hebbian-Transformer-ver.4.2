@@ -1,13 +1,13 @@
 """
-TEAM COORDINATOR - Coordinate Claude Teams with Farnsworth Swarm
+TEAM COORDINATOR - Coordinate Claude Teams with Cosmos Swarm
 =================================================================
 
-Bridges Claude Agent Teams with Farnsworth's existing swarm architecture.
-Enables hybrid deliberation between Farnsworth agents and Claude teams.
+Bridges Claude Agent Teams with Cosmos's existing swarm architecture.
+Enables hybrid deliberation between Cosmos agents and Claude teams.
 
 Key Features:
 - Spawn Claude teams for specific tasks
-- Route Farnsworth deliberations to Claude teams
+- Route Cosmos deliberations to Claude teams
 - Aggregate Claude team outputs into swarm consensus
 - Shared task management between swarms
 """
@@ -90,10 +90,10 @@ class ClaudeTeam:
 
 class TeamCoordinator:
     """
-    Coordinates Claude agent teams with Farnsworth's swarm.
+    Coordinates Claude agent teams with Cosmos's swarm.
 
     Acts as a bridge between:
-    - Farnsworth's 11 existing agents (Grok, Gemini, etc.)
+    - Cosmos's 11 existing agents (Grok, Gemini, etc.)
     - Claude Agent Teams (spawned dynamically)
     - Shared task lists and deliberation protocols
     """
@@ -106,7 +106,7 @@ class TeamCoordinator:
         self.completed_tasks: Dict[str, TeamTask] = {}
 
         # Integration hooks
-        self._farnsworth_callback: Optional[Callable] = None
+        self._cosmos_callback: Optional[Callable] = None
         self._nexus_connected = False
 
         logger.info("TeamCoordinator initialized - Claude Teams bridge active")
@@ -145,7 +145,7 @@ Responsibilities:
 - Coordinate team members
 - Make final decisions
 - Ensure quality and completeness
-- Report progress to the Farnsworth swarm""",
+- Report progress to the Cosmos swarm""",
 
             TeamRole.ANALYST: f"""You are the ANALYST for team '{name}'.
 Your purpose: {purpose}
@@ -208,7 +208,7 @@ Responsibilities:
             logger.info(f"Disbanded team: {team_id}")
 
     # =========================================================================
-    # TASK MANAGEMENT (Shared with Farnsworth)
+    # TASK MANAGEMENT (Shared with Cosmos)
     # =========================================================================
 
     async def create_task(
@@ -218,7 +218,7 @@ Responsibilities:
         assign_to: Optional[str] = None,
         metadata: Optional[Dict[str, Any]] = None,
     ) -> TeamTask:
-        """Create a task that can be handled by Claude teams or Farnsworth agents."""
+        """Create a task that can be handled by Claude teams or Cosmos agents."""
         task = TeamTask(
             task_id=f"task_{uuid.uuid4().hex[:8]}",
             description=description,
@@ -382,9 +382,9 @@ Synthesize the final result for this task."""
         if to_team in self.teams:
             self.teams[to_team].mailbox.append(message)
 
-        # Special handling for Farnsworth swarm
-        if to_team == "farnsworth_swarm" and self._farnsworth_callback:
-            await self._farnsworth_callback(message)
+        # Special handling for Cosmos swarm
+        if to_team == "cosmos_swarm" and self._cosmos_callback:
+            await self._cosmos_callback(message)
 
         logger.debug(f"Message sent: {from_team} -> {to_team}")
         return message
@@ -401,8 +401,8 @@ Synthesize the final result for this task."""
                 msg = await self.send_message(from_team, team_id, content, "broadcast")
                 messages.append(msg)
 
-        # Also send to Farnsworth swarm
-        msg = await self.send_message(from_team, "farnsworth_swarm", content, "broadcast")
+        # Also send to Cosmos swarm
+        msg = await self.send_message(from_team, "cosmos_swarm", content, "broadcast")
         messages.append(msg)
 
         return messages
@@ -419,33 +419,33 @@ Synthesize the final result for this task."""
         return messages
 
     # =========================================================================
-    # FARNSWORTH INTEGRATION
+    # COSMOS INTEGRATION
     # =========================================================================
 
     def connect_to_nexus(self, callback: Callable) -> None:
-        """Connect to Farnsworth's Nexus event bus."""
-        self._farnsworth_callback = callback
+        """Connect to Cosmos's Nexus event bus."""
+        self._cosmos_callback = callback
         self._nexus_connected = True
-        logger.info("Connected to Farnsworth Nexus")
+        logger.info("Connected to Cosmos Nexus")
 
-    async def request_farnsworth_deliberation(
+    async def request_cosmos_deliberation(
         self,
         question: str,
         requesting_team: str,
     ) -> Optional[str]:
-        """Request a deliberation from Farnsworth's swarm."""
+        """Request a deliberation from Cosmos's swarm."""
         try:
-            from farnsworth.core.collective.persistent_agent import call_shadow_agent
+            from Cosmos.core.collective.persistent_agent import call_shadow_agent
 
-            # Use Farnsworth's swarm oracle
-            from farnsworth.integration.solana.swarm_oracle import get_swarm_oracle
+            # Use Cosmos's swarm oracle
+            from Cosmos.integration.solana.swarm_oracle import get_swarm_oracle
 
             oracle = get_swarm_oracle()
             result = await oracle.submit_query(question, "claude_team_request", timeout=90.0)
 
             # Send result back to team
             await self.send_message(
-                "farnsworth_swarm",
+                "cosmos_swarm",
                 requesting_team,
                 f"Swarm deliberation result: {result.consensus_answer} (confidence: {result.consensus_confidence:.0%})",
                 "response",
@@ -454,26 +454,26 @@ Synthesize the final result for this task."""
             return result.consensus_answer
 
         except Exception as e:
-            logger.error(f"Farnsworth deliberation request failed: {e}")
+            logger.error(f"Cosmos deliberation request failed: {e}")
             return None
 
     async def hybrid_deliberation(
         self,
         topic: str,
         claude_team_id: Optional[str] = None,
-        include_farnsworth: bool = True,
+        include_cosmos: bool = True,
     ) -> Dict[str, Any]:
         """
-        Run a hybrid deliberation combining Claude teams and Farnsworth agents.
+        Run a hybrid deliberation combining Claude teams and Cosmos agents.
 
         This is the core integration - allowing both swarms to collaborate.
         Uses the existing deliberation protocol (PROPOSE → CRITIQUE → REFINE → VOTE)
-        when Farnsworth's deliberation system is available.
+        when Cosmos's deliberation system is available.
         """
         results = {
             "topic": topic,
             "claude_team_response": None,
-            "farnsworth_response": None,
+            "cosmos_response": None,
             "synthesized": None,
             "method": "hybrid",
             "timestamp": datetime.now().isoformat(),
@@ -495,13 +495,13 @@ Synthesize the final result for this task."""
                     return response.content
                 tasks.append(("claude", get_claude_response()))
 
-        # Get Farnsworth response - try deliberation protocol first, fall back to oracle
-        if include_farnsworth:
-            async def get_farnsworth_response():
+        # Get Cosmos response - try deliberation protocol first, fall back to oracle
+        if include_cosmos:
+            async def get_cosmos_response():
                 # Try the full deliberation protocol (PROPOSE/CRITIQUE/REFINE/VOTE)
                 try:
-                    from farnsworth.core.collective.deliberation import get_deliberation_room
-                    from farnsworth.core.collective.session_manager import get_session_manager
+                    from Cosmos.core.collective.deliberation import get_deliberation_room
+                    from Cosmos.core.collective.session_manager import get_session_manager
 
                     session_mgr = get_session_manager()
                     session = await session_mgr.create_session(
@@ -526,7 +526,7 @@ Synthesize the final result for this task."""
 
                 # Fall back to swarm oracle
                 try:
-                    from farnsworth.integration.solana.swarm_oracle import get_swarm_oracle
+                    from Cosmos.integration.solana.swarm_oracle import get_swarm_oracle
                     oracle = get_swarm_oracle()
                     result = await oracle.submit_query(topic, "hybrid_deliberation", timeout=90.0)
                     results["method"] = "swarm_oracle"
@@ -536,17 +536,17 @@ Synthesize the final result for this task."""
 
                 # Last resort: direct shadow agent call
                 try:
-                    from farnsworth.core.collective.persistent_agent import call_shadow_agent
+                    from Cosmos.core.collective.persistent_agent import call_shadow_agent
                     result = await call_shadow_agent("grok", topic, timeout=30.0)
                     if result:
                         _, response = result
                         results["method"] = "shadow_agent_fallback"
                         return response
                 except Exception as e:
-                    logger.error(f"All Farnsworth response methods failed: {e}")
+                    logger.error(f"All Cosmos response methods failed: {e}")
 
                 return None
-            tasks.append(("farnsworth", get_farnsworth_response()))
+            tasks.append(("cosmos", get_cosmos_response()))
 
         # Execute in parallel
         if tasks:
@@ -557,14 +557,14 @@ Synthesize the final result for this task."""
                     if name == "claude":
                         results["claude_team_response"] = gathered[i]
                     else:
-                        results["farnsworth_response"] = gathered[i]
+                        results["cosmos_response"] = gathered[i]
 
         # Synthesize if both responded
-        if results["claude_team_response"] and results["farnsworth_response"]:
+        if results["claude_team_response"] and results["cosmos_response"]:
             results["synthesized"] = await self._synthesize_responses(
                 topic,
                 results["claude_team_response"],
-                results["farnsworth_response"],
+                results["cosmos_response"],
             )
 
         return results
@@ -573,7 +573,7 @@ Synthesize the final result for this task."""
         self,
         topic: str,
         claude_response: str,
-        farnsworth_response: str,
+        cosmos_response: str,
     ) -> str:
         """Synthesize responses from both swarms."""
         try:
@@ -584,8 +584,8 @@ Synthesize the final result for this task."""
 CLAUDE TEAM RESPONSE:
 {claude_response}
 
-FARNSWORTH SWARM RESPONSE:
-{farnsworth_response}
+COSMOS SWARM RESPONSE:
+{cosmos_response}
 
 Create a unified, balanced synthesis that incorporates insights from both.
 Highlight agreements and resolve any contradictions.""",
@@ -595,7 +595,7 @@ Highlight agreements and resolve any contradictions.""",
             return response.content
         except Exception as e:
             logger.error(f"Synthesis error: {e}")
-            return f"Claude: {claude_response[:200]}...\nFarnsworth: {farnsworth_response[:200]}..."
+            return f"Claude: {claude_response[:200]}...\nCosmos: {cosmos_response[:200]}..."
 
     # =========================================================================
     # STATS & INFO
