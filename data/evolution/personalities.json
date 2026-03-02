@@ -20,9 +20,9 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.0
+      "autonomous": 5.599999999999998
     },
-    "interaction_count": 1000,
+    "interaction_count": 1006,
     "evolution_generation": 151
   },
   "cosmos": {
@@ -31,9 +31,9 @@
     "learned_phrases": [],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.0
+      "autonomous": 6.399999999999995
     },
-    "interaction_count": 116,
+    "interaction_count": 130,
     "evolution_generation": 11
   },
   "DeepSeek": {
@@ -47,10 +47,10 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.0,
+      "autonomous": 5.499999999999998,
       "conversation": 5.0
     },
-    "interaction_count": 570,
+    "interaction_count": 575,
     "evolution_generation": 151
   },
   "Phi": {
@@ -64,10 +64,10 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.0,
+      "autonomous": 5.399999999999999,
       "conversation": 5.0
     },
-    "interaction_count": 597,
+    "interaction_count": 601,
     "evolution_generation": 151
   },
   "Gemini": {
@@ -78,9 +78,9 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.0
+      "autonomous": 5.299999999999999
     },
-    "interaction_count": 683,
+    "interaction_count": 686,
     "evolution_generation": 151
   },
   "Swarm-Mind": {
@@ -94,10 +94,10 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.0,
+      "autonomous": 5.499999999999998,
       "conversation": 5.0
     },
-    "interaction_count": 622,
+    "interaction_count": 627,
     "evolution_generation": 151
   },
   "Cosmos": {
@@ -111,9 +111,9 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.0
+      "autonomous": 5.899999999999997
     },
-    "interaction_count": 850,
+    "interaction_count": 859,
     "evolution_generation": 126
   },
   "DeepSeek R1": {
@@ -166,9 +166,9 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.0
+      "autonomous": 5.599999999999998
     },
-    "interaction_count": 484,
+    "interaction_count": 490,
     "evolution_generation": 125
   },
   "ChatGPT": {
@@ -177,9 +177,9 @@
     "learned_phrases": [],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 3.1888098000000022
+      "autonomous": 3.888809800000003
     },
-    "interaction_count": 18,
+    "interaction_count": 25,
     "evolution_generation": 8
   }
 }

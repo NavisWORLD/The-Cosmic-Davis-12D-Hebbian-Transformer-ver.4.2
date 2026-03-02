@@ -34,7 +34,7 @@ router = APIRouter()
 
 def _get_shared():
     """Import shared state from server module lazily."""
-    from Cosmos.web import server
+    from cosmos.web import server
     return server
 
 
@@ -187,8 +187,8 @@ async def get_cached_audio(text_hash: str = None):
             logger.info(f"TTS GET: Cache hit for {text_hash[:8]}...")
             return FileResponse(str(cache_path), media_type="audio/wav")
 
-        import tempfile
-        cache_dir = Path(tempfile.gettempdir()) / "cosmos_tts_cache"
+        # Read from the file
+        cache_dir = Path.home() / ".cosmos" / "tts_cache"
         cache_dir.mkdir(parents=True, exist_ok=True)
         temp_cache = cache_dir / f"{text_hash}.wav"
         if temp_cache.exists():
@@ -394,7 +394,7 @@ async def analyze_code_api(request):
     """Analyze Python code for complexity, security issues, and patterns."""
     from fastapi import Request as FastAPIRequest
     try:
-        from Cosmos.tools.code_analyzer import analyze_python_code, analyze_python_file, scan_code_security
+        from cosmos.tools.code_analyzer import analyze_python_code, analyze_python_file, scan_code_security
 
         body = await request.json()
         code = body.get("code")
@@ -451,7 +451,7 @@ async def analyze_code_api(request):
 async def analyze_project_api(request):
     """Analyze an entire project directory."""
     try:
-        from Cosmos.tools.code_analyzer import analyze_project
+        from cosmos.tools.code_analyzer import analyze_project
 
         body = await request.json()
         directory = body.get("directory", "/workspace/Cosmos")
@@ -484,7 +484,7 @@ async def analyze_project_api(request):
 async def airllm_stats():
     """Get AirLLM side swarm statistics."""
     try:
-        from Cosmos.core.airllm_swarm import get_airllm_swarm
+        from cosmos.core.airllm_swarm import get_airllm_swarm
         swarm = get_airllm_swarm()
         if swarm:
             return swarm.get_stats()
@@ -497,7 +497,7 @@ async def airllm_stats():
 async def airllm_start():
     """Initialize and start the AirLLM side swarm."""
     try:
-        from Cosmos.core.airllm_swarm import initialize_airllm_swarm
+        from cosmos.core.airllm_swarm import initialize_airllm_swarm
         swarm = await initialize_airllm_swarm()
         return {"success": True, "message": "AirLLM side swarm started", "stats": swarm.get_stats()}
     except Exception as e:
@@ -508,7 +508,7 @@ async def airllm_start():
 async def airllm_stop():
     """Stop the AirLLM side swarm."""
     try:
-        from Cosmos.core.airllm_swarm import get_airllm_swarm
+        from cosmos.core.airllm_swarm import get_airllm_swarm
         swarm = get_airllm_swarm()
         if swarm:
             await swarm.stop()
@@ -522,7 +522,7 @@ async def airllm_stop():
 async def airllm_queue_task(request: AirLLMTaskRequest):
     """Queue a task for background processing by AirLLM."""
     try:
-        from Cosmos.core.airllm_swarm import get_airllm_swarm, initialize_airllm_swarm
+        from cosmos.core.airllm_swarm import get_airllm_swarm, initialize_airllm_swarm
 
         swarm = get_airllm_swarm()
         if not swarm:
@@ -548,7 +548,7 @@ async def airllm_queue_task(request: AirLLMTaskRequest):
 async def airllm_get_result(task_id: str):
     """Get result of a background task."""
     try:
-        from Cosmos.core.airllm_swarm import get_airllm_swarm
+        from cosmos.core.airllm_swarm import get_airllm_swarm
         swarm = get_airllm_swarm()
         if not swarm:
             return {"success": False, "message": "AirLLM swarm not running"}

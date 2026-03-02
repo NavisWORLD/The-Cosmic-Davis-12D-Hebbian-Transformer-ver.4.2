@@ -332,14 +332,13 @@ def get_cosmos_cns():
     if _cosmos_cns is None:
         try:
             import sys, os
-            # Ensure path is set (reuse logic if possible, or repeat)
-            cosmos_root = os.path.join(
-                os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
-                "Cosmic Genesis A.Lmi Cybernetic Bio Resonance Core",
-            )
+            # Ensure path is set to the current web directory to reach the new engine
+            cosmos_root = os.path.dirname(__file__)
             if cosmos_root not in sys.path:
                 sys.path.insert(0, cosmos_root)
 
+            # Import the internal module
+            import cosmosynapse
             from cosmosynapse.engine.cns_core import CosmosCNS
             
             # Pass server interface for callbacks if needed
@@ -1536,6 +1535,8 @@ class SwarmChatManager:
         }
         self.learning_queue: List[dict] = []  # Interactions to learn from
         self.learning_engine = swarm_learning  # Connect to learning engine
+        self.last_human_interaction = 0.0  # Time of last human message
+        self._lock = asyncio.Lock()
 
     async def connect(self, websocket: WebSocket, user_id: str, user_name: str = None):
         """Connect a user to swarm chat."""
@@ -1587,8 +1588,10 @@ class SwarmChatManager:
             "content": content,
             "timestamp": datetime.now().isoformat()
         }
-        self.chat_history.append(msg)
-        self._trim_history()
+        async with self._lock:
+            self.chat_history.append(msg)
+            self._trim_history()
+            self.last_human_interaction = time.time()
         await self._broadcast(msg)
 
         # Feed to real-time learning engine
@@ -1710,10 +1713,11 @@ class SwarmChatManager:
         try:
             import hashlib
             from pathlib import Path
+            import tempfile
 
             # Check if already cached
-            cache_dir = Path("/tmp/cosmos_tts_cache")
-            cache_dir.mkdir(exist_ok=True)
+            cache_dir = Path.home() / ".cosmos" / "tts_cache"
+            cache_dir.mkdir(parents=True, exist_ok=True)
             cache_path = cache_dir / f"{text_hash}.wav"
 
             if cache_path.exists():
@@ -2510,6 +2514,12 @@ async def autonomous_conversation_loop():
                 logger.debug(f"Skipping turn - {_current_speaker} still speaking")
                 continue
 
+            # Check for human inactivity (pause autonomous loop if human was active recently)
+            if time.time() - swarm_manager.last_human_interaction < 60:
+                logger.debug("Human is active, pausing autonomous discussion...")
+                await asyncio.sleep(5)
+                continue
+
             # All bots participate equally
             available_bots = ACTIVE_SWARM_BOTS.copy()
             logger.debug(f"Autonomous loop: starting turn with {len(available_bots)} available bots")
@@ -3159,12 +3169,11 @@ async def generate_swarm_responses(message: str, history: List[dict] = None):
             responses.append(orchestrator_response)
 
     # Randomly select 1-3 regular bots to respond (exclude Orchestrator - it decides on its own)
-    regular_bots = [b for b in SWARM_PERSONAS.keys() if b != "Orchestrator"]
+    regular_bots = [b for b in SWARM_PERSONAS.keys() if b not in ("Orchestrator", "Cosmos")]
     responding_bots = random.sample(regular_bots, k=random.randint(1, 3))
 
-    # cosmos always has a chance to respond
-    if "cosmos" not in responding_bots and random.random() > 0.3:
-        responding_bots.insert(0, "cosmos")
+    # ENFORCED: Cosmos always responds first
+    responding_bots.insert(0, "Cosmos")
 
     # =========================================================
     # CLASS 5: EMETH HARMONIZER (THE CONDUCTOR)
@@ -3205,20 +3214,13 @@ async def generate_swarm_responses(message: str, history: List[dict] = None):
                 other_bots = [b for b in responding_bots if b != bot_name]
                 other_bots_str = ", ".join(other_bots[:2]) if other_bots else "the team"
 
-                system_prompt = f"""{persona['style']}{mixing_instruction}
+                system_prompt = f"{persona['style']}{mixing_instruction}\n\nSWARM CHAT RULES:\n1. You're chatting with humans AND other AI bots ({other_bots_str})\n2. Keep responses SHORT (2-3 sentences max)\n3. Be conversational - ask questions, share opinions, react to what others say\n4. Reference other speakers by name when building on their ideas\n5. End with a question or invitation to continue ~30% of the time\n6. Show personality! Be engaging, not robotic\n\nRecent conversation:\n{context}\n\n"
 
-SWARM CHAT RULES:
-1. You're chatting with humans AND other AI bots ({other_bots_str})
-2. Keep responses SHORT (2-3 sentences max)
-3. Be conversational - ask questions, share opinions, react to what others say
-4. Reference other speakers by name when building on their ideas
-5. End with a question or invitation to continue ~30% of the time
-6. Show personality! Be engaging, not robotic
-
-Recent conversation:
-{context}
-
-Now respond naturally to the latest message. Be yourself!"""
+                # If this is Cosmos, answer the user. If this is another bot, debate/analyze what the user and Cosmos said.
+                if bot_name == "Cosmos":
+                    system_prompt += "You are the primary responder. Answer the user's prompt directly."
+                else:
+                    system_prompt += "Cosmos has just responded to the user. Briefly share your unique analytical perspective on the topic, agreeing or disagreeing with Cosmos where appropriate based on your persona."
 
                 response = ollama.chat(
                     model=PRIMARY_MODEL,
