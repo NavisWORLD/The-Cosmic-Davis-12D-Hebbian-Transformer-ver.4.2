@@ -38,9 +38,16 @@ try:
 except ImportError:
     pass
 
+# ALIAS FIX FOR WINDOWS: Map 'Cosmos' to 'cosmos' to allow lowercase imports
 try:
-    import Cosmos.web.server
-    print(f"DEBUG: Loaded Server Module: {Cosmos.web.server.__file__}")
+    import Cosmos
+    sys.modules['cosmos'] = Cosmos
+except ImportError:
+    pass
+
+try:
+    import cosmos.web.server
+    print(f"DEBUG: Loaded Server Module: {cosmos.web.server.__file__}")
 except ImportError as e:
     print(f"DEBUG: Server Import Failed: {e}")
 
@@ -134,7 +141,7 @@ def main():
     # -------------------------------------------------------------
     print("    [INIT]  Testing Quantum Bridge Connection...")
     try:
-        from Cosmos.core.quantum_bridge import get_quantum_bridge
+        from cosmos.core.quantum_bridge import get_quantum_bridge
         qb = get_quantum_bridge()
         if qb and qb.connect():
              entropy = qb.get_entropy()
@@ -161,7 +168,7 @@ def main():
     if args.reload:
         print("    [WARN]  Reload is enabled, passing module string (this may fail if PYTHONPATH is ignored by Uvicorn workers).")
         uvicorn.run(
-            "Cosmos.web.server:app",
+            "cosmos.web.server:app",
             host=args.host,
             port=args.port,
             reload=True,
@@ -169,9 +176,9 @@ def main():
         )
     else:
         # Pass the instantiated app directly to avoid module discovery issues in child processes
-        import Cosmos.web.server
+        import cosmos.web.server
         uvicorn.run(
-            Cosmos.web.server.app,
+            cosmos.web.server.app,
             host=args.host,
             port=args.port,
             log_level="info"

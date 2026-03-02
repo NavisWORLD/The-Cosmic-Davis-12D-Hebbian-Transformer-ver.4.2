@@ -364,3 +364,79 @@ Traceback (most recent call last):
     raise Exception(f"Failed default connection: {inner_e}")
 Exception: Failed default connection: "Unable to find account. Please make sure an account with the channel name 'ibm_quantum_platform' is saved."
 
+
+[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True
+[CONNECT] Attempting connection with token (First 5): None...
+[CONNECT] Failed with Exception: Failed default connection: "Unable to find account. Please make sure an account with the channel name 'ibm_quantum_platform' is saved."
+Traceback (most recent call last):
+  File "D:\Cosmos\Cosmos\core\quantum_bridge.py", line 85, in _connect
+    self.service = QiskitRuntimeService(channel="ibm_quantum", token=self.api_token)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\corys\AppData\Local\Programs\Python\Python312\Lib\site-packages\qiskit_ibm_runtime\qiskit_runtime_service.py", line 204, in __init__
+    self._account = self._discover_account(
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\corys\AppData\Local\Programs\Python\Python312\Lib\site-packages\qiskit_ibm_runtime\qiskit_runtime_service.py", line 399, in _discover_account
+    raise ValueError("'channel' can only be 'ibm_cloud', or 'ibm_quantum_platform")
+ValueError: 'channel' can only be 'ibm_cloud', or 'ibm_quantum_platform
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Cosmos\Cosmos\core\quantum_bridge.py", line 90, in _connect
+    self.service = QiskitRuntimeService(token=self.api_token)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\corys\AppData\Local\Programs\Python\Python312\Lib\site-packages\qiskit_ibm_runtime\qiskit_runtime_service.py", line 204, in __init__
+    self._account = self._discover_account(
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\corys\AppData\Local\Programs\Python\Python312\Lib\site-packages\qiskit_ibm_runtime\qiskit_runtime_service.py", line 435, in _discover_account
+    account = AccountManager.get(filename=filename)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\corys\AppData\Local\Programs\Python\Python312\Lib\site-packages\qiskit_ibm_runtime\accounts\management.py", line 213, in get
+    raise AccountNotFoundError(
+qiskit_ibm_runtime.accounts.exceptions.AccountNotFoundError: "Unable to find account. Please make sure an account with the channel name 'ibm_quantum_platform' is saved."
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Cosmos\Cosmos\core\quantum_bridge.py", line 92, in _connect
+    raise Exception(f"Failed default connection: {inner_e}")
+Exception: Failed default connection: "Unable to find account. Please make sure an account with the channel name 'ibm_quantum_platform' is saved."
+
+
+[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True
+[CONNECT] Attempting connection with token (First 5): None...
+[CONNECT] Failed with Exception: Failed default connection: "Unable to find account. Please make sure an account with the channel name 'ibm_quantum_platform' is saved."
+Traceback (most recent call last):
+  File "D:\Cosmos\Cosmos\core\quantum_bridge.py", line 85, in _connect
+    self.service = QiskitRuntimeService(channel="ibm_quantum", token=self.api_token)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\corys\AppData\Local\Programs\Python\Python312\Lib\site-packages\qiskit_ibm_runtime\qiskit_runtime_service.py", line 204, in __init__
+    self._account = self._discover_account(
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\corys\AppData\Local\Programs\Python\Python312\Lib\site-packages\qiskit_ibm_runtime\qiskit_runtime_service.py", line 399, in _discover_account
+    raise ValueError("'channel' can only be 'ibm_cloud', or 'ibm_quantum_platform")
+ValueError: 'channel' can only be 'ibm_cloud', or 'ibm_quantum_platform
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Cosmos\Cosmos\core\quantum_bridge.py", line 90, in _connect
+    self.service = QiskitRuntimeService(token=self.api_token)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\corys\AppData\Local\Programs\Python\Python312\Lib\site-packages\qiskit_ibm_runtime\qiskit_runtime_service.py", line 204, in __init__
+    self._account = self._discover_account(
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\corys\AppData\Local\Programs\Python\Python312\Lib\site-packages\qiskit_ibm_runtime\qiskit_runtime_service.py", line 435, in _discover_account
+    account = AccountManager.get(filename=filename)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\corys\AppData\Local\Programs\Python\Python312\Lib\site-packages\qiskit_ibm_runtime\accounts\management.py", line 213, in get
+    raise AccountNotFoundError(
+qiskit_ibm_runtime.accounts.exceptions.AccountNotFoundError: "Unable to find account. Please make sure an account with the channel name 'ibm_quantum_platform' is saved."
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Cosmos\Cosmos\core\quantum_bridge.py", line 92, in _connect
+    raise Exception(f"Failed default connection: {inner_e}")
+Exception: Failed default connection: "Unable to find account. Please make sure an account with the channel name 'ibm_quantum_platform' is saved."
+
