@@ -51,6 +51,13 @@ import uvicorn
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+# ALIAS FIX FOR WINDOWS: Map 'Cosmos' to 'cosmos' to allow lowercase imports
+try:
+    import Cosmos
+    sys.modules['cosmos'] = Cosmos
+except ImportError:
+    pass
+
 # Optional Solana imports
 try:
     from solana.rpc.api import Client as SolanaClient
@@ -304,6 +311,7 @@ def get_cosmos_swarm():
             import sys, os
             cosmos_root = os.path.join(
                 os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
+                "farnsworth",
                 "Cosmic Genesis A.Lmi Cybernetic Bio Resonance Core",
             )
             if cosmos_root not in sys.path:
@@ -335,6 +343,7 @@ def get_cosmos_cns():
             # Ensure path is set (reuse logic if possible, or repeat)
             cosmos_root = os.path.join(
                 os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
+                "farnsworth",
                 "Cosmic Genesis A.Lmi Cybernetic Bio Resonance Core",
             )
             if cosmos_root not in sys.path:

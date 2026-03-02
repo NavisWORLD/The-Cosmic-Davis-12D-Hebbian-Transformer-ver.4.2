@@ -10,7 +10,7 @@
       "autonomous": 5.0
     },
     "interaction_count": 132,
-    "evolution_generation": 149
+    "evolution_generation": 150
   },
   "Claude": {
     "bot_name": "Claude",
@@ -23,7 +23,7 @@
       "autonomous": 5.0
     },
     "interaction_count": 1000,
-    "evolution_generation": 149
+    "evolution_generation": 150
   },
   "cosmos": {
     "bot_name": "cosmos",
@@ -34,7 +34,7 @@
       "autonomous": 5.0
     },
     "interaction_count": 116,
-    "evolution_generation": 9
+    "evolution_generation": 10
   },
   "DeepSeek": {
     "bot_name": "DeepSeek",
@@ -51,7 +51,7 @@
       "conversation": 5.0
     },
     "interaction_count": 570,
-    "evolution_generation": 149
+    "evolution_generation": 150
   },
   "Phi": {
     "bot_name": "Phi",
@@ -68,7 +68,7 @@
       "conversation": 5.0
     },
     "interaction_count": 597,
-    "evolution_generation": 149
+    "evolution_generation": 150
   },
   "Gemini": {
     "bot_name": "Gemini",
@@ -81,7 +81,7 @@
       "autonomous": 5.0
     },
     "interaction_count": 683,
-    "evolution_generation": 149
+    "evolution_generation": 150
   },
   "Swarm-Mind": {
     "bot_name": "Swarm-Mind",
@@ -97,8 +97,8 @@
       "autonomous": 5.0,
       "conversation": 5.0
     },
-    "interaction_count": 621,
-    "evolution_generation": 149
+    "interaction_count": 622,
+    "evolution_generation": 150
   },
   "Cosmos": {
     "bot_name": "Cosmos",
@@ -114,7 +114,7 @@
       "autonomous": 5.0
     },
     "interaction_count": 849,
-    "evolution_generation": 124
+    "evolution_generation": 125
   },
   "DeepSeek R1": {
     "bot_name": "DeepSeek R1",
@@ -169,7 +169,7 @@
       "autonomous": 5.0
     },
     "interaction_count": 484,
-    "evolution_generation": 123
+    "evolution_generation": 124
   },
   "ChatGPT": {
     "bot_name": "ChatGPT",
@@ -177,9 +177,9 @@
     "learned_phrases": [],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 2.6353800000000014
+      "autonomous": 2.898918000000002
     },
     "interaction_count": 18,
-    "evolution_generation": 6
+    "evolution_generation": 7
   }
 }
