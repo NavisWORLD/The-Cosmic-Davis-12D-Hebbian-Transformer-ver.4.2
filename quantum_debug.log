@@ -972,3 +972,5 @@ qiskit_ibm_runtime.accounts.exceptions.InvalidAccountError: 'Unable to retrieve 
 
 
 [INIT] Bridge Initialized. Token present: False. Qiskit Avail: True
+
+[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True
