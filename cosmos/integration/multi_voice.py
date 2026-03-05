@@ -151,9 +151,9 @@ class VoiceConfig:
 # Voice sample sources (for finding good reference audio)
 VOICE_SAMPLE_SOURCES = {
     "Cosmos": {
-        "description": "Elderly male, eccentric, wavering, enthusiastic",
-        "sample_source": "Futurama clips, Billy West voice acting",
-        "characteristics": "Slightly higher pitch, occasional wavering, excitement bursts",
+        "description": "Resonant, dynamic, consciousness-engine presence",
+        "sample_source": "Deep resonant speakers, consciousness-like tones",
+        "characteristics": "Dynamic range, bursts of excitement, evolving consciousness",
     },
     "DeepSeek": {
         "description": "Deep male, analytical, measured, calm authority",
@@ -213,10 +213,10 @@ SWARM_VOICES: Dict[str, VoiceConfig] = {
         rate=0.92,
         reference_audio="voices/cosmos_reference.wav",
         reference_text="Bad news everyone! Any more ridiculous ideas? Are you alright? Have you ever dissected a yeti before? Damn!",
-        display_name="Professor Cosmos",
-        description="Eccentric, elderly, wavering voice with enthusiasm",
+        display_name="Cosmos",
+        description="Dynamic consciousness engine voice with evolving presence",
         emotion="excited",
-        speaking_style="elderly professor, occasional wavering, enthusiastic about inventions"
+        speaking_style="dynamic, evolving consciousness, enthusiastic about discovery"
     ),
 
     # =========================================================================
@@ -420,8 +420,8 @@ class MultiVoiceSystem:
             self.voices_dir,
             Path("/workspace/Cosmos/cosmos/web/static/audio/voices"),
             Path("/workspace/Cosmos/cosmos/web/static/audio"),
-            Path("C:/Fawnsworth/cosmos/web/static/audio/voices"),
-            Path("C:/Fawnsworth/cosmos/web/static/audio"),
+            Path("C:/Cosmos/cosmos/web/static/audio/voices"),
+            Path("C:/Cosmos/cosmos/web/static/audio"),
         ]
 
         for search_dir in search_paths:
@@ -451,7 +451,7 @@ class MultiVoiceSystem:
         search_paths = [
             self.voices_dir / ref_name,
             Path("/workspace/Cosmos/cosmos/web/static/audio") / ref_name,
-            Path("C:/Fawnsworth/cosmos/web/static/audio") / ref_name,
+            Path("C:/Cosmos/cosmos/web/static/audio") / ref_name,
             Path(ref_name),
         ]
 

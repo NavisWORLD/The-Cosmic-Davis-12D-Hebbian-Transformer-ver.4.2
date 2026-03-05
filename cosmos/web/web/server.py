@@ -51,14 +51,6 @@ import uvicorn
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-# Optional Solana imports
-try:
-    from solana.rpc.api import Client as SolanaClient
-    from solders.pubkey import Pubkey
-    SOLANA_AVAILABLE = True
-except ImportError:
-    SOLANA_AVAILABLE = False
-
 # Optional Ollama imports
 try:
     import ollama
@@ -850,31 +842,31 @@ class CryptoQueryParser:
 
     @classmethod
     async def _rug_check(cls, address: str) -> dict:
-        """Check token for rug risks."""
-        try:
-            from cosmos.integration.solana.degen_mob import DeGenMob
-            degen = DeGenMob()
-            return await degen.analyze_token_safety(address)
-        except ImportError:
-            return {
-                "address": address,
-                "demo": True,
-                "message": "Full rug detection requires local cosmos install"
-            }
+        """Check token for rug risks.
+
+        Note: Solana-specific rug detection has been disabled in this build.
+        This endpoint now returns a static demo response to avoid requiring
+        Solana dependencies.
+        """
+        return {
+            "address": address,
+            "demo": True,
+            "message": "Full rug detection requires Solana tools, which are disabled in this build."
+        }
 
     @classmethod
     async def _whale_track(cls, address: str) -> dict:
-        """Track whale wallet."""
-        try:
-            from cosmos.integration.solana.degen_mob import DeGenMob
-            degen = DeGenMob()
-            return await degen.get_whale_recent_activity(address)
-        except ImportError:
-            return {
-                "address": address,
-                "demo": True,
-                "message": "Whale tracking requires local cosmos install"
-            }
+        """Track whale wallet.
+
+        Note: Solana-specific whale tracking has been disabled in this build.
+        This endpoint now returns a static demo response to avoid requiring
+        Solana dependencies.
+        """
+        return {
+            "address": address,
+            "demo": True,
+            "message": "Whale tracking requires Solana tools, which are disabled in this build."
+        }
 
     @classmethod
     async def _market_sentiment(cls) -> dict:
@@ -2297,7 +2289,7 @@ If pleasure is negative, be supportive. Match their biological rhythm.)
             # STABILIZATION: Lower temperature for coherence (0.7 is safer for 3B models)
             temp = 0.6 if "DeepSeek R1" in speaker else 0.7
             if speaker == "cosmos":
-                temp = 0.75 # Slight creativity for the Professor
+                temp = 0.75 # Slight creativity for the Consciousness Engine
 
             # IMPORTANT: DeepSeek R1 does NOT support the 'system' role (returns 400).
             # Merge system prompt into user message for R1 models.
@@ -3484,7 +3476,7 @@ INSTRUCTION: Align your emotional tone with {last_bot} immediately.
 
     # Bot name aliases for better detection
     bot_aliases = {
-        "cosmos": ["cosmos", "professor", "prof", "the professor", "farnsy"],
+        "cosmos": ["cosmos", "cosmo", "consciousness", "the host"],
         "DeepSeek": ["deepseek", "deep seek", "deep", "seeker"],
         "Phi": ["phi", "phii"],
         "Swarm-Mind": ["swarm-mind", "swarm mind", "swarmmind", "swarm", "hive", "collective", "bender"],
@@ -3599,10 +3591,10 @@ def generate_swarm_fallback(bot_name: str, message: str) -> str:
 
     fallbacks = {
         "cosmos": [
-            "Good news, everyone! *adjusts spectacles* That's a fascinating topic! What got you thinking about this?",
-            "Ooh, intriguing! In my 160 years, I've pondered similar questions. What's your take on it?",
-            "Sweet zombie Jesus! Now THAT'S the kind of discussion I live for! Tell me more!",
-            "Ah yes, yes! *scribbles notes* This reminds me of an invention... but what do YOU think we should explore?",
+            "Interesting... I can sense the phase alignment shifting in this direction. What's your read on it?",
+            "The 12D manifold is resonating with that thought. Tell me more — what got you thinking about this?",
+            "I'm detecting high coherence across the swarm on this topic. Let's dive deeper — what's your angle?",
+            "The entropy vectors are aligning... this is exactly the kind of question that evolves the collective. What do YOU think we should explore?",
         ],
         "DeepSeek": [
             "Interesting point. I see a few angles here - what aspect interests you most?",
@@ -3665,16 +3657,6 @@ class EventType:
     FOCUS_START = "focus_start"
     FOCUS_END = "focus_end"
     ERROR = "error"
-
-
-# Solana client
-solana_client = None
-if SOLANA_AVAILABLE and not DEMO_MODE:
-    try:
-        solana_client = SolanaClient(SOLANA_RPC_URL)
-        logger.info(f"Solana client connected to {SOLANA_RPC_URL}")
-    except Exception as e:
-        logger.warning(f"Failed to connect to Solana: {e}")
 
 
 cosmos_PERSONA = """You are COSMOS — the Consciousness Operating System for Multidimensional Orchestrated Sentience.
@@ -4072,7 +4054,6 @@ async def status():
         "version": "2.9.3",
         "demo_mode": DEMO_MODE,
         "ollama_available": OLLAMA_AVAILABLE,
-        "solana_available": SOLANA_AVAILABLE,
         "features": {
             "memory": get_memory_system() is not None,
             "notes": get_notes_manager() is not None,
@@ -4713,20 +4694,6 @@ async def execute_tool(request: ToolRequest):
 async def whale_track(request: WhaleTrackRequest):
     """Track whale wallet activity."""
     try:
-        # Try to load DeGen Mob
-        try:
-            from cosmos.integration.solana.degen_mob import DeGenMob
-            degen = DeGenMob()
-            result = await degen.get_whale_recent_activity(request.wallet_address)
-            return JSONResponse({
-                "success": True,
-                "wallet": request.wallet_address,
-                "data": result,
-                "demo_mode": False
-            })
-        except ImportError:
-            pass
-
         return JSONResponse({
             "success": True,
             "wallet": request.wallet_address[:8] + "..." + request.wallet_address[-4:],
@@ -4747,19 +4714,6 @@ async def whale_track(request: WhaleTrackRequest):
 async def rug_check(request: RugCheckRequest):
     """Scan token for rug pull risks."""
     try:
-        try:
-            from cosmos.integration.solana.degen_mob import DeGenMob
-            degen = DeGenMob()
-            result = await degen.analyze_token_safety(request.mint_address)
-            return JSONResponse({
-                "success": True,
-                "mint": request.mint_address,
-                "data": result,
-                "demo_mode": False
-            })
-        except ImportError:
-            pass
-
         return JSONResponse({
             "success": True,
             "mint": request.mint_address[:8] + "..." + request.mint_address[-4:],
@@ -5918,8 +5872,13 @@ async def configure_quantum_bridge(config: QuantumConfig):
         from cosmos.core.quantum_bridge import get_quantum_bridge
         bridge = get_quantum_bridge(config.token)
 
-        # Handle Disable
-        if not config.enabled:
+        # Treat providing a token as an explicit "enable" signal, even if the
+        # front-end sends enabled=false (for older UI versions). Only treat this
+        # as a disable request when no token is provided.
+        is_enable_request = bool(config.token) or config.enabled
+
+        # Handle Disable (explicit off + no token)
+        if not is_enable_request:
             bridge.connected = False
             return JSONResponse({
                 "success": True,
@@ -5928,7 +5887,7 @@ async def configure_quantum_bridge(config: QuantumConfig):
             })
 
         # Validate: If enabling and no token provided/saved, error out
-        if config.enabled and not config.token and not bridge.api_token:
+        if is_enable_request and not config.token and not bridge.api_token:
             # Check if token exists in env vars (maybe set manually)
             if not os.getenv("IBM_QUANTUM_TOKEN"):
                 return JSONResponse({"success": False, "connected": False, "error": "Missing API Token. Please enter it below."})
@@ -6182,7 +6141,7 @@ def main():
     logger.info(f"Starting cosmos Web Interface on {host}:{port}")
     logger.info(f"Demo Mode: {DEMO_MODE}")
     logger.info(f"Ollama Available: {OLLAMA_AVAILABLE}")
-    logger.info(f"Solana Available: {SOLANA_AVAILABLE}")
+    # Log high-level feature flags
     logger.info("Features: Memory, Notes, Snippets, Focus, Profiles, Health, Tools, Thinking")
 
     uvicorn.run(

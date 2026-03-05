@@ -776,6 +776,121 @@ class CrossAgentMemory:
 
 
 # =============================================================================
+# CHAOS BUFFER — V4.0 Quantum Entropy Handler
+# =============================================================================
+
+class ChaosBuffer:
+    """
+    Live quantum entropy buffer with Lyapunov drift monitoring.
+
+    Maintains a ring buffer of entropy samples and monitors phase drift.
+    When drift > LYAPUNOV_THRESHOLD (0.45 rad), triggers recovery.
+
+    Usage:
+        buffer = ChaosBuffer(max_size=100, drift_threshold=0.45)
+        buffer.inject_entropy(0.72)
+        if buffer.should_recover():
+            RecoveryAgent.revert_file()
+    """
+
+    LYAPUNOV_DRIFT_THRESHOLD = 0.45  # V4.0 RSM threshold (radians)
+
+    def __init__(self, max_size: int = 100, drift_threshold: float = 0.45):
+        self.max_size = max_size
+        self.drift_threshold = drift_threshold
+        self._buffer: List[float] = []
+        self._drift_history: List[float] = []
+        self._recovery_triggered = False
+        self._total_injections = 0
+        self._total_recoveries = 0
+        logger.info(f"ChaosBuffer initialized (size={max_size}, threshold={drift_threshold})")
+
+    def inject_entropy(self, value: float, timestamp: Optional[float] = None):
+        """
+        Add a quantum entropy sample to the ring buffer.
+        Automatically computes drift and checks for recovery need.
+
+        Args:
+            value: Entropy value (0.0–1.0 from quantum bridge or pseudo-random)
+            timestamp: Optional timestamp for the sample
+        """
+        import time as _time
+        self._buffer.append(value)
+        self._total_injections += 1
+
+        # Ring buffer: discard oldest when full
+        if len(self._buffer) > self.max_size:
+            self._buffer = self._buffer[-self.max_size:]
+
+        # Compute drift from recent samples
+        if len(self._buffer) >= 3:
+            drift = self._compute_drift()
+            self._drift_history.append(drift)
+            if len(self._drift_history) > self.max_size:
+                self._drift_history = self._drift_history[-self.max_size:]
+
+            if drift > self.drift_threshold:
+                self._recovery_triggered = True
+                self._total_recoveries += 1
+                logger.warning(
+                    f"[CHAOS] Drift {drift:.4f} > threshold {self.drift_threshold} — "
+                    f"RECOVERY SIGNAL EMITTED"
+                )
+            else:
+                self._recovery_triggered = False
+
+    def _compute_drift(self) -> float:
+        """
+        Compute phase drift from the entropy buffer.
+        Uses the standard deviation of recent samples as a proxy for chaos drift.
+        """
+        import math
+        recent = self._buffer[-min(20, len(self._buffer)):]
+        if len(recent) < 2:
+            return 0.0
+        mean = sum(recent) / len(recent)
+        variance = sum((x - mean) ** 2 for x in recent) / len(recent)
+        return math.sqrt(variance) * 3.14159  # Scale to radians
+
+    def should_recover(self) -> bool:
+        """
+        Returns True if the current drift exceeds the Lyapunov threshold.
+        Call RecoveryAgent.revert_file() if this returns True.
+        """
+        return self._recovery_triggered
+
+    def get_current_drift(self) -> float:
+        """Get the most recent drift value."""
+        if self._drift_history:
+            return self._drift_history[-1]
+        return 0.0
+
+    def get_entropy_stats(self) -> Dict[str, Any]:
+        """Return buffer statistics for telemetry."""
+        import math
+        recent = self._buffer[-20:] if self._buffer else []
+        mean_entropy = sum(recent) / len(recent) if recent else 0.0
+
+        return {
+            "buffer_size": len(self._buffer),
+            "max_size": self.max_size,
+            "total_injections": self._total_injections,
+            "total_recoveries": self._total_recoveries,
+            "current_drift": self.get_current_drift(),
+            "drift_threshold": self.drift_threshold,
+            "recovery_triggered": self._recovery_triggered,
+            "mean_entropy": mean_entropy,
+        }
+
+    def reset(self):
+        """Clear the buffer and reset state."""
+        self._buffer.clear()
+        self._drift_history.clear()
+        self._recovery_triggered = False
+        logger.info("[CHAOS] Buffer reset")
+
+
+# =============================================================================
 # FACTORY FUNCTION
 # =============================================================================
 

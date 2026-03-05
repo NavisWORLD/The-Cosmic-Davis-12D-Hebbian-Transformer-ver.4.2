@@ -37,7 +37,19 @@ class PeerInfo:
     port: int
     capabilities: List[str]
     writer: Optional[asyncio.StreamWriter] = None
-    last_seen: float = field(default_factory=asyncio.get_event_loop().time)
+    last_seen: float = field(default_factory=lambda: 0.0)
+    missed_pings: int = 0  # V4.0: Heartbeat tracking
+
+
+@dataclass
+class StateCheckpoint:
+    """V4.0: Periodic state snapshot for fault-tolerant recovery."""
+    node_id: str
+    timestamp: float
+    epoch: int
+    dark_matter_state: Optional[Dict[str, float]] = None
+    plasticity_hash: Optional[str] = None
+    awareness_alignment: Optional[float] = None
 
 class SwarmFabric:
     """
@@ -389,6 +401,54 @@ class SwarmFabric:
                 logger.debug(f"P2P: Received conversation from {peer_id} ({len(conversation)} messages)")
             await self.gossip(msg)
 
+        elif m_type == "GOSSIP_PLASTICITY":
+            # V4.0: Shared Hebbian weights from peer
+            weights_data = msg.get("weights")
+            peer_id = msg.get("node_id", "unknown")
+            if weights_data:
+                nexus.emit(Signal(
+                    type=SignalType.EXTERNAL_EVENT,
+                    payload={
+                        "event": "planetary_plasticity_received",
+                        "weights": weights_data,
+                        "peer_id": peer_id,
+                    },
+                    source="p2p_fabric"
+                ))
+                logger.info(f"P2P: Received plasticity weights from {peer_id} (epoch={weights_data.get('epoch', '?')})")
+            await self.gossip(msg)
+
+        elif m_type == "GOSSIP_STATE_CHECKPOINT":
+            # V4.0: Fault-tolerant state checkpoint from peer
+            checkpoint = msg.get("checkpoint")
+            peer_id = msg.get("node_id", "unknown")
+            if checkpoint:
+                nexus.emit(Signal(
+                    type=SignalType.EXTERNAL_EVENT,
+                    payload={
+                        "event": "state_checkpoint_received",
+                        "checkpoint": checkpoint,
+                        "peer_id": peer_id,
+                    },
+                    source="p2p_fabric"
+                ))
+                logger.debug(f"P2P: State checkpoint from {peer_id} (epoch={checkpoint.get('epoch', '?')})")
+
+        elif m_type == "PING":
+            # V4.0: Heartbeat response
+            await self._send_to_writer(writer, {
+                "type": "PONG",
+                "id": self.node_id,
+                "timestamp": asyncio.get_event_loop().time()
+            })
+
+        elif m_type == "PONG":
+            # V4.0: Heartbeat acknowledgment — reset missed pings
+            peer_id = msg.get("id")
+            if peer_id and peer_id in self.peers:
+                self.peers[peer_id].last_seen = asyncio.get_event_loop().time()
+                self.peers[peer_id].missed_pings = 0
+
     async def _send_to_writer(self, writer: asyncio.StreamWriter, msg: Dict):
         """Send message directly to a writer."""
         try:
@@ -493,10 +553,49 @@ class SwarmFabric:
                 del self.peers[peer_id]
 
     async def _maintain_peer_health(self):
+        """V4.0: Enhanced with heartbeat ping/pong and eviction."""
         while True:
             # Prune old seen messages
-            if len(self.seen_messages) > 1000: self.seen_messages.clear()
-            await asyncio.sleep(60)
+            if len(self.seen_messages) > 1000:
+                self.seen_messages.clear()
+
+            # Heartbeat: Ping all peers
+            dead_peers = []
+            for pid, peer in list(self.peers.items()):
+                if peer.missed_pings >= 3:
+                    # Evict after 3 missed pings (~90s unresponsive)
+                    dead_peers.append(pid)
+                    logger.warning(f"P2P: Evicting unresponsive peer {pid} (3 missed pings)")
+                else:
+                    peer.missed_pings += 1
+                    try:
+                        await self._send_to_peer(pid, {
+                            "type": "PING",
+                            "id": self.node_id,
+                            "timestamp": asyncio.get_event_loop().time()
+                        })
+                    except Exception:
+                        peer.missed_pings += 1
+
+            for pid in dead_peers:
+                if pid in self.peers:
+                    try:
+                        self.peers[pid].writer.close()
+                    except Exception:
+                        pass
+                    del self.peers[pid]
+
+            await asyncio.sleep(30)  # Ping every 30s
+
+    async def broadcast_state_checkpoint(self, checkpoint: Dict):
+        """V4.0: Broadcast a state checkpoint for fault-tolerant recovery."""
+        msg = {
+            "type": "GOSSIP_STATE_CHECKPOINT",
+            "checkpoint": checkpoint,
+            "node_id": self.node_id,
+        }
+        await self.broadcast_message(msg)
+        logger.info(f"P2P: Broadcasted state checkpoint (epoch={checkpoint.get('epoch', '?')})")
 
 # Global Instance (will use env vars for bootstrap config)
 swarm_fabric = SwarmFabric(

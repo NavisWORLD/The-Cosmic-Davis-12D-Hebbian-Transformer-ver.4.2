@@ -1,0 +1,43 @@
+remote: error: GH013: Repository rule violations found for refs/heads/main.        
+remote: 
+remote: - GITHUB PUSH PROTECTION        
+remote:   ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö        
+remote:     Resolve the following violations before pushing again        
+remote: 
+remote:     - Push cannot contain secrets        
+remote: 
+remote:             
+remote:      (?) Learn how to resolve a blocked push        
+remote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push        
+remote:             
+remote:             
+remote:       ΓÇöΓÇö OpenAI API Key ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö        
+remote:        locations:        
+remote:          - commit: 7a8642b680cae44d1afa5c097046ef9a86798ef0        
+remote:            path: .env:7        
+remote:             
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
+remote:        https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2/security/secret-scanning/unblock-secret/3AXO7r62FFEUj6Vp8z3kl2TAiRU        
+remote:             
+remote:             
+remote:       ΓÇöΓÇö xAI API Key ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö        
+remote:        locations:        
+remote:          - commit: 7a8642b680cae44d1afa5c097046ef9a86798ef0        
+remote:            path: .env:12        
+remote:          - commit: f1a10f1604c0ebd70c4cc425cb0b9e651bd39e20        
+remote:            path: .env:13        
+remote:          - commit: f1a10f1604c0ebd70c4cc425cb0b9e651bd39e20        
+remote:            path: cosmos/web/cosmosynapse/engine/cosmos_swarm_orchestrator.py:699        
+remote:          - commit: 3963dc0809fae1684e37f798616df3d49b8add8b        
+remote:            path: cosmos/web/cosmosynapse/engine/cosmos_swarm_orchestrator.py:781        
+remote:          - commit: 7a8642b680cae44d1afa5c097046ef9a86798ef0        
+remote:            path: cosmos/web/cosmosynapse/engine/cosmos_swarm_orchestrator.py:829        
+remote:             
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
+remote:        https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2/security/secret-scanning/unblock-secret/3AXN5rBqmVhj6jTtEWSZRRU9FwD        
+remote:             
+remote: 
+remote: 
+To https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2.git
+ ! [remote rejected] main -> main (push declined due to repository rule violations)
+error: failed to push some refs to 'https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2.git'

@@ -2,7 +2,7 @@
 cosmos Dream Catcher (Offline Consolidation)
 ------------------------------------------------
 
-"I'll be in the Angry Dome! ...Learning!"
+"Dreaming in 12 dimensions... consolidating the manifold."
 
 This innovative module runs when the system is idle. It performs "Offline Memory Consolidation":
 1.  **Synthetic Replay**: Takes recent memories (vector store entries) and uses a small local LLM
@@ -94,7 +94,7 @@ async def demo_dream_mode():
     # Simulate some raw memories from the day
     daily_residue = [
         "The Docker container fails with exit code 137 because of OOM killer.",
-        "Professor cosmos's favorite color is Quantum Grey.",
+        "Cosmos's favorite color is Quantum Grey.",
         "The secret API key for Helius is hidden in the .env.example file."
     ]
     

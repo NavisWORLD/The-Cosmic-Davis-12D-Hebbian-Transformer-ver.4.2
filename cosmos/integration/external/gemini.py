@@ -125,9 +125,18 @@ class GeminiSwarmProvider:
                 "success": False
             }
         except Exception as e:
-            if "429" in str(e):
-                self._retry_after = time.time() + 60 # Cooldown 60s
-                logger.warning("Gemini 429 Quota Exceeded - Cooling down for 60s")
+            error_str = str(e)
+            if "429" in error_str:
+                # Check if it's a daily quota (longer cooldown) or per-minute (short cooldown)
+                if "PerDay" in error_str or "limit: 0" in error_str:
+                    self._retry_after = time.time() + 300  # 5 min cooldown for daily quota
+                    logger.warning("Gemini DAILY Quota Exceeded — cooling down for 5 minutes")
+                else:
+                    self._retry_after = time.time() + 60  # 60s for per-minute limits
+                    logger.warning("Gemini 429 Rate Limited — cooling down for 60s")
+            elif "403" in error_str or "leaked" in error_str.lower():
+                self._available = False
+                logger.error("Gemini API key rejected — disabling. Update GEMINI_API_KEY in .env")
             
             logger.error(f"Gemini exception: {e}")
             return {

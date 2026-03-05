@@ -139,8 +139,13 @@ class ChatGPTSwarmProvider:
             if "429" in error_str or "rate_limit" in error_str.lower():
                 self._retry_after = time.time() + 60  # Cooldown 60s
                 logger.warning("ChatGPT 429 Rate Limited — cooling down for 60s")
+            elif "401" in error_str or "invalid_api_key" in error_str.lower():
+                # Auth failure — disable ChatGPT entirely to stop error spam
+                self._available = False
+                logger.error("ChatGPT API key is invalid — disabling ChatGPT. Update OPENAI_API_KEY in .env")
             elif "insufficient_quota" in error_str.lower():
-                logger.error("ChatGPT quota exceeded — check billing at platform.openai.com")
+                self._available = False
+                logger.error("ChatGPT quota exceeded — disabling. Check billing at platform.openai.com")
 
             logger.error(f"ChatGPT exception: {e}")
             return {

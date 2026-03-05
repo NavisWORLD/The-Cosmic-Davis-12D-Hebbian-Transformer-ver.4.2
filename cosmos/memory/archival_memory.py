@@ -218,9 +218,10 @@ class ArchivalMemory:
         semantic_weight: float = 0.7,
         filter_tags: Optional[list[str]] = None,
         min_score: float = 0.0,
+        current_phase: Optional[float] = None,
     ) -> list[SearchResult]:
         """
-        Hybrid search combining semantic and keyword retrieval.
+        Hybrid search combining semantic, keyword, and holographic phase retrieval.
 
         Args:
             query: Search query
@@ -228,6 +229,7 @@ class ArchivalMemory:
             semantic_weight: Weight for semantic vs keyword (0-1)
             filter_tags: Only return entries with these tags
             min_score: Minimum score threshold
+            current_phase: The 12D Phase array scalar to filter by emotional resonance.
 
         Returns:
             List of SearchResult objects
@@ -282,6 +284,19 @@ class ArchivalMemory:
                 feedback_boost = entry.relevance_feedback * 0.1
                 adjusted_score += feedback_boost
 
+                # Holographic Phase Resonance
+                phase_resonance = 0.0
+                if current_phase is not None and "geometric_phase" in entry.metadata:
+                    import math
+                    mem_phase = entry.metadata["geometric_phase"]
+                    # Calculate angular distance (0 to pi)
+                    diff = abs((current_phase % (2*math.pi)) - (mem_phase % (2*math.pi)))
+                    if diff > math.pi:
+                        diff = 2*math.pi - diff
+                    # Max resonance (+0.2) when angular diff is 0, min (0.0) when diff is pi
+                    phase_resonance = 0.2 * (1.0 - (diff / math.pi))
+                    adjusted_score += phase_resonance
+
                 filtered.append(SearchResult(
                     entry=entry,
                     score=adjusted_score,
@@ -290,6 +305,7 @@ class ArchivalMemory:
                         "raw_score": score,
                         "temporal_boost": temporal_boost,
                         "feedback_boost": feedback_boost,
+                        "phase_resonance": phase_resonance,
                     }
                 ))
 

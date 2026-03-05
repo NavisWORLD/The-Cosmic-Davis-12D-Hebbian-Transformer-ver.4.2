@@ -54,7 +54,7 @@ LEARNING_RATE = 0.05       # η — Hebbian learning rate
 LTD_RATIO = 0.1            # Long-Term Depression ratio (losers decay at η × 0.1)
 WEIGHT_MAX = 2.0            # Synaptic ceiling (prevents runaway potentiation)
 WEIGHT_MIN = 0.1            # Synaptic floor (never fully silence a model)
-LYAPUNOV_THRESHOLD = 0.15   # Phase drift must be below this for learning
+LYAPUNOV_THRESHOLD = 0.45   # Phase drift must be below this for learning — V4.0 widened
 
 # Persistence
 WEIGHTS_FILE = "cst_synaptic_weights.json"
@@ -482,10 +482,82 @@ class SwarmPlasticity:
             }
 
 
+    # ════════════════════════════════════════════════════════
+    # V4.0: P2P TRANSFER LEARNING
+    # ════════════════════════════════════════════════════════
+
+    def export_weights(self) -> Dict[str, Any]:
+        """
+        Serialize the full synaptic matrix for P2P transmission.
+        Returns a JSON-safe dict that can be gossipped across the fabric.
+        """
+        with self._lock:
+            return {
+                "weights": {
+                    ctx: {model: round(w, 6) for model, w in ctx_w.items()}
+                    for ctx, ctx_w in self._weights.items()
+                },
+                "total_updates": self._total_updates,
+                "epoch": self._tick,
+            }
+
+    def import_peer_weights(self, peer_weights: Dict[str, Any], trust_factor: float = 0.3):
+        """
+        Merge incoming peer weights using φ-dampened averaging.
+
+        w_merged = w_local × (1 - trust × φ⁻¹) + w_peer × trust × φ⁻¹
+
+        Args:
+            peer_weights: Dict from a peer's export_weights()
+            trust_factor: 0.0–1.0, how much to trust the peer's learning
+        """
+        if not peer_weights or "weights" not in peer_weights:
+            return
+
+        trust_phi = trust_factor * PHI_INV  # φ-dampen the trust
+        local_weight = 1.0 - trust_phi
+        peer_weight_factor = trust_phi
+
+        with self._lock:
+            for ctx in ALL_CONTEXTS:
+                if ctx not in peer_weights["weights"]:
+                    continue
+                for model in MODELS:
+                    peer_w = peer_weights["weights"][ctx].get(model)
+                    if peer_w is not None and model in self._weights.get(ctx, {}):
+                        old = self._weights[ctx][model]
+                        merged = old * local_weight + peer_w * peer_weight_factor
+                        self._weights[ctx][model] = max(WEIGHT_MIN, min(WEIGHT_MAX, merged))
+
+            logger.info(
+                f"[PLASTICITY] Imported peer weights (trust={trust_factor:.2f}, "
+                f"peer_epoch={peer_weights.get('epoch', '?')})"
+            )
+
+    async def broadcast_weights(self, p2p_fabric=None):
+        """
+        Push local synaptic weights to the P2P fabric for swarm-wide learning.
+
+        Args:
+            p2p_fabric: The SwarmFabric instance (lazy-imported if None)
+        """
+        export = self.export_weights()
+        msg = {
+            "type": "GOSSIP_PLASTICITY",
+            "weights": export,
+            "node_id": "local",
+        }
+
+        if p2p_fabric:
+            await p2p_fabric.broadcast_message(msg)
+            logger.info("[PLASTICITY] Broadcasted synaptic weights to P2P fabric")
+        else:
+            logger.debug("[PLASTICITY] No P2P fabric available for weight broadcast")
+
+
 # ════════════════════════════════════════════════════════
 # STANDALONE TEST
 # ════════════════════════════════════════════════════════
-
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     
@@ -495,8 +567,7 @@ if __name__ == "__main__":
     
     plasticity = SwarmPlasticity(weights_path="test_synaptic_weights.json")
     
-    # Simulate a LOGIC context where DeepSeek wins 5 times
-    logic_physics = {'cst_physics': {'geometric_phase_rad': 0.5, 'phase_velocity': 0.03}}
+    logic_physics = {'cst_physics': {'geometric_phase_rad': 0.78, 'phase_velocity': 0.05}}
     
     print("\n─── Phase 1: DeepSeek wins 5× in LOGIC ───")
     for i in range(5):
@@ -504,7 +575,6 @@ if __name__ == "__main__":
         if event:
             print(f"  Tick {event.tick}: {event.context} → {event.weights_after}")
     
-    # Simulate an EMPATHY context where Claude wins 5 times
     empathy_physics = {'cst_physics': {'geometric_phase_rad': 1.0, 'phase_velocity': 0.05}}
     
     print("\n─── Phase 2: Claude wins 5× in EMPATHY ───")
@@ -513,12 +583,26 @@ if __name__ == "__main__":
         if event:
             print(f"  Tick {event.tick}: {event.context} → {event.weights_after}")
     
-    # Simulate blocked learning (Lyapunov unstable)
     print("\n─── Phase 3: Lyapunov BLOCKS learning ───")
     event = plasticity.update_weights("Gemini", logic_physics, stable=False)
     print(f"  Blocked: {event is None}")
     
-    # Final state
+    print("\n─── Phase 4: P2P Transfer Learning ───")
+    exported = plasticity.export_weights()
+    print(f"  Exported: {exported['weights']['LOGIC']}")
+    
+    peer_data = {
+        "weights": {
+            "LOGIC": {"DeepSeek": 0.5, "Claude": 1.5, "Gemini": 1.0},
+            "EMPATHY": {"DeepSeek": 1.0, "Claude": 0.5, "Gemini": 1.0},
+            "CREATIVITY": {"DeepSeek": 1.0, "Claude": 1.0, "Gemini": 0.5},
+        },
+        "total_updates": 100,
+        "epoch": 99,
+    }
+    plasticity.import_peer_weights(peer_data, trust_factor=0.5)
+    print(f"  After import: {plasticity.export_weights()['weights']['LOGIC']}")
+    
     print("\n─── Final Synaptic Matrix ───")
     stats = plasticity.get_stats()
     for ctx, weights in stats['weights'].items():
@@ -526,8 +610,8 @@ if __name__ == "__main__":
     print(f"  Total Updates: {stats['total_updates']}")
     print(f"  Total Blocked: {stats['total_blocked']}")
     
-    # Cleanup test file
     if os.path.exists("test_synaptic_weights.json"):
         os.remove("test_synaptic_weights.json")
     
     print("\n✅ Swarm Plasticity standalone test PASSED")
+

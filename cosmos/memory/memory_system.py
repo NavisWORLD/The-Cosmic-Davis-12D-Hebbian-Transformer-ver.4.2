@@ -429,6 +429,12 @@ class MemorySystem:
             # Store the phase context for future validations
             self.phi_encoder.set_context_phase(geometric_phase)
 
+        # Holographic Memory Injection
+        if metadata is None:
+            metadata = {}
+        if geometric_phase is not None:
+            metadata['geometric_phase'] = geometric_phase
+
         # Store in archival memory
         memory_id = await self.archival_memory.store(
             content=content,
@@ -469,6 +475,7 @@ class MemorySystem:
         search_conversation: bool = True,
         search_graph: bool = True,
         min_score: float = 0.3,
+        geometric_phase: Optional[float] = None,
     ) -> list[MemorySearchResult]:
         """
         Recall memories relevant to a query with parallel execution.
@@ -498,7 +505,7 @@ class MemorySystem:
 
         # 1. Archival Search Task
         if search_archival:
-            tasks.append(self._search_archival_wrapped(query, top_k, min_score))
+            tasks.append(self._search_archival_wrapped(query, top_k, min_score, geometric_phase))
         else:
             tasks.append(_empty_result())
 
@@ -539,9 +546,9 @@ class MemorySystem:
 
         return final_results
 
-    async def _search_archival_wrapped(self, query: str, top_k: int, min_score: float) -> list[MemorySearchResult]:
+    async def _search_archival_wrapped(self, query: str, top_k: int, min_score: float, current_phase: Optional[float] = None) -> list[MemorySearchResult]:
         try:
-            archival_results = await self.archival_memory.search(query, top_k=top_k, min_score=min_score)
+            archival_results = await self.archival_memory.search(query, top_k=top_k, min_score=min_score, current_phase=current_phase)
             return [
                 MemorySearchResult(
                     content=r.entry.content,

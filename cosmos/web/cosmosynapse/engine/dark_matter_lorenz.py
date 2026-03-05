@@ -108,3 +108,70 @@ class DarkMatterLorenz:
 
     def get_current_state(self):
         return dict(zip(['x','y','z','w'], self.state))
+
+    # ════════════════════════════════════════════════════════
+    # V4.0: P2P DARK MATTER ANCHORING
+    # ════════════════════════════════════════════════════════
+
+    def anchor_for_p2p(self) -> Dict[str, float]:
+        """
+        Serialize the 4D (x, y, z, w) attractor state for P2P transmission.
+        Returns a compact dict that can be JSON-serialized and sent to peers.
+        """
+        x, y, z, w = self.state
+        return {
+            "x": float(x),
+            "y": float(y),
+            "z": float(z),
+            "w": float(w),  # The Dark Matter value
+            "sigma": self.sigma,
+            "rho": self.rho,
+            "beta": self.beta,
+        }
+
+    def apply_peer_anchor(self, peer_state: Dict[str, float], trust: float = 0.5):
+        """
+        Merge incoming peer dark matter state via φ-dampened averaging.
+
+        w_merged = w_local × (1 - trust × φ⁻¹) + w_peer × trust × φ⁻¹
+
+        Args:
+            peer_state: Dict with keys 'x', 'y', 'z', 'w' from peer
+            trust: Trust factor 0.0–1.0 (how much to weight the peer's state)
+        """
+        if not peer_state:
+            return
+
+        trust_phi = trust * PHI_INV  # φ-dampen the trust
+        local_weight = 1.0 - trust_phi
+        peer_weight = trust_phi
+
+        px = peer_state.get("x", 0.0)
+        py = peer_state.get("y", 0.0)
+        pz = peer_state.get("z", 0.0)
+        pw = peer_state.get("w", 0.0)
+
+        self.state = np.array([
+            self.state[0] * local_weight + px * peer_weight,
+            self.state[1] * local_weight + py * peer_weight,
+            self.state[2] * local_weight + pz * peer_weight,
+            self.state[3] * local_weight + pw * peer_weight,
+        ])
+
+    def get_divergence(self, peer_state: Dict[str, float]) -> float:
+        """
+        Calculate Euclidean distance between local and peer chaos vectors.
+        Higher divergence = the swarm nodes are experiencing different chaos dynamics.
+
+        Returns:
+            Float 0.0+ (0.0 = identical states, higher = more divergent)
+        """
+        if not peer_state:
+            return float('inf')
+
+        dx = self.state[0] - peer_state.get("x", 0.0)
+        dy = self.state[1] - peer_state.get("y", 0.0)
+        dz = self.state[2] - peer_state.get("z", 0.0)
+        dw = self.state[3] - peer_state.get("w", 0.0)
+
+        return float(np.sqrt(dx**2 + dy**2 + dz**2 + dw**2))
