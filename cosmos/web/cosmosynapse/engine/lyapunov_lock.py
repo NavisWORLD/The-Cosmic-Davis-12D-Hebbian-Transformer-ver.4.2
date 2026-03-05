@@ -33,7 +33,7 @@ except ImportError:
 # ==========================================
 # 12D PHYSICS CONSTANTS
 # ==========================================
-LYAPUNOV_STABILITY_THRESHOLD = 0.15  # Max allowed drift (radians)
+LYAPUNOV_STABILITY_THRESHOLD = 0.45  # Max allowed drift (radians) — V4.0 RSM widened
 NON_VANISHING_EXPONENT = PHI            # φ = 1.618 — natural harmonic steepness
 CRITICAL_MASS_SINGULARITY = 50.0     # Gravity score that forces "System Halt"
 

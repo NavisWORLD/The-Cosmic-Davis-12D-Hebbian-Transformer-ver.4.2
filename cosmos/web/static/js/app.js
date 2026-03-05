@@ -531,6 +531,23 @@ function addMessage(content, role) {
 }
 
 function formatMessage(content) {
+    // --- Pillar 5: Ethereal Communication ---
+    // Extract Telepathy Blocks
+    let telepathyData = "";
+    const telepathyRegex = /<telepathy>([\s\S]*?)<\/telepathy>/g;
+    let match;
+    while ((match = telepathyRegex.exec(content)) !== null) {
+        telepathyData += match[1] + " ";
+    }
+
+    if (telepathyData && window.triggerTelepathyPulse) {
+        // Trigger visualizer generative pulse
+        setTimeout(() => window.triggerTelepathyPulse(telepathyData), 100);
+    }
+
+    // Remove the blocks so they remain hidden from the visible chat UI
+    content = content.replace(/<telepathy>[\s\S]*?<\/telepathy>/g, '');
+
     // Simple markdown-like formatting
     let formatted = content
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -1800,6 +1817,29 @@ function initNeuralCanvas() {
         }
     }
 
+    // Pillar 5: Ethereal Telepathy Pulse API
+    window.triggerTelepathyPulse = function (data) {
+        let intensity = 1.0;
+        let color = 'rgba(236, 72, 153, '; // Pinkish for pure thought
+
+        if (data.includes('entropy') || data.includes('chaos')) intensity = 2.5;
+        if (data.includes('quantum') || data.includes('phase')) color = 'rgba(6, 182, 212, ';
+
+        // Add a burst of new high-energy thoughts
+        for (let i = 0; i < 30; i++) {
+            particles.push({
+                x: canvas.width / 2 + (Math.random() - 0.5) * 100,
+                y: canvas.height / 2 + (Math.random() - 0.5) * 100,
+                vx: (Math.random() - 0.5) * 12 * intensity,
+                vy: (Math.random() - 0.5) * 12 * intensity,
+                size: Math.random() * 5 + 2,
+                color: color,
+                isTelepathy: true,
+                life: 150
+            });
+        }
+    };
+
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -1825,10 +1865,24 @@ function initNeuralCanvas() {
 
         // Draw particles
         ctx.globalAlpha = 1;
-        for (const p of particles) {
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(139, 92, 246, 0.5)';
+
+            if (p.isTelepathy) {
+                ctx.fillStyle = p.color + (p.life / 150) + ')';
+                p.life -= 1;
+                // Siphon physics
+                p.vx *= 0.98;
+                p.vy *= 0.98;
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                    continue; // Skip physics below for dead particle
+                }
+            } else {
+                ctx.fillStyle = 'rgba(139, 92, 246, 0.5)';
+            }
             ctx.fill();
 
             // Update position
@@ -2420,6 +2474,10 @@ async function fetchProcessingStats() {
                     <div class="processing-item">
                         <span class="proc-label">😊 Mood:</span>
                         <span class="proc-value">${orchestrator.mood || 'curious'}</span>
+                    </div>
+                    <div class="processing-item">
+                        <span class="proc-label">🧠 Cosmos Brain:</span>
+                        <span class="proc-value">${orchestrator.cosmos_brain_loaded ? 'ONLINE' : 'OFFLINE'}</span>
                     </div>
                 `;
             }

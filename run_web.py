@@ -33,10 +33,39 @@ except ImportError:
                     os.environ.setdefault(key.strip(), value.strip())
 
 # IMPORT TORCH EARLY TO PREVENT DLL CONFLICTS (shm.dll error)
-try:
-    import torch
-except ImportError:
-    pass
+# Use a subprocess with timeout to detect hangs (torch 2.8.0 issue)
+import subprocess
+def _test_torch_import(timeout=10):
+    """Test if torch can actually import without hanging."""
+    try:
+        proc = subprocess.Popen(
+            [sys.executable, "-c", "import torch; print('OK')"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
+        )
+        stdout, _ = proc.communicate(timeout=timeout)
+        return b"OK" in stdout
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        proc.wait()
+        return False
+    except Exception:
+        return False
+
+if os.environ.get("COSMOS_SKIP_TORCH") != "1":
+    print("    [INIT]  Testing torch import (10s timeout)...")
+    if _test_torch_import(timeout=10):
+        try:
+            import torch
+            print(f"    [OK]    torch {torch.__version__} loaded")
+        except ImportError:
+            pass
+    else:
+        print("    [WARN]  torch import timed out — setting COSMOS_SKIP_TORCH=1")
+        print("            TTS voice cloning disabled; server will use fallback voice.")
+        os.environ["COSMOS_SKIP_TORCH"] = "1"
+else:
+    print("    [SKIP]  torch (COSMOS_SKIP_TORCH=1)")
 
 # ALIAS FIX FOR WINDOWS: Map 'Cosmos' to 'cosmos' to allow lowercase imports
 try:

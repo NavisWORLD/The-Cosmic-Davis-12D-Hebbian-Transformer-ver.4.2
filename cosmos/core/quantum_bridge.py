@@ -173,25 +173,55 @@ class QuantumEntanglementBridge:
                     self._trigger_refill()
                 return np.random.random()
 
-    def _trigger_refill(self):
+    def _trigger_refill(self, user_physics: Optional[dict] = None):
         """Start async refill of entropy buffer."""
         if not self.backend:
             return 
             
-        thread = threading.Thread(target=self._refill_buffer)
+        thread = threading.Thread(target=self._refill_buffer, args=(user_physics,))
         thread.daemon = True
         thread.start()
 
-    def _refill_buffer(self):
-        """Execute quantum circuit to generate random bits."""
+    def _refill_buffer(self, user_physics: Optional[dict] = None):
+        """Execute quantum circuit parameterized by human emotional physics."""
         self.is_refilling = True
         try:
-            # Create a circuit for 5 qubits in superposition
+            # 1. Extract Symbiotic Parameters
+            phase = 0.0
+            entropy = 0.5
+            resonance = 0.0
+            if user_physics:
+                phase = user_physics.get('cst_physics', {}).get('geometric_phase_rad', 0.0)
+                entropy = user_physics.get('entropy_field', 0.5)
+                resonance = user_physics.get('resonance_scalar', 0.0)
+
+            # Map values to valid rotation angles (0 to pi)
+            theta_1 = float(abs(phase) % np.pi)
+            theta_2 = float((entropy * np.pi) % np.pi)
+            theta_3 = float((abs(resonance) * np.pi) % np.pi)
+
+            # 2. Construct Symbiotic Entanglement Circuit
             qc = QuantumCircuit(5)
-            qc.h(range(5)) # Hadamard gate -> Superposition
+            
+            # Apply initial superposition
+            qc.h(range(5)) 
+            
+            # Apply user-physics parameterized rotations
+            for i in range(5):
+                qc.ry(theta_1, i)
+                qc.rx(theta_2, i)
+                qc.rz(theta_3, i)
+                
+            # Entangle the swarm qubits
+            qc.cx(0, 1)
+            qc.cx(1, 2)
+            qc.cx(2, 3)
+            qc.cx(3, 4)
+            qc.cx(4, 0) # Close the topology ring
+
             qc.measure_all()
             
-            # Run on backend
+            # 3. Run on backend
             pm = generate_preset_pass_manager(backend=self.backend, optimization_level=1)
             isa_circuit = pm.run(qc)
             sampler = Sampler(mode=self.backend)
@@ -201,6 +231,7 @@ class QuantumEntanglementBridge:
             pub_result = result[0]
             counts = pub_result.data.meas.get_counts()
             
+            # 4. Extract Cognition Entropy from Entangled States
             new_entropy = []
             for bitstring, count in counts.items():
                 val = int(bitstring, 2) / (2**5)
@@ -214,10 +245,10 @@ class QuantumEntanglementBridge:
                 if len(self.entropy_buffer) > 100:
                     self.entropy_buffer = self.entropy_buffer[:100]
                     
-            print(f"[QUANTUM] Refilled buffer. Size: {len(self.entropy_buffer)}")
+            print(f"[QUANTUM SYMBIOSIS] Hardware refilled. Resonance: {resonance:.2f}, Buffer: {len(self.entropy_buffer)}")
 
         except Exception as e:
-            print(f"[QUANTUM] Refill failed: {e}")
+            print(f"[QUANTUM] Symbiotic refill failed: {e}")
         finally:
             self.is_refilling = False
 

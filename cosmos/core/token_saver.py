@@ -1,7 +1,7 @@
 """
 cosmos Token Saver - Claude/API Token Optimization
 
-"Why waste tokens when you can recycle them? - Professor cosmos"
+"Entropy conservation — recycle tokens, preserve coherence."
 
 This module provides intelligent token management to reduce API costs:
 1. Context Window Compression - Summarize old context

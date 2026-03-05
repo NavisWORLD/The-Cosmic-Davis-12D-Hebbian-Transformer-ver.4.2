@@ -255,3 +255,31 @@ ab_testing:
   max_test_duration_days: 7
   early_stopping: true
   early_stop_threshold: 0.99  # Stop if variant is clearly better/worse
+
+# Swarm-Awareness Protocol (The Mirror)
+swarm_awareness:
+  enabled: true
+
+  # How often (in CNS ticks) the self-assessment cycle runs
+  assessment_interval_ticks: 50
+
+  # Probability of triggering a peer review each assessment cycle (0.0–1.0)
+  peer_review_probability: 0.3
+
+  # Alignment score below which corrective action is taken (0.0–1.0)
+  value_alignment_threshold: 0.6
+
+  # Strength of weight corrections when misaligned (learning rate)
+  correction_strength: 0.02
+
+  # Target value profiles for the collective (0.0–1.0)
+  value_targets:
+    coherence: 0.8      # Internal consistency of responses
+    empathy: 0.7        # Resonance with user emotional state
+    creativity: 0.6     # Novel connections and unexpected insights
+    stability: 0.85     # Lyapunov-stable outputs
+    cooperation: 0.75   # Models complement, not contradict
+
+  # Logging
+  log_assessments: true
+  max_reports_stored: 50
