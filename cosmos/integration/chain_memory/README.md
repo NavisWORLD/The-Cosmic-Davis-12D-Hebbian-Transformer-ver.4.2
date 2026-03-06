@@ -308,3 +308,6 @@ pip install web3 eth-account
 Copyright (c) 2026 Cosmos AI. All rights reserved.
 
 **FARNS token holders only.** The protected core module is compiled for distribution.
+
+
+> *Powered by The Cosmic Davis 12D Hebbian Transformer by Cory Shane Davis - [Zenodo Archive](https://zenodo.org/records/17574447)*

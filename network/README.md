@@ -37,3 +37,6 @@ cosmos_BOOTSTRAP_PEER=ws://<YOUR_SERVER_IP>:8888
 Restart cosmos. Your local agent will now introduce itself to the Bootstrap Node and can exchange Skill Vectors with anyone else connected to it!
 
 > **Security Note**: The current bootstrap node is public. Anyone knowing the IP can join. For private networks, use a VPN or add authentication logic to `bootstrap_node.py`.
+
+
+> *Powered by The Cosmic Davis 12D Hebbian Transformer by Cory Shane Davis - [Zenodo Archive](https://zenodo.org/records/17574447)*
