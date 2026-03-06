@@ -4,7 +4,7 @@ def find_cns_core():
     # Search all local drives and common backup locations for cosmosynapse engine
     search_dirs = [
         r"d:\Cosmos",
-        r"d:\farnsworth",
+        r"d:\Cosmos",
         r"C:\Users\corys\.gemini"
     ]
     

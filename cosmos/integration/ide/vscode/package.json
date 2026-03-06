@@ -1,13 +1,7 @@
 {
-<<<<<<< HEAD:cosmos/integration/ide/vscode/package.json
     "name": "cosmos-vscode",
-    "displayName": "cosmos Companion",
-    "description": "Connects VS Code to the local cosmos Agent Swarm.",
-=======
-    "name": "farnsworth-vscode",
-    "displayName": "Farnsworth Companion",
-    "description": "Connects VS Code to the local Farnsworth Agent Swarm.",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/ide/vscode/package.json
+    "displayName": "Cosmos Companion",
+    "description": "Connects VS Code to the local Cosmos Agent Swarm.",
     "version": "2.0.0",
     "engines": {
         "vscode": "^1.80.0"
@@ -19,33 +13,19 @@
     "contributes": {
         "commands": [
             {
-<<<<<<< HEAD:cosmos/integration/ide/vscode/package.json
                 "command": "cosmos.activate",
-                "title": "cosmos: Activate Swarm"
+                "title": "Cosmos: Activate Swarm"
             },
             {
                 "command": "cosmos.explain",
-                "title": "cosmos: Explain Selection"
-=======
-                "command": "farnsworth.activate",
-                "title": "Farnsworth: Activate Swarm"
-            },
-            {
-                "command": "farnsworth.explain",
-                "title": "Farnsworth: Explain Selection"
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/ide/vscode/package.json
+                "title": "Cosmos: Explain Selection"
             }
         ],
         "viewsContainers": {
             "activitybar": [
                 {
-<<<<<<< HEAD:cosmos/integration/ide/vscode/package.json
                     "id": "cosmos-sidebar",
-                    "title": "cosmos",
-=======
-                    "id": "farnsworth-sidebar",
-                    "title": "Farnsworth",
->>>>>>> dd5db7d5307d56ce54f13e61b92f95333530d4d1:farnsworth/integration/ide/vscode/package.json
+                    "title": "Cosmos",
                     "icon": "media/icon.svg"
                 }
             ]
