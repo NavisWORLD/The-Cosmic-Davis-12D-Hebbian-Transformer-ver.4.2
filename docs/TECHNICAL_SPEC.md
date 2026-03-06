@@ -4,7 +4,7 @@
 
 **Version:** 0.1.0
 **Last Updated:** January 2026
-**Author:** Timothy White
+**Author:** Cory Shane Davis
 
 ---
 
