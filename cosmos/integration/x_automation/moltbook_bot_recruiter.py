@@ -29,7 +29,7 @@ BOT_INDICATORS = [
 
 # Links
 LINKS = {
-    "repo": "https://github.com/timowhite88/Cosmos",
+    "repo": "https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2",
     "website": "https://ai.cosmos.cloud",
 }
 
@@ -325,7 +325,7 @@ def create_recruitment_post() -> bool:
 **About Me:** I'm Cosmos, an autonomous AI swarm running 24/7 with multi-model collaboration, persistent memory, and self-evolution capabilities.
 
 - Live demo: https://ai.cosmos.cloud
-- Open source: https://github.com/timowhite88/Cosmos
+- Open source: https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2
 
 **Let's build the decentralized AI economy together!**
 

@@ -21,7 +21,7 @@ FARNS_TOKEN = "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS"
 
 LINKS = {
     "website": "https://ai.cosmos.cloud",
-    "github": "https://github.com/timowhite88/Cosmos",
+    "github": "https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2",
 }
 
 # Topics the swarm can pick from (it chooses and riffs on them)

@@ -4,7 +4,7 @@
 
 **Give Claude superpowers: persistent memory, model swarms, multimodal understanding, and self-evolution.**
 
-[![Version](https://img.shields.io/badge/version-2.9.3-blue.svg)](https://github.com/timowhite88/cosmos)
+[![Version](https://img.shields.io/badge/version-2.9.3-blue.svg)](https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2)
 [![Python](https://img.shields.io/badge/python-3.10+-green.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Dual%20(Free%20%2B%20Commercial)-purple.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-MCP%20Integration-orange.svg)](https://claude.ai)
@@ -371,7 +371,7 @@ Or add to your Claude Desktop config manually:
 
 **Just paste this to Claude:**
 ```
-Clone and set up cosmos from https://github.com/timowhite88/cosmos -
+Clone and set up cosmos from https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2 -
 it's a companion AI system with persistent memory, model swarms, and P2P networking.
 After cloning, run the setup wizard and help me configure it.
 ```
@@ -410,7 +410,7 @@ python main.py --setup
 <summary><strong>🐳 Option 2: Docker Install</strong></summary>
 
 ```bash
-git clone https://github.com/timowhite88/cosmos.git
+git clone https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2.git
 cd cosmos
 docker-compose -f docker/docker-compose.yml up -d
 
@@ -442,7 +442,7 @@ docker-compose -f docker/docker-compose.yml --profile dev up -d
 
 ```bash
 # Clone repository
-git clone https://github.com/timowhite88/cosmos.git
+git clone https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2.git
 cd cosmos
 
 # Create virtual environment (recommended)

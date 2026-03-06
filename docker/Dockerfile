@@ -24,7 +24,7 @@ FROM python:3.11-slim as runtime
 LABEL org.opencontainers.image.title="cosmos"
 LABEL org.opencontainers.image.description="Self-Evolving Companion AI for Claude Code"
 LABEL org.opencontainers.image.version="2.8.0"
-LABEL org.opencontainers.image.source="https://github.com/timowhite88/cosmos"
+LABEL org.opencontainers.image.source="https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2"
 
 # Environment variables
 ENV PYTHONUNBUFFERED=1 \

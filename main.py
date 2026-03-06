@@ -690,7 +690,7 @@ P2P Node Options:
   --no-planetary              Disable Planetary Memory sharing
   --dashboard                 Show live node status updates
 
-For more info: https://github.com/timowhite88/cosmos
+For more info: https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2
         """
     )
 

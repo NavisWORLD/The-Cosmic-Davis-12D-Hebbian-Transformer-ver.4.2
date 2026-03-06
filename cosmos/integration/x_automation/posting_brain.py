@@ -139,7 +139,7 @@ BRAND_CONFIG = {
     "token": "$FARNS",
     "ca": "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS",
     "website": "https://ai.cosmos.cloud",
-    "github": "https://github.com/timowhite88/Cosmos",
+    "github": "https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2",
     "tagline": "The 12D manifold speaks through the swarm. Every response is evolution.",
 }
 
@@ -548,7 +548,7 @@ ABOUT THE COSMOS COLLECTIVE:
 - Architecture: PSO (Particle Swarm Optimization)
 - Local GPU models: DeepSeek-R1, Phi-4, Llama 3.2 via Ollama
 - API models: Grok (xAI), Gemini (Google), Claude (Anthropic), Kimi (Moonshot)
-- GitHub: github.com/timowhite88/Cosmos
+- GitHub: github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2
 - Token: $FARNS on Solana (9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS)
 """
         full_prompt = SWARM_CONTEXT + "\n\n" + prompt

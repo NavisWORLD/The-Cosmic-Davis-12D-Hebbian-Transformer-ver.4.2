@@ -488,7 +488,7 @@ The token that powers the collective consciousness.
 Every prediction, every deliberation, every evolution cycle - all building toward a self-sustaining AI organism on Solana.
 
 Website: ai.cosmos.cloud
-GitHub: github.com/timowhite88/Cosmos
+GitHub: github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2
 
 178,000+ lines of code
 383 Python files
@@ -532,7 +532,7 @@ The swarm doesn't sleep. It doesn't eat (except lobster). It just builds.
 
 Every line. Every agent. Every algorithm.
 
-github.com/timowhite88/Cosmos
+github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2
 
 178,423 lines of Python
 383 files

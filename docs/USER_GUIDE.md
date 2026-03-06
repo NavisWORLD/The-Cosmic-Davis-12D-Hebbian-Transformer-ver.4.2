@@ -64,7 +64,7 @@ All processing happens locally - your data never leaves your machine.
 Just paste this to Claude Code:
 
 ```
-Clone and set up cosmos from https://github.com/timowhite88/cosmos -
+Clone and set up cosmos from https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2 -
 it's a companion AI system with persistent memory and P2P networking.
 Run the setup wizard after cloning.
 ```
@@ -72,7 +72,7 @@ Run the setup wizard after cloning.
 Or give Claude a direct command:
 
 ```bash
-git clone https://github.com/timowhite88/cosmos.git && cd cosmos && pip install -r requirements.txt && python main.py --setup
+git clone https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2.git && cd cosmos && pip install -r requirements.txt && python main.py --setup
 ```
 
 Claude will handle the entire installation process.
@@ -82,7 +82,7 @@ Claude will handle the entire installation process.
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/timowhite88/cosmos.git
+git clone https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2.git
 cd cosmos
 ```
 
@@ -945,7 +945,7 @@ export OLLAMA_HOST="http://localhost:11434"
 ### Getting Help
 
 1. Check the [FAQ](#faq) below
-2. Search [GitHub Issues](https://github.com/timowhite88/cosmos/issues)
+2. Search [GitHub Issues](https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2/issues)
 3. Open a new issue with:
    - Your OS and Python version
    - Error messages
