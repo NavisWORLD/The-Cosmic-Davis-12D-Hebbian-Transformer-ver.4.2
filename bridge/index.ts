@@ -5,12 +5,12 @@ import { z } from "zod";
 
 function createServer() {
     const server = new McpServer({
-        name: "farnsworth-proxy",
+        name: "cosmos-proxy",
         version: "1.0.0",
     });
 
     server.tool(
-        "farnsworth_remember",
+        "cosmos_remember",
         "Store information in memory",
         {
             content: z.string().describe("Information to remember"),

@@ -1,7 +1,7 @@
 {
-  "name": "farnsworth-x-automation",
+  "name": "cosmos-x-automation",
   "version": "1.0.0",
-  "description": "X/Twitter automation for Farnsworth using Puppeteer stealth",
+  "description": "X/Twitter automation for Cosmos using Puppeteer stealth",
   "main": "x_poster.js",
   "scripts": {
     "login": "node x_login.js",

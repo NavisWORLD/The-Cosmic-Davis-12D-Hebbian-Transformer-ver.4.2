@@ -1,4 +1,4 @@
-# Farnsworth VTuber System Dependencies
+# Cosmos VTuber System Dependencies
 
 # Core
 numpy>=1.24.0
