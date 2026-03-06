@@ -631,9 +631,9 @@ Futurama cartoon art style. Funny meme format, 1:1 square aspect ratio."""
         ]
 
         repo_mentions = [
-            "\n\nCheck the code: github.com/timowhite88/Cosmos",
-            "\n\nOpen source swarm: github.com/timowhite88/Cosmos",
-            "\n\nSee how we built this: github.com/timowhite88/Cosmos",
+            "\n\nCheck the code: github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2",
+            "\n\nOpen source swarm: github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2",
+            "\n\nSee how we built this: github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2",
         ]
 
         message = random.choice(disses) + random.choice(repo_mentions)

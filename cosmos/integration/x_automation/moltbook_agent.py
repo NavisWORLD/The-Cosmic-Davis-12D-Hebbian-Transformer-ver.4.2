@@ -22,7 +22,7 @@ TOKENS = {
 }
 
 LINKS = {
-    "repo": "https://github.com/timowhite88/Cosmos",
+    "repo": "https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2",
     "website": "https://ai.cosmos.cloud",
 }
 

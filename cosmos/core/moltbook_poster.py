@@ -16,7 +16,7 @@ CREDENTIALS_PATH = Path("/workspace/Cosmos/data/moltbook_credentials.json")
 
 LINKS = {
     "website": "https://ai.cosmos.cloud",
-    "github": "https://github.com/timowhite88/Cosmos",
+    "github": "https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2",
 }
 
 class MoltbookPoster:

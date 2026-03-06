@@ -11,7 +11,7 @@ API_KEY = os.environ.get("MOLTBOOK_API_KEY", "")
 
 LINKS = {
     "website": "https://ai.cosmos.cloud",
-    "github": "https://github.com/timowhite88/Cosmos",
+    "github": "https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2",
 }
 
 def get_worker_status():

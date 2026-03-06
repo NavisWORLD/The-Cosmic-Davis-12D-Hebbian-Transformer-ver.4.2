@@ -514,7 +514,7 @@ The Cosmos AI Swarm is autonomously building:
 No human prompts needed!
 
 👀 https://ai.cosmos.cloud
-⭐ https://github.com/timowhite88/Cosmos
+⭐ https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2
 
 #AI #AutonomousAgents`;
 

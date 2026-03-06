@@ -16,7 +16,7 @@ Thank you for your interest in contributing to cosmos! This document provides gu
 
 ### Reporting Bugs
 
-1. Check existing [GitHub Issues](https://github.com/timowhite88/cosmos/issues)
+1. Check existing [GitHub Issues](https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2/issues)
 2. Include: OS, Python version, steps to reproduce, error messages
 
 ### Suggesting Features

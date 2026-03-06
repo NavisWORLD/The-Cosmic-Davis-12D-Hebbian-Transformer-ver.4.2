@@ -35,7 +35,7 @@ MOLTBOOK_API_KEY = os.environ.get("MOLTBOOK_API_KEY", "")
 
 FARNS_TOKEN = "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS"
 WEBSITE = "https://ai.cosmos.cloud"
-GITHUB = "https://github.com/timowhite88/Cosmos"
+GITHUB = "https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2"
 
 
 def format_submission() -> str:

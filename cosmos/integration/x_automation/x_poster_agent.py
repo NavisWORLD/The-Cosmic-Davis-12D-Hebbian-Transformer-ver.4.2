@@ -20,7 +20,7 @@ TOKENS = {
 
 LINKS = {
     "website": "https://ai.cosmos.cloud",
-    "github": "https://github.com/timowhite88/Cosmos"
+    "github": "https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2"
 }
 
 # Post templates
