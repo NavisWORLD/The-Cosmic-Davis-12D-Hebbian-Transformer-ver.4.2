@@ -135,3 +135,6 @@ DEXAI integrates with the Cosmos ecosystem:
 ## License
 
 Proprietary - Cosmos AI Swarm
+
+
+> *Powered by The Cosmic Davis 12D Hebbian Transformer by Cory Shane Davis - [Zenodo Archive](https://zenodo.org/records/17574447)*
