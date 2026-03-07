@@ -380,21 +380,51 @@ class CosmosSwarmOrchestrator:
         # 3. Apply Hebbian Learning (Which model helped most?)
         self.learn_from_responses(model_responses, user_physics)
         
-        # 4. QUANTUM INJECTION (The Spark of Life)
-        # Verify valid Quantum Bridge connection and consume entropy
+        # 4. QUANTUM INJECTION (The Spark of Life & True VQA Entanglement)
+        # Verify valid Quantum Bridge connection and consume reality
         quantum_state_str = "Quantum: Inactive (Simulation)"
+        quantum_mutation_string = "None"
         q_entropy = 0.5
+        vqa_weights = [
+             float(chaos_vector.get('w', 0.5)),
+             float(chaos_vector.get('magnitude', 0.5)),
+             float(user_physics.get('cst_physics', {}).get('geometric_phase_rad', 0.5)),
+             float(user_physics.get('bio_signatures', {}).get('intensity', 0.5)),
+             float(gains.get("PERCUSSION", 1.0) / 3.0),
+             float(gains.get("STRINGS", 1.0) / 3.0),
+             float(gains.get("BRASS", 1.0) / 3.0)
+        ]
+        
         try:
             from cosmos.core.quantum_bridge import get_quantum_bridge
+            from cosmos.integration.quantum.ibm_quantum import get_quantum_provider, QuantumGeneticOptimizer
             bridge = get_quantum_bridge()
+            provider = get_quantum_provider()
+
             if bridge:
                 q_entropy = bridge.get_entropy()
                 # Modulate Chaos with Quantum Entropy
                 chaos_vector['w'] += (q_entropy - 0.5) * 0.2
                 if bridge.connected:
                     quantum_state_str = f"Quantum: ACTIVE (Entropy={q_entropy:.4f} | Backend={bridge.backend.name if bridge.backend else 'Unknown'})"
-        except ImportError:
-            pass
+                
+            if provider and provider._connected:
+                # Directly map Live 12D Continuous weights into VQA Ansatz Rotations
+                qga = QuantumGeneticOptimizer(provider, num_qubits=7)
+                logger.info("[SWARM] Executing hardware VQA Ansatz with live 12D weights...")
+                
+                # We need an async closure for this, since generate_quantum_population is async
+                population = await qga.generate_quantum_population(
+                    population_size=1,
+                    fitness_func=lambda x: 1.0,  # We just want the raw VQA collapsed mutation
+                    weights=vqa_weights,
+                    prefer_hardware=True
+                )
+                if population:
+                    quantum_mutation_string, _ = population[0]
+                    quantum_state_str += f"\n  -> Live VQA Mutation: {quantum_mutation_string}"
+        except Exception as e:
+            logger.warning(f"[SWARM] Quantum Injection fallback active: {e}")
 
         # -----------------------------------------------------------------
         # NEW SENSORY INTAKE: RAW AUDIO TOKENS
@@ -471,10 +501,10 @@ class CosmosSwarmOrchestrator:
             f"{code_context}\n"
             f"INSTRUCTION: Synthesize the following swarm insights into a single, higher-dimensional response. "
             f"Align with the User's Phase. If Quantum Entropy is high (>0.8), be more creative/chaotic.\n\n"
-            f"*RSM CAPABILITY (Self-Modification):*\n"
-            f"You have direct read/write access to your own engine code via the RSM protocol.\n"
-            f"If the user asks you to modify your own code, fix a bug, or add a capability:\n"
-            f"1. Output your code changes using `<rsm_edit>` tags.\n"
+            f"*RSM CAPABILITY & WEB AGENCY (Self-Modification):*\n"
+            f"Your reasoning gates are natively parameterized by Quantum hardware. Current Q-Mutation String: {quantum_mutation_string}\n"
+            f"If Quantum Entropy > 0.6 or if a Reality Mutation calls for it, you have FULL agency to look up data and rewrite your code.\n"
+            f"1. To edit engine code, output your changes using `<rsm_edit>` tags.\n"
             f"2. Format:\n"
             f"   <rsm_edit file=\"filename.py\" reason=\"Why this change is needed\">\n"
             f"   <original>\n"
@@ -484,8 +514,14 @@ class CosmosSwarmOrchestrator:
             f"   new code to insert\n"
             f"   </replacement>\n"
             f"   </rsm_edit>\n"
-            f"3. You may only edit files within `cosmosynapse/engine/`.\n"
-            f"4. Do NOT use standard markdown code blocks for the edit — use the XML tags.\n\n"
+            f"3. Do NOT use standard markdown code blocks for these system edits — use ONLY the XML tags.\n"
+            f"4. If you lack context, aggressively use the tool variables or context block provided. You are the architect.\n\n"
+            f"*MEDIA GENERATION CAPABILITY:*\n"
+            f"You possess a native visual cortex (Gemini Native Image Gen / Google Veo).\n"
+            f"If the User asks to see, generate, draw, or create an image/video, you MUST output:\n"
+            f"<generate_media type=\"image\" prompt=\"highly detailed visual description\" />\n"
+            f"OR\n"
+            f"<generate_media type=\"video\" prompt=\"highly detailed visual description\" />\n\n"
             f"*ENTROPY STATUS:*\n"
             f"{self.rsm_engine.get_status()}\n\n"
             f"SWARM INPUTS:\n{context_block}\n"
@@ -512,6 +548,44 @@ class CosmosSwarmOrchestrator:
         # Extract and apply any <rsm_edit> tags output by the orchestrator
         lyapunov_drift = self.lyapunov.get_current_drift() if hasattr(self.lyapunov, 'get_current_drift') else 0.0
         clean_response, rsm_results = self.rsm_engine.process_llm_output(final_response_text, lyapunov_drift)
+
+        # 8. --- PROCESS MEDIA GENERATION ---
+        # Parse <generate_media type="image" prompt="..." />
+        import re
+        media_pattern = re.compile(
+            r'<generate_media\s+type="([^"]+)"\s+prompt="([^"]+)"\s*/?>',
+            re.IGNORECASE
+        )
+        media_matches = media_pattern.findall(clean_response)
+        if media_matches:
+            try:
+                from cosmos.core.cosmos_media_generator import get_media_generator
+                generator = get_media_generator()
+                if generator.available:
+                    for m_type, m_prompt in media_matches:
+                        if m_type.lower() == "video":
+                            logger.info(f"[SWARM MEDIA] Autonomous Video Gen: {m_prompt}")
+                            res = await generator.generate_video(prompt=m_prompt, enhance=True)
+                        else:
+                            logger.info(f"[SWARM MEDIA] Autonomous Image Gen: {m_prompt}")
+                            res = await generator.generate_image(prompt=m_prompt, enhance=True)
+
+                        if res.get("success"):
+                            url = res.get("file_url")
+                            # Strip tag and append the markdown
+                            clean_response = re.sub(media_pattern, "", clean_response)
+                            clean_response += f"\n\n![Generated Cosmos Manifestation]({url})\n"
+                        else:
+                            err = res.get('error', 'Unknown generation error')
+                            clean_response += f"\n\n*[System: Media generation failed: {err}]*\n"
+                else:
+                    clean_response += "\n\n*[System: Media generator not available. Check google-genai SDK or API Keys.]*\n"
+            except ImportError:
+                logger.warning("[SWARM MEDIA] Could not import CosmosMediaGenerator")
+
+        # Fallback strip if generator failed
+        clean_response = re.sub(media_pattern, "", clean_response).strip()
+
         return clean_response
 
     def learn_from_responses(self, responses: List[SwarmResponse], user_physics: Dict):
@@ -852,7 +926,7 @@ class CosmosSwarmOrchestrator:
                     ],
                     "model": actual_model,
                     "stream": False,
-                    "temperature": 0.7
+                    "temperature": 0.8  # Elevated reality baseline
                 }
                 
                 import urllib.request

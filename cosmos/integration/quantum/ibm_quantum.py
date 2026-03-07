@@ -212,13 +212,16 @@ class QuantumUsageStats:
         if self.hardware_percentage_used >= 80:
             try:
                 import asyncio
-                asyncio.create_task(_emit_quantum_signal("quantum.usage_warning", {
+                loop = asyncio.get_running_loop()
+                loop.create_task(_emit_quantum_signal("quantum.usage_warning", {
                     "percentage_used": self.hardware_percentage_used,
                     "seconds_remaining": self.hardware_seconds_remaining,
                     "jobs_used": self.hardware_jobs_count,
                     "warning_level": "critical" if self.hardware_percentage_used >= 95 else "high",
                     "timestamp": datetime.now().isoformat()
                 }))
+            except RuntimeError:
+                pass  # No running event loop in this thread, skip emission
             except Exception:
                 pass  # Don't fail on signal emission
 
@@ -676,7 +679,7 @@ class IBMQuantumProvider:
                     # Job mode: single primitive request, simplest
                     sampler = SamplerV2(mode=backend)
                     if parameters:
-                        job = sampler.run([(transpiled.bind_parameters(parameters),)], shots=shots)
+                        job = sampler.run([(transpiled.assign_parameters(parameters),)], shots=shots)
                     else:
                         job = sampler.run([(transpiled,)], shots=shots)
                     result = job.result()
@@ -685,7 +688,7 @@ class IBMQuantumProvider:
                     with Batch(backend=backend) as batch:
                         sampler = SamplerV2(mode=batch)
                         if parameters:
-                            job = sampler.run([(transpiled.bind_parameters(parameters),)], shots=shots)
+                            job = sampler.run([(transpiled.assign_parameters(parameters),)], shots=shots)
                         else:
                             job = sampler.run([(transpiled,)], shots=shots)
                         result = job.result()
@@ -731,6 +734,7 @@ class IBMQuantumProvider:
                     "timestamp": datetime.now().isoformat()
                 }))
 
+                self._log_quantum_job(job_result, task_type, circuit, parameters)
                 return job_result
 
             else:
@@ -748,7 +752,7 @@ class IBMQuantumProvider:
                 transpiled = transpile(circuit, sim_backend, optimization_level=1)
 
                 if parameters:
-                    transpiled = transpiled.bind_parameters(parameters)
+                    transpiled = transpiled.assign_parameters(parameters)
 
                 job = sim_backend.run(transpiled, shots=shots)
                 result = job.result()
@@ -773,7 +777,7 @@ class IBMQuantumProvider:
 
                 # Emit result signal for simulator
                 asyncio.create_task(_emit_quantum_signal("quantum.result", {
-                    "backend": "aer_simulator",
+                    "backend": backend_label,
                     "is_hardware": False,
                     "execution_time": execution_time,
                     "shots": shots,
@@ -781,6 +785,7 @@ class IBMQuantumProvider:
                     "timestamp": datetime.now().isoformat()
                 }))
 
+                self._log_quantum_job(job_result, task_type, circuit, parameters)
                 return job_result
 
         except Exception as e:
@@ -793,13 +798,15 @@ class IBMQuantumProvider:
                 "timestamp": datetime.now().isoformat()
             }))
 
-            return QuantumJobResult(
+            err_result = QuantumJobResult(
                 success=False,
                 backend_used=backend_name,
                 execution_time=(datetime.now() - start_time).total_seconds(),
                 shots=shots,
                 error=str(e)
             )
+            self._log_quantum_job(err_result, task_type, circuit, parameters)
+            return err_result
 
     async def run_estimator(
         self,
@@ -899,7 +906,7 @@ class IBMQuantumProvider:
 
                     # Build PUB (Primitive Unified Bloc) per IBM docs
                     if parameters:
-                        pub = (transpiled.bind_parameters(parameters), observable)
+                        pub = (transpiled.assign_parameters(parameters), observable)
                     else:
                         pub = (transpiled, observable)
 
@@ -917,7 +924,7 @@ class IBMQuantumProvider:
                     evs = result[0].data.evs
                     expectation_values = evs.tolist() if hasattr(evs, 'tolist') else [evs]
 
-                return QuantumJobResult(
+                job_result = QuantumJobResult(
                     success=True,
                     backend_used=backend_name,
                     execution_time=execution_time,
@@ -934,13 +941,15 @@ class IBMQuantumProvider:
                         }
                     }
                 )
+                self._log_quantum_job(job_result, task_type, circuit, parameters)
+                return job_result
 
             else:
                 # Simulator - use StatevectorEstimator (Qiskit 2.x)
                 estimator = StatevectorEstimator()
 
                 if parameters:
-                    pub = (circuit.bind_parameters(parameters), observable)
+                    pub = (circuit.assign_parameters(parameters), observable)
                 else:
                     pub = (circuit, observable)
 
@@ -955,7 +964,7 @@ class IBMQuantumProvider:
                     evs = result[0].data.evs
                     expectation_values = evs.tolist() if hasattr(evs, 'tolist') else [float(evs)]
 
-                return QuantumJobResult(
+                job_result = QuantumJobResult(
                     success=True,
                     backend_used="statevector_simulator",
                     execution_time=execution_time,
@@ -963,16 +972,62 @@ class IBMQuantumProvider:
                     expectation_values=expectation_values,
                     metadata={"is_hardware": False}
                 )
+                self._log_quantum_job(job_result, task_type, circuit, parameters)
+                return job_result
 
         except Exception as e:
             logger.error(f"Estimator execution failed: {e}")
-            return QuantumJobResult(
+            err_result = QuantumJobResult(
                 success=False,
                 backend_used=backend_name,
                 execution_time=(datetime.now() - start_time).total_seconds(),
                 shots=shots,
                 error=str(e)
             )
+            self._log_quantum_job(err_result, task_type, circuit, parameters)
+            return err_result
+
+    def _log_quantum_job(self, result: QuantumJobResult, task_type: QuantumTaskType, circuit: "QuantumCircuit" = None, parameters: Dict = None):
+        """Save detailed quantum execution logs to disk for graph visualization."""
+        try:
+            log_dir = Path("data/quantum/jobs")
+            log_dir.mkdir(parents=True, exist_ok=True)
+            
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+            job_id = f"{task_type.value}_{result.backend_used}_{timestamp}"
+            
+            log_data = {
+                "job_id": job_id,
+                "timestamp": datetime.now().isoformat(),
+                "task_type": task_type.value,
+                "success": result.success,
+                "backend": result.backend_used,
+                "execution_time_sec": result.execution_time,
+                "shots": result.shots,
+                "error": result.error,
+                "metadata": result.metadata
+            }
+            
+            if result.counts:
+                log_data["counts"] = result.counts
+            if result.expectation_values:
+                log_data["expectation_values"] = result.expectation_values
+                
+            if parameters:
+                # Convert params to native types
+                log_data["parameters"] = {str(k): float(v) for k, v in parameters.items()}
+                
+            if circuit:
+                try:
+                    log_data["circuit_qasm"] = circuit.qasm()
+                except Exception:
+                    log_data["circuit_depth"] = circuit.depth()
+                    
+            log_file = log_dir / f"{job_id}.json"
+            log_file.write_text(json.dumps(log_data, indent=2))
+            logger.debug(f"Quantum job logged to {log_file}")
+        except Exception as e:
+            logger.error(f"Failed to log quantum job: {e}")
 
     def get_usage_summary(self) -> Dict:
         """Get current usage summary."""
@@ -999,17 +1054,18 @@ class IBMQuantumProvider:
 
 class QuantumGeneticOptimizer:
     """
-    Quantum-enhanced Genetic Algorithm for agent evolution.
+    Quantum-enhanced Genetic Algorithm for agent evolution using a Variational Quantum Algorithm (VQA).
 
-    Uses quantum superposition for exploring solution spaces and
-    quantum interference for amplifying good solutions.
+    Uses a parameterized quantum circuit (Ansatz) where the swarm's Hebbian learning weights
+    become the parameters (angles of rotation) for the quantum gates. The measurement
+    collapses into the new "mutated" bitstring.
 
     Integrates with: evolution/genetic_optimizer.py, population_manager.py
     """
 
     def __init__(self, provider: IBMQuantumProvider, num_qubits: int = 8):
         """
-        Initialize quantum genetic optimizer.
+        Initialize quantum genetic optimizer using VQA Ansatz.
 
         Args:
             provider: IBM Quantum provider instance
@@ -1019,92 +1075,51 @@ class QuantumGeneticOptimizer:
         self.num_qubits = num_qubits
         self.generation = 0
 
-    def _create_superposition_circuit(self) -> "QuantumCircuit":
-        """Create circuit for uniform superposition (all possibilities)."""
-        if not QISKIT_AVAILABLE:
-            return None
-
-        qc = QuantumCircuit(self.num_qubits, self.num_qubits)
-
-        # Hadamard on all qubits creates uniform superposition
-        for i in range(self.num_qubits):
-            qc.h(i)
-
-        return qc
-
-    def _create_grover_oracle(self, target_fitness: Callable[[str], float]) -> "QuantumCircuit":
+    def _create_ansatz(self) -> Tuple[Optional["QuantumCircuit"], List[Any]]:
         """
-        Create Grover oracle that marks good solutions.
-
-        For genetic algorithms, "good" = high fitness score.
+        Create a parameterized Variational Quantum Circuit (Ansatz).
+        Returns the circuit and its Parameter objects for binding continuous weights.
         """
         if not QISKIT_AVAILABLE:
-            return None
-
-        # Simplified oracle - in practice, this would encode the fitness function
-        qc = QuantumCircuit(self.num_qubits)
-
-        # Multi-controlled Z gate marks solutions
-        # This is a placeholder - real implementation would encode fitness
-        qc.h(self.num_qubits - 1)
-        qc.mcx(list(range(self.num_qubits - 1)), self.num_qubits - 1)
-        qc.h(self.num_qubits - 1)
-
-        return qc
-
-    def _create_diffusion_operator(self) -> "QuantumCircuit":
-        """Create Grover diffusion operator for amplitude amplification."""
-        if not QISKIT_AVAILABLE:
-            return None
+            return None, []
 
         qc = QuantumCircuit(self.num_qubits)
+        params = [Parameter(f'theta_{i}') for i in range(self.num_qubits)]
 
-        # Hadamard on all
+        # Initial superposition
         for i in range(self.num_qubits):
             qc.h(i)
 
-        # Phase flip about |0>
+        # Parameterized rotations (Hebbian weights map to these)
         for i in range(self.num_qubits):
-            qc.x(i)
+            qc.ry(params[i], i)
 
-        # Multi-controlled Z
-        qc.h(self.num_qubits - 1)
-        qc.mcx(list(range(self.num_qubits - 1)), self.num_qubits - 1)
-        qc.h(self.num_qubits - 1)
+        # Entanglement between adjacent qubits
+        for i in range(self.num_qubits - 1):
+            qc.cx(i, i + 1)
 
-        # Undo X gates
-        for i in range(self.num_qubits):
-            qc.x(i)
-
-        # Hadamard on all
-        for i in range(self.num_qubits):
-            qc.h(i)
-
-        return qc
+        return qc, params
 
     async def generate_quantum_population(
         self,
         population_size: int,
         fitness_func: Optional[Callable[[str], float]] = None,
-        grover_iterations: int = 1,
+        weights: Optional[List[float]] = None,
         prefer_hardware: bool = False
     ) -> List[Tuple[str, float]]:
         """
-        Generate population using quantum sampling.
-
-        Uses Grover's algorithm to bias sampling toward high-fitness solutions.
+        Generate a quantum population by sampling the VQA Ansatz configured by continuous weights.
 
         Args:
             population_size: Number of individuals to generate
-            fitness_func: Function to evaluate fitness of bitstring
-            grover_iterations: Number of Grover iterations (amplitude amplification)
+            fitness_func: Classical function to evaluate fitness of bitstring
+            weights: List of continuous weights to bind to the Parameter gates [0..1 mapped to 0..pi]
             prefer_hardware: Use real quantum hardware if available
 
         Returns:
             List of (bitstring, fitness_score) tuples
         """
         if not QISKIT_AVAILABLE:
-            # Classical fallback
             logger.warning("Qiskit not available, using classical random generation")
             population = []
             for _ in range(population_size):
@@ -1113,18 +1128,21 @@ class QuantumGeneticOptimizer:
                 population.append((bitstring, fitness))
             return sorted(population, key=lambda x: x[1], reverse=True)
 
-        # Build quantum circuit
-        qc = self._create_superposition_circuit()
+        # Build quantum parameterized circuit
+        qc, params = self._create_ansatz()
 
-        if grover_iterations > 0 and fitness_func:
-            oracle = self._create_grover_oracle(fitness_func)
-            diffusion = self._create_diffusion_operator()
+        # Map classical continuous weights to quantum angles
+        param_dict = None
+        if weights and len(weights) >= self.num_qubits:
+            # Map [0, 1] weights to [0, pi] angles
+            bound_angles = [w * np.pi for w in weights[:self.num_qubits]]
+            param_dict = {p: a for p, a in zip(params, bound_angles)}
+        else:
+            # Default to random exploration if no weights provided (uniform spread)
+            bound_angles = [np.random.random() * np.pi for _ in range(self.num_qubits)]
+            param_dict = {p: a for p, a in zip(params, bound_angles)}
 
-            for _ in range(grover_iterations):
-                qc.compose(oracle, inplace=True)
-                qc.compose(diffusion, inplace=True)
-
-        # Measure all qubits
+        # Measure all qubits (allocating correctly sized classical register)
         qc.measure_all()
 
         # Run circuit
@@ -1132,12 +1150,12 @@ class QuantumGeneticOptimizer:
             qc,
             shots=population_size * 2,  # Oversample for diversity
             task_type=QuantumTaskType.EVOLUTION,
-            prefer_hardware=prefer_hardware
+            prefer_hardware=prefer_hardware,
+            parameters=param_dict
         )
 
         if not result.success or not result.counts:
             logger.warning(f"Quantum population generation failed: {result.error}")
-            # Classical fallback
             population = []
             for _ in range(population_size):
                 bitstring = ''.join(str(np.random.randint(2)) for _ in range(self.num_qubits))
@@ -1148,14 +1166,11 @@ class QuantumGeneticOptimizer:
         # Process results
         population = []
         for bitstring, count in result.counts.items():
-            # Normalize bitstring format
             bs = bitstring.replace(" ", "")
             fitness = fitness_func(bs) if fitness_func else count / result.shots
             population.append((bs, fitness))
 
-        # Sort by fitness and return top individuals
         population.sort(key=lambda x: x[1], reverse=True)
-
         self.generation += 1
         logger.info(f"Quantum GA generation {self.generation}: {len(population)} candidates, best fitness {population[0][1]:.4f}")
 
@@ -1169,27 +1184,23 @@ class QuantumGeneticOptimizer:
     ) -> str:
         """
         Quantum-inspired crossover using entanglement.
-
         Creates offspring that has quantum superposition of both parents' traits.
         """
         if not QISKIT_AVAILABLE or len(parent1) != len(parent2):
-            # Classical single-point crossover
             point = np.random.randint(1, len(parent1))
             return parent1[:point] + parent2[point:]
 
         n = len(parent1)
-        qc = QuantumCircuit(n, n)
+        qc = QuantumCircuit(n)
 
         # Encode parents into quantum state
         for i in range(n):
             if parent1[i] == '1':
-                qc.x(i)  # Set to |1> if parent1 bit is 1
+                qc.x(i)
 
-            # Create superposition between parents at each position
             if parent1[i] != parent2[i]:
-                qc.h(i)  # Superposition when parents differ
+                qc.h(i)
 
-        # Add entanglement for correlated inheritance
         for i in range(n - 1):
             qc.cx(i, i + 1)
 
@@ -1206,7 +1217,6 @@ class QuantumGeneticOptimizer:
             offspring = max(result.counts, key=result.counts.get)
             return offspring.replace(" ", "")
 
-        # Fallback to classical
         point = np.random.randint(1, n)
         return parent1[:point] + parent2[point:]
 
@@ -1218,11 +1228,9 @@ class QuantumGeneticOptimizer:
     ) -> str:
         """
         Quantum-inspired mutation using rotation gates.
-
         Uses parameterized rotation to control mutation probability.
         """
         if not QISKIT_AVAILABLE:
-            # Classical mutation
             result = list(individual)
             for i in range(len(result)):
                 if np.random.random() < mutation_rate:
@@ -1230,7 +1238,7 @@ class QuantumGeneticOptimizer:
             return ''.join(result)
 
         n = len(individual)
-        qc = QuantumCircuit(n, n)
+        qc = QuantumCircuit(n)
 
         # Encode individual
         for i in range(n):
@@ -1238,7 +1246,6 @@ class QuantumGeneticOptimizer:
                 qc.x(i)
 
         # Apply rotation gates based on mutation rate
-        # RY rotation angle controls probability of bit flip
         theta = 2 * np.arcsin(np.sqrt(mutation_rate))
         for i in range(n):
             qc.ry(theta, i)
@@ -1256,7 +1263,6 @@ class QuantumGeneticOptimizer:
             mutated = max(result.counts, key=result.counts.get)
             return mutated.replace(" ", "")
 
-        # Classical fallback
         result_list = list(individual)
         for i in range(len(result_list)):
             if np.random.random() < mutation_rate:
@@ -1669,7 +1675,7 @@ async def test_quantum_integration():
 
         # Configure options per IBM docs
         options = QuantumOptions(
-            execution_mode=ExecutionMode.SESSION,
+            execution_mode=ExecutionMode.BATCH,
             resilience_level=ResilienceLevel.MINIMAL,
             dynamical_decoupling=True,
             enable_twirling=False  # Only for hardware

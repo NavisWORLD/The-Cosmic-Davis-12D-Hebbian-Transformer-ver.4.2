@@ -6234,6 +6234,15 @@ async def configure_quantum_bridge(config: QuantumConfig):
         logger.info(f"Received Quantum Config: enabled={config.enabled}, token={config.token[:5]}..." if config.token else "token=None")
         
         if config.token:
+            # Validate token length to prevent OS environment variable errors
+            # An IBM token is typically ~100-200 chars. Anything over 1000 is definitely a mistake (e.g., pasting a log or base64 data).
+            if len(config.token) > 1000:
+                return JSONResponse({
+                    "success": False,
+                    "connected": False,
+                    "error": "The provided token is too long. Please ensure you are pasting the correct IBM Quantum API token (it should be around 100-200 characters)."
+                })
+
             os.environ["IBM_QUANTUM_TOKEN"] = config.token
             
             # Persist to .env securely - HARDCODED PATH FALLBACK

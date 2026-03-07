@@ -298,3 +298,123 @@ class VisualLightToken:
         norm = np.linalg.norm(mag1_flat) * np.linalg.norm(mag2_flat)
         
         return dot / (norm + 1e-10)
+
+# ============================================================================
+# INVERSE 12D SENSORY MANIFESTATION (SYNTHESIS)
+# ============================================================================
+
+def generate_image_from_12d(embedding_12d_vector, width=512, height=512):
+    """
+    Inverse synthesis: Generate a spatial image from a 12D Phase embedding vector.
+    Uses Inverse 2D FFT to collapse abstract 12D thought frequencies into pixels.
+    """
+    import numpy as np
+    
+    # Extract params (safely handle tensor or list)
+    if hasattr(embedding_12d_vector, 'tolist'):
+        e = embedding_12d_vector.tolist()
+    else:
+        e = embedding_12d_vector
+        
+    D1_energy = float(e[0])
+    D2_mass = float(e[1])
+    D3_phi = float(e[2])
+    D4_chaos = float(e[3])
+    D9_cosmic = float(e[8])
+    D11_freq = float(e[10])
+    
+    # 1. Construct synthetic 2D Fourier Magnitude & Phase spaces
+    y, x = np.ogrid[-height//2:height//2, -width//2:width//2]
+    distance = np.sqrt(x**2 + y**2) + 1e-5
+    
+    # Base dominant frequency ring (from D11)
+    target_radius = max(D11_freq, 0.1) * (min(width, height) / 2)
+    ring = np.exp(-((distance - target_radius)**2) / (2 * (10 + abs(D4_chaos) * 50)**2))
+    
+    # Cosmic energy centroid bias
+    angle = np.arctan2(y, x)
+    bias = 1.0 + abs(D9_cosmic) * np.cos(angle * 3)
+    
+    # Magnitude: Ring + Chaos noise
+    magnitude = (ring * bias * (abs(D1_energy) * 5000 + 100)) + (np.random.rand(height, width) * abs(D4_chaos) * 1000)
+    
+    # Phase: phi-coupled spirals
+    phase = angle * int(abs(D3_phi) * 5) + distance * (D2_mass * 0.1)
+    
+    # 2. Reconstruct Complex Frequency Domain
+    complex_domain = magnitude * np.exp(1j * phase)
+    complex_shifted = np.fft.ifftshift(complex_domain)
+    
+    # 3. Inverse 2D FFT to spatial domain!
+    image_spatial = np.fft.ifft2(complex_shifted).real
+    
+    # 4. Normalize spatial to 0-1
+    img_min, img_max = image_spatial.min(), image_spatial.max()
+    if img_max > img_min:
+        image_norm = (image_spatial - img_min) / (img_max - img_min)
+    else:
+        image_norm = np.zeros_like(image_spatial)
+        
+    # 5. Colorize mathematically using frequency_to_rgb on base phi
+    base_freq = 430e12 + (abs(D1_energy) % 1.0 * (770e12 - 430e12)) 
+    base_color = frequency_to_rgb(base_freq) / 255.0
+    
+    img_rgb = np.zeros((height, width, 3))
+    img_rgb[:,:,0] = image_norm * base_color[0]
+    img_rgb[:,:,1] = image_norm * base_color[1]
+    img_rgb[:,:,2] = image_norm * base_color[2]
+    
+    # Secondary phi-harmonic color
+    phi_freq = base_freq * PHI
+    while phi_freq > 770e12: phi_freq /= PHI
+    secondary_color = frequency_to_rgb(phi_freq) / 255.0
+    
+    # Mask using sine wave interference
+    mask = (np.sin(x * D11_freq + D4_chaos) * np.cos(y * D11_freq + D3_phi) + 1) / 2
+    img_rgb = img_rgb * (1 - mask[:,:,np.newaxis]) + (image_norm[:,:,np.newaxis] * secondary_color) * mask[:,:,np.newaxis]
+    
+    # Convert to 8-bit uint8 image
+    img_rgb = np.clip(img_rgb * 255, 0, 255).astype(np.uint8)
+    
+    return img_rgb
+
+def generate_video_from_54d(state_54d, frames=30, width=512, height=512):
+    """
+    Evolve the 54D state temporally using Lorenz chaos and render sequence of IFFT images.
+    Returns list of numpy rgb images.
+    """
+    import numpy as np
+    
+    if hasattr(state_54d, 'tolist'):
+        state = state_54d.tolist()
+    else:
+        state = list(state_54d)
+        
+    # Need at least 54 dims, pad if missing
+    if len(state) < 54:
+        state = state + [0.0] * (54 - len(state))
+    
+    cst_12d = np.array(state[:12])
+    chaos_18d = np.array(state[36:54])
+    
+    video_frames = []
+    
+    # Evolve the 12D Phase vector using the 18D Chaos oscillators over time
+    for f in range(frames):
+        # Generate image for current 12D state
+        img = generate_image_from_12d(cst_12d.tolist(), width, height)
+        video_frames.append(img)
+        
+        # Non-linear Chaos evolution for next frame
+        for i in range(12):
+            chaos_driver = chaos_18d[i % 18]
+            # Lorenz-like derivative
+            delta = chaos_driver * np.sin(cst_12d[i] * PHI + f * 0.1) * 0.05
+            cst_12d[i] = cst_12d[i] + delta
+            
+        # Slightly evolve chaos itself
+        for i in range(18):
+            chaos_18d[i] += (np.random.rand() - 0.5) * 0.1
+
+    return video_frames
+

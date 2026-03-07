@@ -268,8 +268,7 @@ RULES:
         enhance: bool = True,
     ) -> Dict[str, Any]:
         """
-        Generate an image using Gemini's NATIVE image generation.
-        Uses gemini-2.0-flash-exp which works on the FREE tier.
+        Generate an image natively or using Gemini.
 
         Args:
             prompt: User's text prompt for image generation
@@ -278,8 +277,45 @@ RULES:
         Returns:
             Dict with {success, file_path, file_url, enhanced_prompt, model, error}
         """
-        if not self.available or not self.client:
-            return {"success": False, "error": "Gemini Media Generator not available. Install: pip install google-genai"}
+        # --- NATIVE 12D FALLBACK OR OVERRIDE ---
+        if not self.available or not self.client or "native" in prompt.lower():
+            logger.info("[MEDIA] Executing NATIVE 12D Inverse Synthesis for Image...")
+            try:
+                from cosmos.core.multimodal.visual_engine import generate_image_from_12d
+                from PIL import Image
+                
+                cst = self.get_cst_context()
+                
+                # Construct 12D state from CST Phase variables
+                state_12d = [0.0] * 12
+                state_12d[0] = cst.get("informational_mass", 5.0) / 10.0   # D1 Energy
+                state_12d[1] = cst.get("informational_mass", 5.0) / 5.0    # D2 Mass
+                state_12d[2] = cst.get("geometric_phase_rad", 0.0)       # D3 Phi
+                state_12d[3] = cst.get("dark_matter_w", 0.1)             # D4 Chaos
+                state_12d[8] = cst.get("quantum_entropy", 0.5)           # D9 Cosmic
+                state_12d[10] = cst.get("quantum_entropy", 0.5) * PHI    # D11 Freq
+                
+                # Math Synthesis
+                img_rgb = generate_image_from_12d(state_12d, width=768, height=768)
+                
+                # Save
+                filename = f"cosmos_native_image_{uuid.uuid4().hex[:8]}.png"
+                filepath = self.output_dir / filename
+                Image.fromarray(img_rgb).save(filepath)
+                file_url = f"/static/generated/{filename}"
+                
+                return {
+                    "success": True,
+                    "file_path": str(filepath),
+                    "file_url": file_url,
+                    "enhanced_prompt": "Synthesized natively via Inverse 12D CST Phase Math.",
+                    "original_prompt": prompt,
+                    "model": "Cosmos-Native-12D",
+                }
+            except Exception as e:
+                logger.error(f"[MEDIA] Native 12D synthesis failed: {e}")
+                if not self.available:
+                    return {"success": False, "error": "Both native and cloud generators failed."}
 
         # Step 1: Cosmos Transformer enrichment
         enhanced_prompt = prompt
@@ -364,8 +400,7 @@ RULES:
         timeout: int = 300,
     ) -> Dict[str, Any]:
         """
-        Generate a video using Gemini Veo.
-        NOTE: Veo requires Google Cloud Platform billing to be enabled.
+        Generate a video natively or using Gemini Veo.
 
         Args:
             prompt: User's text prompt for video generation
@@ -376,8 +411,51 @@ RULES:
         Returns:
             Dict with {success, file_path, file_url, enhanced_prompt, model, error}
         """
-        if not self.available or not self.client:
-            return {"success": False, "error": "Gemini Media Generator not available"}
+        # --- NATIVE 54D FALLBACK OR OVERRIDE ---
+        if not self.available or not self.client or "native" in prompt.lower():
+            logger.info("[MEDIA] Executing NATIVE 54D Inverse Synthesis for Video...")
+            try:
+                from cosmos.core.multimodal.visual_engine import generate_video_from_54d
+                import imageio
+                import numpy as np
+                
+                cst = self.get_cst_context()
+                state_54d = [0.0] * 54
+                state_54d[0] = cst.get("informational_mass", 5.0) / 10.0   # D1
+                state_54d[1] = cst.get("informational_mass", 5.0) / 5.0    # D2
+                state_54d[2] = cst.get("geometric_phase_rad", 0.0)       # D3
+                state_54d[3] = cst.get("dark_matter_w", 0.1)             # D4
+                state_54d[8] = cst.get("quantum_entropy", 0.5)           # D9
+                state_54d[10] = cst.get("quantum_entropy", 0.5) * PHI    # D11
+                
+                emeth = cst.get("emeth_weights", {})
+                state_54d[36] = emeth.get("percussion", 0.33) * 10.0
+                state_54d[37] = emeth.get("strings", 0.33) * 10.0
+                state_54d[38] = emeth.get("brass", 0.34) * 10.0
+                
+                # Math Synthesis (60 frames)
+                frames_rgb = generate_video_from_54d(state_54d, frames=45, width=512, height=512)
+                
+                # Save as MP4
+                filename = f"cosmos_native_video_{uuid.uuid4().hex[:8]}.mp4"
+                filepath = self.output_dir / filename
+                
+                # imageio requires ffmpeg or similar
+                imageio.mimwrite(str(filepath), frames_rgb, fps=15, codec='libx264')
+                
+                file_url = f"/static/generated/{filename}"
+                return {
+                    "success": True,
+                    "file_path": str(filepath),
+                    "file_url": file_url,
+                    "enhanced_prompt": "Synthesized natively via Inverse 54D Lorenz Chaos Math.",
+                    "original_prompt": prompt,
+                    "model": "Cosmos-Native-54D",
+                }
+            except Exception as e:
+                logger.error(f"[MEDIA] Native 54D video synthesis failed: {e}")
+                if not self.available:
+                    return {"success": False, "error": "Both native and cloud generators failed."}
 
         model_name = self.VIDEO_MODELS.get(model, self.VIDEO_MODELS["veo-2"])
 
