@@ -12,7 +12,7 @@
     "verbosity_scale": 1.0
   },
   "insights": {},
-  "total_updates": 152,
+  "total_updates": 172,
   "running_reward": 0.07500000000000014,
-  "buffer_size": 64
+  "buffer_size": 304
 }

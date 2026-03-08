@@ -612,8 +612,9 @@ If score < 6, reply: REJECTED: [one-line reason]
         return passed
 
     async def _record_evolution_feedback(self, task, code: str, audit_passed: bool):
-        """Feed results back to the evolution engine for learning."""
+        """Feed results back to the evolution engine and federate across the swarm."""
         try:
+            # 1. Local Evolution Engine Recording
             from Cosmos.core.collective.evolution import get_evolution_engine
             engine = get_evolution_engine()
             if engine and hasattr(engine, 'record_interaction'):
@@ -624,6 +625,38 @@ If score < 6, reply: REJECTED: [one-line reason]
                     sentiment="positive" if audit_passed else "negative",
                     topic="evolution_task"
                 )
+            
+            # 2. Federated Evolution Broadcast (Only on Success)
+            if audit_passed:
+                try:
+                    from Cosmos.network.unified_a2a import get_unified_router
+                    router = get_unified_router()
+                    
+                    insight_vector = {
+                        "type": "federated_insight",
+                        "agent": task.assigned_to,
+                        "task_desc": task.description,
+                        "code_snippet": code[:400]
+                    }
+                    
+                    # Store in the decentralized memory graph too
+                    from Cosmos.memory.decentralized_graph import DecentralizedGraph
+                    local_shard = DecentralizedGraph(agent_id=task.assigned_to)
+                    await local_shard.store_node(
+                        content=f"Federated Insight on {task.task_type.value}: {task.description}\nCode:\n{code[:800]}",
+                        tags=["evolution", "federated_learning", task.task_type.value.lower()]
+                    )
+
+                    await router.dispatch_task(
+                        source=task.assigned_to,
+                        task_description=f"[FEDERATED LEARNING] Assimilate new capability: {task.description}",
+                        required_caps=["learning", "code"],
+                        urgency=0.8
+                    )
+                    logger.info(f"[FEDERATED EVOLUTION] Broadcasted insight from {task.assigned_to}")
+                except Exception as ex:
+                    logger.debug(f"[FEDERATED EVOLUTION] Broadcast skipped: {ex}")
+
         except Exception as e:
             logger.debug(f"Evolution feedback recording failed: {e}")
 

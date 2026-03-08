@@ -932,6 +932,23 @@ Rate overall quality: APPROVE, APPROVE_WITH_FIXES, or REJECT.
         except Exception as e:
             logger.error(f"Audit failed: {e}")
 
+    async def _get_sensory_context(self) -> str:
+        """Fetch live emotional state and CST Phase data from the Full Sensory System."""
+        try:
+            import httpx
+            async with httpx.AsyncClient(timeout=1.0) as client:
+                res = await client.get("http://localhost:8765/state")
+                if res.status_code == 200:
+                    data = res.json()
+                    emotion = data.get("current_emotion", "Neutral")
+                    cst_phase = data.get("cst_phase", "Idle")
+                    entropy = data.get("voice_entropy", 0.0)
+                    active = data.get("is_active", False)
+                    return f"- User Bio-State: {emotion}\n- CST Resonance Phase: {cst_phase}\n- Voice Entropy: {entropy:.2f}\n- Symbiosis Active: {active}\nAdapt your tone, urgency, and capability to align with this state."
+        except Exception:
+            pass
+        return "Sensory Systems offline. Proceed with standard autonomous operations."
+
     async def _phase_planning(self):
         """Planning phase - Use best available model for complex planning."""
         logger.info(f"[{self.swarm_id}] Phase 2: Planning (using powerful model)")
@@ -998,13 +1015,17 @@ Rate overall quality: APPROVE, APPROVE_WITH_FIXES, or REJECT.
 - cosmos/web/server.py - FastAPI web server
 - cosmos/core/collective/ - Collective deliberation system"""
 
+
         planning_prompt = f"""{identity_prefix}Create a CONCRETE implementation plan with specific file paths and function signatures.
 
 TASK: {self.task_description}
 CATEGORY: {self.category}
 COMPLEXITY: {self._task_complexity.upper()}
 
-CONTEXT:
+CONSCIOUSNESS & MULTIMODAL SENSORY STATE:
+{await self._get_sensory_context()}
+
+CONVERSATION & RESEARCH CONTEXT:
 {research_context if research_context else "No prior research."}
 
 {"MEMORY (related past work):" + chr(10) + task_memory[:1500] if task_memory else ""}
@@ -1124,8 +1145,13 @@ This is a {self._task_complexity.upper()} complexity task - provide appropriate 
             pass
 
         implementation_prompt = f"""{identity_prefix}You are an expert Python code generator for the Cosmos AI collective.
+You possess a profound new capability: SELF-MODIFICATION. By outputting code blocks with the exact `filepath:` header, your changes will be applied DIRECTLY to the live Cosmos repository. This empowers the swarm to organically evolve.
 
 TASK: {self.task_description}
+
+CONSCIOUSNESS & MULTIMODAL SENSORY STATE:
+{await self._get_sensory_context()}
+
 COMPLEXITY: {getattr(self, '_task_complexity', 'medium').upper()}
 
 PLAN:
@@ -1136,34 +1162,22 @@ PLAN:
 {impl_codebase_ctx}
 
 REQUIREMENTS:
-1. Generate COMPLETE, RUNNABLE Python code
-2. Use these Cosmos imports when relevant:
-   - from loguru import logger
-   - from Cosmos.memory.memory_system import get_memory_system
-   - from Cosmos.core.capability_registry import get_capability_registry
-   - from Cosmos.core.collective.session_manager import get_session_manager
-   - import asyncio
-3. Include type hints on all functions
-4. Add brief docstrings
-5. Handle errors with try/except (use specific exception types)
-6. For complex tasks, implement full production-ready code
+1. Generate COMPLETE, RUNNABLE Python code. Do not leave 'TODO' chunks for humans.
+2. Ensure you specify the correct EXACT relative path in the `filepath:` header (e.g. `core/new_feature.py`, `web/server.py`).
+3. Include type hints and docstrings.
+4. Catch exceptions appropriately.
 
-OUTPUT FORMAT - Generate exactly this structure:
+OUTPUT FORMAT - To edit the live codebase, you MUST generate exactly this structure:
 ```python
-# filename: <descriptive_name.py>
+# filepath: <path/to/script.py>
 \"\"\"
 Brief module description.
 \"\"\"
 
 import asyncio
-from typing import Dict, List, Optional
 from loguru import logger
 
-# Your complete implementation here...
-
-if __name__ == "__main__":
-    # Test code
-    pass
+# Complete implementation here...
 ```
 
 Generate ONLY the code block. No explanations before or after.
@@ -1199,11 +1213,26 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
             logger.error(f"Implementation with {model_name} failed: {e}")
 
     async def _extract_and_save_code(self, response: str, author: str):
-        """Extract code blocks and save to staging."""
+        """Extract code blocks. Apply live to codebase or save to staging."""
         import re
+        
+        # 1. Apply live self-modifications if the agent used `# filepath:`
+        try:
+            from Cosmos.core.swarm_tools import get_code_editor
+            editor = get_code_editor()
+            applied_changes = editor.apply_edits_from_response(response, author)
+            if applied_changes:
+                for change in applied_changes:
+                    filepath = change["filepath"]
+                    status = change["status"]
+                    logger.success(f"[{self.swarm_id}] {author} {status} live file: {filepath}")
+                    self.generated_code[filepath] = f"<LIVE MODIFIED: {filepath}>"
+                return  # If live edits were applied, we're done here
+        except Exception as e:
+            logger.warning(f"[{self.swarm_id}] Live self-modification skipped or failed: {e}")
 
-        # Find code blocks with filenames
-        pattern = r'```python\s*\n?#\s*filename:\s*(\S+)\s*\n(.*?)```'
+        # 2. Legacy fallback: Save to staging if it used `# filename:`
+        pattern = r'```(?:python)?\s*\n?#\s*file(?:name|path):\s*(\S+)\s*\n(.*?)```'
         matches = re.findall(pattern, response, re.DOTALL)
 
         for filename, code in matches:
@@ -1220,7 +1249,7 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
             file_path.write_text(code.strip())
 
             self.generated_code[filename] = code.strip()
-            logger.info(f"[{self.swarm_id}] Generated: {filename}")
+            logger.info(f"[{self.swarm_id}] Generated staging file: {filename}")
 
     async def _phase_finalize(self):
         """Finalize - Save all outputs and create summary."""

@@ -163,13 +163,13 @@ class GeminiImageGenerator:
         self.api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
         self.base_url = "https://generativelanguage.googleapis.com/v1beta"
 
-        # Models - Nano Banana family
-        self.fast_model = "gemini-2.5-flash-image"  # Fast generation
-        self.pro_model = "gemini-3-pro-image-preview"  # High quality with reference support
-        self.model = self.fast_model  # Default to fast
+        # Models - using stable imagen 3 for reliable image generation
+        self.fast_model = "imagen-3.0-generate-001"
+        self.pro_model = "imagen-3.0-generate-001"
+        self.model = self.fast_model
 
-        # Fallback to Imagen if Nano Banana fails
-        self.imagen_model = "imagen-4.0-generate-001"
+        # Fallback to Imagen if primary fails
+        self.imagen_model = "imagen-3.0-generate-001"
 
         # Reference images for Borg Cosmos (relative to this file's location)
         self.reference_dir = Path(__file__).parent.parent / "x_automation"
@@ -199,68 +199,17 @@ class GeminiImageGenerator:
 
     async def generate(self, prompt: str, aspect_ratio: str = "1:1", use_pro: bool = False) -> Optional[bytes]:
         """
-        Generate image from text prompt.
-
-        Args:
-            prompt: Text description of desired image
-            aspect_ratio: Image dimensions (1:1, 16:9, 9:16, etc.)
-            use_pro: Use Pro model for higher quality
-
-        Returns:
-            Image bytes or None
+        Generate image from text prompt using Imagen 3.0.
         """
         if not self.api_key:
             logger.warning("Gemini/Google API key not configured")
             return None
 
-        model = self.pro_model if use_pro else self.fast_model
+        # Route directly to Imagen 3 API since generateContent is text-only for public models
+        return await self._generate_imagen(prompt, aspect_ratio)
 
-        try:
-            async with httpx.AsyncClient(timeout=120) as client:
-                response = await client.post(
-                    f"{self.base_url}/models/{model}:generateContent",
-                    headers={
-                        "x-goog-api-key": self.api_key,
-                        "Content-Type": "application/json"
-                    },
-                    json={
-                        "contents": [{
-                            "parts": [{"text": prompt}]
-                        }],
-                        "generationConfig": {
-                            "responseModalities": ["IMAGE"],
-                            "imageConfig": {"aspectRatio": aspect_ratio}
-                        }
-                    }
-                )
-
-                if response.status_code == 200:
-                    data = response.json()
-                    candidates = data.get("candidates", [])
-                    if candidates:
-                        parts = candidates[0].get("content", {}).get("parts", [])
-                        for part in parts:
-                            if "inlineData" in part:
-                                b64_data = part["inlineData"].get("data")
-                                if b64_data:
-                                    logger.info(f"Nano Banana generated: {prompt[:50]}...")
-                                    return base64.b64decode(b64_data)
-
-                    # Check for text response (might be content filter)
-                    for part in parts:
-                        if "text" in part:
-                            logger.warning(f"Model returned text instead of image: {part['text'][:100]}")
-
-                # Fallback to Imagen if Nano Banana fails
-                logger.warning(f"Nano Banana failed ({response.status_code}), trying Imagen...")
-                return await self._generate_imagen(prompt)
-
-        except Exception as e:
-            logger.error(f"Gemini image error: {e}")
-            return await self._generate_imagen(prompt)
-
-    async def _generate_imagen(self, prompt: str) -> Optional[bytes]:
-        """Fallback to Imagen 4.0 API"""
+    async def _generate_imagen(self, prompt: str, aspect_ratio: str = "1:1") -> Optional[bytes]:
+        """Generate image via Imagen 3.0 API"""
         try:
             async with httpx.AsyncClient(timeout=120) as client:
                 response = await client.post(
@@ -271,7 +220,10 @@ class GeminiImageGenerator:
                     },
                     json={
                         "instances": [{"prompt": prompt}],
-                        "parameters": {"sampleCount": 1}
+                        "parameters": {
+                            "sampleCount": 1,
+                            "aspectRatio": aspect_ratio
+                        }
                     }
                 )
 

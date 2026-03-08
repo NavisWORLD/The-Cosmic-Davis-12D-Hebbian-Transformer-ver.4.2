@@ -604,14 +604,14 @@ async def generate_image_api(prompt: str):
         image_bytes = None
         
         if generator.grok.is_available():
-            image_bytes = await generator.grok.generate_image(prompt)
+            image_bytes = await generator.grok.generate(prompt)
             
         # Fallback to gemini if grok failed or unavailable
         if not image_bytes and generator.gemini.is_available():
-            # gemini returns (bytes, model_name)
-            res = await generator.gemini.generate_image(prompt)
-            if res and res[0]:
-                image_bytes = res[0]
+            # gemini returns bytes directly from _generate_imagen
+            res = await generator.gemini.generate(prompt)
+            if res:
+                image_bytes = res
                 
         if not image_bytes:
             raise HTTPException(status_code=503, detail="No valid image generator backend configured.")

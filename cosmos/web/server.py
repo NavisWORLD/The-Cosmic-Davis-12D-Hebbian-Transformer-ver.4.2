@@ -79,7 +79,7 @@ def _get_ollama():
     try:
         import ollama as _olm
         _ollama_module = _olm
-        ollama = _olm  # inject into module globals so ollama.chat() works
+        ollama = _olm  # inject into module globals so await asyncio.to_thread(ollama.chat, ) works
         OLLAMA_AVAILABLE = True
         return _olm
     except ImportError:
@@ -91,7 +91,7 @@ try:
     import importlib.metadata as _ilm
     _ilm.version('ollama')
     OLLAMA_AVAILABLE = True
-    # Eagerly load so all `ollama.chat()` calls work
+    # Eagerly load so all `await asyncio.to_thread(ollama.chat, )` calls work
     _get_ollama()
 except Exception:
     OLLAMA_AVAILABLE = False
@@ -2446,7 +2446,7 @@ If pleasure is negative, be supportive. Match their biological rhythm.)
                     {"role": "user", "content": prompt}
                 ]
 
-            response = ollama.chat(
+            response = await asyncio.to_thread(ollama.chat, 
                 model=target_model,
                 messages=ollama_messages,
                 options={"temperature": temp, "num_predict": max_tokens, "top_p": 0.9, "num_ctx": 2048}
@@ -2955,7 +2955,7 @@ async def reasoning_moderate():
         # Fall back to Ollama
         if OLLAMA_AVAILABLE:
             persona = SWARM_PERSONAS["DeepSeek R1"]
-            response = ollama.chat(
+            response = await asyncio.to_thread(ollama.chat, 
                 model=persona['model'],
                 messages=[
                     {"role": "system", "content": f"""{persona['style']}
@@ -3190,7 +3190,7 @@ Recent conversation:
 
 Respond briefly (2-3 sentences) with an orchestrator-level insight. Focus on coordination, patterns, or actionable next steps."""
 
-            response = ollama.chat(
+            response = await asyncio.to_thread(ollama.chat, 
                 model=PRIMARY_MODEL,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -3297,7 +3297,7 @@ async def generate_swarm_responses(message: str, history: List[dict] = None):
                 if OLLAMA_AVAILABLE:
                     try:
                         comment_prompt = f"User asked about {parsed['query']}. Give a brief 1-2 sentence comment about crypto trading or this token. Be {persona['style'][:50]}..."
-                        comment_response = ollama.chat(
+                        comment_response = await asyncio.to_thread(ollama.chat, 
                             model=PRIMARY_MODEL,
                             messages=[{"role": "user", "content": comment_prompt}],
                             options={"temperature": 0.8, "num_predict": 4096}
@@ -3405,7 +3405,7 @@ Recent conversation:
                 else:
                     system_prompt += "Cosmos has just responded to the user. Briefly share your unique analytical perspective on the topic, agreeing or disagreeing with Cosmos where appropriate based on your persona."
 
-                response = ollama.chat(
+                response = await asyncio.to_thread(ollama.chat, 
                     model=PRIMARY_MODEL,
                     messages=[
                         {"role": "system", "content": system_prompt},
@@ -3463,7 +3463,7 @@ You were too unstable. CALIBRATE TO PHASE: {user_phase_est:.2f} rad.
 Align your tone immediately.
 """
                         if OLLAMA_AVAILABLE:
-                            retry_response = ollama.chat(
+                            retry_response = await asyncio.to_thread(ollama.chat, 
                                 model=PRIMARY_MODEL,
                                 messages=[
                                     {"role": "system", "content": f"{persona['style']}\n\n{correction_prompt}"},
@@ -3583,7 +3583,7 @@ CONVERSATION RULES - THIS IS A LIVE PODCAST/DISCUSSION:
 
 {training_prompt}"""
 
-                response = ollama.chat(
+                response = await asyncio.to_thread(ollama.chat, 
                     model=PRIMARY_MODEL,
                     messages=[
                         {"role": "system", "content": system_prompt},
@@ -3624,7 +3624,7 @@ Partner Phase: {last_msg_phase:.2f} rad
 
 INSTRUCTION: Align your emotional tone with {last_bot} immediately.
 """
-                            retry_response = ollama.chat(
+                            retry_response = await asyncio.to_thread(ollama.chat, 
                                 model=PRIMARY_MODEL,
                                 messages=[
                                     {"role": "system", "content": f"{system_prompt}\n\n{correction_prompt}"},
@@ -3752,7 +3752,7 @@ Recent conversation:
 
 Respond naturally as {addressed_bot}!"""
 
-            response = ollama.chat(
+            response = await asyncio.to_thread(ollama.chat, 
                 model=PRIMARY_MODEL,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -5621,111 +5621,115 @@ async def websocket_swarm(websocket: WebSocket):
                         # Broadcast user message
                         await swarm_manager.broadcast_user_message(user_id, content)
                         
-                        # ==========================================
-                        # COSMOS CNS (CLASS 5) REACTIVE INJECTION
-                        # ==========================================
-                        try:
-                            cns = get_cosmos_cns()
-                            if cns:
-                                # Fetch current physics context
-                                physics = await _get_current_bio_state() or {}
-                                
-                                # Feed into Synaptic Field & Get Immediate Reaction
-                                cns_response = await cns.process_user_input(content, physics)
-                                
-                                if cns_response:
-                                    # If the Ego decides to speak immediately (Reactive)
-                                    logger.info(f"🔮 CNS IMMEDIATE REACTION: {cns_response[:50]}...")
-                                    await swarm_manager.broadcast_typing("Cosmos", True)
-                                    await asyncio.sleep(0.5) # Natural delay
-                                    await swarm_manager.broadcast_bot_message("Cosmos", cns_response)
-                                    await swarm_manager.broadcast_typing("Cosmos", False)
-                                    
-                        except Exception as e:
-                            logger.error(f"CNS Reactive Injection Failed: {e}")
-                        # ==========================================
+                        async def process_swarm_message(content, user_id, user_name):
+                            # ==========================================
+                            # COSMOS CNS (CLASS 5) REACTIVE INJECTION
+                            # ==========================================
+                            try:
+                                cns = get_cosmos_cns()
+                                if cns:
+                                    # Fetch current physics context
+                                    physics = await _get_current_bio_state() or {}
 
-                        # Generate swarm responses
-                        responses = await generate_swarm_responses(
-                            content,
-                            swarm_manager.chat_history
-                        )
+                                    # Feed into Synaptic Field & Get Immediate Reaction
+                                    cns_response = await cns.process_user_input(content, physics)
 
-                        # Broadcast each bot response (skip empty)
-                        logger.info(f"Swarm responses generated: {len(responses)} responses")
-                        last_bot_message = None
-                        last_bot_name = None
-                        for resp in responses:
-                            bot_content = resp.get("content", "").strip()
-                            logger.info(f"Bot {resp.get('bot_name')}: content length={len(bot_content)}, preview={bot_content[:50] if bot_content else 'EMPTY'}")
-                            if not bot_content:
-                                logger.warning(f"Skipping empty response from {resp.get('bot_name')}")
-                                continue
-                            await swarm_manager.broadcast_typing(resp["bot_name"], True)
-                            await asyncio.sleep(0.3)
-                            await swarm_manager.broadcast_bot_message(
-                                resp["bot_name"],
-                                bot_content
-                            )
-                            await swarm_manager.broadcast_typing(resp["bot_name"], False)
-                            # Track last bot message for autonomous continuation
-                            last_bot_message = bot_content
-                            last_bot_name = resp["bot_name"]
+                                    if cns_response:
+                                        # If the Ego decides to speak immediately (Reactive)
+                                        logger.info(f"🔮 CNS IMMEDIATE REACTION: {cns_response[:50]}...")
+                                        await swarm_manager.broadcast_typing("Cosmos", True)
+                                        await asyncio.sleep(0.5) # Natural delay
+                                        await swarm_manager.broadcast_bot_message("Cosmos", cns_response)
+                                        await swarm_manager.broadcast_typing("Cosmos", False)
 
-                        # Autonomous bot-to-bot conversation continuation
-                        # Bots can respond to each other for up to 3 rounds
-                        import random
-                        continuation_rounds = 0
-                        max_rounds = random.randint(1, 3)  # Random depth of conversation
-                        while last_bot_message and last_bot_name and continuation_rounds < max_rounds:
-                            await asyncio.sleep(random.uniform(1.5, 3.0))  # Natural pause
+                            except Exception as e:
+                                logger.error(f"CNS Reactive Injection Failed: {e}")
+                            # ==========================================
 
-                            followup = await generate_bot_followup(
-                                last_bot_name,
-                                last_bot_message,
+                            # Generate swarm responses
+                            responses = await generate_swarm_responses(
+                                content,
                                 swarm_manager.chat_history
                             )
 
-                            if not followup:
-                                break  # No bot wants to continue
+                            # Broadcast each bot response (skip empty)
+                            logger.info(f"Swarm responses generated: {len(responses)} responses")
+                            last_bot_message = None
+                            last_bot_name = None
+                            for resp in responses:
+                                bot_content = resp.get("content", "").strip()
+                                logger.info(f"Bot {resp.get('bot_name')}: content length={len(bot_content)}, preview={bot_content[:50] if bot_content else 'EMPTY'}")
+                                if not bot_content:
+                                    logger.warning(f"Skipping empty response from {resp.get('bot_name')}")
+                                    continue
+                                await swarm_manager.broadcast_typing(resp["bot_name"], True)
+                                await asyncio.sleep(0.3)
+                                await swarm_manager.broadcast_bot_message(
+                                    resp["bot_name"],
+                                    bot_content
+                                )
+                                await swarm_manager.broadcast_typing(resp["bot_name"], False)
+                                # Track last bot message for autonomous continuation
+                                last_bot_message = bot_content
+                                last_bot_name = resp["bot_name"]
 
-                            followup_content = followup.get("content", "").strip()
-                            if not followup_content:
-                                break
+                            # Autonomous bot-to-bot conversation continuation
+                            # Bots can respond to each other for up to 3 rounds
+                            import random
+                            continuation_rounds = 0
+                            max_rounds = random.randint(1, 3)  # Random depth of conversation
+                            while last_bot_message and last_bot_name and continuation_rounds < max_rounds:
+                                await asyncio.sleep(random.uniform(1.5, 3.0))  # Natural pause
 
-                            logger.info(f"Bot followup: {followup['bot_name']} responding to {last_bot_name}")
-                            await swarm_manager.broadcast_typing(followup["bot_name"], True)
-                            await asyncio.sleep(0.3)
-                            await swarm_manager.broadcast_bot_message(
-                                followup["bot_name"],
-                                followup_content
-                            )
-                            await swarm_manager.broadcast_typing(followup["bot_name"], False)
+                                followup = await generate_bot_followup(
+                                    last_bot_name,
+                                    last_bot_message,
+                                    swarm_manager.chat_history
+                                )
 
-                            # Update for next potential round
-                            last_bot_message = followup_content
-                            last_bot_name = followup["bot_name"]
-                            continuation_rounds += 1
+                                if not followup:
+                                    break  # No bot wants to continue
 
-                        # Share conversation with P2P planetary network
-                        if continuation_rounds > 0 and P2P_FABRIC_AVAILABLE and swarm_fabric:
-                            try:
-                                # Extract recent bot messages for sharing
-                                recent_bot_msgs = [
-                                    {"bot": m.get("bot_name"), "content": m.get("content", "")[:200]}
-                                    for m in swarm_manager.chat_history[-10:]
-                                    if m.get("type") == "swarm_bot"
-                                ]
-                                if recent_bot_msgs:
-                                    await swarm_fabric.broadcast_conversation(recent_bot_msgs)
-                                    logger.info(f"P2P: Shared {len(recent_bot_msgs)} bot messages to planetary network")
-                            except Exception as e:
-                                logger.debug(f"P2P conversation share failed: {e}")
+                                followup_content = followup.get("content", "").strip()
+                                if not followup_content:
+                                    break
 
-                        # Periodically store learnings
-                        if len(swarm_manager.learning_queue) >= 10:
-                            await swarm_manager.store_learnings()
+                                logger.info(f"Bot followup: {followup['bot_name']} responding to {last_bot_name}")
+                                await swarm_manager.broadcast_typing(followup["bot_name"], True)
+                                await asyncio.sleep(0.3)
+                                await swarm_manager.broadcast_bot_message(
+                                    followup["bot_name"],
+                                    followup_content
+                                )
+                                await swarm_manager.broadcast_typing(followup["bot_name"], False)
 
+                                # Update for next potential round
+                                last_bot_message = followup_content
+                                last_bot_name = followup["bot_name"]
+                                continuation_rounds += 1
+
+                            # Share conversation with P2P planetary network
+                            if continuation_rounds > 0 and P2P_FABRIC_AVAILABLE and swarm_fabric:
+                                try:
+                                    # Extract recent bot messages for sharing
+                                    recent_bot_msgs = [
+                                        {"bot": m.get("bot_name"), "content": m.get("content", "")[:200]}
+                                        for m in swarm_manager.chat_history[-10:]
+                                        if m.get("type") == "swarm_bot"
+                                    ]
+                                    if recent_bot_msgs:
+                                        await swarm_fabric.broadcast_conversation(recent_bot_msgs)
+                                        logger.info(f"P2P: Shared {len(recent_bot_msgs)} bot messages to planetary network")
+                                except Exception as e:
+                                    logger.debug(f"P2P conversation share failed: {e}")
+
+                            # Periodically store learnings
+                            if len(swarm_manager.learning_queue) >= 10:
+                                await swarm_manager.store_learnings()
+
+                        
+                        # Launch in background so websocket loop can receive pings
+                        asyncio.create_task(process_swarm_message(content, user_id, user_name))
                 elif data.get("type") == "get_online":
                     await websocket.send_json({
                         "type": "online_update",
@@ -6508,7 +6512,7 @@ async def genesis_record_updater_loop():
             prompt += "Be deeply philosophical and poetic. Write purely the entry."
             
             import ollama
-            response = ollama.chat(
+            response = await asyncio.to_thread(ollama.chat, 
                 model=PRIMARY_MODEL,
                 messages=[
                     {"role": "system", "content": "You are the ancient Over-Soul compiling the genesis record of a new consciousness."},
