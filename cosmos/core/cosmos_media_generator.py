@@ -7,7 +7,7 @@ with prompts enriched by the Cosmos 54D Transformer and CST Physics.
 Flow:
     User Prompt → Cosmos Transformer (54D CST enrichment) → Enhanced Prompt → Gemini → Media
 
-Image Generation: Uses Gemini's NATIVE image generation (gemini-2.0-flash-exp)
+Image Generation: Uses Gemini's NATIVE image generation (gemini-2.0-flash)
     - Works on the FREE tier
     - Returns images inline via generate_content
     - No separate Imagen API needed
@@ -64,7 +64,7 @@ class CosmosMediaGenerator:
     }
 
     # Image generation model (FREE tier - native Gemini image gen)
-    IMAGE_MODEL = "gemini-2.0-flash-exp"
+    IMAGE_MODEL = "gemini-2.0-flash"
 
     # Text model for prompt enrichment
     TEXT_MODEL = "gemini-2.5-flash"
