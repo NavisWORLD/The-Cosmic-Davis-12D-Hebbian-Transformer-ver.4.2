@@ -154,6 +154,17 @@ async def chat(request: Request):
                     "crypto_query": True
                 })
 
+        # 🧠 INJECT PERSISTENT MEMORY CONTEXT
+        try:
+            memory_sys = s.get_memory_system()
+            if memory_sys:
+                memories = await memory_sys.recall(query=upgraded_message, limit=3)
+                if memories:
+                    mem_text = "\n".join([f"- {m.get('content', '')}" for m in memories])
+                    upgraded_message += f"\n\n[PERSISTENT MEMORY RECALL - Use these facts from past conversations]:\n{mem_text}"
+        except Exception as e:
+            s.logger.debug(f"Memory recall error for chat: {e}")
+
         # Regular chat response - COSMOS IS THE COLLECTIVE
         collective_result = await s.generate_ai_response_collective(
             upgraded_message,

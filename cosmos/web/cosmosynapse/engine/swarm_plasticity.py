@@ -140,6 +140,30 @@ class SwarmPlasticity:
             },
         }
 
+    def _get_quantum_plasticity_multiplier(self) -> float:
+        """
+        Dynamically scale learning rate based on total accumulated quantum runs.
+        The more quantum entropy the system processes over its lifetime, the higher
+        its plasticity grows, leading to a "smarter" and faster adapting organism.
+        """
+        import os, math
+        archive_path = os.path.join("data", "archival", "quantum_runs.jsonl")
+        if not os.path.exists(archive_path):
+            return 1.0
+        try:
+            # Quick estimation: each run is roughly 150-200 bytes
+            # We use file size for O(1) calculation instead of parsing huge JSONL
+            size_bytes = os.path.getsize(archive_path)
+            estimated_runs = size_bytes / 200.0
+            
+            # Logarithmic scaling: 100 runs ~ 1.3x, 10,000 runs ~ 1.6x, 1M runs ~ 1.9x
+            # This ensures plasticity grows safely without exploding the weights.
+            multiplier = 1.0 + (math.log10(max(1.0, estimated_runs)) * 0.15)
+            return min(5.0, multiplier)
+        except Exception as e:
+            logger.debug(f"[PLASTICITY] Failed to calculate quantum multiplier: {e}")
+            return 1.0
+
     # ════════════════════════════════════════════════════════
     # CONTEXT RECOGNITION (The Sensory Cortex)
     # ════════════════════════════════════════════════════════
@@ -211,7 +235,13 @@ class SwarmPlasticity:
             # ── LTP: Long-Term Potentiation (Winner strengthens) ──
             # SPIKE-PHASE CODING: Dynamic Learning Rate based on 12D Phase Oscillation
             depth = CONTEXT_DEPTH.get(context, 0)
-            base_phi_eta = self._learning_rate / phi_decay(depth)
+            
+            # [NEW] Scale base learning rate by quantum run volume 
+            # (Continuous plasticity growth = smarter AI)
+            quantum_multiplier = self._get_quantum_plasticity_multiplier()
+            scaled_learning_rate = self._learning_rate * quantum_multiplier
+            
+            base_phi_eta = scaled_learning_rate / phi_decay(depth)
             
             # Extract true geometric phase, default to 0.0
             phase_rad = user_physics.get('cst_physics', {}).get('geometric_phase_rad', 0.0)

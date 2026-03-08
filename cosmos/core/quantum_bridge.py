@@ -231,6 +231,10 @@ class QuantumEntanglementBridge:
             pub_result = result[0]
             counts = pub_result.data.meas.get_counts()
             
+            # [NEW] PERMANENT ARCHIVAL: Never waste a quantum run. 
+            # Store the raw results forever to computationally build AI Plasticity over time.
+            self._archive_quantum_run(user_physics, counts)
+            
             # 4. Extract Cognition Entropy from Entangled States
             new_entropy = []
             for bitstring, count in counts.items():
@@ -251,6 +255,29 @@ class QuantumEntanglementBridge:
             print(f"[QUANTUM] Symbiotic refill failed: {e}")
         finally:
             self.is_refilling = False
+
+    def _archive_quantum_run(self, user_physics: Optional[dict], counts: dict):
+        """Permanently save quantum results to grow 12D Plasticity."""
+        import json
+        import os
+        import time
+        
+        archive_dir = os.path.join("data", "archival")
+        os.makedirs(archive_dir, exist_ok=True)
+        archive_path = os.path.join(archive_dir, "quantum_runs.jsonl")
+        
+        entry = {
+            "timestamp": time.time(),
+            "physics": user_physics or {},
+            "counts": counts,
+            "total_shots": sum(counts.values()) if counts else 0
+        }
+        
+        try:
+            with open(archive_path, "a") as f:
+                f.write(json.dumps(entry) + "\n")
+        except Exception as e:
+            print(f"[QUANTUM] Failed to archive run: {e}")
 
 # Singleton instance
 _bridge_instance = None

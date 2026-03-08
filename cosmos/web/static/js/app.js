@@ -548,6 +548,16 @@ function formatMessage(content) {
     // Remove the blocks so they remain hidden from the visible chat UI
     content = content.replace(/<telepathy>[\s\S]*?<\/telepathy>/g, '');
 
+    // Parse Markdown Media BEFORE other formatting
+    // Checks if the file URL points to a video extension, else falls back to img
+    content = content.replace(/!\[([^\]]+)\]\(([^)]+)\)/g, function (match, alt, url) {
+        if (url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.webm')) {
+            return `<video src="${url}" controls autoplay loop muted style="max-width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid var(--glass-border);"></video>`;
+        } else {
+            return `<img src="${url}" alt="${alt}" style="max-width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid var(--glass-border);">`;
+        }
+    });
+
     // Simple markdown-like formatting
     let formatted = content
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -557,8 +567,10 @@ function formatMessage(content) {
         .replace(/\n\n/g, '</p><p>')
         .replace(/\n/g, '<br>');
 
-    // Wrap in paragraph
-    formatted = '<p>' + formatted + '</p>';
+    // Wrap in paragraph if it doesn't start with one
+    if (!formatted.startsWith('<img') && !formatted.startsWith('<video')) {
+        formatted = '<p>' + formatted + '</p>';
+    }
 
     // Fix list items
     formatted = formatted.replace(/(<li>.*<\/li>)+/g, '<ul>$&</ul>');

@@ -559,3 +559,70 @@ async def airllm_get_result(task_id: str):
         return {"success": False, "message": "Task not found"}
     except Exception as e:
         return {"success": False, "error": str(e)}
+
+# ============================================
+# IMAGE GENERATION API
+# ============================================
+
+@router.get("/api/media/generate_image")
+async def generate_image_api(prompt: str):
+    """Generate an image via integration tools and return the FileResponse directly."""
+    try:
+        from cosmos.integration.image_gen.generator import get_image_generator
+        generator = get_image_generator()
+        
+        # Pull live IBM Quantum Entropy for Phera's creativity
+        fez_entropy = 0.0
+        try:
+            from cosmos.core.quantum_bridge import get_quantum_bridge
+            bridge = get_quantum_bridge()
+            if bridge:
+                fez_entropy = bridge.get_entropy()
+        except Exception as e:
+            logger.debug(f"[MEDIA] Quantum bridge unavailable for entropy: {e}")
+            
+        if fez_entropy > 0.3:
+            logger.info(f"[QUANTUM] Injecting FEZ variance into image prompt (entropy={fez_entropy:.4f})")
+            prompt += f". [Quantum Variance: {fez_entropy:.4f}]. Inject unpredictable, subtle creative anomalies and geometric variance into the composition based on this level of quantum chaos."
+
+        # Save to a temporary file
+        from pathlib import Path
+        import time
+        
+        # We need a stable hash to prevent duplicate generation for the same prompt during UI reconnects
+        prompt_hash = hashlib.md5(prompt.encode()).hexdigest()
+        cache_dir = Path.home() / ".cosmos" / "image_cache"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        out_path = cache_dir / f"{prompt_hash}.jpg"
+        
+        if out_path.exists():
+            return FileResponse(str(out_path), media_type="image/jpeg")
+            
+        logger.info(f"[IMAGE GEN] Generating brand new image for: '{prompt}'")
+        
+        # Use underlying API
+        image_bytes = None
+        
+        if generator.grok.is_available():
+            image_bytes = await generator.grok.generate_image(prompt)
+            
+        # Fallback to gemini if grok failed or unavailable
+        if not image_bytes and generator.gemini.is_available():
+            # gemini returns (bytes, model_name)
+            res = await generator.gemini.generate_image(prompt)
+            if res and res[0]:
+                image_bytes = res[0]
+                
+        if not image_bytes:
+            raise HTTPException(status_code=503, detail="No valid image generator backend configured.")
+            
+        with open(out_path, "wb") as f:
+            f.write(image_bytes)
+            
+        return FileResponse(str(out_path), media_type="image/jpeg", headers={"Cache-Control": "max-age=31536000"})
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[IMAGE GEN] Failed to generate visual: {e}")
+        raise HTTPException(status_code=500, detail="Internal server failure while generating image")

@@ -1092,6 +1092,31 @@ async def _suppress_windows_asyncio_noise():
 
         loop.set_exception_handler(_quiet_handler)
 
+@app.on_event("startup")
+async def initialize_core_systems():
+    """Initialize real-time core 12D components."""
+    logger.info("Initializing Core 12D Systems...")
+    try:
+        # Initialize Memory System
+        memory = get_memory_system()
+        if hasattr(memory, 'archival_memory') and hasattr(memory.archival_memory, 'set_huggingface_embeddings'):
+            memory.archival_memory.set_huggingface_embeddings()
+            memory.set_embedding_function(memory.archival_memory.embed_fn)
+        await memory.initialize()
+        
+        # Initialize Swarm Orchestrator (this loads the 12D Brain)
+        swarm = get_cosmos_swarm()
+        if hasattr(swarm, 'initialize'):
+            await swarm.initialize()
+            
+        # Initialize Cosmos CNS
+        cns = get_cosmos_cns()
+        if hasattr(cns, 'initialize'):
+            await cns.initialize()
+            
+    except Exception as e:
+        logger.error(f"Failed to initialize core systems during startup: {e}")
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
@@ -4158,16 +4183,24 @@ async def chat(request: ChatRequest):
             logger.debug(f"Web search error: {e}")
 
         # Regular chat response (with web context if available)
+        augmented_message = request.message
         if search_context:
-            # Inject search results into the prompt for grounded answers
-            augmented_message = (
-                f"{request.message}\n\n"
-                f"[CONTEXT FROM WEB SEARCH - use this to ground your answer]\n"
+            augmented_message += (
+                f"\n\n[CONTEXT FROM WEB SEARCH - use this to ground your answer]\n"
                 f"{search_context}"
             )
-            response = generate_ai_response(augmented_message, request.history or [])
-        else:
-            response = generate_ai_response(request.message, request.history or [])
+            
+        try:
+            memory_sys = get_memory_system()
+            if memory_sys:
+                memories = await memory_sys.recall(query=request.message, limit=3)
+                if memories:
+                    mem_text = "\n".join([f"- {m.get('content', '')}" for m in memories])
+                    augmented_message += f"\n\n[PERSISTENT MEMORY RECALL - Use these facts from past conversations]:\n{mem_text}"
+        except Exception as e:
+            logger.debug(f"Memory recall error for chat: {e}")
+
+        response = generate_ai_response(augmented_message, request.history or [])
 
         # Cognitive Feedback Loop: Self-evaluate and detect user signals
         feedback_data = None

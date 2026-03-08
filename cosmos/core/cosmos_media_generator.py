@@ -64,7 +64,7 @@ class CosmosMediaGenerator:
     }
 
     # Image generation model (FREE tier - native Gemini image gen)
-    IMAGE_MODEL = "gemini-2.5-flash"
+    IMAGE_MODEL = "gemini-2.0-flash-exp"
 
     # Text model for prompt enrichment
     TEXT_MODEL = "gemini-2.5-flash"
