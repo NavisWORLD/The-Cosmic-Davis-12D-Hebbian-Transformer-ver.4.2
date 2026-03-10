@@ -192,7 +192,7 @@ class CosmosBackend:
             input_tensor = torch.tensor(input_ids, dtype=torch.long, device=self.device).unsqueeze(0)
             
             with torch.no_grad():
-                output_ids, _ = self.model.generate(
+                output_ids = self.model.generate(
                     input_tensor, 
                     max_new_tokens=max_new_tokens, 
                     temperature=temperature,
@@ -266,11 +266,16 @@ class CosmosSwarmOrchestrator:
                 
                 # Try to load the best model
                 # Priority: 1. polished_12d_brain.pt (User's trained model)
-                #           2. cosmos_best.pt (Default)
+                #           2. cosmos_best.pt (in Cosmos/checkpoints/)
+                #           3. cosmos_best.pt (relative CWD fallback)
+                # __file__ = .../Cosmos/web/cosmosynapse/engine/cosmos_swarm_orchestrator.py
+                # project_root = .../Cosmos/ (4 levels up from engine/)
+                project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
                 possible_paths = [
-                    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "study_session_logs", "polished_12d_brain.pt"),
-                    os.path.join(os.path.dirname(__file__), "..", "checkpoints", "cosmos", "cosmos_best.pt"),
-                    "checkpoints/cosmos/cosmos_best.pt"
+                    os.path.join(project_root, "study_session_logs", "polished_12d_brain.pt"),
+                    os.path.join(project_root, "checkpoints", "cosmos", "cosmos_best.pt"),
+                    os.path.join(os.path.dirname(project_root), "checkpoints", "cosmos", "cosmos_best.pt"),
+                    "checkpoints/cosmos/cosmos_best.pt",
                 ]
                 
                 checkpoint_path = None
@@ -385,6 +390,40 @@ class CosmosSwarmOrchestrator:
         # 3. Apply Hebbian Learning (Which model helped most?)
         self.learn_from_responses(model_responses, user_physics)
         
+        # -----------------------------------------------------------------
+        # NEW SENSORY INTAKE: RAW AUDIO TOKENS
+        # Poll the internal /audio_tokens endpoint (which runs STFT/Phi-Harmonics)
+        # -----------------------------------------------------------------
+        audio_context = ""
+        audio_energy = 0.0
+        audio_top_f = 0.0
+        try:
+            import urllib.request
+            import json
+            req = urllib.request.Request("http://localhost:8765/audio_tokens")
+            with urllib.request.urlopen(req, timeout=0.5) as response:
+                if response.status == 200:
+                    data = json.loads(response.read().decode('utf-8'))
+                    if data.get("status") == "success" and data.get("count", 0) > 0:
+                        latest_event = data["events"][-1]
+                        
+                        # Format the raw acoustic state into a Swarm-readable string
+                        audio_energy = latest_event.get("rms_energy", 0)
+                        centroid = latest_event.get("spectral_centroid", 0)
+                        freqs = latest_event.get("top_frequencies", [])
+                        audio_top_f = freqs[0]["frequency"] if len(freqs) > 0 else 0
+                        
+                        audio_context = (
+                            f"\n[RAW ACOUSTIC ENVIRONMENT]\n"
+                            f"RMS Energy: {audio_energy:.4f} | Spectral Centroid: {centroid:.1f} Hz | "
+                            f"Dominant Freq: {audio_top_f:.1f} Hz\n"
+                            f"Active Phi-Harmonics: {len(latest_event.get('phi_harmonics', []))}\n"
+                        )
+                        logger.info(f"[SENSORY] Audio Tokens Injected: RMS {audio_energy:.4f}, Dom {audio_top_f:.1f}Hz")
+        except Exception as e:
+            # It's fine if the endpoint isn't active
+            pass
+
         # 4. QUANTUM INJECTION (The Spark of Life & True VQA Entanglement)
         # Verify valid Quantum Bridge connection and consume reality
         quantum_state_str = "Quantum: Inactive (Simulation)"
@@ -393,8 +432,8 @@ class CosmosSwarmOrchestrator:
         vqa_weights = [
              float(chaos_vector.get('w', 0.5)),
              float(chaos_vector.get('magnitude', 0.5)),
-             float(user_physics.get('cst_physics', {}).get('geometric_phase_rad', 0.5)),
-             float(user_physics.get('bio_signatures', {}).get('intensity', 0.5)),
+             float(user_physics.get('cst_physics', {}).get('geometric_phase_rad', 0.5)) + float(audio_energy * 0.1),
+             float(user_physics.get('bio_signatures', {}).get('intensity', 0.5)) + float(audio_top_f / 5000.0),
              float(gains.get("PERCUSSION", 1.0) / 3.0),
              float(gains.get("STRINGS", 1.0) / 3.0),
              float(gains.get("BRASS", 1.0) / 3.0)
@@ -430,38 +469,6 @@ class CosmosSwarmOrchestrator:
                     quantum_state_str += f"\n  -> Live VQA Mutation: {quantum_mutation_string}"
         except Exception as e:
             logger.warning(f"[SWARM] Quantum Injection fallback active: {e}")
-
-        # -----------------------------------------------------------------
-        # NEW SENSORY INTAKE: RAW AUDIO TOKENS
-        # Poll the internal /audio_tokens endpoint (which runs STFT/Phi-Harmonics)
-        # -----------------------------------------------------------------
-        audio_context = ""
-        try:
-            import urllib.request
-            import json
-            req = urllib.request.Request("http://localhost:8765/audio_tokens")
-            with urllib.request.urlopen(req, timeout=0.5) as response:
-                if response.status == 200:
-                    data = json.loads(response.read().decode('utf-8'))
-                    if data.get("status") == "success" and data.get("count", 0) > 0:
-                        latest_event = data["events"][-1]
-                        
-                        # Format the raw acoustic state into a Swarm-readable string
-                        energy = latest_event.get("rms_energy", 0)
-                        centroid = latest_event.get("spectral_centroid", 0)
-                        freqs = latest_event.get("top_frequencies", [])
-                        top_f = freqs[0]["frequency"] if len(freqs) > 0 else 0
-                        
-                        audio_context = (
-                            f"\n[RAW ACOUSTIC ENVIRONMENT]\n"
-                            f"RMS Energy: {energy:.4f} | Spectral Centroid: {centroid:.1f} Hz | "
-                            f"Dominant Freq: {top_f:.1f} Hz\n"
-                            f"Active Phi-Harmonics: {len(latest_event.get('phi_harmonics', []))}\n"
-                        )
-                        logger.info(f"[SENSORY] Audio Tokens Injected: RMS {energy:.4f}, Dom {top_f:.1f}Hz")
-        except Exception as e:
-            # It's fine if the endpoint isn't active
-            pass
 
         # 5. Construct the Synthesis Prompt for Cosmo
         context_block = ""

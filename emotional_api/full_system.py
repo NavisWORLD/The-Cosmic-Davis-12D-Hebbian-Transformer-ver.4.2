@@ -250,7 +250,13 @@ class FullSystemController:
     
     def camera_loop(self):
         """Main camera capture and processing loop."""
-        self.camera = cv2.VideoCapture(0)
+        # Use DirectShow (CAP_DSHOW) on Windows to prevent deadlock 
+        # with concurrent audio pipeline initialization.
+        self.camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        if not self.camera.isOpened():
+            # Fallback to default if DSHOW fails
+            self.camera = cv2.VideoCapture(0)
+            
         self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         self.camera_running = True
@@ -459,9 +465,24 @@ class FullSystemController:
                     controller.connected_clients.remove(websocket)
                 print(f"🔌 Client cleaned up. Total: {len(controller.connected_clients)}")
         
-        # Start camera in background thread
-        camera_thread = threading.Thread(target=self.camera_loop, daemon=True)
-        camera_thread.start()
+        # Start server in background thread so OpenCV can own the main thread
+        def run_server():
+            # In a thread, uvicorn might have issues with signal handlers, so we can disable them if needed,
+            # but usually it runs fine or we can configure it to not use signals.
+            config = uvicorn.Config(app, host="0.0.0.0", port=8765, log_level="warning")
+            server = uvicorn.Server(config)
+            # Disable signal handlers as we are in a thread
+            server.install_signal_handlers = lambda: None
+            
+            try:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                loop.run_until_complete(server.serve())
+            except Exception as e:
+                print(f"Server Thread Warning: {e}")
+            
+        server_thread = threading.Thread(target=run_server, daemon=True)
+        server_thread.start()
         
         print(f"""
 ╔══════════════════════════════════════════════════════════════════╗
@@ -484,8 +505,17 @@ class FullSystemController:
 ╚══════════════════════════════════════════════════════════════════╝
         """)
         
-        # Run server (blocks)
-        uvicorn.run(app, host="0.0.0.0", port=8765, log_level="warning")
+        # Run camera loop in main thread (blocks)
+        try:
+            if not headless:
+                self.camera_loop()
+            else:
+                # Keep main thread alive if headless
+                while True:
+                    time.sleep(1)
+        except KeyboardInterrupt:
+            self.camera_running = False
+            print("Shutting down...")
 
 
 def main():

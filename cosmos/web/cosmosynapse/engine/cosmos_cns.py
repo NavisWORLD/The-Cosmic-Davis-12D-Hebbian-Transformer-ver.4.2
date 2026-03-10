@@ -20,10 +20,10 @@ class CosmosEgo:
     Synthesizes the final output from the Emeth Filtered thoughts.
     Integrates the Lyapunov stability check.
     """
-    def __init__(self, field):
+    def __init__(self, field, orchestrator=None):
         self.field = field
         # We reuse the existing Swarm Orchestrator logic for the heavy lifting (LLM calls)
-        self.orchestrator = CosmosSwarmOrchestrator()
+        self.orchestrator = orchestrator or CosmosSwarmOrchestrator()
         self.lock = LyapunovGatekeeper()
 
     async def synthesize(self, user_input: str, thoughts: List[Dict], physics: Dict, temporal_context: str) -> str:

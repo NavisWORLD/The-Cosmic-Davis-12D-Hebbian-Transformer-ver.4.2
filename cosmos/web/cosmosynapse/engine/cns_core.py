@@ -93,10 +93,11 @@ class CosmosCNS:
     V4.0: Async Event-Driven Architecture.
     Orchestrates the 7 Organs via an event queue instead of busy-polling.
     """
-    def __init__(self, server_interface=None):
+    def __init__(self, server_interface=None, orchestrator=None):
         self.running = False
         self.field = SynapticField()
         self.server = server_interface
+        self.orchestrator = orchestrator
         
         # V4.0: Event Queue
         self._event_queue: Optional[asyncio.Queue] = None
@@ -157,7 +158,7 @@ class CosmosCNS:
             
             self.daemons = SwarmDaemons(self.field)
             self.surgeon = BrainSurgeon()
-            self.cosmos = CosmosEgo(self.field)
+            self.cosmos = CosmosEgo(self.field, orchestrator=self.orchestrator)
         except ImportError as e:
             logger.warning(f"⚠️ CNS Organ failure: {e}")
 

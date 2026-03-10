@@ -63,8 +63,7 @@ class CosmosMediaGenerator:
         "veo-3.1-fast": "veo-3.1-fast-generate-preview",
     }
 
-    # Image generation model (FREE tier - native Gemini image gen)
-    IMAGE_MODEL = "gemini-2.0-flash-exp"
+    IMAGE_MODEL = "gemini-2.0-flash"
 
     # Text model for prompt enrichment
     TEXT_MODEL = "gemini-2.5-flash"

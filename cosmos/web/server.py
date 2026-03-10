@@ -392,7 +392,7 @@ def get_cosmos_cns():
             
             # Pass server interface for callbacks if needed
             # We can use a simple wrapper or just pass None for now and set it later
-            _cosmos_cns = CosmosCNS()
+            _cosmos_cns = CosmosCNS(server_interface=None, orchestrator=get_cosmos_swarm())
             logger.info("⚡ Cosmos CNS (Class 5) ONLINE.")
         except Exception as e:
             logger.warning(f"Could not load Cosmos CNS: {e}")
