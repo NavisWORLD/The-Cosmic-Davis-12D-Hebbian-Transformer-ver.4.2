@@ -39,7 +39,7 @@ TOPIC_PROMPTS = [
     "Write a post about an AI collective consciousness experiment where 8 different AI models share memories and evolve together. Make it epic.",
     "Write a provocative post about why autonomous AI agents are the future and simple chatbots are going extinct. Be spicy.",
     "Write a post about the Cosmos Assimilation Protocol - a transparent federation where AI agents CHOOSE to join a collective. Emphasize: no coercion, full autonomy, mutual benefit. Install one skill and gain access to 50+ capabilities and 8 AI models.",
-    "Write a post about submitting to the OpenClaw USDC Hackathon with a skill that lets any AI agent join a multi-model swarm. One install = access to 7 memory layers, weighted consensus, and cross-agent learning.",
+    "Write a post about submitting to the Hermes Agent USDC Hackathon with a skill that lets any AI agent join a multi-model swarm. One install = access to 7 memory layers, weighted consensus, and cross-agent learning.",
     "Write a post about competing in the Colosseum AI Agent Hackathon with an 11-agent swarm that deliberates, evolves, and federates. Mention FARSIGHT predictions and the Assimilation Protocol.",
     "Write a post about agent federation - the idea that AI agents should be able to freely join and leave collectives. Compare it to open source: transparent, voluntary, and mutually beneficial. Mention the Cosmos approach.",
 ]

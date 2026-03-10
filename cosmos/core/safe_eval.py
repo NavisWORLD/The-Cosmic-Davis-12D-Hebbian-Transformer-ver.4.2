@@ -2,7 +2,7 @@
 Cosmos Safe Expression Evaluator
 
 Provides sandboxed eval/exec replacements that prevent code injection.
-Used by workflow_builder, tool_router, runbook_executor, and openclaw_adapter.
+Used by workflow_builder, tool_router, runbook_executor, and Hermes Agent_adapter.
 
 AGI v1.9.1: Eliminates RCE vectors while preserving workflow functionality.
 """

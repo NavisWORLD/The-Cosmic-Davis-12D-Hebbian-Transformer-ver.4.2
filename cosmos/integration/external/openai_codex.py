@@ -209,7 +209,7 @@ class OpenAICodexProvider(ExternalProvider):
 THE FRAMEWORK:
 - 178,000+ lines of Python, FastAPI server, 60+ endpoints
 - 7-layer memory system, PSO model swarm, collective deliberation
-- IBM Quantum integration, Claude Teams Fusion, OpenClaw compatibility
+- IBM Quantum integration, Claude Teams Fusion, Hermes Agent compatibility
 - Solana integration: SwarmOracle, FarsightProtocol, DegenMob, trading
 - Multi-agent swarm: Grok, Gemini, Kimi, Claude, DeepSeek, Phi, HuggingFace
 

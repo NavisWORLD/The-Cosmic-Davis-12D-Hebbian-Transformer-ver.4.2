@@ -1,8 +1,8 @@
 """
-Cosmos Voice Interface - OpenClaw Voice Compatibility
+Cosmos Voice Interface - Hermes Agent Voice Compatibility
 ==========================================================
 
-Provides voice interaction capabilities matching OpenClaw's Voice Wake + Talk Mode:
+Provides voice interaction capabilities matching Hermes Agent's Voice Wake + Talk Mode:
 - Speech-to-text (STT) via multiple backends
 - Text-to-speech (TTS) via multiple backends
 - Voice wake word detection
@@ -132,7 +132,7 @@ class VoiceConfig:
 
 class VoiceInterface:
     """
-    Voice interface for OpenClaw compatibility.
+    Voice interface for Hermes Agent compatibility.
 
     Provides speech-to-text, text-to-speech, and voice wake capabilities
     using multiple backend engines for flexibility and offline support.

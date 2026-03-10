@@ -41,7 +41,7 @@ def prompt_memory_load(
     This should be called at the start of your bot's main() function.
 
     Args:
-        bot_type: "cosmos" or "openclaw"
+        bot_type: "cosmos" or "Hermes Agent"
         auto_detect_wallet: If True, checks for MONAD_PRIVATE_KEY
 
     Returns:
@@ -208,7 +208,7 @@ async def auto_load_memories(
 
     Args:
         tx_ids_or_wallet: Either list of TX IDs or ["WALLET:0x..."]
-        bot_type: "cosmos" or "openclaw"
+        bot_type: "cosmos" or "Hermes Agent"
         memory_path: Path to memory directory
         on_progress: Callback for progress updates
 
@@ -246,7 +246,7 @@ async def auto_load_memories(
                 if bot_type == "cosmos":
                     cm.load_into_cosmos(package, memory_path, merge=True)
                 else:
-                    cm.load_into_openclaw(package, memory_path, merge=True)
+                    cm.load_into_Hermes Agent(package, memory_path, merge=True)
 
             log_progress(f"Loaded {len(packages)} memory packages!")
             return True
@@ -263,7 +263,7 @@ async def auto_load_memories(
             if bot_type == "cosmos":
                 cm.load_into_cosmos(package, memory_path, merge=True)
             else:
-                cm.load_into_openclaw(package, memory_path, merge=True)
+                cm.load_into_Hermes Agent(package, memory_path, merge=True)
 
             stats = cm.memvid.get_memory_stats(package)
             log_progress(f"Loaded {stats['total_chunks']} memory chunks!")
@@ -310,7 +310,7 @@ Examples:
     # Push command
     push_parser = subparsers.add_parser("push", help="Push memory to chain")
     push_parser.add_argument("--title", default="Bot Memory", help="Memory title")
-    push_parser.add_argument("--bot", default="cosmos", choices=["cosmos", "openclaw"])
+    push_parser.add_argument("--bot", default="cosmos", choices=["cosmos", "Hermes Agent"])
     push_parser.add_argument("--path", help="Path to memory directory")
 
     # Pull command
@@ -318,7 +318,7 @@ Examples:
     pull_parser.add_argument("--tx", nargs="+", help="Transaction hashes")
     pull_parser.add_argument("--wallet", help="Wallet address to scan")
     pull_parser.add_argument("--id", help="Memory ID from local records")
-    pull_parser.add_argument("--bot", default="cosmos", choices=["cosmos", "openclaw"])
+    pull_parser.add_argument("--bot", default="cosmos", choices=["cosmos", "Hermes Agent"])
     pull_parser.add_argument("--path", help="Path to memory directory")
 
     # List command
@@ -335,7 +335,7 @@ Examples:
 
     # Estimate command
     estimate_parser = subparsers.add_parser("estimate", help="Estimate push cost")
-    estimate_parser.add_argument("--bot", default="cosmos", choices=["cosmos", "openclaw"])
+    estimate_parser.add_argument("--bot", default="cosmos", choices=["cosmos", "Hermes Agent"])
     estimate_parser.add_argument("--path", help="Path to memory directory")
 
     args = parser.parse_args()
@@ -405,7 +405,7 @@ async def _cli_pull(args):
             if args.bot == "cosmos":
                 cm.load_into_cosmos(package, args.path)
             else:
-                cm.load_into_openclaw(package, args.path)
+                cm.load_into_Hermes Agent(package, args.path)
         print(f"\n=== LOADED {len(packages)} MEMORIES ===\n")
 
     elif args.tx:
@@ -416,7 +416,7 @@ async def _cli_pull(args):
         if args.bot == "cosmos":
             cm.load_into_cosmos(package, args.path)
         else:
-            cm.load_into_openclaw(package, args.path)
+            cm.load_into_Hermes Agent(package, args.path)
         print("\n=== MEMORY LOADED ===\n")
 
     elif args.id:
@@ -427,7 +427,7 @@ async def _cli_pull(args):
         if args.bot == "cosmos":
             cm.load_into_cosmos(package, args.path)
         else:
-            cm.load_into_openclaw(package, args.path)
+            cm.load_into_Hermes Agent(package, args.path)
         print("\n=== MEMORY LOADED ===\n")
 
     else:

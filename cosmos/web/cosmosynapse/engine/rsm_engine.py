@@ -578,20 +578,187 @@ class RSMEngine:
         return entries[-last_n:]
 
     # ============================================
+    # HERMES AGENT — INTELLIGENT SELF-MODIFICATION
+    # ============================================
+
+    def hermes_propose_edit(
+        self,
+        filename: str,
+        goal: str = "Improve code quality, performance, and integration",
+        lyapunov_drift: float = 0.0,
+    ) -> Tuple[List[RSMProposal], str]:
+        """
+        Ask Hermes Agent to analyze a module and propose RSM edits.
+
+        The proposals flow through the full RSM safety pipeline:
+        Lyapunov gate → backup → apply → syntax check → revert on failure.
+
+        Args:
+            filename: Module to analyze (within cosmosynapse/engine/ scope).
+            goal: What the edit should achieve.
+            lyapunov_drift: Current system drift.
+
+        Returns:
+            (proposals: list of RSMProposals, summary: description of what Hermes suggested)
+        """
+        # Pre-check: Lyapunov stability
+        if lyapunov_drift > LYAPUNOV_GATE_THRESHOLD:
+            return [], f"RSM BLOCKED: Lyapunov drift {lyapunov_drift:.4f} too high for self-modification."
+
+        # Read the module
+        content = self.read_module(filename)
+        if content is None:
+            return [], f"Cannot read '{filename}' — out of scope or not found."
+
+        # Ask Hermes Agent to analyze and suggest edits
+        try:
+            from Cosmos.integration.hermes_bridge import get_hermes_bridge
+            bridge = get_hermes_bridge()
+            if not bridge.runtime.available:
+                return [], "Hermes Agent runtime not available."
+
+            agent = bridge.runtime.create_agent()
+            if not agent:
+                return [], "Could not create Hermes Agent instance."
+
+            analysis_prompt = f"""Analyze this Python module from the Cosmos AI swarm framework and propose improvements.
+
+MODULE: {filename}
+GOAL: {goal}
+
+```python
+{content[:6000]}
+```
+
+For each proposed change, output EXACTLY this format:
+<rsm_edit file="{filename}" reason="[specific reason for this change]">
+<original>
+[exact code to replace — must match the file exactly]
+</original>
+<replacement>
+[improved code]
+</replacement>
+</rsm_edit>
+
+RULES:
+- Only propose changes that are CLEARLY beneficial
+- Keep original code style and conventions
+- Do NOT break existing interfaces or signatures
+- Maximum 3 proposals
+- Each proposal must have a clear, specific reason
+"""
+
+            # Run Hermes analysis (blocks, but RSM is not time-critical)
+            import asyncio
+            try:
+                loop = asyncio.get_running_loop()
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor() as pool:
+                    result = loop.run_in_executor(pool, agent.run, analysis_prompt)
+            except RuntimeError:
+                # No event loop — run directly
+                result = agent.run(analysis_prompt, max_iterations=5)
+
+            if not result:
+                return [], "Hermes Agent returned no analysis."
+
+            result_text = str(result)
+
+            # Parse the RSM tags from Hermes' output
+            proposals = self.parse_rsm_tags(result_text)
+
+            # Apply each proposal through the safety pipeline
+            results = []
+            for proposal in proposals:
+                success, message = self.apply_edit(proposal, lyapunov_drift)
+                results.append(f"{'✅' if success else '❌'} {Path(proposal.file_path).name}: {message}")
+
+            # Feed back to Hermes RL
+            try:
+                coherence = 0.8 if any("SUCCESS" in r for r in results) else 0.3
+                bridge.rl.record_experience(
+                    speaker="RSMEngine",
+                    response=f"[RSM] Hermes proposed {len(proposals)} edits for {filename}: {'; '.join(results)}",
+                    coherence=coherence,
+                    user_responded=True,
+                )
+            except Exception:
+                pass
+
+            summary = f"Hermes analyzed {filename} and proposed {len(proposals)} edits:\n" + "\n".join(results)
+            logger.info(f"[HERMES+RSM] {summary}")
+            return proposals, summary
+
+        except ImportError:
+            return [], "Hermes bridge not available."
+        except Exception as e:
+            logger.error(f"[HERMES+RSM] Analysis failed: {e}")
+            return [], f"Hermes analysis failed: {e}"
+
+    def hermes_analyze_module(self, filename: str) -> Optional[str]:
+        """
+        Ask Hermes Agent to analyze a module and return insights (no edits).
+
+        Returns a text analysis of the module's quality, patterns, and suggestions.
+        """
+        content = self.read_module(filename)
+        if content is None:
+            return None
+
+        try:
+            from Cosmos.integration.hermes_bridge import get_hermes_bridge
+            bridge = get_hermes_bridge()
+            if not bridge.runtime.available:
+                return "Hermes Agent not available for analysis."
+
+            agent = bridge.runtime.create_agent()
+            if not agent:
+                return "Could not create Hermes Agent."
+
+            prompt = f"""Analyze this module from the Cosmos AI framework. Do NOT propose edits.
+
+MODULE: {filename}
+```python
+{content[:4000]}
+```
+
+Provide:
+1. Code quality score (1-10)
+2. Top 3 strengths
+3. Top 3 areas for improvement
+4. Integration opportunities with other Cosmos systems
+"""
+            result = agent.run(prompt, max_iterations=3)
+            return str(result) if result else "No analysis returned."
+
+        except Exception as e:
+            return f"Analysis failed: {e}"
+
+    # ============================================
     # STATUS
     # ============================================
 
     def get_status(self) -> Dict:
         """Get RSM Engine status."""
+        # Check Hermes availability
+        hermes_available = False
+        try:
+            from Cosmos.integration.hermes_bridge import get_hermes_bridge
+            bridge = get_hermes_bridge()
+            hermes_available = bridge.runtime.available
+        except Exception:
+            pass
+
         return {
-            "engine": "RSM v1.0",
+            "engine": "RSM v1.1 + Hermes",
             "scope": str(self.engine_dir),
             "modules_in_scope": len(self.list_modules()),
             "pending_proposals": len(self.pending_proposals),
             "applied_count": self.applied_count,
             "reverted_count": self.reverted_count,
             "backup_dir": str(self.backup_dir),
-            "lyapunov_gate_threshold": LYAPUNOV_GATE_THRESHOLD
+            "lyapunov_gate_threshold": LYAPUNOV_GATE_THRESHOLD,
+            "hermes_assisted": hermes_available,
         }
 
 

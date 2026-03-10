@@ -67,7 +67,7 @@ class MemoryChunk:
 class BotMemoryPackage:
     """Complete memory package for a bot."""
     bot_name: str
-    bot_type: str  # "cosmos" or "openclaw"
+    bot_type: str  # "cosmos" or "Hermes Agent"
     version: str
     created_at: str
     chunks: List[MemoryChunk]
@@ -95,7 +95,7 @@ class MemvidBridge:
     Bridge between bot memory and memvid MP4 encoding.
 
     Handles:
-    - Extracting memory from Cosmos/OpenClaw format
+    - Extracting memory from Cosmos/Hermes Agent format
     - Encoding to MP4 using memvid
     - Decoding MP4 back to memory format
     """
@@ -226,28 +226,28 @@ class MemvidBridge:
         )
 
     # -------------------------------------------------------------------------
-    # OPENCLAW MEMORY EXTRACTION
+    # Hermes Agent memory EXTRACTION
     # -------------------------------------------------------------------------
 
-    def extract_openclaw_memory(self, memory_path: Optional[str] = None) -> BotMemoryPackage:
+    def extract_hermes_memory(self, memory_path: Optional[str] = None) -> BotMemoryPackage:
         """
-        Extract memory from OpenClaw's memory system.
+        Extract memory from Hermes Agent's memory system.
 
-        OpenClaw uses a similar but slightly different memory structure.
+        Hermes Agent uses a similar but slightly different memory structure.
         """
         if memory_path is None:
-            # Try common OpenClaw locations
+            # Try common Hermes Agent locations
             possible_paths = [
-                Path.home() / ".openclaw" / "memory",
-                Path.home() / ".config" / "openclaw" / "memory",
-                Path("/workspace/OpenClaw/memory")
+                Path.home() / ".hermes" / "memory",
+                Path.home() / ".config" / "Hermes Agent" / "memory",
+                Path("/workspace/Hermes/memory")
             ]
             memory_path = next((p for p in possible_paths if p.exists()), possible_paths[0])
 
         memory_path = Path(memory_path)
         chunks = []
 
-        # OpenClaw memory format
+        # Hermes Agent memory format
         memory_file = memory_path / "memory.json"
         if memory_file.exists():
             try:
@@ -272,13 +272,13 @@ class MemvidBridge:
                             metadata={"session_id": entry.get('id', '')}
                         ))
 
-                logger.info(f"Extracted {len(chunks)} OpenClaw memories")
+                logger.info(f"Extracted {len(chunks)} Hermes Agent memories")
             except Exception as e:
-                logger.error(f"Failed to read OpenClaw memory: {e}")
+                logger.error(f"Failed to read Hermes Agent memory: {e}")
 
         return BotMemoryPackage(
-            bot_name="OpenClaw",
-            bot_type="openclaw",
+            bot_name="Hermes Agent",
+            bot_type="Hermes Agent",
             version="1.0",
             created_at=datetime.now().isoformat(),
             chunks=chunks

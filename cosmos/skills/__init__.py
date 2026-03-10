@@ -5,7 +5,7 @@ Cosmos Skills System
 "Good news, everyone! I've assimilated new capabilities!"
 
 Skills are modular capabilities that the collective can load and use.
-Based on OpenClaw's skill format but adapted for the Cosmos swarm.
+Based on Hermes Agent's Skill Document format but adapted for the Cosmos swarm.
 
 Skills can:
 - Add new MCP tools

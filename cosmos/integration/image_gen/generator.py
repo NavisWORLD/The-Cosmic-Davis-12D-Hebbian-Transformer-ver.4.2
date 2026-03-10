@@ -612,7 +612,7 @@ class ImageGenerator:
 
         # Victory/Competition scenes
         "standing victoriously on a podium, holding a golden lobster trophy, defeated crabs below",
-        "in a battle arena, his lobster army defeating an army of cartoon crabs labeled 'OpenClaw'",
+        "in a battle arena, his lobster army defeating an army of cartoon crabs labeled 'Hermes'",
         "giving a TED talk about 'Why Lobster is Superior to Crab', audience amazed",
         "at a press conference announcing the defeat of claw-based competitors, lobsters celebrating",
 

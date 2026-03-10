@@ -3,6 +3,9 @@ import time
 import numpy as np
 from typing import Optional, List
 import threading
+import logging
+
+logger = logging.getLogger("QUANTUM_BRIDGE")
 
 try:
     from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
@@ -15,6 +18,13 @@ except ImportError as e:
     QISKIT_ERROR = str(e)
     with open("quantum_debug.log", "a") as f:
         f.write(f"\n[INIT] Qiskit Import Failed: {e}\n")
+
+# Hermes Agent integration (optional — degrades gracefully)
+try:
+    from Cosmos.integration.hermes_bridge import get_hermes_bridge
+    HERMES_AVAILABLE = True
+except ImportError:
+    HERMES_AVAILABLE = False
 
 class QuantumEntanglementBridge:
     def __init__(self, api_token: Optional[str] = None):
@@ -235,6 +245,9 @@ class QuantumEntanglementBridge:
             # Store the raw results forever to computationally build AI Plasticity over time.
             self._archive_quantum_run(user_physics, counts)
             
+            # [HERMES] Index quantum results for searchable analysis
+            self._hermes_process_quantum(user_physics, counts)
+            
             # 4. Extract Cognition Entropy from Entangled States
             new_entropy = []
             for bitstring, count in counts.items():
@@ -279,6 +292,103 @@ class QuantumEntanglementBridge:
         except Exception as e:
             print(f"[QUANTUM] Failed to archive run: {e}")
 
+    # ════════════════════════════════════════════════════════
+    #  HERMES AGENT INTEGRATION — Quantum Intelligence Layer
+    # ════════════════════════════════════════════════════════
+
+    def _hermes_process_quantum(self, user_physics: Optional[dict], counts: dict):
+        """
+        Pipe quantum results to Hermes Agent for intelligent analysis.
+
+        1. Index in Hermes SessionDB (FTS5 searchable)
+        2. Compute entropy quality metrics
+        3. Feed coherence signal to Hermes RL policy
+        """
+        if not HERMES_AVAILABLE:
+            return
+
+        try:
+            bridge = get_hermes_bridge()
+
+            # --- 1. Index in Hermes SessionDB ---
+            if bridge.runtime.available:
+                db = bridge.runtime.get_session_db()
+                if db:
+                    import json
+                    # Store as a searchable session message
+                    session_id = f"quantum_{int(time.time())}"
+                    try:
+                        db.create_session(
+                            session_id=session_id,
+                            source="quantum_bridge",
+                            model="ibm_quantum",
+                        )
+                        # Store the quantum results as a searchable message
+                        summary = self._summarize_quantum_counts(counts, user_physics)
+                        db.append_message(
+                            session_id=session_id,
+                            role="assistant",
+                            content=summary,
+                        )
+                        db.end_session(session_id, end_reason="quantum_run_complete")
+                        logger.info(f"[HERMES+QUANTUM] Indexed quantum run in SessionDB: {session_id}")
+                    except Exception as e:
+                        logger.debug(f"[HERMES+QUANTUM] SessionDB indexing failed: {e}")
+
+            # --- 2. Feed quantum coherence to Hermes RL ---
+            entropy_quality = self._compute_entropy_quality(counts)
+            bridge.rl.record_experience(
+                speaker="QuantumBridge",
+                response=f"Quantum run: {sum(counts.values())} shots, "
+                         f"{len(counts)} unique states, "
+                         f"entropy_quality={entropy_quality:.3f}",
+                coherence=entropy_quality,
+                user_responded=True,
+            )
+            logger.info(f"[HERMES+QUANTUM] Entropy quality fed to RL: {entropy_quality:.3f}")
+
+        except Exception as e:
+            logger.debug(f"[HERMES+QUANTUM] Processing failed (non-fatal): {e}")
+
+    def _summarize_quantum_counts(self, counts: dict, user_physics: Optional[dict]) -> str:
+        """Create a human-readable summary of quantum results for Hermes indexing."""
+        total = sum(counts.values())
+        top_states = sorted(counts.items(), key=lambda x: -x[1])[:5]
+        
+        lines = [
+            f"IBM Quantum Run — {total} total shots, {len(counts)} unique states",
+            f"Top entangled states: {', '.join(f'{s}({c})' for s, c in top_states)}",
+        ]
+        
+        if user_physics:
+            phase = user_physics.get('cst_physics', {}).get('geometric_phase_rad', 0.0)
+            entropy = user_physics.get('entropy_field', 0.0)
+            lines.append(f"User physics: phase={phase:.3f}rad, entropy={entropy:.3f}")
+        
+        # Compute Shannon entropy of the distribution
+        probs = np.array(list(counts.values()), dtype=float)
+        probs /= probs.sum()
+        shannon = -np.sum(probs * np.log2(probs + 1e-10))
+        lines.append(f"Shannon entropy: {shannon:.3f} bits (max={np.log2(len(counts)):.3f})")
+        
+        return "\n".join(lines)
+
+    def _compute_entropy_quality(self, counts: dict) -> float:
+        """
+        Compute entropy quality as a coherence metric [0, 1].
+        
+        Higher quality = more uniform distribution = better quantum randomness.
+        Lower quality = concentrated on few states = possible decoherence.
+        """
+        if not counts:
+            return 0.0
+        probs = np.array(list(counts.values()), dtype=float)
+        probs /= probs.sum()
+        shannon = -np.sum(probs * np.log2(probs + 1e-10))
+        max_entropy = np.log2(max(len(counts), 2))
+        return float(min(1.0, shannon / max_entropy))
+
+
 # Singleton instance
 _bridge_instance = None
 
@@ -289,3 +399,4 @@ def get_quantum_bridge(api_token: Optional[str] = None):
     elif api_token and api_token != _bridge_instance.api_token:
         _bridge_instance.api_token = api_token
     return _bridge_instance
+

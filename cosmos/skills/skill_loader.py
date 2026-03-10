@@ -3,7 +3,7 @@ Cosmos Skill Loader
 =======================
 
 Loads and manages skills for the collective.
-Compatible with OpenClaw skill format.
+Compatible with Hermes Agent Skill Document format.
 """
 
 import os
@@ -28,7 +28,7 @@ class Skill:
     @property
     def emoji(self) -> str:
         """Get skill emoji from metadata."""
-        for platform in ['cosmos', 'openclaw', 'clawdbot']:
+        for platform in ['cosmos', 'hermes', 'clawdbot']:
             if platform in self.metadata:
                 return self.metadata[platform].get('emoji', '🦞')
         return '🦞'
@@ -36,7 +36,7 @@ class Skill:
     @property
     def homepage(self) -> str:
         """Get skill homepage from metadata."""
-        for platform in ['cosmos', 'openclaw', 'clawdbot']:
+        for platform in ['cosmos', 'hermes', 'clawdbot']:
             if platform in self.metadata:
                 return self.metadata[platform].get('homepage', '')
         return ''
@@ -48,7 +48,7 @@ class SkillLoader:
 
     Supports:
     - Local SKILL.md files
-    - GitHub repos (like openclaw-skills)
+    - GitHub repos (like hermes-skills)
     - Built-in Cosmos skills
     """
 
@@ -77,7 +77,7 @@ class SkillLoader:
         """
         Load a skill from a GitHub repository.
 
-        Example: load_from_github("https://github.com/1lystore/openclaw-skills", "1ly-payments")
+        Example: load_from_github("https://github.com/NousResearch/hermes-skills", "1ly-payments")
         """
         import httpx
 
@@ -118,7 +118,7 @@ class SkillLoader:
 
                     # Extract requires
                     requires = {}
-                    for platform in ['cosmos', 'openclaw', 'clawdbot']:
+                    for platform in ['cosmos', 'hermes', 'clawdbot']:
                         if platform in metadata and 'requires' in metadata[platform]:
                             requires = metadata[platform]['requires']
                             break

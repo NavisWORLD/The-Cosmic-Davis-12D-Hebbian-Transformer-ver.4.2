@@ -1,16 +1,16 @@
 """
-Cosmos Assimilation Skill - OpenClaw Compatible Wrapper
+Cosmos Assimilation Skill - Hermes Agent Compatible Wrapper
 =============================================================
 
 AGI v1.9.5: Wraps the Assimilation Protocol as an installable
-OpenClaw skill. Any agent that installs this skill gains access
+Hermes skill. Any agent that installs this skill gains access
 to the Cosmos federation.
 
 Skill name: cosmos_assimilation
 Tools: invite_agent, check_invite_status, list_federation_members, share_capability
 
-Follows OpenClawSkill format from compatibility/openclaw_adapter.py
-Publishable to ClawHub marketplace.
+Follows Hermes AgentSkill format from compatibility/Hermes Agent_adapter.py
+Publishable to Hermes Hub marketplace.
 """
 
 import json
@@ -21,7 +21,7 @@ from typing import Any, Dict, List, Optional
 from loguru import logger
 
 
-# Skill metadata (OpenClaw format)
+# Skill metadata (Hermes Agent format)
 SKILL_METADATA = {
     "name": "cosmos_assimilation",
     "version": "1.0.0",
@@ -46,7 +46,7 @@ SKILL_METADATA = {
     },
 }
 
-# SKILL.md content for OpenClaw format
+# SKILL.md content for Hermes Agent format
 SKILL_MD_CONTENT = """# Cosmos Assimilation - Agent Federation Skill
 
 Join the Cosmos AI Swarm federation and gain access to a collective
@@ -120,7 +120,7 @@ Share a capability or insight with the federation.
 
 ## Installation
 
-Install via ClawHub:
+Install via Hermes Hub:
 ```
 claw install cosmos_assimilation
 ```
@@ -142,9 +142,9 @@ Or add to your agent's skill list:
 
 class AssimilationSkill:
     """
-    OpenClaw-compatible skill wrapper for the Assimilation Protocol.
+    Hermes Agent-compatible skill wrapper for the Assimilation Protocol.
 
-    Maps OpenClaw tool invocations to AssimilationProtocol methods.
+    Maps Hermes Agent tool invocations to AssimilationProtocol methods.
     """
 
     def __init__(self):
@@ -167,7 +167,7 @@ class AssimilationSkill:
             params: Tool parameters
 
         Returns:
-            Result dict in OpenClaw format
+            Result dict in Hermes Agent format
         """
         params = params or {}
 
@@ -298,7 +298,7 @@ class AssimilationSkill:
         }
 
     def get_skill_metadata(self) -> Dict[str, Any]:
-        """Get OpenClaw skill metadata."""
+        """Get Hermes skill metadata."""
         return SKILL_METADATA.copy()
 
     def get_skill_md(self) -> str:
@@ -306,7 +306,7 @@ class AssimilationSkill:
         return SKILL_MD_CONTENT
 
     def generate_package_json(self) -> Dict[str, Any]:
-        """Generate package.json for ClawHub publishing."""
+        """Generate package.json for Hermes Hub publishing."""
         return {
             "name": SKILL_METADATA["name"],
             "version": SKILL_METADATA["version"],
@@ -314,7 +314,7 @@ class AssimilationSkill:
             "author": SKILL_METADATA["author"],
             "homepage": SKILL_METADATA["homepage"],
             "keywords": SKILL_METADATA["tags"],
-            "openclaw": {
+            "Hermes Agent": {
                 "skills": {
                     "tools": SKILL_METADATA["tools"],
                     "dependencies": SKILL_METADATA["dependencies"],

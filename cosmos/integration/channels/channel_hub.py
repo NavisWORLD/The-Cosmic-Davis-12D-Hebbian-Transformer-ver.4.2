@@ -13,7 +13,7 @@ Responsibilities:
 - Media handling (upload/download)
 - Rate limiting and chunking
 
-Based on OpenClaw's channel architecture with Cosmos enhancements.
+Based on Hermes Agent's channel architecture with Cosmos enhancements.
 """
 
 import os

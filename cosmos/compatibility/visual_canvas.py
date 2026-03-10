@@ -1,8 +1,8 @@
 """
-Cosmos Visual Canvas - OpenClaw A2UI Compatibility
+Cosmos Visual Canvas - Hermes Agent A2UI Compatibility
 =======================================================
 
-Provides an agent-driven visual workspace matching OpenClaw's Canvas/A2UI system.
+Provides an agent-driven visual workspace matching Hermes Agent's Canvas/A2UI system.
 
 Features:
 - A2UI markup parsing (XML-like declarative UI)
@@ -106,7 +106,7 @@ class CanvasState:
 
 class A2UIParser:
     """
-    Parser for OpenClaw A2UI markup language.
+    Parser for Hermes Agent A2UI markup language.
 
     A2UI uses XML-like syntax for declarative UI definition:
 
@@ -241,7 +241,7 @@ class A2UIParser:
 
 class VisualCanvas:
     """
-    Visual canvas for OpenClaw A2UI compatibility.
+    Visual canvas for Hermes Agent A2UI compatibility.
 
     Provides an agent-driven workspace that can:
     - Render A2UI components

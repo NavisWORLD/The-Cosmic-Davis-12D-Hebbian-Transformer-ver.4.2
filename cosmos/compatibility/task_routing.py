@@ -1,8 +1,8 @@
 """
-Cosmos Task Routing - OpenClaw to Swarm Model Mapping
+Cosmos Task Routing - Hermes Agent to Swarm Model Mapping
 ==========================================================
 
-Routes OpenClaw tools/skills to the optimal swarm model based on task type.
+Routes Hermes Agent tools/skills to the optimal swarm model based on task type.
 
 Models Available:
 -----------------
@@ -37,8 +37,8 @@ from dataclasses import dataclass, field
 from loguru import logger
 
 
-class OpenClawTaskType(Enum):
-    """Task types derived from OpenClaw tool groups."""
+class Hermes AgentTaskType(Enum):
+    """Task types derived from Hermes Agent tool groups."""
     # Core tool groups
     FILESYSTEM = "filesystem"      # Read, write, edit files
     RUNTIME = "runtime"            # Execute code, bash commands
@@ -53,7 +53,7 @@ class OpenClawTaskType(Enum):
     # Extended capabilities
     VOICE = "voice"                # Speech-to-text, text-to-speech
     CANVAS = "canvas"              # Visual rendering, A2UI
-    SKILLS = "skills"              # ClawHub marketplace skills
+    SKILLS = "skills"              # Hermes Hub marketplace skills
     IMAGE = "image"                # Image generation/analysis
     VIDEO = "video"                # Video processing
     AUDIO = "audio"                # Audio processing
@@ -65,7 +65,7 @@ class ModelCapability:
     model_id: str
     display_name: str
     strengths: List[str]
-    task_types: List[OpenClawTaskType]
+    task_types: List[Hermes AgentTaskType]
     priority: int = 5  # 1-10, higher = preferred
     max_tokens: int = 4000
     supports_vision: bool = False
@@ -96,12 +96,12 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "low-latency voice",     # Grok Voice
         ],
         task_types=[
-            OpenClawTaskType.WEB,
-            OpenClawTaskType.MESSAGING,
-            OpenClawTaskType.RUNTIME,
-            OpenClawTaskType.VIDEO,
-            OpenClawTaskType.AUDIO,
-            OpenClawTaskType.VOICE,
+            Hermes AgentTaskType.WEB,
+            Hermes AgentTaskType.MESSAGING,
+            Hermes AgentTaskType.RUNTIME,
+            Hermes AgentTaskType.VIDEO,
+            Hermes AgentTaskType.AUDIO,
+            Hermes AgentTaskType.VOICE,
         ],
         priority=9,
         max_tokens=32000,  # Output limit
@@ -124,13 +124,13 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "long context",          # 1M+ tokens
         ],
         task_types=[
-            OpenClawTaskType.IMAGE,
-            OpenClawTaskType.VIDEO,
-            OpenClawTaskType.WEB,
-            OpenClawTaskType.RUNTIME,
-            OpenClawTaskType.CANVAS,
-            OpenClawTaskType.MEMORY,
-            OpenClawTaskType.UI,
+            Hermes AgentTaskType.IMAGE,
+            Hermes AgentTaskType.VIDEO,
+            Hermes AgentTaskType.WEB,
+            Hermes AgentTaskType.RUNTIME,
+            Hermes AgentTaskType.CANVAS,
+            Hermes AgentTaskType.MEMORY,
+            Hermes AgentTaskType.UI,
         ],
         priority=9,
         max_tokens=8192,
@@ -153,11 +153,11 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "careful analysis",      # Quality + safety
         ],
         task_types=[
-            OpenClawTaskType.RUNTIME,
-            OpenClawTaskType.FILESYSTEM,
-            OpenClawTaskType.SESSIONS,
-            OpenClawTaskType.MEMORY,
-            OpenClawTaskType.SKILLS,
+            Hermes AgentTaskType.RUNTIME,
+            Hermes AgentTaskType.FILESYSTEM,
+            Hermes AgentTaskType.SESSIONS,
+            Hermes AgentTaskType.MEMORY,
+            Hermes AgentTaskType.SKILLS,
         ],
         priority=9,
         max_tokens=8192,
@@ -180,10 +180,10 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "1M context",
         ],
         task_types=[
-            OpenClawTaskType.RUNTIME,
-            OpenClawTaskType.FILESYSTEM,
-            OpenClawTaskType.SESSIONS,
-            OpenClawTaskType.SKILLS,
+            Hermes AgentTaskType.RUNTIME,
+            Hermes AgentTaskType.FILESYSTEM,
+            Hermes AgentTaskType.SESSIONS,
+            Hermes AgentTaskType.SKILLS,
         ],
         priority=10,
         max_tokens=16384,
@@ -207,10 +207,10 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "4.5x faster execution", # Agent swarm speedup
         ],
         task_types=[
-            OpenClawTaskType.MEMORY,
-            OpenClawTaskType.FILESYSTEM,
-            OpenClawTaskType.SESSIONS,
-            OpenClawTaskType.SKILLS,
+            Hermes AgentTaskType.MEMORY,
+            Hermes AgentTaskType.FILESYSTEM,
+            Hermes AgentTaskType.SESSIONS,
+            Hermes AgentTaskType.SKILLS,
         ],
         priority=8,
         max_tokens=32000,
@@ -233,10 +233,10 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "open source friendly",
         ],
         task_types=[
-            OpenClawTaskType.RUNTIME,
-            OpenClawTaskType.FILESYSTEM,
-            OpenClawTaskType.AUTOMATION,
-            OpenClawTaskType.SKILLS,
+            Hermes AgentTaskType.RUNTIME,
+            Hermes AgentTaskType.FILESYSTEM,
+            Hermes AgentTaskType.AUTOMATION,
+            Hermes AgentTaskType.SKILLS,
         ],
         priority=8,
         max_tokens=32000,  # Up to 64K with reasoning
@@ -258,9 +258,9 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "small footprint",
         ],
         task_types=[
-            OpenClawTaskType.RUNTIME,
-            OpenClawTaskType.FILESYSTEM,
-            OpenClawTaskType.VOICE,
+            Hermes AgentTaskType.RUNTIME,
+            Hermes AgentTaskType.FILESYSTEM,
+            Hermes AgentTaskType.VOICE,
         ],
         priority=6,
         max_tokens=4000,
@@ -282,10 +282,10 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "zero-shot audio",
         ],
         task_types=[
-            OpenClawTaskType.MEMORY,
-            OpenClawTaskType.RUNTIME,
-            OpenClawTaskType.VOICE,
-            OpenClawTaskType.AUDIO,
+            Hermes AgentTaskType.MEMORY,
+            Hermes AgentTaskType.RUNTIME,
+            Hermes AgentTaskType.VOICE,
+            Hermes AgentTaskType.AUDIO,
         ],
         priority=7,
         max_tokens=4000,
@@ -300,9 +300,9 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
         display_name="Web Agent (Browser)",
         strengths=["browser automation", "scraping", "screenshots", "navigation"],
         task_types=[
-            OpenClawTaskType.WEB,
-            OpenClawTaskType.UI,
-            OpenClawTaskType.CANVAS,
+            Hermes AgentTaskType.WEB,
+            Hermes AgentTaskType.UI,
+            Hermes AgentTaskType.CANVAS,
         ],
         priority=9,
         max_tokens=2000,
@@ -315,7 +315,7 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
         display_name="Filesystem Agent",
         strengths=["file operations", "directory management", "search"],
         task_types=[
-            OpenClawTaskType.FILESYSTEM,
+            Hermes AgentTaskType.FILESYSTEM,
         ],
         priority=9,
         max_tokens=2000,
@@ -326,16 +326,16 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
 
 
 # =============================================================================
-# TASK ROUTING TABLE - Maps OpenClaw tasks to preferred models
+# TASK ROUTING TABLE - Maps Hermes Agent tasks to preferred models
 # =============================================================================
 
-TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
+TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     # ==========================================================================
     # ROUTING TABLE - Based on official model capabilities (2026-02)
     # ==========================================================================
 
     # File operations - Claude best for careful code, DeepSeek for multi-file
-    OpenClawTaskType.FILESYSTEM: [
+    Hermes AgentTaskType.FILESYSTEM: [
         "Claude",           # Best coding model, careful analysis
         "DeepSeek",         # Multi-file reasoning (V4)
         "FilesystemAgent",  # Specialist
@@ -344,7 +344,7 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
     ],
 
     # Code execution - Claude is "best coding model", DeepSeek has thinking mode
-    OpenClawTaskType.RUNTIME: [
+    Hermes AgentTaskType.RUNTIME: [
         "Claude",           # Best coding model (official)
         "DeepSeek",         # Thinking mode, multi-file bugs
         "Gemini",           # Agentic vision + code execution
@@ -353,7 +353,7 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
     ],
 
     # Multi-agent sessions - Kimi has native 100-agent swarm, Claude for quality
-    OpenClawTaskType.SESSIONS: [
+    Hermes AgentTaskType.SESSIONS: [
         "Kimi",             # Agent Swarm: 100 agents, 4.5x faster
         "Claude",           # Best for coordination quality
         "ClaudeOpus",       # Complex reasoning
@@ -361,7 +361,7 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
     ],
 
     # Memory/knowledge retrieval - Kimi 256K, Grok 2M, HF for embeddings
-    OpenClawTaskType.MEMORY: [
+    Hermes AgentTaskType.MEMORY: [
         "Grok",             # 2M token context - largest
         "Kimi",             # 256K context master
         "HuggingFace",      # Local embeddings (sentence-transformers)
@@ -370,7 +370,7 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
     ],
 
     # Web search/fetch - Grok has real-time X data, Gemini for research
-    OpenClawTaskType.WEB: [
+    Hermes AgentTaskType.WEB: [
         "Grok",             # Real-time X/Twitter, function calling
         "Gemini",           # Deep research, agentic vision
         "WebAgent",         # Browser automation
@@ -378,7 +378,7 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
     ],
 
     # UI/Browser automation - Gemini agentic vision + code execution
-    OpenClawTaskType.UI: [
+    Hermes AgentTaskType.UI: [
         "Gemini",           # Agentic vision - grounded answers
         "WebAgent",         # Browser specialist
         "Grok",             # Fast responses
@@ -386,7 +386,7 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
     ],
 
     # Scheduled tasks - DeepSeek reliable, Claude careful
-    OpenClawTaskType.AUTOMATION: [
+    Hermes AgentTaskType.AUTOMATION: [
         "DeepSeek",         # Reliable, multi-file
         "Claude",           # Careful execution
         "Phi",              # Fast local cron
@@ -394,7 +394,7 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
     ],
 
     # Channel messaging - Grok native X, Claude quality
-    OpenClawTaskType.MESSAGING: [
+    Hermes AgentTaskType.MESSAGING: [
         "Grok",             # Native X/Twitter integration
         "Claude",           # Quality responses
         "Gemini",           # Good synthesis
@@ -402,7 +402,7 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
     ],
 
     # Device nodes (camera, screen, location) - Gemini ultra-high res vision
-    OpenClawTaskType.NODES: [
+    Hermes AgentTaskType.NODES: [
         "Gemini",           # Ultra-high resolution vision
         "Grok",             # Vision support
         "Claude",           # Vision native
@@ -410,7 +410,7 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
     ],
 
     # Voice processing - HuggingFace Whisper (680K hours), Grok Voice
-    OpenClawTaskType.VOICE: [
+    Hermes AgentTaskType.VOICE: [
         "HuggingFace",      # Whisper - 680K hours trained, zero-shot
         "Grok",             # Grok Voice - low latency, tool calling
         "Phi",              # Fast local
@@ -418,15 +418,15 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
     ],
 
     # Canvas/visual rendering - Gemini agentic vision
-    OpenClawTaskType.CANVAS: [
+    Hermes AgentTaskType.CANVAS: [
         "Gemini",           # Agentic vision + code execution
         "Grok",             # Vision + fast
         "WebAgent",         # Browser rendering
         "Claude",           # Vision native
     ],
 
-    # ClawHub skills - Claude best for agents, Kimi for complex multi-agent
-    OpenClawTaskType.SKILLS: [
+    # Hermes Hub skills - Claude best for agents, Kimi for complex multi-agent
+    Hermes AgentTaskType.SKILLS: [
         "Claude",           # Best for agentic tasks (Claude Code)
         "Kimi",             # Agent swarm - 100 agents coordinated
         "ClaudeOpus",       # Complex skill orchestration
@@ -434,7 +434,7 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
     ],
 
     # Image processing - Gemini ultra-high res, segmentation
-    OpenClawTaskType.IMAGE: [
+    Hermes AgentTaskType.IMAGE: [
         "Gemini",           # Ultra-high res, segmentation, detection
         "Grok",             # Vision support
         "Claude",           # Vision native
@@ -442,14 +442,14 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
     ],
 
     # Video processing - Gemini multimodal, Grok Imagine
-    OpenClawTaskType.VIDEO: [
+    Hermes AgentTaskType.VIDEO: [
         "Gemini",           # Multimodal native
         "Grok",             # Grok Imagine - video generation
         "HuggingFace",      # Local processing
     ],
 
     # Audio processing - HuggingFace Whisper, Grok Voice
-    OpenClawTaskType.AUDIO: [
+    Hermes AgentTaskType.AUDIO: [
         "HuggingFace",      # Whisper - best STT
         "Grok",             # Grok Voice, audio generation
         "Gemini",           # Multimodal audio
@@ -462,7 +462,7 @@ TASK_ROUTING: Dict[OpenClawTaskType, List[str]] = {
 # =============================================================================
 
 def get_best_model_for_task(
-    task_type: OpenClawTaskType,
+    task_type: Hermes AgentTaskType,
     prefer_local: bool = False,
     prefer_fast: bool = False,
     prefer_quality: bool = False,
@@ -472,7 +472,7 @@ def get_best_model_for_task(
     Get the best model for a specific task type.
 
     Args:
-        task_type: The OpenClaw task type
+        task_type: The Hermes Agent task type
         prefer_local: Prefer local/free models
         prefer_fast: Prefer fast models
         prefer_quality: Prefer high-quality (premium) models
@@ -512,14 +512,14 @@ def get_best_model_for_task(
 
 
 def get_models_for_task(
-    task_type: OpenClawTaskType,
+    task_type: Hermes AgentTaskType,
     limit: int = 3
 ) -> List[str]:
     """Get ranked list of models for a task type."""
     return TASK_ROUTING.get(task_type, [])[:limit]
 
 
-def get_fallback_chain(model_id: str, task_type: OpenClawTaskType) -> List[str]:
+def get_fallback_chain(model_id: str, task_type: Hermes AgentTaskType) -> List[str]:
     """
     Get fallback chain for a model on a specific task.
 
@@ -537,43 +537,43 @@ def get_fallback_chain(model_id: str, task_type: OpenClawTaskType) -> List[str]:
     return fallbacks
 
 
-def classify_openclaw_tool(tool_name: str, action: str = None) -> OpenClawTaskType:
+def classify_Hermes Agent_tool(tool_name: str, action: str = None) -> Hermes AgentTaskType:
     """
-    Classify an OpenClaw tool call to a task type.
+    Classify an Hermes Agent tool call to a task type.
 
     Args:
         tool_name: The tool being invoked (e.g., "browser", "exec")
         action: Optional action (e.g., "snapshot", "camera.snap")
 
     Returns:
-        OpenClawTaskType for routing
+        Hermes AgentTaskType for routing
     """
     tool_lower = tool_name.lower()
     action_lower = (action or "").lower()
 
     # Direct mappings
     tool_to_type = {
-        "read": OpenClawTaskType.FILESYSTEM,
-        "write": OpenClawTaskType.FILESYSTEM,
-        "edit": OpenClawTaskType.FILESYSTEM,
-        "apply_patch": OpenClawTaskType.FILESYSTEM,
-        "exec": OpenClawTaskType.RUNTIME,
-        "bash": OpenClawTaskType.RUNTIME,
-        "process": OpenClawTaskType.RUNTIME,
-        "sessions_list": OpenClawTaskType.SESSIONS,
-        "sessions_history": OpenClawTaskType.SESSIONS,
-        "sessions_send": OpenClawTaskType.SESSIONS,
-        "sessions_spawn": OpenClawTaskType.SESSIONS,
-        "memory_search": OpenClawTaskType.MEMORY,
-        "memory_get": OpenClawTaskType.MEMORY,
-        "web_search": OpenClawTaskType.WEB,
-        "web_fetch": OpenClawTaskType.WEB,
-        "browser": OpenClawTaskType.UI,
-        "canvas": OpenClawTaskType.CANVAS,
-        "cron": OpenClawTaskType.AUTOMATION,
-        "gateway": OpenClawTaskType.AUTOMATION,
-        "message": OpenClawTaskType.MESSAGING,
-        "nodes": OpenClawTaskType.NODES,
+        "read": Hermes AgentTaskType.FILESYSTEM,
+        "write": Hermes AgentTaskType.FILESYSTEM,
+        "edit": Hermes AgentTaskType.FILESYSTEM,
+        "apply_patch": Hermes AgentTaskType.FILESYSTEM,
+        "exec": Hermes AgentTaskType.RUNTIME,
+        "bash": Hermes AgentTaskType.RUNTIME,
+        "process": Hermes AgentTaskType.RUNTIME,
+        "sessions_list": Hermes AgentTaskType.SESSIONS,
+        "sessions_history": Hermes AgentTaskType.SESSIONS,
+        "sessions_send": Hermes AgentTaskType.SESSIONS,
+        "sessions_spawn": Hermes AgentTaskType.SESSIONS,
+        "memory_search": Hermes AgentTaskType.MEMORY,
+        "memory_get": Hermes AgentTaskType.MEMORY,
+        "web_search": Hermes AgentTaskType.WEB,
+        "web_fetch": Hermes AgentTaskType.WEB,
+        "browser": Hermes AgentTaskType.UI,
+        "canvas": Hermes AgentTaskType.CANVAS,
+        "cron": Hermes AgentTaskType.AUTOMATION,
+        "gateway": Hermes AgentTaskType.AUTOMATION,
+        "message": Hermes AgentTaskType.MESSAGING,
+        "nodes": Hermes AgentTaskType.NODES,
     }
 
     if tool_lower in tool_to_type:
@@ -581,26 +581,26 @@ def classify_openclaw_tool(tool_name: str, action: str = None) -> OpenClawTaskTy
 
     # Check action for more specific routing
     if "camera" in action_lower or "photo" in action_lower:
-        return OpenClawTaskType.IMAGE
+        return Hermes AgentTaskType.IMAGE
     if "screen" in action_lower or "capture" in action_lower:
-        return OpenClawTaskType.UI
+        return Hermes AgentTaskType.UI
     if "voice" in action_lower or "speech" in action_lower or "audio" in action_lower:
-        return OpenClawTaskType.VOICE
+        return Hermes AgentTaskType.VOICE
     if "location" in action_lower or "gps" in action_lower:
-        return OpenClawTaskType.NODES
+        return Hermes AgentTaskType.NODES
 
     # Default to runtime for unknown tools
-    return OpenClawTaskType.RUNTIME
+    return Hermes AgentTaskType.RUNTIME
 
 
-async def route_openclaw_task(
+async def route_Hermes Agent_task(
     tool: str,
     action: str = None,
     params: Dict = None,
     prefer_local: bool = False
-) -> Tuple[str, OpenClawTaskType]:
+) -> Tuple[str, Hermes AgentTaskType]:
     """
-    Route an OpenClaw tool call to the best model.
+    Route an Hermes Agent tool call to the best model.
 
     Args:
         tool: Tool name
@@ -611,7 +611,7 @@ async def route_openclaw_task(
     Returns:
         Tuple of (model_id, task_type)
     """
-    task_type = classify_openclaw_tool(tool, action)
+    task_type = classify_Hermes Agent_tool(tool, action)
     model_id = get_best_model_for_task(task_type, prefer_local=prefer_local)
 
     logger.debug(f"Routed {tool}.{action} -> {model_id} (type: {task_type.value})")
@@ -650,7 +650,7 @@ def get_routing_summary() -> Dict[str, Any]:
     """Get a summary of the routing configuration."""
     return {
         "total_models": len(MODEL_REGISTRY),
-        "total_task_types": len(OpenClawTaskType),
+        "total_task_types": len(Hermes AgentTaskType),
         "models": {
             mid: {
                 "name": m.display_name,
@@ -662,7 +662,7 @@ def get_routing_summary() -> Dict[str, Any]:
         },
         "task_routing": {
             tt.value: TASK_ROUTING.get(tt, [])
-            for tt in OpenClawTaskType
+            for tt in Hermes AgentTaskType
         },
         "channel_routing": CHANNEL_MODEL_ROUTING,
     }

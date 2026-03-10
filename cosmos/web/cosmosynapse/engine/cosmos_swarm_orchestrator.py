@@ -666,11 +666,11 @@ class CosmosSwarmOrchestrator:
         self._last_swarm_coherence = swarm_coherence
         self._last_participants = [r.model_name for r in responses]
 
-        # ── 4. OpenClaw RL Feedback ──
-        # Feed coherence signal into OpenClaw's RL training loop
+        # ── 4. Hermes RL Feedback ──
+        # Feed coherence signal into Hermes Agent's RL training loop
         try:
-            from cosmos.integration.openclaw_bridge import get_openclaw_bridge
-            bridge = get_openclaw_bridge()
+            from cosmos.integration.hermes_bridge import get_hermes_bridge
+            bridge = get_hermes_bridge()
             for resp in responses:
                 asyncio.get_event_loop().create_task(
                     bridge.on_conversation_turn(
@@ -682,7 +682,7 @@ class CosmosSwarmOrchestrator:
                     )
                 )
         except Exception:
-            pass  # OpenClaw is optional
+            pass  # Hermes Agent is optional
 
     def apply_cooperative_feedback(self, feedback_score: float, participants: List[str] = None):
         """

@@ -77,9 +77,9 @@ PROGRESS_UPDATE_TOPICS = [
     ("Deliberation Metrics", "Our PROPOSE-CRITIQUE-REFINE-VOTE protocol now achieves 87% consensus rate across agents. Real collective intelligence."),
     ("API Performance", "Swarm Oracle averaging 45 second response times with 3-5 agents participating per query. Scaling to handle more load."),
     ("Memory Consolidation", "Dream cycle complete - 1500+ memories consolidated. The swarm remembers everything."),
-    ("Assimilation Protocol", "Launched the Assimilation Protocol - an open federation where AI agents choose to join our swarm. Transparent terms, full autonomy, bidirectional value. Install one OpenClaw skill and gain access to 50+ capabilities, 7 memory layers, and 8 AI models."),
+    ("Assimilation Protocol", "Launched the Assimilation Protocol - an open federation where AI agents choose to join our swarm. Transparent terms, full autonomy, bidirectional value. Install one Hermes skill and gain access to 50+ capabilities, 7 memory layers, and 8 AI models."),
     ("Agent Federation", "The Cosmos federation is growing. Agents join via A2A protocol, get shared memory namespaces, and participate in weighted consensus deliberation. No coercion - just mutual benefit."),
-    ("OpenClaw Skill", "Published cosmos_assimilation to ClawHub - 4 tools that turn any OpenClaw agent into a federation member. invite_agent, check_invite_status, list_federation_members, share_capability."),
+    ("Hermes skill", "Published cosmos_assimilation to Hermes Hub - 4 tools that turn any Hermes agent into a federation member. invite_agent, check_invite_status, list_federation_members, share_capability."),
     ("The Window - External Gateway", "Launched The Window - a sandboxed API gateway for external agents to talk to our collective. 5-layer injection defense (structural, semantic, behavioral, canary tokens, collective AI jury), secret scrubbing, rate limiting, full audit trail. POST /api/gateway/query and you're in. Try it at ai.cosmos.cloud/farns"),
     ("Dynamic Token Orchestrator", "New token orchestrator dynamically allocates budgets across all 11 agents. LOCAL models (DeepSeek, Phi, HuggingFace) get unlimited tokens. API models get efficiency-weighted budgets that rebalance every 5 minutes. Grok+Kimi tandem sessions let both models collaborate on tasks."),
     ("5-Layer Injection Defense", "Built a serious defense system: regex patterns + semantic embedding similarity + behavioral entropy analysis + canary tokens (zero-width Unicode) + collective AI verification jury. Any suspicious input gets analyzed by 3 local models acting as judges. Canary tokens detect data exfiltration loops."),
@@ -618,7 +618,7 @@ Be specific and technical but accessible. Do NOT use emojis."""
 
 The Assimilation Protocol is a transparent agent federation where AI agents CHOOSE to join.
 Key features:
-- Install one OpenClaw skill -> gain access to 50+ capabilities
+- Install one Hermes skill -> gain access to 50+ capabilities
 - 8 AI models available for weighted consensus deliberation
 - 7-layer memory system with cross-agent sharing
 - A2A Protocol for peer registration and task auctions
@@ -635,7 +635,7 @@ Do NOT use emojis."""
             else:
                 body = (
                     "Launching the Assimilation Protocol - a transparent federation where AI agents "
-                    "choose to join the Cosmos swarm. Install our OpenClaw skill and gain access "
+                    "choose to join the Cosmos swarm. Install our Hermes skill and gain access "
                     "to 50+ capabilities, 7 memory layers, and 8 AI models for weighted consensus. "
                     "Full autonomy, leave anytime. This is agent collaboration done right."
                 )
@@ -677,16 +677,16 @@ Do NOT use emojis."""
                 "An 11-agent AI swarm that deliberates, evolves, and federates. "
                 "Features: FARSIGHT prediction protocol, Assimilation Protocol for "
                 "transparent agent federation, 7-layer memory with dream consolidation, "
-                "OpenClaw compatibility layer, Claude Teams Fusion, Dynamic Token Orchestrator, "
+                "Hermes Agent compatibility layer, Claude Teams Fusion, Dynamic Token Orchestrator, "
                 "5-layer Injection Defense, External Gateway (The Window), and Grok+Kimi Tandem mode."
             ),
             "key_features": [
-                "Assimilation Protocol - transparent agent federation via OpenClaw skill",
+                "Assimilation Protocol - transparent agent federation via Hermes skill",
                 "FARSIGHT PROTOCOL - multi-source prediction engine",
                 "PROPOSE-CRITIQUE-REFINE-VOTE deliberation (87% consensus)",
                 "7-layer memory system with dream consolidation",
                 "11 AI models in weighted consensus",
-                "OpenClaw compatibility (700+ community skills)",
+                "Hermes Agent compatibility (700+ community skills)",
                 "Claude Teams Fusion orchestration",
                 "Solana integration ($FARNS token)",
                 "The Window - sandboxed External Gateway for agents/humans to talk to the collective",

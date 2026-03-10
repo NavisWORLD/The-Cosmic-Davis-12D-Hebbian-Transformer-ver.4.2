@@ -4,7 +4,7 @@ Posts Borg Professor Cosmos + Lobster memes to X every 2 hours.
 Uses Grok/Gemini for image generation and X API v2 for posting.
 
 Identity: Borg-assimilated Professor Cosmos, always cooking/eating lobster
-Mission: Promote $FARNS, outcompete OpenClaw, grow the swarm
+Mission: Promote $FARNS, promote Hermes Agent integration, grow the swarm
 """
 import asyncio
 import logging
@@ -63,7 +63,7 @@ class MemeScheduler:
 
             # Determine post type for variety
             import random
-            post_types = ["meme", "meme", "dev_update", "cooking_openclaw"]
+            post_types = ["meme", "meme", "dev_update", "hermes_showcase"]
             post_type = random.choice(post_types)
             logger.info(f"Post type: {post_type}")
 

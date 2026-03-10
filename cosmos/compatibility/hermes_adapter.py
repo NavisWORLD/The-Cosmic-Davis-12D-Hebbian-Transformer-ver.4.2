@@ -1,16 +1,16 @@
 """
-OpenClaw Universal Adapter
+Hermes Universal Adapter
 ===========================
 
-Translates OpenClaw tool calls and skills to Cosmos equivalents.
+Translates Hermes Agent tool calls and skills to Cosmos equivalents.
 
 This is the core of the Shadow Layer - it:
 1. Parses SKILL.md files
-2. Maps OpenClaw tools to Cosmos agents/modules
+2. Maps Hermes tools to Cosmos agents/modules
 3. Translates input/output formats
 4. Provides a unified invocation interface
 
-OpenClaw Tool Groups Mapped:
+Hermes Agent Tool Groups Mapped:
 - group:fs → Cosmos file operations
 - group:runtime → code_agent.py, subprocess execution
 - group:sessions → swarm_orchestrator + Nexus signals
@@ -37,8 +37,8 @@ from enum import Enum
 from loguru import logger
 
 
-class OpenClawToolGroup(Enum):
-    """OpenClaw tool policy groups."""
+class HermesToolGroup(Enum):
+    """Hermes Agent tool policy groups."""
     FILESYSTEM = "group:fs"
     RUNTIME = "group:runtime"
     SESSIONS = "group:sessions"
@@ -51,8 +51,8 @@ class OpenClawToolGroup(Enum):
 
 
 @dataclass
-class OpenClawToolResult:
-    """Result from an OpenClaw tool invocation."""
+class HermesToolResult:
+    """Result from an Hermes Agent tool invocation."""
     success: bool
     tool: str
     action: Optional[str] = None
@@ -61,8 +61,8 @@ class OpenClawToolResult:
     metadata: Dict = field(default_factory=dict)
     execution_time: float = 0.0
 
-    def to_openclaw_format(self) -> Dict:
-        """Convert to OpenClaw-compatible response format."""
+    def to_Hermes Agent_format(self) -> Dict:
+        """Convert to Hermes Agent-compatible response format."""
         if self.success:
             return {
                 "status": "success",
@@ -87,8 +87,8 @@ class OpenClawToolResult:
 
 
 @dataclass
-class OpenClawSkill:
-    """Parsed OpenClaw skill definition."""
+class HermesSkill:
+    """Parsed Hermes skill definition."""
     name: str
     path: Path
     description: str = ""
@@ -100,12 +100,12 @@ class OpenClawSkill:
     metadata: Dict = field(default_factory=dict)
 
 
-class OpenClawAdapter:
+class HermesAdapter:
     """
-    Universal adapter for OpenClaw tool/skill compatibility.
+    Universal adapter for Hermes Agent tool/skill compatibility.
 
-    Maps OpenClaw's 20+ built-in tools to Cosmos equivalents,
-    providing seamless execution of OpenClaw skills in the Cosmos swarm.
+    Maps Hermes Agent's 20+ built-in tools to Cosmos equivalents,
+    providing seamless execution of Hermes skills in the Cosmos swarm.
     """
 
     # Tool group to Cosmos module mapping
@@ -156,14 +156,14 @@ class OpenClawAdapter:
 
     def __init__(self, workspace_path: str = None):
         """
-        Initialize the OpenClaw adapter.
+        Initialize the Hermes Agent adapter.
 
         Args:
-            workspace_path: Path to workspace (default: ~/.cosmos/openclaw)
+            workspace_path: Path to workspace (default: ~/.cosmos/Hermes Agent)
         """
-        self.workspace_path = Path(workspace_path or os.path.expanduser("~/.cosmos/openclaw"))
+        self.workspace_path = Path(workspace_path or os.path.expanduser("~/.cosmos/Hermes Agent"))
         self.skills_path = self.workspace_path / "skills"
-        self.skills: Dict[str, OpenClawSkill] = {}
+        self.skills: Dict[str, HermesSkill] = {}
         self._initialized = False
 
         # Lazy-loaded Cosmos modules
@@ -193,11 +193,11 @@ class OpenClawAdapter:
             await self._scan_skills()
 
             self._initialized = True
-            logger.info(f"OpenClaw adapter initialized with {len(self.skills)} skills")
+            logger.info(f"Hermes Agent adapter initialized with {len(self.skills)} skills")
             return True
 
         except Exception as e:
-            logger.error(f"OpenClaw adapter initialization failed: {e}")
+            logger.error(f"Hermes Agent adapter initialization failed: {e}")
             return False
 
     async def _load_cosmos_modules(self):
@@ -237,11 +237,11 @@ class OpenClawAdapter:
                         self.skills[skill.name] = skill
                         logger.debug(f"Loaded skill: {skill.name}")
 
-    def _parse_skill(self, skill_dir: Path) -> Optional[OpenClawSkill]:
+    def _parse_skill(self, skill_dir: Path) -> Optional[HermesSkill]:
         """
         Parse a SKILL.md file into a skill definition.
 
-        OpenClaw SKILL.md format:
+        Hermes skill.md format:
         - Markdown documentation with usage examples
         - Optional package.json with metadata
         - Optional bin/ directory with executables
@@ -277,15 +277,15 @@ class OpenClawAdapter:
                 try:
                     pkg = json.loads(package_json.read_text())
                     metadata = pkg
-                    openclaw_config = pkg.get("openclaw", {}).get("skills", {})
-                    deps = openclaw_config.get("dependencies", {})
+                    Hermes Agent_config = pkg.get("Hermes Agent", {}).get("skills", {})
+                    deps = Hermes Agent_config.get("dependencies", {})
                     tools_required = deps.get("tools", [])
                     binaries_required = deps.get("binaries", [])
                     env_vars_required = deps.get("envVars", [])
                 except json.JSONDecodeError:
                     pass
 
-            return OpenClawSkill(
+            return HermesSkill(
                 name=name,
                 path=skill_dir,
                 description=description,
@@ -307,9 +307,9 @@ class OpenClawAdapter:
         action: str = None,
         params: Dict[str, Any] = None,
         **kwargs
-    ) -> OpenClawToolResult:
+    ) -> HermesToolResult:
         """
-        Invoke an OpenClaw tool.
+        Invoke an Hermes Agent tool.
 
         Args:
             tool: Tool name (e.g., "browser", "exec", "sessions_list")
@@ -318,7 +318,7 @@ class OpenClawAdapter:
             **kwargs: Additional parameters merged with params
 
         Returns:
-            OpenClawToolResult with execution results
+            HermesToolResult with execution results
         """
         if not self._initialized:
             await self.initialize()
@@ -329,7 +329,7 @@ class OpenClawAdapter:
         try:
             # Find the tool mapping
             if tool not in self.TOOL_MAPPINGS:
-                return OpenClawToolResult(
+                return HermesToolResult(
                     success=False,
                     tool=tool,
                     action=action,
@@ -340,7 +340,7 @@ class OpenClawAdapter:
             handler = getattr(self, handler_name, None)
 
             if not handler:
-                return OpenClawToolResult(
+                return HermesToolResult(
                     success=False,
                     tool=tool,
                     action=action,
@@ -357,7 +357,7 @@ class OpenClawAdapter:
 
         except Exception as e:
             logger.error(f"Tool invocation failed: {tool}.{action}: {e}")
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=False,
                 tool=tool,
                 action=action,
@@ -372,7 +372,7 @@ class OpenClawAdapter:
         prompt: str,
         params: Dict = None,
         **kwargs
-    ) -> OpenClawToolResult:
+    ) -> HermesToolResult:
         """
         Invoke a tool with AI model assistance.
 
@@ -386,10 +386,10 @@ class OpenClawAdapter:
             **kwargs: Additional model params
 
         Returns:
-            OpenClawToolResult with AI-generated response
+            HermesToolResult with AI-generated response
         """
         if not self._model_invoker:
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=False,
                 tool=tool,
                 action=action,
@@ -411,7 +411,7 @@ class OpenClawAdapter:
             execution_time = (datetime.now() - start_time).total_seconds()
 
             if response.success:
-                return OpenClawToolResult(
+                return HermesToolResult(
                     success=True,
                     tool=tool,
                     action=action,
@@ -428,7 +428,7 @@ class OpenClawAdapter:
                     execution_time=execution_time
                 )
             else:
-                return OpenClawToolResult(
+                return HermesToolResult(
                     success=False,
                     tool=tool,
                     action=action,
@@ -438,7 +438,7 @@ class OpenClawAdapter:
                 )
 
         except Exception as e:
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=False,
                 tool=tool,
                 action=action,
@@ -451,9 +451,9 @@ class OpenClawAdapter:
         skill_name: str,
         user_input: str,
         **kwargs
-    ) -> OpenClawToolResult:
+    ) -> HermesToolResult:
         """
-        Execute a ClawHub skill using AI.
+        Execute a hermes_hub skill using AI.
 
         Loads the skill's instructions and uses AI to complete the task.
 
@@ -463,11 +463,11 @@ class OpenClawAdapter:
             **kwargs: Additional params
 
         Returns:
-            OpenClawToolResult
+            HermesToolResult
         """
         skill = self.skills.get(skill_name)
         if not skill:
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=False,
                 tool="skill",
                 action=skill_name,
@@ -475,7 +475,7 @@ class OpenClawAdapter:
             )
 
         # Build prompt from skill content + user input
-        prompt = f"""You are executing the OpenClaw skill: {skill_name}
+        prompt = f"""You are executing the Hermes skill: {skill_name}
 
 Skill Description:
 {skill.description}
@@ -508,13 +508,13 @@ Execute this skill and provide the result."""
     # FILESYSTEM HANDLERS (group:fs)
     # =========================================================================
 
-    async def _handle_read(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_read(self, action: str, params: Dict) -> HermesToolResult:
         """Handle file read operations."""
         path = params.get("path")
         encoding = params.get("encoding", "utf-8")
 
         if not path:
-            return OpenClawToolResult(success=False, tool="read", error="Missing 'path' parameter")
+            return HermesToolResult(success=False, tool="read", error="Missing 'path' parameter")
 
         try:
             file_path = Path(path)
@@ -522,22 +522,22 @@ Execute this skill and provide the result."""
                 file_path = self.workspace_path / path
 
             content = file_path.read_text(encoding=encoding)
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=True,
                 tool="read",
                 data={"content": content, "path": str(file_path), "size": len(content)}
             )
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="read", error=str(e))
+            return HermesToolResult(success=False, tool="read", error=str(e))
 
-    async def _handle_write(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_write(self, action: str, params: Dict) -> HermesToolResult:
         """Handle file write operations."""
         path = params.get("path")
         content = params.get("content")
         encoding = params.get("encoding", "utf-8")
 
         if not path or content is None:
-            return OpenClawToolResult(success=False, tool="write", error="Missing 'path' or 'content'")
+            return HermesToolResult(success=False, tool="write", error="Missing 'path' or 'content'")
 
         try:
             file_path = Path(path)
@@ -547,22 +547,22 @@ Execute this skill and provide the result."""
             file_path.parent.mkdir(parents=True, exist_ok=True)
             file_path.write_text(content, encoding=encoding)
 
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=True,
                 tool="write",
                 data={"path": str(file_path), "bytes_written": len(content.encode(encoding))}
             )
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="write", error=str(e))
+            return HermesToolResult(success=False, tool="write", error=str(e))
 
-    async def _handle_edit(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_edit(self, action: str, params: Dict) -> HermesToolResult:
         """Handle file edit operations (search and replace)."""
         path = params.get("path")
         edits = params.get("edits", [])
         dry_run = params.get("dryRun", False)
 
         if not path:
-            return OpenClawToolResult(success=False, tool="edit", error="Missing 'path'")
+            return HermesToolResult(success=False, tool="edit", error="Missing 'path'")
 
         try:
             file_path = Path(path)
@@ -583,7 +583,7 @@ Execute this skill and provide the result."""
             if not dry_run and changes:
                 file_path.write_text(content)
 
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=True,
                 tool="edit",
                 data={
@@ -594,15 +594,15 @@ Execute this skill and provide the result."""
                 }
             )
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="edit", error=str(e))
+            return HermesToolResult(success=False, tool="edit", error=str(e))
 
-    async def _handle_apply_patch(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_apply_patch(self, action: str, params: Dict) -> HermesToolResult:
         """Handle unified diff patch application."""
         path = params.get("path")
         patch = params.get("patch")
 
         if not path or not patch:
-            return OpenClawToolResult(success=False, tool="apply_patch", error="Missing 'path' or 'patch'")
+            return HermesToolResult(success=False, tool="apply_patch", error="Missing 'path' or 'patch'")
 
         try:
             # Use subprocess to apply patch
@@ -617,25 +617,25 @@ Execute this skill and provide the result."""
             )
 
             if proc.returncode == 0:
-                return OpenClawToolResult(
+                return HermesToolResult(
                     success=True,
                     tool="apply_patch",
                     data={"path": str(file_path), "output": proc.stdout.decode()}
                 )
             else:
-                return OpenClawToolResult(
+                return HermesToolResult(
                     success=False,
                     tool="apply_patch",
                     error=proc.stderr.decode()
                 )
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="apply_patch", error=str(e))
+            return HermesToolResult(success=False, tool="apply_patch", error=str(e))
 
     # =========================================================================
     # RUNTIME HANDLERS (group:runtime)
     # =========================================================================
 
-    async def _handle_exec(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_exec(self, action: str, params: Dict) -> HermesToolResult:
         """Handle shell command execution."""
         command = params.get("command")
         cwd = params.get("cwd")
@@ -644,7 +644,7 @@ Execute this skill and provide the result."""
         env = params.get("env", {})
 
         if not command:
-            return OpenClawToolResult(success=False, tool="exec", error="Missing 'command'")
+            return HermesToolResult(success=False, tool="exec", error="Missing 'command'")
 
         try:
             # Merge environment
@@ -667,7 +667,7 @@ Execute this skill and provide the result."""
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE
                 )
-                return OpenClawToolResult(
+                return HermesToolResult(
                     success=True,
                     tool="exec",
                     data={"pid": proc.pid, "background": True}
@@ -683,7 +683,7 @@ Execute this skill and provide the result."""
                     timeout=timeout
                 )
 
-                return OpenClawToolResult(
+                return HermesToolResult(
                     success=proc.returncode == 0,
                     tool="exec",
                     data={
@@ -694,18 +694,18 @@ Execute this skill and provide the result."""
                     error=None if proc.returncode == 0 else f"Exit code: {proc.returncode}"
                 )
         except subprocess.TimeoutExpired:
-            return OpenClawToolResult(success=False, tool="exec", error=f"Command timed out after {timeout}s")
+            return HermesToolResult(success=False, tool="exec", error=f"Command timed out after {timeout}s")
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="exec", error=str(e))
+            return HermesToolResult(success=False, tool="exec", error=str(e))
 
-    async def _handle_process(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_process(self, action: str, params: Dict) -> HermesToolResult:
         """Handle background process management."""
         process_action = params.get("action", action)
         process_id = params.get("processId")
 
         if process_action == "list":
             # List background processes (simplified)
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=True,
                 tool="process",
                 action="list",
@@ -713,27 +713,27 @@ Execute this skill and provide the result."""
             )
         elif process_action == "stop":
             if not process_id:
-                return OpenClawToolResult(success=False, tool="process", error="Missing processId")
+                return HermesToolResult(success=False, tool="process", error="Missing processId")
             try:
                 os.kill(int(process_id), 9)
-                return OpenClawToolResult(success=True, tool="process", action="stop", data={"stopped": process_id})
+                return HermesToolResult(success=True, tool="process", action="stop", data={"stopped": process_id})
             except Exception as e:
-                return OpenClawToolResult(success=False, tool="process", error=str(e))
+                return HermesToolResult(success=False, tool="process", error=str(e))
         else:
-            return OpenClawToolResult(success=False, tool="process", error=f"Unknown action: {process_action}")
+            return HermesToolResult(success=False, tool="process", error=f"Unknown action: {process_action}")
 
     # =========================================================================
     # SESSION HANDLERS (group:sessions)
     # =========================================================================
 
-    async def _handle_sessions_list(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_sessions_list(self, action: str, params: Dict) -> HermesToolResult:
         """Handle session listing - maps to Cosmos session manager."""
         try:
             from Cosmos.core.collective.session_manager import get_session_manager
             manager = get_session_manager()
             stats = manager.get_session_stats()
 
-            # Convert to OpenClaw format
+            # Convert to Hermes Agent format
             sessions = []
             for sid, info in stats.get("sessions", {}).items():
                 sessions.append({
@@ -744,22 +744,22 @@ Execute this skill and provide the result."""
                     "active": True
                 })
 
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=True,
                 tool="sessions_list",
                 data={"sessions": sessions, "total": len(sessions)}
             )
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="sessions_list", error=str(e))
+            return HermesToolResult(success=False, tool="sessions_list", error=str(e))
 
-    async def _handle_sessions_history(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_sessions_history(self, action: str, params: Dict) -> HermesToolResult:
         """Handle session history retrieval."""
         session_key = params.get("sessionKey")
         limit = params.get("limit", 50)
         format_type = params.get("format", "json")
 
         if not session_key:
-            return OpenClawToolResult(success=False, tool="sessions_history", error="Missing sessionKey")
+            return HermesToolResult(success=False, tool="sessions_history", error="Missing sessionKey")
 
         try:
             from Cosmos.core.collective.session_manager import get_session_manager
@@ -774,14 +774,14 @@ Execute this skill and provide the result."""
                     transcript = []
                     for h in history:
                         transcript.append(f"[{h.winning_agent}]: {h.final_response[:200]}...")
-                    return OpenClawToolResult(
+                    return HermesToolResult(
                         success=True,
                         tool="sessions_history",
                         data={"transcript": "\n".join(transcript)}
                     )
                 else:
                     # JSON format
-                    return OpenClawToolResult(
+                    return HermesToolResult(
                         success=True,
                         tool="sessions_history",
                         data={
@@ -797,19 +797,19 @@ Execute this skill and provide the result."""
                         }
                     )
             else:
-                return OpenClawToolResult(success=False, tool="sessions_history", error="Session not found")
+                return HermesToolResult(success=False, tool="sessions_history", error="Session not found")
 
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="sessions_history", error=str(e))
+            return HermesToolResult(success=False, tool="sessions_history", error=str(e))
 
-    async def _handle_sessions_send(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_sessions_send(self, action: str, params: Dict) -> HermesToolResult:
         """Handle cross-session messaging - maps to Nexus signals."""
         session_key = params.get("sessionKey")
         text = params.get("text")
         reply_back = params.get("replyBack", False)
 
         if not session_key or not text:
-            return OpenClawToolResult(success=False, tool="sessions_send", error="Missing sessionKey or text")
+            return HermesToolResult(success=False, tool="sessions_send", error="Missing sessionKey or text")
 
         try:
             if self._nexus:
@@ -820,22 +820,22 @@ Execute this skill and provide the result."""
                     "timestamp": datetime.now().isoformat()
                 })
 
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=True,
                 tool="sessions_send",
                 data={"sent_to": session_key, "message_length": len(text)}
             )
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="sessions_send", error=str(e))
+            return HermesToolResult(success=False, tool="sessions_send", error=str(e))
 
-    async def _handle_sessions_spawn(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_sessions_spawn(self, action: str, params: Dict) -> HermesToolResult:
         """Handle sub-agent spawning - maps to Cosmos agent spawner."""
         prompt = params.get("prompt")
         model = params.get("model")
         thinking_level = params.get("thinkingLevel")
 
         if not prompt:
-            return OpenClawToolResult(success=False, tool="sessions_spawn", error="Missing prompt")
+            return HermesToolResult(success=False, tool="sessions_spawn", error="Missing prompt")
 
         try:
             from Cosmos.core.agent_spawner import spawn_agent
@@ -846,7 +846,7 @@ Execute this skill and provide the result."""
                 thinking_level=thinking_level
             )
 
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=True,
                 tool="sessions_spawn",
                 data={
@@ -856,15 +856,15 @@ Execute this skill and provide the result."""
                 }
             )
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="sessions_spawn", error=str(e))
+            return HermesToolResult(success=False, tool="sessions_spawn", error=str(e))
 
-    async def _handle_session_status(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_session_status(self, action: str, params: Dict) -> HermesToolResult:
         """Handle session status query."""
         try:
             from Cosmos.core.collective.session_manager import get_session_manager
             manager = get_session_manager()
 
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=True,
                 tool="session_status",
                 data={
@@ -874,24 +874,24 @@ Execute this skill and provide the result."""
                 }
             )
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="session_status", error=str(e))
+            return HermesToolResult(success=False, tool="session_status", error=str(e))
 
     # =========================================================================
     # MEMORY HANDLERS (group:memory)
     # =========================================================================
 
-    async def _handle_memory_search(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_memory_search(self, action: str, params: Dict) -> HermesToolResult:
         """Handle memory search - maps to Cosmos ArchivalMemory."""
         query = params.get("query")
         limit = params.get("limit", 10)
 
         if not query:
-            return OpenClawToolResult(success=False, tool="memory_search", error="Missing query")
+            return HermesToolResult(success=False, tool="memory_search", error="Missing query")
 
         try:
             if self._memory_system:
                 results = await self._memory_system.search(query, limit=limit)
-                return OpenClawToolResult(
+                return HermesToolResult(
                     success=True,
                     tool="memory_search",
                     data={
@@ -913,67 +913,67 @@ Execute this skill and provide the result."""
                                 results.append({"path": str(f), "snippet": content[:200]})
                         except Exception:
                             pass
-                return OpenClawToolResult(
+                return HermesToolResult(
                     success=True,
                     tool="memory_search",
                     data={"results": results[:limit]}
                 )
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="memory_search", error=str(e))
+            return HermesToolResult(success=False, tool="memory_search", error=str(e))
 
-    async def _handle_memory_get(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_memory_get(self, action: str, params: Dict) -> HermesToolResult:
         """Handle memory retrieval by ID."""
         memory_id = params.get("id")
 
         if not memory_id:
-            return OpenClawToolResult(success=False, tool="memory_get", error="Missing id")
+            return HermesToolResult(success=False, tool="memory_get", error="Missing id")
 
         try:
             if self._memory_system:
                 memory = await self._memory_system.get(memory_id)
                 if memory:
-                    return OpenClawToolResult(
+                    return HermesToolResult(
                         success=True,
                         tool="memory_get",
                         data={"id": memory_id, "content": memory.content}
                     )
 
-            return OpenClawToolResult(success=False, tool="memory_get", error="Memory not found")
+            return HermesToolResult(success=False, tool="memory_get", error="Memory not found")
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="memory_get", error=str(e))
+            return HermesToolResult(success=False, tool="memory_get", error=str(e))
 
     # =========================================================================
     # WEB HANDLERS (group:web)
     # =========================================================================
 
-    async def _handle_web_search(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_web_search(self, action: str, params: Dict) -> HermesToolResult:
         """Handle web search - maps to Cosmos external APIs."""
         query = params.get("query")
         limit = params.get("limit", 10)
 
         if not query:
-            return OpenClawToolResult(success=False, tool="web_search", error="Missing query")
+            return HermesToolResult(success=False, tool="web_search", error="Missing query")
 
         try:
             # Try Grok/Gemini for web search
             from Cosmos.integration.external.grok import grok_search
             results = await grok_search(query, limit=limit)
 
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=True,
                 tool="web_search",
                 data={"results": results, "query": query}
             )
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="web_search", error=str(e))
+            return HermesToolResult(success=False, tool="web_search", error=str(e))
 
-    async def _handle_web_fetch(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_web_fetch(self, action: str, params: Dict) -> HermesToolResult:
         """Handle URL fetching."""
         url = params.get("url")
         format_type = params.get("format", "markdown")
 
         if not url:
-            return OpenClawToolResult(success=False, tool="web_fetch", error="Missing url")
+            return HermesToolResult(success=False, tool="web_fetch", error="Missing url")
 
         try:
             import aiohttp
@@ -987,19 +987,19 @@ Execute this skill and provide the result."""
                 import re
                 content = re.sub(r"<[^>]+>", "", content)
 
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=True,
                 tool="web_fetch",
                 data={"url": url, "content": content[:10000], "format": format_type}
             )
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="web_fetch", error=str(e))
+            return HermesToolResult(success=False, tool="web_fetch", error=str(e))
 
     # =========================================================================
     # UI HANDLERS (group:ui)
     # =========================================================================
 
-    async def _handle_browser(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_browser(self, action: str, params: Dict) -> HermesToolResult:
         """Handle browser control - maps to visual_canvas or web_agent."""
         browser_action = params.get("action", action)
 
@@ -1009,36 +1009,36 @@ Execute this skill and provide the result."""
 
             if browser_action == "snapshot":
                 result = await canvas.snapshot()
-                return OpenClawToolResult(success=True, tool="browser", action="snapshot", data=result)
+                return HermesToolResult(success=True, tool="browser", action="snapshot", data=result)
 
             elif browser_action == "navigate":
                 url = params.get("url")
                 result = await canvas.navigate(url)
-                return OpenClawToolResult(success=True, tool="browser", action="navigate", data=result)
+                return HermesToolResult(success=True, tool="browser", action="navigate", data=result)
 
             elif browser_action == "click":
                 selector = params.get("selector")
                 result = await canvas.click(selector)
-                return OpenClawToolResult(success=True, tool="browser", action="click", data=result)
+                return HermesToolResult(success=True, tool="browser", action="click", data=result)
 
             elif browser_action == "type":
                 selector = params.get("selector")
                 text = params.get("text")
                 result = await canvas.type_text(selector, text)
-                return OpenClawToolResult(success=True, tool="browser", action="type", data=result)
+                return HermesToolResult(success=True, tool="browser", action="type", data=result)
 
             elif browser_action == "evaluate":
                 code = params.get("code")
                 result = await canvas.eval(code)
-                return OpenClawToolResult(success=True, tool="browser", action="evaluate", data=result)
+                return HermesToolResult(success=True, tool="browser", action="evaluate", data=result)
 
             else:
-                return OpenClawToolResult(success=False, tool="browser", error=f"Unknown action: {browser_action}")
+                return HermesToolResult(success=False, tool="browser", error=f"Unknown action: {browser_action}")
 
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="browser", action=browser_action, error=str(e))
+            return HermesToolResult(success=False, tool="browser", action=browser_action, error=str(e))
 
-    async def _handle_canvas(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_canvas(self, action: str, params: Dict) -> HermesToolResult:
         """Handle canvas/A2UI operations."""
         canvas_action = params.get("action", action)
 
@@ -1048,33 +1048,33 @@ Execute this skill and provide the result."""
 
             if canvas_action == "reset":
                 result = await canvas.reset()
-                return OpenClawToolResult(success=True, tool="canvas", action="reset", data=result)
+                return HermesToolResult(success=True, tool="canvas", action="reset", data=result)
 
             elif canvas_action == "push":
                 a2ui = params.get("a2ui")
                 result = await canvas.push(a2ui)
-                return OpenClawToolResult(success=True, tool="canvas", action="push", data=result)
+                return HermesToolResult(success=True, tool="canvas", action="push", data=result)
 
             elif canvas_action == "eval":
                 code = params.get("code")
                 result = await canvas.eval(code)
-                return OpenClawToolResult(success=True, tool="canvas", action="eval", data=result)
+                return HermesToolResult(success=True, tool="canvas", action="eval", data=result)
 
             elif canvas_action == "snapshot":
                 result = await canvas.snapshot()
-                return OpenClawToolResult(success=True, tool="canvas", action="snapshot", data=result)
+                return HermesToolResult(success=True, tool="canvas", action="snapshot", data=result)
 
             else:
-                return OpenClawToolResult(success=False, tool="canvas", error=f"Unknown action: {canvas_action}")
+                return HermesToolResult(success=False, tool="canvas", error=f"Unknown action: {canvas_action}")
 
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="canvas", action=canvas_action, error=str(e))
+            return HermesToolResult(success=False, tool="canvas", action=canvas_action, error=str(e))
 
     # =========================================================================
     # AUTOMATION HANDLERS (group:automation)
     # =========================================================================
 
-    async def _handle_cron(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_cron(self, action: str, params: Dict) -> HermesToolResult:
         """Handle cron scheduling - maps to Cosmos scheduler."""
         cron_action = params.get("action", action)
 
@@ -1084,45 +1084,45 @@ Execute this skill and provide the result."""
 
             if cron_action == "list":
                 jobs = scheduler.list_jobs()
-                return OpenClawToolResult(success=True, tool="cron", action="list", data={"jobs": jobs})
+                return HermesToolResult(success=True, tool="cron", action="list", data={"jobs": jobs})
 
             elif cron_action == "add":
                 schedule = params.get("schedule")
                 prompt = params.get("prompt")
                 job_id = scheduler.add_job(schedule, prompt)
-                return OpenClawToolResult(success=True, tool="cron", action="add", data={"id": job_id})
+                return HermesToolResult(success=True, tool="cron", action="add", data={"id": job_id})
 
             elif cron_action == "remove":
                 job_id = params.get("id")
                 scheduler.remove_job(job_id)
-                return OpenClawToolResult(success=True, tool="cron", action="remove", data={"removed": job_id})
+                return HermesToolResult(success=True, tool="cron", action="remove", data={"removed": job_id})
 
             else:
-                return OpenClawToolResult(success=False, tool="cron", error=f"Unknown action: {cron_action}")
+                return HermesToolResult(success=False, tool="cron", error=f"Unknown action: {cron_action}")
 
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="cron", error=str(e))
+            return HermesToolResult(success=False, tool="cron", error=str(e))
 
-    async def _handle_gateway(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_gateway(self, action: str, params: Dict) -> HermesToolResult:
         """Handle gateway configuration."""
         gateway_action = params.get("action", action)
 
         if gateway_action == "config.get":
             # Return Cosmos config
-            return OpenClawToolResult(
+            return HermesToolResult(
                 success=True,
                 tool="gateway",
                 action="config.get",
                 data={"config": {"adapter": "cosmos", "version": "1.8"}}
             )
         else:
-            return OpenClawToolResult(success=False, tool="gateway", error=f"Unknown action: {gateway_action}")
+            return HermesToolResult(success=False, tool="gateway", error=f"Unknown action: {gateway_action}")
 
     # =========================================================================
     # MESSAGING HANDLERS (group:messaging)
     # =========================================================================
 
-    async def _handle_message(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_message(self, action: str, params: Dict) -> HermesToolResult:
         """Handle messaging operations."""
         msg_action = params.get("action", action or "send")
 
@@ -1137,11 +1137,11 @@ Execute this skill and provide the result."""
                     from Cosmos.integration.x_automation.x_api_poster import XOAuth2Poster
                     poster = XOAuth2Poster()
                     result = await poster.post_tweet(text)
-                    return OpenClawToolResult(success=True, tool="message", action="send", data=result)
+                    return HermesToolResult(success=True, tool="message", action="send", data=result)
 
                 elif channel == "email":
                     # Email integration
-                    return OpenClawToolResult(success=True, tool="message", action="send", data={"sent": True})
+                    return HermesToolResult(success=True, tool="message", action="send", data={"sent": True})
 
                 else:
                     # Generic message via Nexus
@@ -1151,19 +1151,19 @@ Execute this skill and provide the result."""
                             "to": to,
                             "text": text
                         })
-                    return OpenClawToolResult(success=True, tool="message", action="send", data={"queued": True})
+                    return HermesToolResult(success=True, tool="message", action="send", data={"queued": True})
 
             else:
-                return OpenClawToolResult(success=False, tool="message", error=f"Unknown action: {msg_action}")
+                return HermesToolResult(success=False, tool="message", error=f"Unknown action: {msg_action}")
 
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="message", error=str(e))
+            return HermesToolResult(success=False, tool="message", error=str(e))
 
     # =========================================================================
     # NODE HANDLERS (group:nodes)
     # =========================================================================
 
-    async def _handle_nodes(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_nodes(self, action: str, params: Dict) -> HermesToolResult:
         """Handle device node operations - maps to device_node.py."""
         node_action = params.get("action", action)
 
@@ -1173,68 +1173,68 @@ Execute this skill and provide the result."""
 
             if node_action == "camera.snap":
                 result = await node.camera_snap(params.get("facing", "back"))
-                return OpenClawToolResult(success=True, tool="nodes", action=node_action, data=result)
+                return HermesToolResult(success=True, tool="nodes", action=node_action, data=result)
 
             elif node_action == "camera.clip":
                 duration = params.get("duration", 10)
                 result = await node.camera_clip(duration)
-                return OpenClawToolResult(success=True, tool="nodes", action=node_action, data=result)
+                return HermesToolResult(success=True, tool="nodes", action=node_action, data=result)
 
             elif node_action == "screen.record":
                 duration = params.get("duration", 10)
                 result = await node.screen_record(duration)
-                return OpenClawToolResult(success=True, tool="nodes", action=node_action, data=result)
+                return HermesToolResult(success=True, tool="nodes", action=node_action, data=result)
 
             elif node_action == "location.get":
                 result = await node.get_location()
-                return OpenClawToolResult(success=True, tool="nodes", action=node_action, data=result)
+                return HermesToolResult(success=True, tool="nodes", action=node_action, data=result)
 
             elif node_action == "system.notify":
                 title = params.get("title")
                 body = params.get("body")
                 result = await node.notify(title, body)
-                return OpenClawToolResult(success=True, tool="nodes", action=node_action, data=result)
+                return HermesToolResult(success=True, tool="nodes", action=node_action, data=result)
 
             elif node_action == "system.run":
                 command = params.get("command")
                 result = await node.run(command)
-                return OpenClawToolResult(success=True, tool="nodes", action=node_action, data=result)
+                return HermesToolResult(success=True, tool="nodes", action=node_action, data=result)
 
             else:
-                return OpenClawToolResult(success=False, tool="nodes", error=f"Unknown action: {node_action}")
+                return HermesToolResult(success=False, tool="nodes", error=f"Unknown action: {node_action}")
 
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="nodes", action=node_action, error=str(e))
+            return HermesToolResult(success=False, tool="nodes", action=node_action, error=str(e))
 
     # =========================================================================
     # IMAGE HANDLERS
     # =========================================================================
 
-    async def _handle_image(self, action: str, params: Dict) -> OpenClawToolResult:
+    async def _handle_image(self, action: str, params: Dict) -> HermesToolResult:
         """Handle image processing."""
         img_action = params.get("action", action)
         path = params.get("path")
 
         if not path:
-            return OpenClawToolResult(success=False, tool="image", error="Missing path")
+            return HermesToolResult(success=False, tool="image", error="Missing path")
 
         try:
             if img_action == "understand" or img_action == "caption":
                 # Use Cosmos image understanding (via Claude/Gemini)
                 from Cosmos.integration.external.gemini import gemini_understand_image
                 result = await gemini_understand_image(path)
-                return OpenClawToolResult(success=True, tool="image", action=img_action, data=result)
+                return HermesToolResult(success=True, tool="image", action=img_action, data=result)
 
-            return OpenClawToolResult(success=False, tool="image", error=f"Unknown action: {img_action}")
+            return HermesToolResult(success=False, tool="image", error=f"Unknown action: {img_action}")
 
         except Exception as e:
-            return OpenClawToolResult(success=False, tool="image", error=str(e))
+            return HermesToolResult(success=False, tool="image", error=str(e))
 
     # =========================================================================
     # SKILL MANAGEMENT
     # =========================================================================
 
-    def get_skill(self, name: str) -> Optional[OpenClawSkill]:
+    def get_skill(self, name: str) -> Optional[HermesSkill]:
         """Get a loaded skill by name."""
         return self.skills.get(name)
 
@@ -1246,12 +1246,12 @@ Execute this skill and provide the result."""
         """
         Get skill documentation formatted for system prompt injection.
 
-        This mimics OpenClaw's "Available Skills" section injection.
+        This mimics Hermes Agent's "Available Skills" section injection.
         """
         if not self.skills:
             return ""
 
-        lines = ["## Available Skills (OpenClaw Compatibility)\n"]
+        lines = ["## Available Skills (Hermes Agent Compatibility)\n"]
         for name, skill in self.skills.items():
             lines.append(f"### {name}")
             lines.append(skill.description[:200] if skill.description else "No description")
@@ -1264,25 +1264,25 @@ Execute this skill and provide the result."""
 
 
 # =============================================================================
-# CLAWHUB MARKETPLACE CLIENT
+# hermes_hub MARKETPLACE CLIENT
 # =============================================================================
 
-class ClawHubClient:
+class hermes_hubClient:
     """
-    Client for OpenClaw's ClawHub skills marketplace.
+    Client for Hermes Agent's hermes_hub skills marketplace.
 
-    ClawHub hosts 700+ community-built skills that can be downloaded
+    hermes_hub hosts 700+ community-built skills that can be downloaded
     and executed within Cosmos's swarm.
 
-    API Endpoints (reverse-engineered from OpenClaw):
+    API Endpoints (reverse-engineered from Hermes Agent):
     - GET /skills - List all skills
     - GET /skills/search?q=<query> - Search skills
     - GET /skills/<name> - Get skill details
     - GET /skills/<name>/download - Download skill package
     """
 
-    BASE_URL = "https://clawhub.openclaw.dev/api/v1"
-    CACHE_DIR = Path(os.path.expanduser("~/.cosmos/clawhub_cache"))
+    BASE_URL = "https://hermes_hub.Hermes Agent.dev/api/v1"
+    CACHE_DIR = Path(os.path.expanduser("~/.cosmos/hermes_hub_cache"))
 
     def __init__(self):
         self.CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -1297,7 +1297,7 @@ class ClawHubClient:
 
     async def search_skills(self, query: str, limit: int = 20) -> List[Dict]:
         """
-        Search ClawHub marketplace for skills.
+        Search hermes_hub marketplace for skills.
 
         Args:
             query: Search query
@@ -1316,15 +1316,15 @@ class ClawHubClient:
                     data = await resp.json()
                     return data.get("skills", [])
                 else:
-                    logger.warning(f"ClawHub search failed: {resp.status}")
+                    logger.warning(f"hermes_hub search failed: {resp.status}")
                     return []
         except Exception as e:
-            logger.error(f"ClawHub search error: {e}")
+            logger.error(f"hermes_hub search error: {e}")
             return []
 
     async def list_skills(self, category: str = None, limit: int = 50) -> List[Dict]:
         """
-        List available skills from ClawHub.
+        List available skills from hermes_hub.
 
         Args:
             category: Optional category filter
@@ -1348,7 +1348,7 @@ class ClawHubClient:
                     return data.get("skills", [])
                 return []
         except Exception as e:
-            logger.error(f"ClawHub list error: {e}")
+            logger.error(f"hermes_hub list error: {e}")
             return []
 
     async def get_skill_details(self, skill_name: str) -> Optional[Dict]:
@@ -1368,12 +1368,12 @@ class ClawHubClient:
                     return await resp.json()
                 return None
         except Exception as e:
-            logger.error(f"ClawHub get details error: {e}")
+            logger.error(f"hermes_hub get details error: {e}")
             return None
 
     async def download_skill(self, skill_name: str, install_dir: Path = None) -> Optional[Path]:
         """
-        Download and install a skill from ClawHub.
+        Download and install a skill from hermes_hub.
 
         Args:
             skill_name: Name of the skill to download
@@ -1416,7 +1416,7 @@ class ClawHubClient:
             return None
 
     async def get_popular_skills(self, limit: int = 10) -> List[Dict]:
-        """Get most popular skills from ClawHub."""
+        """Get most popular skills from hermes_hub."""
         try:
             session = await self._get_session()
             async with session.get(
@@ -1428,7 +1428,7 @@ class ClawHubClient:
                     return data.get("skills", [])
                 return []
         except Exception as e:
-            logger.error(f"ClawHub popular error: {e}")
+            logger.error(f"hermes_hub popular error: {e}")
             return []
 
     async def get_skill_categories(self) -> List[str]:
@@ -1441,7 +1441,7 @@ class ClawHubClient:
                     return data.get("categories", [])
                 return []
         except Exception as e:
-            logger.error(f"ClawHub categories error: {e}")
+            logger.error(f"hermes_hub categories error: {e}")
             return []
 
     async def close(self):
@@ -1451,67 +1451,67 @@ class ClawHubClient:
             self._session = None
 
 
-# Global ClawHub client
-_clawhub_client: Optional[ClawHubClient] = None
+# Global hermes_hub client
+_hermes_hub_client: Optional[hermes_hubClient] = None
 
 
-def get_clawhub_client() -> ClawHubClient:
-    """Get or create the global ClawHub client."""
-    global _clawhub_client
-    if _clawhub_client is None:
-        _clawhub_client = ClawHubClient()
-    return _clawhub_client
+def get_hermes_hub_client() -> hermes_hubClient:
+    """Get or create the global hermes_hub client."""
+    global _hermes_hub_client
+    if _hermes_hub_client is None:
+        _hermes_hub_client = hermes_hubClient()
+    return _hermes_hub_client
 
 
-async def search_clawhub_skills(query: str, limit: int = 20) -> List[Dict]:
-    """Search ClawHub marketplace for skills."""
-    client = get_clawhub_client()
+async def search_hermes_hub_skills(query: str, limit: int = 20) -> List[Dict]:
+    """Search hermes_hub marketplace for skills."""
+    client = get_hermes_hub_client()
     return await client.search_skills(query, limit)
 
 
-async def download_clawhub_skill(skill_name: str) -> Optional[Path]:
-    """Download and install a skill from ClawHub."""
-    client = get_clawhub_client()
+async def download_hermes_hub_skill(skill_name: str) -> Optional[Path]:
+    """Download and install a skill from hermes_hub."""
+    client = get_hermes_hub_client()
     return await client.download_skill(skill_name)
 
 
-async def install_and_load_skill(skill_name: str) -> Optional[OpenClawSkill]:
+async def install_and_load_hermes_skill(skill_name: str) -> Optional[HermesSkill]:
     """
-    Download a skill from ClawHub and load it into Cosmos.
+    Download a skill from hermes_hub and load it into Cosmos.
 
     Args:
         skill_name: Name of the skill to install
 
     Returns:
-        Loaded OpenClawSkill or None
+        Loaded HermesSkill or None
     """
     # Download skill
-    skill_dir = await download_clawhub_skill(skill_name)
+    skill_dir = await download_hermes_hub_skill(skill_name)
     if not skill_dir:
         return None
 
     # Load into adapter
-    return await load_openclaw_skill(str(skill_dir))
+    return await load_Hermes Agent_skill(str(skill_dir))
 
 
 # =============================================================================
 # SINGLETON AND UTILITY FUNCTIONS
 # =============================================================================
 
-_adapter: Optional[OpenClawAdapter] = None
+_adapter: Optional[HermesAdapter] = None
 
 
-def get_openclaw_adapter() -> OpenClawAdapter:
-    """Get or create the global OpenClaw adapter."""
+def get_hermes_adapter() -> HermesAdapter:
+    """Get or create the global Hermes Agent adapter."""
     global _adapter
     if _adapter is None:
-        _adapter = OpenClawAdapter()
+        _adapter = HermesAdapter()
     return _adapter
 
 
-async def invoke_openclaw_tool(tool: str, action: str = None, **params) -> OpenClawToolResult:
+async def invoke_Hermes Agent_tool(tool: str, action: str = None, **params) -> HermesToolResult:
     """
-    Convenience function to invoke an OpenClaw tool.
+    Convenience function to invoke an Hermes Agent tool.
 
     Args:
         tool: Tool name (e.g., "browser", "exec", "nodes")
@@ -1519,23 +1519,23 @@ async def invoke_openclaw_tool(tool: str, action: str = None, **params) -> OpenC
         **params: Tool parameters
 
     Returns:
-        OpenClawToolResult
+        HermesToolResult
     """
-    adapter = get_openclaw_adapter()
+    adapter = get_hermes_adapter()
     return await adapter.invoke(tool, action, params)
 
 
-async def load_openclaw_skill(skill_path: str) -> Optional[OpenClawSkill]:
+async def load_Hermes Agent_skill(skill_path: str) -> Optional[HermesSkill]:
     """
-    Load an OpenClaw skill from a directory path.
+    Load an Hermes skill from a directory path.
 
     Args:
         skill_path: Path to skill directory containing SKILL.md
 
     Returns:
-        OpenClawSkill if successful, None otherwise
+        HermesSkill if successful, None otherwise
     """
-    adapter = get_openclaw_adapter()
+    adapter = get_hermes_adapter()
     skill_dir = Path(skill_path)
 
     if not skill_dir.exists():

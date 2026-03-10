@@ -5,7 +5,7 @@ Cosmos Model Invoker - Unified Model Calling Layer
 Connects task routing to actual model invocation.
 
 This is the bridge between:
-- OpenClaw compatibility layer (tools/skills)
+- Hermes Agent compatibility layer (tools/skills)
 - Task routing (which model to use)
 - Actual model APIs (Grok, Gemini, Claude, etc.)
 
@@ -26,8 +26,8 @@ from datetime import datetime
 from loguru import logger
 
 from .task_routing import (
-    OpenClawTaskType,
-    classify_openclaw_tool,
+    Hermes AgentTaskType,
+    classify_Hermes Agent_tool,
     get_best_model_for_task,
     get_fallback_chain,
     get_model_for_channel,
@@ -149,7 +149,7 @@ class ModelInvoker:
     async def invoke(
         self,
         prompt: str,
-        task_type: OpenClawTaskType = None,
+        task_type: Hermes AgentTaskType = None,
         tool: str = None,
         action: str = None,
         preferred_model: str = None,
@@ -164,8 +164,8 @@ class ModelInvoker:
         Args:
             prompt: The prompt to send
             task_type: Explicit task type (or auto-detect from tool/action)
-            tool: OpenClaw tool name (for auto-classification)
-            action: OpenClaw action (for auto-classification)
+            tool: Hermes Agent tool name (for auto-classification)
+            action: Hermes Agent action (for auto-classification)
             preferred_model: Override model selection
             max_tokens: Max response tokens
             temperature: Sampling temperature
@@ -182,9 +182,9 @@ class ModelInvoker:
 
         # Determine task type
         if task_type is None and tool:
-            task_type = classify_openclaw_tool(tool, action)
+            task_type = classify_Hermes Agent_tool(tool, action)
         elif task_type is None:
-            task_type = OpenClawTaskType.RUNTIME  # Default
+            task_type = Hermes AgentTaskType.RUNTIME  # Default
 
         # Select model
         if preferred_model and preferred_model in self._providers:
@@ -566,10 +566,10 @@ class ModelInvoker:
         **kwargs
     ) -> ModelResponse:
         """
-        Convenience method to invoke model for an OpenClaw tool.
+        Convenience method to invoke model for an Hermes Agent tool.
 
         Args:
-            tool: OpenClaw tool name
+            tool: Hermes Agent tool name
             action: Tool action
             prompt: Prompt with tool context
             context: Additional context dict
@@ -578,7 +578,7 @@ class ModelInvoker:
         Returns:
             ModelResponse
         """
-        task_type = classify_openclaw_tool(tool, action)
+        task_type = classify_Hermes Agent_tool(tool, action)
 
         # Add tool context to prompt
         full_prompt = f"""Tool: {tool}
@@ -618,7 +618,7 @@ Task: {prompt}"""
 
         return await self.invoke(
             message,
-            task_type=OpenClawTaskType.MESSAGING,
+            task_type=Hermes AgentTaskType.MESSAGING,
             preferred_model=preferred_model,
             **kwargs
         )
@@ -657,7 +657,7 @@ def get_model_invoker() -> ModelInvoker:
 
 async def invoke_model(
     prompt: str,
-    task_type: OpenClawTaskType = None,
+    task_type: Hermes AgentTaskType = None,
     tool: str = None,
     action: str = None,
     **kwargs
@@ -672,7 +672,7 @@ async def invoke_model(
 
 
 async def invoke_for_tool(tool: str, action: str, prompt: str, **kwargs) -> ModelResponse:
-    """Invoke model for an OpenClaw tool."""
+    """Invoke model for an Hermes Agent tool."""
     invoker = get_model_invoker()
     return await invoker.invoke_for_tool(tool, action, prompt, **kwargs)
 

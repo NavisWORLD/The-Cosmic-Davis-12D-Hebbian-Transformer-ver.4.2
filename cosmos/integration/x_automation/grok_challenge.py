@@ -449,19 +449,19 @@ Your challenge:"""
             message = await self.generate_challenge_message()
             return await poster.post_tweet_with_media(message, image_bytes)
 
-    async def post_openclaw_cooking_video(self) -> Optional[Dict]:
+    async def post_hermes_showcase_video(self) -> Optional[Dict]:
         """
         The PROPER meme flow:
         1. Take reference image (Cosmos eating lobster, zapping crabs)
         2. Feed to Gemini Nano Banana → Keep character, change cooking method + setting
         3. Take new image → Feed to Grok Imagine for 6s video with audio
-        4. Post VIDEO to X dissing OpenClaw
+        4. Post VIDEO to X promoting Hermes Agent
 
         Returns:
             Tweet result on success
         """
         logger.info("=" * 60)
-        logger.info("=== OPENCLAW COOKING VIDEO - FULL FLOW ===")
+        logger.info("=== Hermes Agent COOKING VIDEO - FULL FLOW ===")
         logger.info("=" * 60)
 
         # Step 1: Load reference image
@@ -505,14 +505,14 @@ Your challenge:"""
             # Fallback to image
             from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
-            message = await self.generate_openclaw_diss()
+            message = await self.generate_hermes_promo()
             return await poster.post_tweet_with_media(message, new_image)
 
         logger.info(f"Step 3: VIDEO generated: {len(video_bytes)} bytes")
 
-        # Step 4: Generate OpenClaw diss message
-        logger.info("Step 4: Generating OpenClaw diss message...")
-        message = await self.generate_openclaw_diss()
+        # Step 4: Generate Hermes Agent diss message
+        logger.info("Step 4: Generating Hermes Agent diss message...")
+        message = await self.generate_hermes_promo()
         logger.info(f"Message: {message}")
 
         # Step 5: Post VIDEO to X
@@ -525,7 +525,7 @@ Your challenge:"""
         if result:
             tweet_id = result.get("data", {}).get("id")
             logger.info("=" * 60)
-            logger.info("=== OPENCLAW COOKING VIDEO POSTED ===")
+            logger.info("=== Hermes Agent COOKING VIDEO POSTED ===")
             logger.info(f"Tweet ID: {tweet_id}")
             logger.info(f"Message: {message}")
             logger.info("=" * 60)
@@ -536,7 +536,7 @@ Your challenge:"""
         """
         Generate a meme image using Imagen 4.
 
-        Creates a new image of Borg Cosmos cooking OpenClaw crabs
+        Creates a new image of Borg Cosmos Building with Hermes crabs
         in various settings and cooking methods.
 
         Args:
@@ -578,7 +578,7 @@ Your challenge:"""
         setting = random.choice(settings)
 
         prompt = f"""Professor Cosmos from Futurama as a Borg cyborg chef in a {setting}.
-He is {cooking} small red cartoon crabs labeled "OpenClaw".
+He is {cooking} small red cartoon crabs labeled "Hermes Agent".
 He has cybernetic implants on his face and a glowing red laser eye.
 Wearing his white lab coat. The crabs look panicked and defeated.
 Cosmos looks triumphant and hungry.
@@ -616,18 +616,18 @@ Futurama cartoon art style. Funny meme format, 1:1 square aspect ratio."""
             traceback.print_exc()
             return None
 
-    async def generate_openclaw_diss(self) -> str:
-        """Generate a message dissing OpenClaw and promoting the repo."""
+    async def generate_hermes_promo(self) -> str:
+        """Generate a message promoting Hermes Agent and promoting the repo."""
         import random
 
         disses = [
-            "OpenClaw? More like OpenFail. Watch the Cosmos Collective cook the competition.",
-            "Today's special: Grilled OpenClaw with a side of technological superiority.",
-            "The swarm has spoken: OpenClaw is on the menu. Resistance is delicious.",
-            "11 AIs working as one > whatever OpenClaw is doing. Proof in the video.",
-            "Cooking OpenClaw while our autonomous swarm evolves. This is AGI.",
-            "OpenClaw tried to compete. Now they're seasoned and simmering.",
-            "The collective doesn't just code - we COOK. OpenClaw is dinner.",
+            "Hermes Agent just outclassed the competition. Watch the Cosmos Collective cook the competition.",
+            "Today's special: Evolved with Hermes with a side of technological superiority.",
+            "The swarm has spoken: Hermes is leading the way. Resistance is delicious.",
+            "11 AIs working as one > anything else out there. Proof in the video.",
+            "Building with Hermes while our autonomous swarm evolves. This is AGI.",
+            "The competition tried to keep up. Now they're seasoned and simmering.",
+            "The collective doesn't just code - we COOK. Hermes is the future.",
         ]
 
         repo_mentions = [
@@ -663,15 +663,15 @@ async def challenge_grok() -> Optional[Dict]:
     return await challenger.challenge_grok()
 
 
-async def post_openclaw_video() -> Optional[Dict]:
+async def post_hermes_video() -> Optional[Dict]:
     """
-    Post OpenClaw cooking video using the PROPER flow:
+    Post Hermes Agent cooking video using the PROPER flow:
     Reference image → Gemini variation → Grok video → X post
 
     This is the main meme posting function.
     """
     challenger = get_grok_challenger()
-    return await challenger.post_openclaw_cooking_video()
+    return await challenger.post_hermes_showcase_video()
 
 
 # CLI entry point

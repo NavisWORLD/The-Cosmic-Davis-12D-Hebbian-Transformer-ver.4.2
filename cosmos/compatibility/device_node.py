@@ -1,8 +1,8 @@
 """
-Cosmos Device Node - OpenClaw Node Compatibility
+Cosmos Device Node - Hermes Agent Node Compatibility
 =====================================================
 
-Provides device-level capabilities matching OpenClaw's node system:
+Provides device-level capabilities matching Hermes Agent's node system:
 - Camera (snap, clip)
 - Screen recording
 - Location services
@@ -101,10 +101,10 @@ class NodeResult:
 
 class DeviceNode:
     """
-    Device node for OpenClaw compatibility.
+    Device node for Hermes Agent compatibility.
 
     Exposes camera, screen, location, and notification capabilities
-    as RPC-style methods matching OpenClaw's node.invoke interface.
+    as RPC-style methods matching Hermes Agent's node.invoke interface.
     """
 
     def __init__(self, output_dir: str = None):
@@ -250,7 +250,7 @@ class DeviceNode:
                 error="OpenCV not installed"
             )
 
-        # Limit duration per OpenClaw spec
+        # Limit duration per Hermes Agent spec
         duration = min(duration, 60)
 
         try:
@@ -649,7 +649,7 @@ class DeviceNode:
     # =========================================================================
 
     def describe(self) -> Dict:
-        """Get node description for OpenClaw compatibility."""
+        """Get node description for Hermes Agent compatibility."""
         return {
             "nodeId": self.node_id,
             "platform": PLATFORM,

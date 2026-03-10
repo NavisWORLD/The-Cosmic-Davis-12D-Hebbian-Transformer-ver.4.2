@@ -93,7 +93,7 @@ def setup_wizard():
 
     print("  Which bot are you using?\n")
     print("  [1] Cosmos (recommended - full support)")
-    print("  [2] ClawwBot / OpenClaw")
+    print("  [2] ClawwBot / Hermes Agent")
     print("  [3] Claude Code")
     print("  [4] Kimi")
     print("  [5] Other")

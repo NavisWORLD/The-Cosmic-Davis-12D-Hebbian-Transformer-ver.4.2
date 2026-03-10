@@ -9,7 +9,7 @@ These are assimilated and optimized for swarm intelligence.
 from .skill_loader import Skill
 
 # =============================================================================
-# 1LY PAYMENTS SKILL (Assimilated from OpenClaw)
+# 1LY PAYMENTS SKILL (Assimilated from Hermes Agent)
 # =============================================================================
 
 ONELY_PAYMENTS_SKILL = Skill(

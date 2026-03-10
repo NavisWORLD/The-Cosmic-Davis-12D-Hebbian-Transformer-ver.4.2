@@ -5,7 +5,7 @@ Provides a centralized registry of ALL capabilities across the swarm:
 - Shadow agent capabilities (grok, gemini, claude, etc.)
 - Integration tools (X posting, image gen, Solana, Polymarket)
 - Hackathon tools (oracle, trading, rug detection)
-- OpenClaw compatibility skills
+- Hermes Agent compatibility skills
 - Custom user-defined skills
 - MCP tools
 
@@ -54,7 +54,7 @@ class SkillCategory(str, Enum):
     RESEARCH = "research"       # Web search, deep search, trend analysis
     ORCHESTRATION = "orchestration"  # Team management, delegation
     UTILITY = "utility"         # General utilities
-    CUSTOM = "custom"           # User-defined or OpenClaw skills
+    CUSTOM = "custom"           # User-defined or Hermes skills
 
 
 @dataclass
@@ -71,7 +71,7 @@ class Skill:
     requires_api_key: Optional[str] = None  # Env var name if API key needed
     cooldown_seconds: int = 0
     enabled: bool = True
-    source: str = "builtin"  # builtin, openclaw, custom, mcp
+    source: str = "builtin"  # builtin, Hermes Agent, custom, mcp
     last_used: Optional[str] = None
     usage_count: int = 0
     success_rate: float = 1.0
@@ -260,8 +260,8 @@ class SkillRegistry:
         # Register all builtin skills
         self._register_builtin_skills()
 
-        # Discover OpenClaw skills via shadow layer
-        await self._discover_openclaw_skills()
+        # Discover Hermes skills via shadow layer
+        await self._discover_Hermes Agent_skills()
 
         # Discover MCP tools from registered servers
         await self._discover_mcp_tools()
@@ -277,90 +277,90 @@ class SkillRegistry:
         logger.info(f"Discovered {new_count} new skills. Total: {len(self._skills)}")
         return len(self._skills)
 
-    async def _discover_openclaw_skills(self) -> int:
-        """Discover and register OpenClaw skills via the compatibility layer."""
+    async def _discover_Hermes Agent_skills(self) -> int:
+        """Discover and register Hermes skills via the compatibility layer."""
         count = 0
         try:
-            from Cosmos.compatibility.openclaw_adapter import (
-                OpenClawAdapter,
-                OpenClawToolGroup,
+            from Cosmos.compatibility.hermes_adapter import (
+                Hermes AgentAdapter,
+                Hermes AgentToolGroup,
             )
 
-            adapter = OpenClawAdapter()
+            adapter = Hermes AgentAdapter()
 
-            # Map OpenClaw tool groups to our categories
+            # Map Hermes Agent tool groups to our categories
             group_to_category = {
-                OpenClawToolGroup.FILESYSTEM: SkillCategory.UTILITY,
-                OpenClawToolGroup.RUNTIME: SkillCategory.DEVELOPMENT,
-                OpenClawToolGroup.SESSIONS: SkillCategory.ORCHESTRATION,
-                OpenClawToolGroup.MEMORY: SkillCategory.MEMORY,
-                OpenClawToolGroup.WEB: SkillCategory.RESEARCH,
-                OpenClawToolGroup.UI: SkillCategory.MEDIA,
-                OpenClawToolGroup.AUTOMATION: SkillCategory.UTILITY,
-                OpenClawToolGroup.MESSAGING: SkillCategory.COMMUNICATION,
-                OpenClawToolGroup.NODES: SkillCategory.UTILITY,
+                Hermes AgentToolGroup.FILESYSTEM: SkillCategory.UTILITY,
+                Hermes AgentToolGroup.RUNTIME: SkillCategory.DEVELOPMENT,
+                Hermes AgentToolGroup.SESSIONS: SkillCategory.ORCHESTRATION,
+                Hermes AgentToolGroup.MEMORY: SkillCategory.MEMORY,
+                Hermes AgentToolGroup.WEB: SkillCategory.RESEARCH,
+                Hermes AgentToolGroup.UI: SkillCategory.MEDIA,
+                Hermes AgentToolGroup.AUTOMATION: SkillCategory.UTILITY,
+                Hermes AgentToolGroup.MESSAGING: SkillCategory.COMMUNICATION,
+                Hermes AgentToolGroup.NODES: SkillCategory.UTILITY,
             }
 
-            # Register each OpenClaw tool group as skills
-            for group in OpenClawToolGroup:
+            # Register each Hermes Agent tool group as skills
+            for group in Hermes AgentToolGroup:
                 category = group_to_category.get(group, SkillCategory.CUSTOM)
                 tools = adapter.get_tools_for_group(group) if hasattr(adapter, 'get_tools_for_group') else []
 
                 if tools:
                     for tool in tools:
-                        tool_name = f"openclaw_{group.name.lower()}_{tool.get('name', 'unknown')}"
+                        tool_name = f"Hermes Agent_{group.name.lower()}_{tool.get('name', 'unknown')}"
                         self.register_skill(Skill(
                             name=tool_name,
-                            description=tool.get("description", f"OpenClaw {group.name} tool"),
+                            description=tool.get("description", f"Hermes Agent {group.name} tool"),
                             category=category,
-                            module_path="cosmos.compatibility.openclaw_adapter",
+                            module_path="cosmos.compatibility.hermes_adapter",
                             function_name="invoke_tool",
                             agents=["cosmos", "claude", "grok"],
-                            keywords=["openclaw", group.name.lower()] + tool.get("keywords", []),
+                            keywords=["Hermes Agent", group.name.lower()] + tool.get("keywords", []),
                             parameters=tool.get("parameters", {}),
-                            source="openclaw",
+                            source="Hermes Agent",
                         ))
                         count += 1
                 else:
                     # Register the group itself as an invocable skill
                     self.register_skill(Skill(
-                        name=f"openclaw_{group.name.lower()}",
-                        description=f"OpenClaw {group.name} tools ({group.value})",
+                        name=f"Hermes Agent_{group.name.lower()}",
+                        description=f"Hermes Agent {group.name} tools ({group.value})",
                         category=category,
-                        module_path="cosmos.compatibility.openclaw_adapter",
+                        module_path="cosmos.compatibility.hermes_adapter",
                         function_name="invoke",
                         agents=["cosmos", "claude", "grok"],
-                        keywords=["openclaw", group.name.lower(), "compatibility", "shadow"],
+                        keywords=["Hermes Agent", group.name.lower(), "compatibility", "shadow"],
                         parameters={"tool": "Tool name", "action": "Action", "params": "Parameters"},
-                        source="openclaw",
+                        source="Hermes Agent",
                     ))
                     count += 1
 
-            # Try to discover ClawHub marketplace skills
-            if hasattr(adapter, 'clawhub_client') and adapter.clawhub_client:
+            # Try to discover Hermes Hub marketplace skills
+            if hasattr(adapter, 'Hermes Hub_client') and adapter.Hermes Hub_client:
                 try:
-                    hub_skills = await adapter.clawhub_client.list_skills() if hasattr(adapter.clawhub_client, 'list_skills') else []
+                    hub_skills = await adapter.Hermes Hub_client.list_skills() if hasattr(adapter.Hermes Hub_client, 'list_skills') else []
                     for hub_skill in hub_skills[:50]:  # Cap at 50 marketplace skills
                         self.register_skill(Skill(
-                            name=f"clawhub_{hub_skill.get('id', 'unknown')}",
-                            description=hub_skill.get("description", "ClawHub community skill"),
+                            name=f"Hermes Hub_{hub_skill.get('id', 'unknown')}",
+                            description=hub_skill.get("description", "Hermes Hub community skill"),
                             category=SkillCategory.CUSTOM,
-                            module_path="cosmos.compatibility.openclaw_adapter",
-                            function_name="invoke_clawhub_skill",
+                            module_path="cosmos.compatibility.hermes_adapter",
+                            function_name="invoke_Hermes Hub_skill",
                             agents=["cosmos"],
-                            keywords=["clawhub", "community"] + hub_skill.get("tags", []),
+                            keywords=["Hermes Hub", "community"] + hub_skill.get("tags", []),
                             parameters=hub_skill.get("inputs", {}),
-                            source="openclaw",
+                            source="Hermes Agent",
                         ))
                         count += 1
                 except Exception as e:
-                    logger.debug(f"ClawHub discovery skipped: {e}")
+                    logger.debug(f"Hermes Hub discovery skipped: {e}")
 
-            logger.info(f"Discovered {count} OpenClaw skills")
+            logger.info(f"Discovered {count} Hermes skills")
         except ImportError:
-            logger.debug("OpenClaw adapter not available")
+            logger.debug("Hermes Agent adapter not available")
         except Exception as e:
-            logger.warning(f"OpenClaw skill discovery failed: {e}")
+            logger.warning(f"Hermes skill discovery failed: {e}")
 
         return count
 
@@ -1098,13 +1098,13 @@ class SkillRegistry:
         ))
 
         self.register_skill(Skill(
-            name="openclaw_invoke",
-            description="Invoke an OpenClaw-compatible tool via the shadow layer",
+            name="Hermes Agent_invoke",
+            description="Invoke an Hermes Agent-compatible tool via the shadow layer",
             category=SkillCategory.UTILITY,
-            module_path="cosmos.compatibility.openclaw_adapter",
+            module_path="cosmos.compatibility.hermes_adapter",
             function_name="invoke",
             agents=all_agents,
-            keywords=["openclaw", "tool", "invoke", "compatibility", "shadow"],
+            keywords=["Hermes Agent", "tool", "invoke", "compatibility", "shadow"],
             parameters={"tool": "Tool name", "action": "Tool action", "params": "Tool parameters"},
         ))
 

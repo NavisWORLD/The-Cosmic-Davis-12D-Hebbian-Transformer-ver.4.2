@@ -340,7 +340,7 @@ class AssimilationProtocol:
             "recent_achievements": [
                 "Multi-model deliberation with 87% consensus",
                 "7-layer memory with dream consolidation",
-                "OpenClaw compatibility layer (700+ skills)",
+                "Hermes Agent compatibility layer (700+ skills)",
                 "Claude Teams Fusion orchestration",
                 "FARSIGHT prediction protocol",
             ],

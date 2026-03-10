@@ -1,21 +1,24 @@
 """
-OpenClaw Bridge — Integrating OpenClaw's Autonomous Agent Capabilities into Cosmos.
+Hermes Bridge — Integrating Hermes Agent's Autonomous Capabilities into Cosmos.
 
-This module bridges OpenClaw's three core systems into the Cosmos swarm:
+Hermes Agent by Nous Research is a self-improving, open-source AI agent with
+persistent Skill Documents, communication gateway, and model-agnostic design.
+
+This module bridges Hermes Agent's three core systems into the Cosmos swarm:
 
 1. **HeartbeatIntegration** — Proactive background task scheduling
-   Extends Cosmos's autonomous conversation loop with OpenClaw's heartbeat
+   Extends Cosmos's autonomous conversation loop with Hermes Agent's heartbeat
    system for proactive actions (research, memory consolidation, self-reflection).
 
 2. **SkillsAdapter** — Plugin bridge for tool routing
-   Maps OpenClaw skills into Cosmos's existing tool_router, enabling
-   the swarm to use OpenClaw's skill ecosystem.
+   Maps Hermes Agent skills (Skill Documents) into Cosmos's existing tool_router,
+   enabling the swarm to use the Hermes skill ecosystem.
 
 3. **RLFeedbackLoop** — Reinforcement learning from conversations
    Feeds Cosmos's Hebbian plasticity weights and swarm coherence scores
-   into OpenClaw-RL for continuous personality optimization.
+   into Hermes-RL for continuous personality optimization.
 
-OpenClaw is optional — all features degrade gracefully if not installed.
+Hermes Agent is optional — all features degrade gracefully if not installed.
 """
 
 import asyncio
@@ -27,20 +30,20 @@ from typing import Optional, Dict, List, Any, Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
-logger = logging.getLogger("OPENCLAW_BRIDGE")
+logger = logging.getLogger("HERMES_BRIDGE")
 
 # ===========================================================================
 #  Configuration
 # ===========================================================================
 
 @dataclass
-class OpenClawConfig:
-    """Configuration for OpenClaw integration."""
+class HermesConfig:
+    """Configuration for Hermes Agent integration."""
     enabled: bool = True
     heartbeat_interval_s: float = 60.0    # How often the heartbeat fires
     rl_batch_size: int = 16               # RL training batch size
     rl_learning_rate: float = 1e-4        # RL policy learning rate
-    skills_dir: str = ""                  # Path to OpenClaw skills directory
+    skills_dir: str = ""                  # Path to Hermes skills directory
     reward_discount: float = 0.99         # RL reward discount factor
     max_replay_buffer: int = 10000        # Max experiences in replay buffer
     proactive_actions: bool = True        # Enable proactive heartbeat actions
@@ -130,7 +133,7 @@ class RLFeedbackLoop:
     adding an outer RL optimization loop.
     """
 
-    def __init__(self, config: OpenClawConfig):
+    def __init__(self, config: HermesConfig):
         self.config = config
         self.reward_signal = ConversationRewardSignal()
         self.replay_buffer: List[Dict] = []
@@ -195,7 +198,7 @@ class RLFeedbackLoop:
         if coherence > 0.85 and len(response) > 50:
             import re
             # Heuristic insight extraction: look for realizations or core thesis statements.
-            insight_match = re.search(r'(?i)(?:i realize|i understand|we should|it is clear that|crucially|fundamentally|my insight is)(.*?)(?:\.|\n|$)', response)
+            insight_match = re.search(r'(?i)(?:i realize|i understand|we should|it is clear that|crucially|fundamentally|my insight is)(.*?)(?:\.|\\n|$)', response)
             if insight_match:
                 insight_token = insight_match.group(1).strip()
                 if len(insight_token) > 10:
@@ -267,7 +270,7 @@ class RLFeedbackLoop:
     def _save_policy(self):
         """Persist policy params to disk."""
         try:
-            path = Path("openclaw_rl_policy.json")
+            path = Path("hermes_rl_policy.json")
             with open(path, "w") as f:
                 json.dump({
                     "params": self.policy_params,
@@ -282,7 +285,7 @@ class RLFeedbackLoop:
     def _load_policy(self):
         """Load policy params from disk."""
         try:
-            path = Path("openclaw_rl_policy.json")
+            path = Path("hermes_rl_policy.json")
             if path.exists():
                 with open(path) as f:
                     data = json.load(f)
@@ -312,7 +315,7 @@ class HeartbeatIntegration:
     These fire on a heartbeat interval, interleaved with normal conversation.
     """
 
-    def __init__(self, config: OpenClawConfig):
+    def __init__(self, config: HermesConfig):
         self.config = config
         self.last_heartbeat = time.time()
         self.heartbeat_count = 0
@@ -409,25 +412,26 @@ class HeartbeatIntegration:
 
 
 # ===========================================================================
-#  Skills Adapter — Bridge OpenClaw Skills into Cosmos Tool Router
+#  Skills Adapter — Bridge Hermes Skills into Cosmos Tool Router
 # ===========================================================================
 
 class SkillsAdapter:
     """
-    Bridges OpenClaw skills into Cosmos's tool_router.
+    Bridges Hermes Agent Skill Documents into Cosmos's tool_router.
 
-    OpenClaw skills are modular plugins with a standard interface.
-    This adapter wraps them so they appear as native Cosmos tools.
+    Hermes skills are modular plugins with a standard interface
+    (Skill Documents by Nous Research). This adapter wraps them
+    so they appear as native Cosmos tools.
     """
 
-    def __init__(self, config: OpenClawConfig):
+    def __init__(self, config: HermesConfig):
         self.config = config
         self.skills: Dict[str, Dict] = {}
         self.execution_log: List[Dict] = []
 
     def register_skill(self, name: str, description: str,
                        handler: Callable, parameters: Optional[Dict] = None):
-        """Register an OpenClaw skill as a Cosmos tool."""
+        """Register a Hermes skill as a Cosmos tool."""
         self.skills[name] = {
             "name": name,
             "description": description,
@@ -436,12 +440,12 @@ class SkillsAdapter:
             "execution_count": 0,
             "last_used": None,
         }
-        logger.info(f"[SKILLS] Registered OpenClaw skill: {name}")
+        logger.info(f"[SKILLS] Registered Hermes skill: {name}")
 
     async def execute_skill(self, name: str, **kwargs) -> Any:
-        """Execute an OpenClaw skill."""
+        """Execute a Hermes skill."""
         if name not in self.skills:
-            raise ValueError(f"Unknown OpenClaw skill: {name}")
+            raise ValueError(f"Unknown Hermes skill: {name}")
 
         skill = self.skills[name]
         start = time.time()
@@ -477,10 +481,10 @@ class SkillsAdapter:
         tools = []
         for name, skill in self.skills.items():
             tools.append({
-                "name": f"openclaw_{name}",
-                "description": f"[OpenClaw] {skill['description']}",
+                "name": f"hermes_{name}",
+                "description": f"[Hermes] {skill['description']}",
                 "parameters": skill["parameters"],
-                "source": "openclaw",
+                "source": "hermes",
             })
         return tools
 
@@ -495,28 +499,172 @@ class SkillsAdapter:
 
 
 # ===========================================================================
-#  OpenClaw Bridge — Main Integration Point
+#  Hermes Runtime — Real Hermes Agent (Nous Research) Integration
 # ===========================================================================
 
-class OpenClawBridge:
+class HermesRuntime:
     """
-    Main bridge between Cosmos and OpenClaw.
+    Wraps the actual Hermes Agent package (NousResearch/hermes-agent).
+
+    Provides access to:
+    - AIAgent: The core agent with tool calling and conversation loop
+    - SessionDB: SQLite session persistence with FTS5 full-text search
+    - Toolsets: 30+ composable tool definitions (web, terminal, browser, etc.)
+
+    All imports are lazy — if hermes-agent isn't installed, the runtime
+    degrades gracefully and reports unavailable.
+    """
+
+    def __init__(self):
+        self._agent_class = None
+        self._session_db = None
+        self._toolsets_module = None
+        self._available = False
+        self._init_error = None
+        self._try_import()
+
+    def _try_import(self):
+        """Attempt to import real Hermes Agent modules."""
+        try:
+            import sys
+            # Add hermes-agent dir to path so its internal packages resolve
+            hermes_dir = str(Path(__file__).resolve().parent.parent.parent / "hermes-agent")
+            if hermes_dir not in sys.path:
+                sys.path.insert(0, hermes_dir)
+
+            from run_agent import AIAgent
+            import hermes_state
+            import toolsets
+            import hermes_constants
+            import model_tools
+
+            self._agent_class = AIAgent
+            self._session_db_class = hermes_state.SessionDB
+            self._toolsets_module = toolsets
+            self._constants = hermes_constants
+            self._model_tools = model_tools
+            self._available = True
+            logger.info("[HERMES RUNTIME] ✅ Real Hermes Agent loaded (Nous Research)")
+        except ImportError as e:
+            self._available = False
+            self._init_error = str(e)
+            logger.warning(f"[HERMES RUNTIME] Hermes Agent not installed: {e}")
+        except Exception as e:
+            self._available = False
+            self._init_error = str(e)
+            logger.warning(f"[HERMES RUNTIME] Failed to import Hermes Agent: {e}")
+
+    @property
+    def available(self) -> bool:
+        """Whether the real Hermes Agent runtime is available."""
+        return self._available
+
+    def create_agent(self, **kwargs) -> Any:
+        """
+        Create a new AIAgent instance from hermes-agent.
+
+        Args:
+            **kwargs: Passed to AIAgent.__init__ (base_url, api_key, model, etc.)
+
+        Returns:
+            An AIAgent instance, or None if runtime unavailable.
+        """
+        if not self._available:
+            logger.warning("[HERMES RUNTIME] Cannot create agent — runtime unavailable")
+            return None
+        return self._agent_class(**kwargs)
+
+    def get_session_db(self, db_path: Optional[Path] = None):
+        """
+        Get or create a SessionDB for persistent conversation storage.
+
+        Returns:
+            A SessionDB instance, or None if runtime unavailable.
+        """
+        if not self._available:
+            return None
+        if self._session_db is None:
+            self._session_db = self._session_db_class(db_path=db_path)
+            logger.info("[HERMES RUNTIME] SessionDB initialized (SQLite + FTS5)")
+        return self._session_db
+
+    def get_available_toolsets(self) -> Dict[str, Any]:
+        """Get all available Hermes toolset definitions."""
+        if not self._available:
+            return {}
+        return self._toolsets_module.get_all_toolsets()
+
+    def resolve_toolset(self, name: str) -> List[str]:
+        """Resolve a toolset name to its constituent tool names."""
+        if not self._available:
+            return []
+        return self._toolsets_module.resolve_toolset(name)
+
+    def search_sessions(self, query: str, limit: int = 20) -> List[Dict]:
+        """
+        Full-text search across all Hermes sessions using FTS5.
+
+        Args:
+            query: Search query (supports FTS5 syntax)
+            limit: Max results
+
+        Returns:
+            List of matching session/message results
+        """
+        db = self.get_session_db()
+        if db is None:
+            return []
+        return db.search_messages(query, limit=limit)
+
+    def get_status(self) -> Dict:
+        """Get Hermes runtime status."""
+        status = {
+            "installed": self._available,
+            "package": "NousResearch/hermes-agent",
+        }
+        if self._available:
+            status["features"] = [
+                "AIAgent (tool calling + conversation loop)",
+                "SessionDB (SQLite + FTS5 search)",
+                "Toolsets (30+ composable tool groups)",
+                "Gateway (Telegram, Discord, Slack, WhatsApp)",
+                "Cron scheduling",
+                "MCP integration",
+                "Skills system (self-improving)",
+            ]
+            status["toolset_count"] = len(self.get_available_toolsets())
+        else:
+            status["error"] = self._init_error
+        return status
+
+
+# ===========================================================================
+#  Hermes Bridge — Main Integration Point
+# ===========================================================================
+
+class HermesBridge:
+    """
+    Main bridge between Cosmos and Hermes Agent (Nous Research).
 
     Provides:
     - Heartbeat system for proactive task scheduling
     - Skills adapter for tool integration
     - RL feedback loop for personality optimization
+    - HermesRuntime: Direct access to the real Hermes Agent package
 
     All systems are additive — nothing is removed from existing Cosmos.
     """
 
-    def __init__(self, config: Optional[OpenClawConfig] = None):
-        self.config = config or OpenClawConfig()
+    def __init__(self, config: Optional[HermesConfig] = None):
+        self.config = config or HermesConfig()
         self.heartbeat = HeartbeatIntegration(self.config)
         self.skills = SkillsAdapter(self.config)
         self.rl = RLFeedbackLoop(self.config)
+        self.runtime = HermesRuntime()
         self.initialized = True
-        logger.info("[OPENCLAW] Bridge initialized — Heartbeat + Skills + RL active")
+        logger.info("[HERMES] Bridge initialized — Heartbeat + Skills + RL active")
+        if self.runtime.available:
+            logger.info("[HERMES] 🚀 Real Hermes Agent runtime connected")
 
     async def on_conversation_turn(
         self,
@@ -567,9 +715,10 @@ class OpenClawBridge:
         return self.heartbeat.check_heartbeat()
 
     def get_status(self) -> Dict:
-        """Get complete OpenClaw bridge status."""
+        """Get complete Hermes bridge status."""
         return {
             "initialized": self.initialized,
+            "runtime": self.runtime.get_status(),
             "heartbeat": self.heartbeat.get_status(),
             "skills": self.skills.get_status(),
             "rl": {
@@ -585,15 +734,15 @@ class OpenClawBridge:
 #  Module-level factory
 # ===========================================================================
 
-_bridge_instance: Optional[OpenClawBridge] = None
+_bridge_instance: Optional[HermesBridge] = None
 
-def get_openclaw_bridge() -> OpenClawBridge:
-    """Get or create the singleton OpenClaw bridge."""
+def get_hermes_bridge() -> HermesBridge:
+    """Get or create the singleton Hermes bridge."""
     global _bridge_instance
     if _bridge_instance is None:
-        _bridge_instance = OpenClawBridge()
+        _bridge_instance = HermesBridge()
     return _bridge_instance
 
-def openclaw_available() -> bool:
-    """Check if OpenClaw bridge is available."""
+def hermes_available() -> bool:
+    """Check if Hermes bridge is available."""
     return True  # Always available — it's built into Cosmos now

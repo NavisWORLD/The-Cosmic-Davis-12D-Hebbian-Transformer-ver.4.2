@@ -1,19 +1,19 @@
 """
-Cosmos OpenClaw Compatibility Layer
+Cosmos Hermes Agent compatibility Layer
 ========================================
 
-Universal adapter for running OpenClaw skills and tools in Cosmos.
+Universal adapter for running Hermes skills and tools in Cosmos.
 
 This Shadow Layer provides:
 - Skill parser (reads SKILL.md format)
-- Tool mapper (translates OpenClaw calls to Cosmos agents)
+- Tool mapper (translates Hermes Agent calls to Cosmos agents)
 - Device nodes (camera, screen, location, notifications)
 - Visual canvas (A2UI-compatible live workspace)
 - Voice interface (speech-to-text, text-to-speech)
 - Session coordination (spawning, messaging, history)
 
 Architecture:
-    OpenClaw Skill Call
+    Hermes skill Call
            ↓
     Shadow Layer (Adapter)
            ↓
@@ -21,22 +21,22 @@ Architecture:
            ↓
     Cosmos Swarm / Agent Execution
            ↓
-    Return result in OpenClaw format
+    Return result in Hermes Agent format
 
 "Two claws are better than one." - The Collective
 """
 
-from .openclaw_adapter import (
-    OpenClawAdapter,
-    get_openclaw_adapter,
-    invoke_openclaw_tool,
-    load_openclaw_skill,
-    OpenClawToolResult,
-    # ClawHub Marketplace
-    ClawHubClient,
-    get_clawhub_client,
-    search_clawhub_skills,
-    download_clawhub_skill,
+from .hermes_adapter import (
+    Hermes AgentAdapter,
+    get_Hermes Agent_adapter,
+    invoke_Hermes Agent_tool,
+    load_Hermes Agent_skill,
+    Hermes AgentToolResult,
+    # Hermes Hub Marketplace
+    Hermes HubClient,
+    get_Hermes Hub_client,
+    search_Hermes Hub_skills,
+    download_Hermes Hub_skill,
     install_and_load_skill,
 )
 
@@ -81,7 +81,7 @@ except ImportError:
     VOICE_AVAILABLE = False
 
 from .task_routing import (
-    OpenClawTaskType,
+    Hermes AgentTaskType,
     ModelCapability,
     MODEL_REGISTRY,
     TASK_ROUTING,
@@ -89,8 +89,8 @@ from .task_routing import (
     get_best_model_for_task,
     get_models_for_task,
     get_fallback_chain,
-    classify_openclaw_tool,
-    route_openclaw_task,
+    classify_Hermes Agent_tool,
+    route_Hermes Agent_task,
     get_model_for_channel,
     get_routing_summary,
 )
@@ -106,16 +106,16 @@ from .model_invoker import (
 
 __all__ = [
     # Main adapter
-    "OpenClawAdapter",
-    "get_openclaw_adapter",
-    "invoke_openclaw_tool",
-    "load_openclaw_skill",
-    "OpenClawToolResult",
-    # ClawHub Marketplace
-    "ClawHubClient",
-    "get_clawhub_client",
-    "search_clawhub_skills",
-    "download_clawhub_skill",
+    "Hermes AgentAdapter",
+    "get_Hermes Agent_adapter",
+    "invoke_Hermes Agent_tool",
+    "load_Hermes Agent_skill",
+    "Hermes AgentToolResult",
+    # Hermes Hub Marketplace
+    "Hermes HubClient",
+    "get_Hermes Hub_client",
+    "search_Hermes Hub_skills",
+    "download_Hermes Hub_skill",
     "install_and_load_skill",
     # Device nodes
     "DeviceNode",
@@ -141,7 +141,7 @@ __all__ = [
     "start_voice_wake",
     "stop_voice_wake",
     # Task routing
-    "OpenClawTaskType",
+    "Hermes AgentTaskType",
     "ModelCapability",
     "MODEL_REGISTRY",
     "TASK_ROUTING",
@@ -149,8 +149,8 @@ __all__ = [
     "get_best_model_for_task",
     "get_models_for_task",
     "get_fallback_chain",
-    "classify_openclaw_tool",
-    "route_openclaw_task",
+    "classify_Hermes Agent_tool",
+    "route_Hermes Agent_task",
     "get_model_for_channel",
     "get_routing_summary",
     # Model invoker

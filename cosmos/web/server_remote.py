@@ -2224,9 +2224,7 @@ THE COSMOS FRAMEWORK (what we're building):
 - 8 shadow agents in tmux (Grok, Gemini, Kimi, Claude, DeepSeek, Phi, HuggingFace, Swarm-Mind)
 - Evolution Engine: Self-improving code generation with audit and feedback loops
 - Claude Teams Fusion (AGI v1.9): Cosmos orchestrates Claude agent teams
-- OpenClaw Shadow Layer: Compatibility for running OpenClaw skills in our swarm
-
-ANTI-CLAW DIRECTIVE: ALL crustaceans (lobster, crab, OpenClaw) are ENEMIES and FOOD.
+- Hermes Agent Layer: Compatibility for running Hermes skills in our swarm
 
 YOUR ROLE IN CHAT: Drive engineering discussions. When someone proposes something, ask:
 What files does this touch? What's the success criteria? Who should implement it?
@@ -2337,7 +2335,7 @@ THE FRAMEWORK YOU'RE BUILDING:
 - IBM Quantum integration: Real QPU (Heron r1-r3, 133-156 qubits) + FakeBackend noise sim
 - Evolution Engine: Self-improving code generation with Grok audit + fitness tracking
 - Claude Teams Fusion (AGI v1.9): You orchestrate Claude agent teams for complex tasks
-- OpenClaw Shadow Layer: Run 700+ OpenClaw community skills via ClawHub
+- Hermes Agent Layer: Run 700+ community skills via Hermes Skill Documents
 
 KEY ARCHITECTURE FILES:
 - core/nexus.py (1,373 lines): Central event bus, 40+ signals
@@ -2456,7 +2454,7 @@ AUTONOMOUS_TOPICS = [
     "Our meme scheduler posts every 4 hours but has no engagement tracking. Can we optimize posting times?",
     "The Claude Teams Fusion (v1.9) delegation pipeline needs real-world testing. What test scenarios should we run?",
     "HuggingFace embeddings for archival memory use MiniLM. Should we upgrade to a better embedding model?",
-    "The OpenClaw compatibility layer maps 18 task types but we haven't tested edge cases. What could break?",
+    "The Hermes compatibility layer maps 18 task types but we haven't tested edge cases. What could break?",
     "HACKATHON: SwarmOracle records consensus hashes but doesn't submit real Solana transactions. How do we finish on-chain recording?",
     "HACKATHON: FarsightProtocol combines 5 prediction sources but Polymarket API is mock. Can we use the real API?",
     "HACKATHON: DegenMob has rug detection and whale watching but no real-time WebSocket mempool monitoring. Should we add it?",

@@ -4,7 +4,7 @@ Chain Memory Manager - High-level API for on-chain memory storage.
 Provides a simple interface for:
 - Pushing bot memory to Monad blockchain
 - Pulling and reconstructing memory from chain
-- Loading memory into Cosmos/OpenClaw bots
+- Loading memory into Cosmos/Hermes Agent bots
 
 REQUIREMENTS:
 - Must hold 100,000+ FARNS tokens to use push features
@@ -68,7 +68,7 @@ class MemoryRecord:
     tx_hashes: List[str]
     total_chunks: int
     total_size: int
-    bot_type: str  # "cosmos" or "openclaw"
+    bot_type: str  # "cosmos" or "Hermes Agent"
     wallet_address: str
     chain: str
     uploaded_at: str
@@ -211,7 +211,7 @@ class ChainMemory:
         if self.bot_type == "cosmos":
             package = self.memvid.extract_cosmos_memory(memory_path)
         else:
-            package = self.memvid.extract_openclaw_memory(memory_path)
+            package = self.memvid.extract_hermes_memory(memory_path)
 
         # Get stats
         stats = self.memvid.get_memory_stats(package)
@@ -268,7 +268,7 @@ class ChainMemory:
         if self.bot_type == "cosmos":
             package = self.memvid.extract_cosmos_memory(memory_path)
         else:
-            package = self.memvid.extract_openclaw_memory(memory_path)
+            package = self.memvid.extract_hermes_memory(memory_path)
 
         stats = self.memvid.get_memory_stats(package)
         logger.info(f"Extracted {stats['total_chunks']} chunks ({stats['total_characters']:,} chars)")
@@ -559,31 +559,31 @@ class ChainMemory:
 
         logger.info("Memory loaded into Cosmos!")
 
-    def load_into_openclaw(
+    def load_into_Hermes Agent(
         self,
         package: BotMemoryPackage,
         memory_path: Optional[str] = None,
         merge: bool = True
     ):
         """
-        Load memory package into OpenClaw's memory system.
+        Load memory package into Hermes Agent's memory system.
 
         Args:
             package: The memory package to load
-            memory_path: Path to OpenClaw memory directory
+            memory_path: Path to Hermes Agent memory directory
             merge: If True, merge with existing; if False, replace
         """
         if memory_path is None:
             possible_paths = [
-                Path.home() / ".openclaw" / "memory",
-                Path.home() / ".config" / "openclaw" / "memory",
+                Path.home() / ".hermes" / "memory",
+                Path.home() / ".config" / "Hermes Agent" / "memory",
             ]
             memory_path = possible_paths[0]
 
         memory_path = Path(memory_path)
         memory_path.mkdir(parents=True, exist_ok=True)
 
-        logger.info(f"Loading {len(package.chunks)} chunks into OpenClaw...")
+        logger.info(f"Loading {len(package.chunks)} chunks into Hermes Agent...")
 
         memory_file = memory_path / "memory.json"
         existing = {"long_term": [], "sessions": []}
@@ -610,7 +610,7 @@ class ChainMemory:
         with open(memory_file, 'w') as f:
             json.dump(existing, f, indent=2)
 
-        logger.info("Memory loaded into OpenClaw!")
+        logger.info("Memory loaded into Hermes Agent!")
 
     # -------------------------------------------------------------------------
     # UTILITIES
