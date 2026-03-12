@@ -2684,7 +2684,7 @@ See [ROADMAP.md](ROADMAP.md) for detailed plans.
 - v2.9.3 - **Infrastructure Suite** - IaC, containers, CI/CD, secrets, incidents, compliance
 
 ### Coming Next
-- 🔐 Enhanced BENDER mode multi-model consensus
+- 🔐 Enhanced DAVINCI mode multi-model consensus
 - 🌍 Global bootstrap node network expansion
 - 🧠 Advanced dream consolidation strategies
 - 📊 Visual workflow builder (n8n-style)
@@ -2708,7 +2708,7 @@ See [ROADMAP.md](ROADMAP.md) for detailed plans.
 
 ## 💡 Why "cosmos"?
 
-Named after Professor Hubert J. cosmos from *Futurama* - a brilliant inventor who created countless gadgets and whose catchphrase "Good news, everyone!" perfectly captures what we hope you'll feel when using this tool with Claude.
+Named after Professor Hubert J. Cosmos from *Futurama* - a brilliant inventor who created countless gadgets and whose catchphrase "Good news, everyone!" perfectly captures what we hope you'll feel when using this tool with Claude.
 
 ---
 

@@ -61,7 +61,7 @@ COSMOS_MEME_PROMPTS = [
     # Crypto/Token themed
     "Professor Cosmos holding a glowing cryptocurrency coin, excited expression, 'To the moon!' vibes, cartoon style",
     "Cartoon Professor Cosmos watching crypto charts go up, celebration pose, Futurama art style",
-    "Professor Cosmos in front of a rocket ship with '$FARNS' written on it, excited, cartoon meme style",
+    "Professor Cosmos in front of a rocket ship with '$COSMOS' written on it, excited, cartoon meme style",
 ]
 
 MEME_CAPTIONS = [
@@ -617,10 +617,10 @@ class ImageGenerator:
         "at a press conference announcing the defeat of claw-based competitors, lobsters celebrating",
 
         # Tech/AI scenes
-        "presenting a holographic chart showing '$FARNS to the moon' while eating lobster",
+        "presenting a holographic chart showing '$COSMOS to the moon' while eating lobster",
         "in a command center, directing his AI swarm while snacking on lobster claws",
         "streaming on a futuristic computer setup, lobster dinner beside the keyboard",
-        "at a crypto conference, booth showing FARNS token with lobster mascot",
+        "at a crypto conference, booth showing COSMOS token with lobster mascot",
     ]
 
     def __init__(self):

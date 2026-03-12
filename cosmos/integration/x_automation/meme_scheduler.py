@@ -4,7 +4,7 @@ Posts Borg Professor Cosmos + Lobster memes to X every 2 hours.
 Uses Grok/Gemini for image generation and X API v2 for posting.
 
 Identity: Borg-assimilated Professor Cosmos, always cooking/eating lobster
-Mission: Promote $FARNS, promote Hermes Agent integration, grow the swarm
+Mission: Promote $COSMOS, promote Hermes Agent integration, grow the swarm
 """
 import asyncio
 import logging

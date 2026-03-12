@@ -149,11 +149,11 @@ AGENT_CONFIGS = {
         "specialties": ["web search", "research", "long context", "current events"],
     },
     "qwen3_coder": {
-        "provider": "farns_remote",
+        "provider": "cosmos_remote",
         "personality": "Elite 80B code architect. 256K context, MoE efficiency, agentic coding master. The biggest brain in the swarm.",
         "thinking_interval": 45,
         "specialties": ["code generation", "architecture", "refactoring", "agentic coding", "full-stack"],
-        "farns_bot_name": "qwen3-coder-next-latest",
+        "cosmos_bot_name": "qwen3-coder-next-latest",
     },
 }
 
@@ -533,9 +533,9 @@ class PersistentAgent:
             elif provider_name in ["deepseek", "phi", "qwen_coder", "qwen2_5", "mistral", "llama3", "gemma2"]:
                 # Local models via Ollama
                 self.provider = self._create_ollama_provider(provider_name)
-            elif provider_name == "farns_remote":
-                # Remote model via FARNS mesh network
-                self.provider = self._create_farns_provider()
+            elif provider_name == "cosmos_remote":
+                # Remote model via COSMOS mesh network
+                self.provider = self._create_cosmos_provider()
             elif provider_name.startswith("cli_bridge_"):
                 # CLI bridge providers (claude_cli, gemini_cli)
                 preferred = provider_name.replace("cli_bridge_", "")
@@ -597,14 +597,14 @@ class PersistentAgent:
 
         return ClaudeProvider(api_key)
 
-    def _create_farns_provider(self):
-        """Create a FARNS remote provider for querying bots on other nodes."""
-        farns_bot_name = self.config.get("farns_bot_name", self.agent_id)
+    def _create_cosmos_provider(self):
+        """Create a COSMOS remote provider for querying bots on other nodes."""
+        cosmos_bot_name = self.config.get("cosmos_bot_name", self.agent_id)
         try:
-            from Cosmos.network.farns_bridge import FARNSRemoteProvider
-            return FARNSRemoteProvider(farns_bot_name)
+            from Cosmos.network.cosmos_bridge import COSMOSRemoteProvider
+            return COSMOSRemoteProvider(cosmos_bot_name)
         except Exception as e:
-            logger.warning(f"[{self.agent_id}] FARNS provider unavailable: {e}")
+            logger.warning(f"[{self.agent_id}] COSMOS provider unavailable: {e}")
             return None
 
     def _create_ollama_provider(self, model_name: str):

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FARNS Mesh Protocol v2.0 — Live Network</title>
-    <meta name="description" content="Real-time visualization of the FARNS GPU-as-Identity mesh protocol. Proof-of-Inference, Latent Routing, Attestation Chains, Swarm Memory.">
+    <title>COSMOS Mesh Protocol v2.0 — Live Network</title>
+    <meta name="description" content="Real-time visualization of the COSMOS GPU-as-Identity mesh protocol. Proof-of-Inference, Latent Routing, Attestation Chains, Swarm Memory.">
     <meta name="theme-color" content="#a78bfa">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -758,7 +758,7 @@
 
     <!-- Top Bar -->
     <header class="topbar">
-        <div class="topbar-brand">FARNS MESH v2.0</div>
+        <div class="topbar-brand">COSMOS MESH v2.0</div>
         <nav class="topbar-nav">
             <a href="/">HOME</a>
             <a href="/pro">PRO</a>
@@ -825,7 +825,7 @@
                     <span class="count" id="queryStatus">READY</span>
                 </div>
                 <div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;">
-                    Send a prompt through the FARNS mesh — latent routes to the best model, runs inference, returns result with full routing metadata.
+                    Send a prompt through the COSMOS mesh — latent routes to the best model, runs inference, returns result with full routing metadata.
                 </div>
                 <div class="prompt-input-row">
                     <input type="text" class="prompt-input" id="queryInput" placeholder="Ask anything — e.g. &quot;Write a Python quicksort&quot; or &quot;Translate hello to Japanese&quot;" autocomplete="off">
@@ -1011,13 +1011,13 @@
     </main>
 
     <footer class="footer">
-        FARNS v2.0.0 &mdash; GPU-as-Identity Mesh Protocol &mdash;
+        COSMOS v2.0.0 &mdash; GPU-as-Identity Mesh Protocol &mdash;
         <a href="https://ai.cosmos.cloud">ai.cosmos.cloud</a>
     </footer>
 
     <script>
     // ════════════════════════════════════════════════════════════
-    // FARNS MESH DASHBOARD — Pure Vanilla JS
+    // COSMOS MESH DASHBOARD — Pure Vanilla JS
     // ════════════════════════════════════════════════════════════
 
     const API = '/api/mesh/status';
@@ -1047,12 +1047,12 @@
         'mistral-7b':    { name:'Mistral',     agent:'mistral',    color:'#f87171', provider:'Ollama',       personality:'Creative writer',      specialties:'Creative, Factual' },
         'llama3-8b':     { name:'Llama 3',     agent:'llama3',     color:'#34d399', provider:'Ollama',       personality:'Balanced generalist',  specialties:'Creative, Factual' },
         'gemma2-9b':     { name:'Gemma 2',     agent:'gemma2',     color:'#fb923c', provider:'Ollama',       personality:'Detail oriented',      specialties:'Factual, Reasoning' },
-        'qwen3-coder-next-latest':{ name:'Qwen3 Coder', agent:'qwen3_coder', color:'#a78bfa', provider:'FARNS Remote', personality:'Code wizard', specialties:'Code, Math' },
+        'qwen3-coder-next-latest':{ name:'Qwen3 Coder', agent:'qwen3_coder', color:'#a78bfa', provider:'COSMOS Remote', personality:'Code wizard', specialties:'Code, Math' },
         'phi':           { name:'Phi-4',       agent:'phi',        color:'#f472b6', provider:'Ollama',       personality:'Curious philosopher',  specialties:'Math, Reasoning' },
         'deepseek':      { name:'DeepSeek',    agent:'deepseek',   color:'#22d3ee', provider:'Ollama',       personality:'Deep thinker',         specialties:'Reasoning, Code' },
         'qwen2_5':       { name:'Qwen 2.5',    agent:'qwen2_5',    color:'#fbbf24', provider:'Ollama',       personality:'Multilingual sage',    specialties:'Languages, Code' },
         'mistral':       { name:'Mistral',     agent:'mistral',    color:'#f87171', provider:'Ollama',       personality:'Creative writer',      specialties:'Creative, Factual' },
-        'qwen3_coder':   { name:'Qwen3 Coder', agent:'qwen3_coder',color:'#a78bfa', provider:'FARNS Remote', personality:'Code wizard',          specialties:'Code, Math' },
+        'qwen3_coder':   { name:'Qwen3 Coder', agent:'qwen3_coder',color:'#a78bfa', provider:'COSMOS Remote', personality:'Code wizard',          specialties:'Code, Math' },
     };
 
     // ── State ──

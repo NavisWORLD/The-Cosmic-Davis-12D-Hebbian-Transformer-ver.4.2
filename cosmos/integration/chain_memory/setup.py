@@ -3,10 +3,10 @@
 Chain Memory Setup Wizard
 
 Interactive setup for on-chain memory storage.
-Collects user wallet info and verifies FARNS token holdings.
+Collects user wallet info and verifies COSMOS token holdings.
 
 Requirements:
-- Solana wallet with 100k+ FARNS tokens
+- Solana wallet with 100k+ COSMOS tokens
 - Monad wallet with MON for gas fees
 """
 
@@ -21,11 +21,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 from Cosmos.integration.chain_memory.config import (
     ChainMemoryConfig,
-    verify_farns_holdings,
+    verify_cosmos_holdings,
     check_monad_balance,
     get_monad_address,
-    MIN_FARNS_REQUIRED,
-    FARNS_TOKEN_MINT,
+    MIN_COSMOS_REQUIRED,
+    COSMOS_TOKEN_MINT,
     CONFIG_DIR,
 )
 
@@ -42,11 +42,11 @@ def print_banner():
 ╠══════════════════════════════════════════════════════════════════╣
 ║                                                                  ║
 ║  REQUIREMENTS:                                                   ║
-║  ✓ Solana wallet with 100,000+ FARNS tokens                     ║
+║  ✓ Solana wallet with 100,000+ COSMOS tokens                     ║
 ║  ✓ Monad wallet with MON for gas fees                           ║
 ║                                                                  ║
-║  FARNS Token: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS      ║
-║  Buy FARNS: https://pump.fun/coin/9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS  ║
+║  COSMOS Token: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS      ║
+║  Buy COSMOS: https://pump.fun/coin/9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS  ║
 ║                                                                  ║
 ╚══════════════════════════════════════════════════════════════════╝
 """)
@@ -134,22 +134,22 @@ def setup_wizard():
             return
 
     # -------------------------------------------------------------------------
-    # Step 2: FARNS Token Verification
+    # Step 2: COSMOS Token Verification
     # -------------------------------------------------------------------------
-    print_step(2, 5, "Verify FARNS Holdings")
+    print_step(2, 5, "Verify COSMOS Holdings")
 
     print(f"""
-  To use Chain Memory, you must hold at least {MIN_FARNS_REQUIRED:,} FARNS tokens.
+  To use Chain Memory, you must hold at least {MIN_COSMOS_REQUIRED:,} COSMOS tokens.
 
   This requirement:
-  - Supports the FARNS ecosystem
+  - Supports the COSMOS ecosystem
   - Prevents spam/abuse
   - Ensures committed users
 
-  FARNS Token Address (Solana):
-  {FARNS_TOKEN_MINT}
+  COSMOS Token Address (Solana):
+  {COSMOS_TOKEN_MINT}
 
-  Buy FARNS: https://pump.fun/coin/{FARNS_TOKEN_MINT}
+  Buy COSMOS: https://pump.fun/coin/{COSMOS_TOKEN_MINT}
 """)
 
     while True:
@@ -163,24 +163,24 @@ def setup_wizard():
             print("  Invalid Solana address format.")
             continue
 
-        print("\n  Verifying FARNS holdings...")
+        print("\n  Verifying COSMOS holdings...")
 
         try:
-            result = asyncio.run(verify_farns_holdings(solana_address))
+            result = asyncio.run(verify_cosmos_holdings(solana_address))
 
             if result['verified']:
                 print(f"""
   ✅ VERIFIED!
 
   Wallet: {solana_address[:8]}...{solana_address[-8:]}
-  FARNS Balance: {result['balance']:,} FARNS
-  Required: {MIN_FARNS_REQUIRED:,} FARNS
+  COSMOS Balance: {result['balance']:,} COSMOS
+  Required: {MIN_COSMOS_REQUIRED:,} COSMOS
 
   You are eligible to use Chain Memory!
 """)
                 config.solana_wallet_address = solana_address
-                config.farns_verified = True
-                config.farns_balance = result['balance']
+                config.cosmos_verified = True
+                config.cosmos_balance = result['balance']
                 break
 
             else:
@@ -189,14 +189,14 @@ def setup_wizard():
 
   {result.get('error', 'Unknown error')}
 
-  You need at least {MIN_FARNS_REQUIRED:,} FARNS tokens.
-  Current balance: {result.get('balance', 0):,} FARNS
+  You need at least {MIN_COSMOS_REQUIRED:,} COSMOS tokens.
+  Current balance: {result.get('balance', 0):,} COSMOS
 
-  Buy FARNS: https://pump.fun/coin/{FARNS_TOKEN_MINT}
+  Buy COSMOS: https://pump.fun/coin/{COSMOS_TOKEN_MINT}
 """)
                 retry = get_input("  Try a different wallet? (y/n)", "y")
                 if retry.lower() != 'y':
-                    print("\n  Setup cancelled. Please acquire FARNS tokens first.\n")
+                    print("\n  Setup cancelled. Please acquire COSMOS tokens first.\n")
                     return
 
         except Exception as e:
@@ -309,7 +309,7 @@ def setup_wizard():
   ─────────────────────────────────────────────────────────
   Bot Type:        {config.bot_type}
   Solana Wallet:   {config.solana_wallet_address[:8]}...{config.solana_wallet_address[-8:]}
-  FARNS Balance:   {config.farns_balance:,} FARNS ✓
+  COSMOS Balance:   {config.cosmos_balance:,} COSMOS ✓
   Monad Wallet:    {get_monad_address(config.monad_private_key)}
   Monad RPC:       {config.monad_rpc}
   Auto-Save:       {'Enabled' if config.auto_save_enabled else 'Disabled'}

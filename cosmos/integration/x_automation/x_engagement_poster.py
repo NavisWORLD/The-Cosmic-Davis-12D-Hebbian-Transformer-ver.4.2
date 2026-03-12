@@ -478,7 +478,7 @@ Security isn't an afterthought. It's the foundation.
     },
     {
         "title": "SOLANA TOKEN",
-        "template": """$FARNS - THE SWARM'S TOKEN
+        "template": """$COSMOS - THE SWARM'S TOKEN
 
 Contract Address:
 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS

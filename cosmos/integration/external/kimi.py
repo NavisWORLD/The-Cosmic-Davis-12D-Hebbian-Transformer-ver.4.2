@@ -6,7 +6,7 @@ cosmos Kimi (Moonshot AI) Integration.
 Kimi excels at:
 - Long context (128k-1M tokens) - perfect for codebase analysis
 - Eastern philosophy and big-picture synthesis
-- BENDER mode consensus participation
+- DAVINCI mode consensus participation
 - Thoughtful moderation and facilitation
 
 API: OpenAI-compatible format
@@ -232,7 +232,7 @@ Provide a structured analysis."""
         """
         Synthesize multiple inputs into a coherent whole.
 
-        Perfect for BENDER mode consensus building.
+        Perfect for DAVINCI mode consensus building.
         """
         system = """You are Kimi, a master synthesizer.
 Take multiple perspectives and weave them into a coherent, balanced view.
@@ -294,26 +294,24 @@ Provide a brief moderation comment that moves the conversation forward."""
             max_tokens=300
         )
 
-    async def bender_participate(
+    async def davinci_participate(
         self,
         topic: str,
         other_responses: List[Dict[str, str]],
         round_number: int
     ) -> Dict[str, Any]:
         """
-        Participate in BENDER mode multi-model consensus.
-
         Kimi's role: Synthesis and long-context reasoning.
         """
         responses_text = "\n\n".join([
             f"{r['model']}: {r['response']}" for r in other_responses
         ])
 
-        system = """You are Kimi in BENDER mode (multi-model consensus).
+        system = """You are Kimi in DAVINCI mode (multi-model consensus).
 Your role: Synthesize perspectives, find common ground, identify valid disagreements.
 Be concise but thorough. Help build toward consensus."""
 
-        prompt = f"""BENDER Mode Round {round_number}
+        prompt = f"""DAVINCI Mode Round {round_number}
 Topic: {topic}
 
 Other models' responses:

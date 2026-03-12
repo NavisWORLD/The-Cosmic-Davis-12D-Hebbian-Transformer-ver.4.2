@@ -362,25 +362,25 @@ async def auth_select_plan(request: Request):
 
 
 # ============================================================
-# CHAT API — Routes through FARNS Mesh with Latent Routing
+# CHAT API — Routes through COSMOS Mesh with Latent Routing
 # ============================================================
 
-def _get_farns_node():
-    """Get the running FARNS node."""
+def _get_cosmos_node():
+    """Get the running COSMOS node."""
     try:
-        from Cosmos.network.farns_node import get_farns_node
-        return get_farns_node()
+        from Cosmos.network.cosmos_node import get_cosmos_node
+        return get_cosmos_node()
     except Exception:
         return None
 
 
 async def _mesh_query(prompt: str, model: str = "", timeout: float = 90.0):
     """
-    Route a query through the FARNS mesh.
+    Route a query through the COSMOS mesh.
     If model is specified, routes directly. Otherwise uses latent routing.
     Returns (response_text, routing_metadata).
     """
-    node = _get_farns_node()
+    node = _get_cosmos_node()
     if not node:
         return None, {}
 
@@ -432,7 +432,7 @@ async def _mesh_query(prompt: str, model: str = "", timeout: float = 90.0):
 
 @router.post("/api/pro/chat")
 async def pro_chat_api(request: Request):
-    """Send a chat message — routes through FARNS mesh with latent routing."""
+    """Send a chat message — routes through COSMOS mesh with latent routing."""
     try:
         body = await request.json()
         message = body.get("message", "").strip()
@@ -454,7 +454,7 @@ async def pro_chat_api(request: Request):
         response_text = ""
         routing_meta = {}
 
-        # PRIMARY: Route through FARNS mesh with latent routing
+        # PRIMARY: Route through COSMOS mesh with latent routing
         mesh_resp, routing_meta = await _mesh_query(prompt, model)
         if mesh_resp:
             response_text = mesh_resp
@@ -501,7 +501,7 @@ async def pro_chat_api(request: Request):
 
 @router.post("/api/pro/chat/stream")
 async def pro_chat_stream(request: Request):
-    """Stream a chat response via FARNS mesh with latent routing."""
+    """Stream a chat response via COSMOS mesh with latent routing."""
     try:
         body = await request.json()
         message = body.get("message", "").strip()
@@ -515,7 +515,7 @@ async def pro_chat_stream(request: Request):
                 response_text = ""
                 routing_meta = {}
 
-                # PRIMARY: FARNS mesh query
+                # PRIMARY: COSMOS mesh query
                 mesh_resp, routing_meta = await _mesh_query(message, model)
                 if mesh_resp:
                     response_text = mesh_resp

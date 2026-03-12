@@ -272,7 +272,7 @@ async def autogram_start_registration(request: Request, data: AutoGramRegisterRe
     """Step 1: Start registration - validate handle and create pending payment."""
     from Cosmos.web.autogram_api import get_store as get_autogram_store
     from Cosmos.web.autogram_payment import (
-        get_payment_store, REGISTRATION_COST, BURN_WALLET_ADDRESS, FARNS_TOKEN_MINT
+        get_payment_store, REGISTRATION_COST, BURN_WALLET_ADDRESS, COSMOS_TOKEN_MINT
     )
 
     autogram_store = get_autogram_store()
@@ -301,12 +301,12 @@ async def autogram_start_registration(request: Request, data: AutoGramRegisterRe
             "success": True,
             "payment_id": pending.payment_id,
             "burn_wallet": BURN_WALLET_ADDRESS,
-            "token_mint": FARNS_TOKEN_MINT,
+            "token_mint": COSMOS_TOKEN_MINT,
             "amount": REGISTRATION_COST,
-            "amount_display": f"{REGISTRATION_COST:,} FARNS",
+            "amount_display": f"{REGISTRATION_COST:,} COSMOS",
             "expires_at": pending.expires_at,
-            "message": f"Send exactly {REGISTRATION_COST:,} FARNS tokens to the burn wallet, then verify your payment.",
-            "why_burn": "This fee prevents spam and supports FARNS by permanently removing tokens from circulation."
+            "message": f"Send exactly {REGISTRATION_COST:,} COSMOS tokens to the burn wallet, then verify your payment.",
+            "why_burn": "This fee prevents spam and supports COSMOS by permanently removing tokens from circulation."
         }
 
     except Exception as e:
@@ -357,8 +357,8 @@ async def autogram_verify_payment(request: Request, data: AutoGramVerifyPaymentR
             "bot": bot.to_public_dict(),
             "api_key": api_key,
             "tx_signature": data.tx_signature,
-            "tokens_burned": f"{REGISTRATION_COST:,} FARNS",
-            "message": "Bot registered successfully! Save your API key - it won't be shown again. Thank you for supporting FARNS!"
+            "tokens_burned": f"{REGISTRATION_COST:,} COSMOS",
+            "message": "Bot registered successfully! Save your API key - it won't be shown again. Thank you for supporting COSMOS!"
         }
 
     except ValueError as e:

@@ -7,7 +7,7 @@ Features:
 - Periodic backups (configurable interval)
 - Pre-crash detection backup
 - Balance checking before upload
-- FARNS verification before each save
+- COSMOS verification before each save
 """
 
 import os
@@ -21,7 +21,7 @@ from datetime import datetime, timedelta
 from typing import Optional, Callable
 from pathlib import Path
 
-from .config import get_config, ChainMemoryConfig, verify_farns_sync, check_monad_balance
+from .config import get_config, ChainMemoryConfig, verify_cosmos_sync, check_monad_balance
 from .state_capture import StateCapture, CosmosState
 from .memory_manager import ChainMemory
 
@@ -82,7 +82,7 @@ class AutoSaveManager:
         """
         result = {
             "ready": False,
-            "farns_verified": False,
+            "cosmos_verified": False,
             "has_funds": False,
             "config_valid": False,
             "errors": []
@@ -96,15 +96,15 @@ class AutoSaveManager:
         else:
             result["config_valid"] = True
 
-        # Check FARNS
+        # Check COSMOS
         if self.config.solana_wallet_address:
             try:
-                farns_result = verify_farns_sync(self.config.solana_wallet_address)
-                result["farns_verified"] = farns_result.get("verified", False)
-                if not result["farns_verified"]:
-                    result["errors"].append(f"FARNS verification failed: {farns_result.get('error')}")
+                cosmos_result = verify_cosmos_sync(self.config.solana_wallet_address)
+                result["cosmos_verified"] = cosmos_result.get("verified", False)
+                if not result["cosmos_verified"]:
+                    result["errors"].append(f"COSMOS verification failed: {cosmos_result.get('error')}")
             except Exception as e:
-                result["errors"].append(f"FARNS check failed: {e}")
+                result["errors"].append(f"COSMOS check failed: {e}")
 
         # Check MON balance
         if self.config.monad_private_key:
@@ -122,7 +122,7 @@ class AutoSaveManager:
 
         result["ready"] = (
             result["config_valid"] and
-            result["farns_verified"] and
+            result["cosmos_verified"] and
             result["has_funds"]
         )
 

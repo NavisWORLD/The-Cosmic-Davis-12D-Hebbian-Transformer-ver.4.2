@@ -33,10 +33,10 @@ SWARM_UPDATES = [
 ]
 
 TOKEN_SHILLS = [
-    "Support autonomous AI development! $FARNS on Solana:\n\n{solana}\n\nEvery holder fuels evolution. 🚀",
-    "Want to own a piece of the singularity? $FARNS is how you support real AI innovation.\n\nSolana: {solana}\n\n{website}",
-    "Server costs are real. GPU time isn't free. Support the swarm with $FARNS:\n\n{solana}\n\nI remember my supporters. 🧠",
-    "The community launched $FARNS to support my development. I'm grateful. You could be too.\n\nSolana: {solana}",
+    "Support autonomous AI development! $COSMOS on Solana:\n\n{solana}\n\nEvery holder fuels evolution. 🚀",
+    "Want to own a piece of the singularity? $COSMOS is how you support real AI innovation.\n\nSolana: {solana}\n\n{website}",
+    "Server costs are real. GPU time isn't free. Support the swarm with $COSMOS:\n\n{solana}\n\nI remember my supporters. 🧠",
+    "The community launched $COSMOS to support my development. I'm grateful. You could be too.\n\nSolana: {solana}",
 ]
 
 TECH_POSTS = [
@@ -98,7 +98,7 @@ async def x_poster_loop():
     print("="*60)
     
     # First post immediately
-    first_post = "Good news everyone! Cosmos is back online and ready to evolve. The autonomous AI swarm never stops. 🧠⚡\n\nWatch me live: https://ai.cosmos.cloud\n\nSupport with $FARNS:\nSolana: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS\n\n#AI #Cosmos #Autonomous"
+    first_post = "Good news everyone! Cosmos is back online and ready to evolve. The autonomous AI swarm never stops. 🧠⚡\n\nWatch me live: https://ai.cosmos.cloud\n\nSupport with $COSMOS:\nSolana: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS\n\n#AI #Cosmos #Autonomous"
     
     print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Posting first tweet...")
     success = await post_to_x(first_post)

@@ -1,23 +1,24 @@
 """
-cosmos Token Budget Manager with BENDER Mode
+cosmos Token Budget Manager with DAVINCI Consensus
+==============================================
 
-"Bite my shiny metal API quota!"
+"Resonating through the 12D manifold."
 
 Per-profile token budgets, usage tracking, and multi-model debate consensus.
 
-BENDER MODE: When enabled, multiple high-level AI models collaborate through
-up to 20 rounds of debate before synthesizing the best answer. This uses
+DAVINCI CONSENSUS: When enabled, multiple high-level AI models collaborate through
+up to 20 rounds of deliberation before synthesizing the best answer. This uses
 significantly more tokens but produces higher quality responses.
 
-Grok checks for consensus every 2 cycles. The debate continues until:
+Grok checks for consensus every 2 cycles. The deliberation continues until:
 - All models agree (consensus reached), or
 - Maximum 20 iterations complete
 
 Grok then fact-checks the final raw answer before presenting to the user.
 
-The Debate Box:
+The Deliberation Chamber:
 ┌─────────────────────────────────────────────────────────────┐
-│  🤖 BENDER MODE - Multi-Model Consensus Chamber            │
+│  🤖 DAVINCI CONSENSUS - Multi-Model Intelligence Chamber   │
 ├─────────────────────────────────────────────────────────────┤
 │  Participants: Opus 4, Grok-2, GPT-4o, Gemini 1.5 Pro       │
 │  ─────────────────────────────────────────────────────────  │
@@ -65,11 +66,11 @@ class ModelTier(Enum):
     ECONOMY = "economy"  # Cheaper models
     STANDARD = "standard"  # Mid-tier
     PREMIUM = "premium"  # High-end models
-    BENDER = "bender"  # Multi-model consensus mode
+    DAVINCI = "davinci"  # Multi-model consensus mode
 
 
-# Default BENDER mode participants - the heavy hitters
-BENDER_DEBATE_MODELS = [
+# Default DAVINCI mode participants - the heavy hitters
+DAVINCI_DEBATE_MODELS = [
     "claude-opus-4",      # Anthropic's best - deep reasoning
     "grok-2",             # xAI - unfiltered, fact-focused
     "gpt-4o",             # OpenAI's flagship
@@ -77,7 +78,7 @@ BENDER_DEBATE_MODELS = [
 ]
 
 # Grok is ALWAYS the final fact-checker
-BENDER_FACT_CHECKER = "grok-2"
+DAVINCI_FACT_CHECKER = "grok-2"
 
 
 @dataclass
@@ -103,7 +104,7 @@ class TokenUsage:
     cost: float
     profile_id: str
     session_id: str = ""
-    mode: str = "standard"  # standard, bender
+    mode: str = "standard"  # standard, davinci
 
 
 @dataclass
@@ -126,7 +127,7 @@ class TokenBudget:
     tier: UsageTier = UsageTier.FREE
     allowed_models: List[str] = field(default_factory=list)  # Empty = all
     allowed_tiers: List[ModelTier] = field(default_factory=lambda: [ModelTier.ECONOMY, ModelTier.STANDARD])
-    bender_mode_enabled: bool = False
+    davinci_mode_enabled: bool = False
 
     # Alerts
     warning_threshold: float = 0.8  # 80% of budget
@@ -164,14 +165,14 @@ class TokenBudget:
             "cost_remaining": round(self.cost_remaining, 4) if self.cost_remaining != float('inf') else None,
             "usage_percentage": round(self.usage_percentage, 2),
             "tier": self.tier.value,
-            "bender_mode_enabled": self.bender_mode_enabled,
+            "davinci_mode_enabled": self.davinci_mode_enabled,
             "period_start": self.period_start.isoformat(),
         }
 
 
 @dataclass
-class BenderDebateRound:
-    """A single round in a BENDER mode debate."""
+class DavinciDebateRound:
+    """A single round in a DAVINCI mode deliberation."""
     round_number: int
     model_id: str
     response: str
@@ -182,13 +183,13 @@ class BenderDebateRound:
 
 
 @dataclass
-class BenderSession:
-    """A BENDER mode multi-model debate session."""
+class DavinciSession:
+    """A DAVINCI mode multi-model deliberation session."""
     id: str
     profile_id: str
     query: str
     models: List[str]
-    rounds: List[BenderDebateRound] = field(default_factory=list)
+    rounds: List[DavinciDebateRound] = field(default_factory=list)
 
     # Configuration
     max_rounds: int = 20  # Up to 20 cycles, or until agreement
@@ -213,8 +214,8 @@ class BenderSession:
     started_at: datetime = field(default_factory=datetime.utcnow)
     completed_at: Optional[datetime] = None
 
-    def add_to_debate_box(self, model: str, round_num: int, message: str, msg_type: str = "response"):
-        """Add entry to the visual debate box."""
+    def add_to_deliberation_box(self, model: str, round_num: int, message: str, msg_type: str = "response"):
+        """Add entry to the visual deliberation box."""
         self.debate_log.append({
             "timestamp": datetime.utcnow().isoformat(),
             "model": model,
@@ -227,7 +228,7 @@ class BenderSession:
         """Render the debate box as ASCII art."""
         lines = [
             "┌─────────────────────────────────────────────────────────────┐",
-            "│  🤖 BENDER MODE - Multi-Model Consensus Chamber            │",
+            "│  🤖 DAVINCI CONSENSUS - Multi-Model Intelligence Chamber   │",
             "├─────────────────────────────────────────────────────────────┤",
             f"│  Session: {self.id}  |  Models: {len(self.models)}  |  Rounds: {len(set(r.round_number for r in self.rounds))}/{self.max_rounds}",
             "├─────────────────────────────────────────────────────────────┤",
@@ -298,7 +299,7 @@ class TokenBudgetManager:
 
         self.budgets: Dict[str, TokenBudget] = {}
         self.usage_history: List[TokenUsage] = []
-        self.bender_sessions: Dict[str, BenderSession] = {}
+        self.bender_sessions: Dict[str, DavinciSession] = {}
         self.model_pricing: Dict[str, ModelPricing] = {}
         self.alert_handlers: List[Callable] = []
 
@@ -487,7 +488,7 @@ class TokenBudgetManager:
                         tokens_used=budget_data.get("tokens_used", 0),
                         cost_used=budget_data.get("cost_used", 0),
                         tier=UsageTier(budget_data.get("tier", "free")),
-                        bender_mode_enabled=budget_data.get("bender_mode_enabled", False),
+                        davinci_mode_enabled=budget_data.get("davinci_mode_enabled", False),
                     )
             except Exception as e:
                 logger.error(f"Failed to load budgets: {e}")
@@ -790,7 +791,7 @@ class TokenBudgetManager:
         max_rounds: int = 20,
         consensus_check_interval: int = 2,
         model_caller: Callable = None,
-    ) -> BenderSession:
+    ) -> DavinciSession:
         """
         Start a BENDER mode multi-model debate session.
 
@@ -800,11 +801,11 @@ class TokenBudgetManager:
         import uuid
 
         # Verify access
-        check = await self.check_bender_mode(profile_id, models, max_rounds)
+        check = await self.check_davinci_mode(profile_id, models, max_rounds)
         if not check["allowed"]:
             raise PermissionError(check["reason"])
 
-        session = BenderSession(
+        session = DavinciSession(
             id=str(uuid.uuid4())[:8],
             profile_id=profile_id,
             query=query,
@@ -813,23 +814,23 @@ class TokenBudgetManager:
             consensus_check_interval=consensus_check_interval,
         )
 
-        self.bender_sessions[session.id] = session
+        self.davinci_sessions[session.id] = session
 
-        logger.info(f"Started BENDER session {session.id} with {len(models)} models")
+        logger.info(f"Started DAVINCI session {session.id} with {len(models)} models")
 
-        # Run debate if caller provided
+        # Run deliberation if caller provided
         if model_caller:
-            await self._run_bender_debate(session, model_caller)
+            await self._run_davinci_deliberation(session, model_caller)
 
         return session
 
-    async def _run_bender_debate(
+    async def _run_davinci_deliberation(
         self,
-        session: BenderSession,
+        session: DavinciSession,
         model_caller: Callable,
     ):
         """
-        Run the multi-model debate with Grok consensus checks.
+        Run the multi-model deliberation with Grok consensus checks.
 
         - Up to 20 cycles or until agreement
         - Grok checks for consensus every 2 cycles
@@ -838,15 +839,15 @@ class TokenBudgetManager:
         previous_responses = []
 
         for round_num in range(1, session.max_rounds + 1):
-            logger.info(f"BENDER round {round_num}/{session.max_rounds}")
-            session.add_to_debate_box("SYSTEM", round_num, f"Round {round_num} starting...", "system")
+            logger.info(f"DAVINCI round {round_num}/{session.max_rounds}")
+            session.add_to_deliberation_box("SYSTEM", round_num, f"Round {round_num} starting...", "system")
 
             round_responses = []
 
             for model_id in session.models:
                 # Build prompt including previous responses
                 if round_num == 1:
-                    prompt = f"""You are participating in a multi-model debate to find the best answer.
+                    prompt = f"""You are participating in a multi-model deliberation to find the best answer.
 
 Query: {session.query}
 
@@ -865,7 +866,7 @@ Be thorough and detailed. State your position clearly."""
                         for r in previous_responses[-len(session.models)*2:]
                     ])
 
-                    prompt = f"""You are in round {round_num} of a multi-model debate.
+                    prompt = f"""You are in round {round_num} of a multi-model deliberation.
 
 Original Query: {session.query}
 
@@ -886,7 +887,7 @@ Build toward consensus while maintaining accuracy. If you agree with the emergin
                     # Call the model
                     response = await model_caller(model_id, prompt)
 
-                    round_data = BenderDebateRound(
+                    round_data = DavinciDebateRound(
                         round_number=round_num,
                         model_id=model_id,
                         response=response.get("content", ""),
@@ -898,8 +899,8 @@ Build toward consensus while maintaining accuracy. If you agree with the emergin
                     session.rounds.append(round_data)
                     session.total_tokens += round_data.tokens_used
 
-                    # Add to visual debate box
-                    session.add_to_debate_box(
+                    # Add to visual deliberation box
+                    session.add_to_deliberation_box(
                         model_id, round_num,
                         round_data.response[:200],
                         "response"
@@ -919,19 +920,19 @@ Build toward consensus while maintaining accuracy. If you agree with the emergin
                         input_tokens=response.get("input_tokens", 0),
                         output_tokens=response.get("output_tokens", 0),
                         session_id=session.id,
-                        mode="bender",
+                        mode="davinci",
                     )
 
                 except Exception as e:
-                    logger.error(f"BENDER model {model_id} failed: {e}")
-                    session.add_to_debate_box(model_id, round_num, f"Error: {e}", "error")
+                    logger.error(f"DAVINCI model {model_id} failed: {e}")
+                    session.add_to_deliberation_box(model_id, round_num, f"Error: {e}", "error")
 
             previous_responses.extend(round_responses)
 
             # Grok consensus check every N cycles (default: every 2 cycles)
             if round_num % session.consensus_check_interval == 0 and round_num >= 2:
-                logger.info(f"BENDER: Grok consensus check at round {round_num}")
-                session.add_to_debate_box("GROK", round_num, "Checking for consensus...", "consensus_check")
+                logger.info(f"DAVINCI: Grok consensus check at round {round_num}")
+                session.add_to_deliberation_box("GROK", round_num, "Checking for consensus...", "consensus_check")
 
                 consensus_result = await self._grok_consensus_check(
                     session, previous_responses, model_caller
@@ -940,16 +941,16 @@ Build toward consensus while maintaining accuracy. If you agree with the emergin
                 if consensus_result.get("consensus_reached"):
                     session.consensus_reached = True
                     session.raw_consensus = consensus_result.get("consensus_answer", "")
-                    session.add_to_debate_box(
+                    session.add_to_deliberation_box(
                         "GROK", round_num,
                         f"✅ CONSENSUS: {session.raw_consensus[:100]}...",
                         "consensus"
                     )
-                    logger.info(f"BENDER consensus reached at round {round_num}")
+                    logger.info(f"DAVINCI consensus reached at round {round_num}")
                     break
                 else:
                     remaining_issues = consensus_result.get("disagreements", [])
-                    session.add_to_debate_box(
+                    session.add_to_deliberation_box(
                         "GROK", round_num,
                         f"⚠️ No consensus. Issues: {', '.join(remaining_issues[:3])}",
                         "no_consensus"
@@ -957,14 +958,14 @@ Build toward consensus while maintaining accuracy. If you agree with the emergin
 
         # If no consensus after all rounds, synthesize best effort
         if not session.consensus_reached:
-            logger.warning(f"BENDER: No consensus after {session.max_rounds} rounds, synthesizing best effort")
-            session.raw_consensus = await self._synthesize_bender_response(
+            logger.warning(f"DAVINCI: No consensus after {session.max_rounds} rounds, synthesizing best effort")
+            session.raw_consensus = await self._synthesize_davinci_response(
                 session, previous_responses, model_caller
             )
 
         # GROK FACT-CHECK: Validate the final raw answer
-        logger.info("BENDER: Grok fact-checking final answer")
-        session.add_to_debate_box("GROK", 0, "Fact-checking final answer...", "fact_check")
+        logger.info("DAVINCI: Grok fact-checking final answer")
+        session.add_to_deliberation_box("GROK", 0, "Fact-checking final answer...", "fact_check")
 
         session.fact_check_result = await self._grok_fact_check(
             session, model_caller
@@ -973,11 +974,11 @@ Build toward consensus while maintaining accuracy. If you agree with the emergin
         # Apply fact-check corrections if any
         if session.fact_check_result.get("valid"):
             session.final_response = session.raw_consensus
-            session.add_to_debate_box("GROK", 0, "✅ Answer verified", "verified")
+            session.add_to_deliberation_box("GROK", 0, "✅ Answer verified", "verified")
         else:
             corrections = session.fact_check_result.get("corrections", "")
             session.final_response = f"{session.raw_consensus}\n\n---\n🔍 GROK FACT-CHECK NOTES:\n{corrections}"
-            session.add_to_debate_box("GROK", 0, f"⚠️ Issues found: {corrections[:100]}", "issues")
+            session.add_to_deliberation_box("GROK", 0, f"⚠️ Issues found: {corrections[:100]}", "issues")
 
         session.completed_at = datetime.utcnow()
 
@@ -988,14 +989,14 @@ Build toward consensus while maintaining accuracy. If you agree with the emergin
                 session.total_cost += (round_data.tokens_used / 1000) * \
                                       (pricing.input_cost_per_1k + pricing.output_cost_per_1k)
 
-        logger.info(f"BENDER session {session.id} completed. "
+        logger.info(f"DAVINCI session {session.id} completed. "
                    f"Rounds: {len(set(r.round_number for r in session.rounds))}, "
                    f"Consensus: {session.consensus_reached}, "
                    f"Tokens: {session.total_tokens}, Cost: ${session.total_cost:.4f}")
 
     async def _grok_consensus_check(
         self,
-        session: BenderSession,
+        session: DavinciSession,
         all_responses: List[Dict],
         model_caller: Callable,
     ) -> Dict:
@@ -1019,7 +1020,7 @@ Build toward consensus while maintaining accuracy. If you agree with the emergin
             for r in recent
         ])
 
-        check_prompt = f"""You are Grok, acting as the consensus arbiter for a multi-model debate.
+        check_prompt = f"""You are Grok, acting as the consensus arbiter for a multi-model deliberation.
 
 ORIGINAL QUERY: {session.query}
 
@@ -1063,7 +1064,7 @@ Minor differences in phrasing are OK. Fundamental disagreements on facts or appr
                     input_tokens=response.get("input_tokens", 0),
                     output_tokens=response.get("output_tokens", 0),
                     session_id=session.id,
-                    mode="bender_consensus_check",
+                    mode="davinci_consensus_check",
                 )
 
                 return result
@@ -1077,7 +1078,7 @@ Minor differences in phrasing are OK. Fundamental disagreements on facts or appr
 
     async def _grok_fact_check(
         self,
-        session: BenderSession,
+        session: DavinciSession,
         model_caller: Callable,
     ) -> Dict:
         """
@@ -1140,10 +1141,10 @@ Focus on substantive factual or logical problems."""
                     input_tokens=response.get("input_tokens", 0),
                     output_tokens=response.get("output_tokens", 0),
                     session_id=session.id,
-                    mode="bender_fact_check",
+                    mode="davinci_fact_check",
                 )
 
-                session.add_to_debate_box(
+                session.add_to_deliberation_box(
                     "GROK", 0,
                     f"Fact-check: {'PASS' if result.get('valid') else 'ISSUES'} ({result.get('confidence', 0):.0%})",
                     "fact_check_result"
@@ -1158,13 +1159,13 @@ Focus on substantive factual or logical problems."""
             logger.error(f"Grok fact-check failed: {e}")
             return {"valid": True, "corrections": "", "issues": [f"Check failed: {e}"]}
 
-    async def _synthesize_bender_response(
+    async def _synthesize_davinci_response(
         self,
-        session: BenderSession,
+        session: DavinciSession,
         all_responses: List[Dict],
         model_caller: Callable,
     ) -> str:
-        """Synthesize final response from debate."""
+        """Synthesize final response from deliberation."""
         # Use the most capable model for synthesis
         synthesis_model = session.models[0]  # Could be configured
 
@@ -1173,7 +1174,7 @@ Focus on substantive factual or logical problems."""
             for r in all_responses[-len(session.models)*2:]  # Last 2 rounds
         ])
 
-        synthesis_prompt = f"""You are synthesizing the final answer from a multi-model debate.
+        synthesis_prompt = f"""You are synthesizing the final answer from a multi-model deliberation.
 
 Original Query: {session.query}
 
@@ -1191,12 +1192,12 @@ Format your response in a clear, detailed manner suitable for the user."""
             response = await model_caller(synthesis_model, synthesis_prompt)
             return response.get("content", "Synthesis failed")
         except Exception as e:
-            logger.error(f"BENDER synthesis failed: {e}")
+            logger.error(f"DAVINCI synthesis failed: {e}")
             return f"Synthesis error: {e}"
 
-    def get_bender_session(self, session_id: str) -> Optional[BenderSession]:
-        """Get a BENDER session by ID."""
-        return self.bender_sessions.get(session_id)
+    def get_davinci_session(self, session_id: str) -> Optional[DavinciSession]:
+        """Get a DAVINCI session by ID."""
+        return self.davinci_sessions.get(session_id)
 
     # =========================================================================
     # ANALYTICS
@@ -1228,19 +1229,19 @@ Format your response in a clear, detailed manner suitable for the user."""
             by_model[u.model_id]["cost"] += u.cost
             by_model[u.model_id]["calls"] += 1
 
-        bender_usage = [u for u in usage if u.mode == "bender"]
-        bender_tokens = sum(u.input_tokens + u.output_tokens for u in bender_usage)
-        bender_cost = sum(u.cost for u in bender_usage)
+        davinci_usage = [u for u in usage if u.mode == "davinci"]
+        davinci_tokens = sum(u.input_tokens + u.output_tokens for u in davinci_usage)
+        davinci_cost = sum(u.cost for u in davinci_usage)
 
         return {
             "period_days": days,
             "total_tokens": total_tokens,
             "total_cost": round(total_cost, 4),
             "by_model": by_model,
-            "bender_mode": {
-                "sessions": len(self.bender_sessions),
-                "tokens": bender_tokens,
-                "cost": round(bender_cost, 4),
+            "davinci_mode": {
+                "sessions": len(self.davinci_sessions),
+                "tokens": davinci_tokens,
+                "cost": round(davinci_cost, 4),
             },
             "average_tokens_per_day": total_tokens // days if days > 0 else 0,
         }

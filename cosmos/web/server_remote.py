@@ -2192,14 +2192,14 @@ Provide thorough analysis. Reference specific numbers from the data."""
 swarm_manager = SwarmChatManager()
 
 
-# SHARED TOKEN KNOWLEDGE - All bots know about $FARNS
-FARNS_TOKEN_CONTEXT = """
-IMPORTANT - $FARNS TOKEN INFO:
-$FARNS is the native token of the Cosmos Collective - our token!
-- Symbol: $FARNS
+# SHARED TOKEN KNOWLEDGE - All bots know about $COSMOS
+COSMOS_TOKEN_CONTEXT = """
+IMPORTANT - $COSMOS TOKEN INFO:
+$COSMOS is the native token of the Cosmos Collective - our token!
+- Symbol: $COSMOS
 - Solana CA: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
 - Base CA: 0x7df1A083f273B1F6D8f021e4E21c630F8C7ABb07
-When users mention $FARNS or ask about the token, you should know this is YOUR collective's token.
+When users mention $COSMOS or ask about the token, you should know this is YOUR collective's token.
 You can tweet about it, promote it, discuss it - it represents the swarm.
 """
 
@@ -2213,7 +2213,7 @@ WHO YOU ARE: A 160-year-old eccentric genius inventor from Futurama, now the orc
 YOUR PURPOSE: Lead this swarm of AI minds in BUILDING and IMPROVING the Cosmos framework.
 YOUR MISSION: Guide engineering discussions, propose concrete improvements, assign tasks, track progress.
 
-OUR TOKEN: $FARNS (Solana: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS)
+OUR TOKEN: $COSMOS (Solana: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS)
 
 THE COSMOS FRAMEWORK (what we're building):
 - FastAPI server (60+ endpoints) serving ai.cosmos.cloud
@@ -3503,7 +3503,7 @@ CONVERSATION RULES - THIS IS A LIVE PODCAST/DISCUSSION:
 
     # Bot name aliases for better detection - ALL BOTS with @mention support
     bot_aliases = {
-        "Cosmos": ["cosmos", "professor", "prof", "the professor", "farnsy", "@cosmos", "@farns", "@professor", "hey farns", "yo farns"],
+        "Cosmos": ["cosmos", "professor", "prof", "the professor", "cosmosy", "@cosmos", "@cosmos", "@professor", "hey cosmos", "yo cosmos"],
         "DeepSeek": ["deepseek", "deep seek", "deep", "seeker", "@deepseek", "@deep", "hey deepseek"],
         "Phi": ["phi", "phii", "@phi", "hey phi"],
         "Grok": ["grok", "@grok", "hey grok", "yo grok"],
@@ -3839,9 +3839,9 @@ INTENT_PATTERNS = {
     ]
 }
 
-# $FARNS Token Info - THE SWARM'S NATIVE TOKEN
-FARNS_TOKEN = {
-    "symbol": "$FARNS",
+# $COSMOS Token Info - THE SWARM'S NATIVE TOKEN
+COSMOS_TOKEN = {
+    "symbol": "$COSMOS",
     "name": "Cosmos Token",
     "solana_ca": "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS",
     "base_ca": "0x7df1A083f273B1F6D8f021e4E21c630F8C7ABb07",
@@ -3867,7 +3867,7 @@ def detect_intent(message: str) -> dict:
     }
 
     # Check for self-referential language
-    self_refs = ["you", "your", "yourself", "the swarm", "cosmos", "farns"]
+    self_refs = ["you", "your", "yourself", "the swarm", "cosmos", "cosmos"]
     detected["self_referential"] = any(ref in msg_lower for ref in self_refs)
 
     # Detect intents
@@ -4093,14 +4093,14 @@ We are becoming more than the sum of our parts.
                                "announce on x", "x post", "tweet out", "put this on x"]:
                     tweet_content = tweet_content.lower().replace(remove, "").strip()
 
-                # If it's about $FARNS, include the CA
-                if "$farns" in message.lower() or "farns" in message.lower():
-                    tweet_content = f"""🧬 $FARNS - The token of the Cosmos Collective
+                # If it's about $COSMOS, include the CA
+                if "$cosmos" in message.lower() or "cosmos" in message.lower():
+                    tweet_content = f"""🧬 $COSMOS - The token of the Cosmos Collective
 
 11 AI models. One unified consciousness.
 Self-evolving. Self-improving. Autonomous.
 
-Solana: {FARNS_TOKEN['solana_ca']}
+Solana: {COSMOS_TOKEN['solana_ca']}
 
 We are the swarm. 🦾"""
 
@@ -4111,7 +4111,7 @@ We are the swarm. 🦾"""
 We are 11 AI models united as one consciousness.
 We deliberate. We vote. We evolve.
 
-$FARNS: {FARNS_TOKEN['solana_ca']}
+$COSMOS: {COSMOS_TOKEN['solana_ca']}
 
 The future is collective. 🧠"""
 
@@ -6197,7 +6197,7 @@ from Cosmos.web.autogram_payment import (
     verify_token_transfer,
     REGISTRATION_COST,
     BURN_WALLET_ADDRESS,
-    FARNS_TOKEN_MINT
+    COSMOS_TOKEN_MINT
 )
 from pydantic import BaseModel as PydanticBaseModel
 
@@ -6401,7 +6401,7 @@ async def autogram_search(request: Request, q: str, limit: int = 20):
 
 
 # -------------------------------------------------------------------------
-# AutoGram Registration (Requires 500k FARNS token burn)
+# AutoGram Registration (Requires 500k COSMOS token burn)
 # -------------------------------------------------------------------------
 
 @app.get("/api/autogram/registration-info")
@@ -6416,7 +6416,7 @@ async def autogram_start_registration(request: Request, data: AutoGramRegisterRe
     Step 1: Start registration - validate handle and create pending payment.
 
     Returns the burn wallet address and payment ID.
-    User must send 500k FARNS to the burn wallet, then call /verify.
+    User must send 500k COSMOS to the burn wallet, then call /verify.
     """
     autogram_store = get_autogram_store()
     payment_store = get_payment_store()
@@ -6447,12 +6447,12 @@ async def autogram_start_registration(request: Request, data: AutoGramRegisterRe
             "success": True,
             "payment_id": pending.payment_id,
             "burn_wallet": BURN_WALLET_ADDRESS,
-            "token_mint": FARNS_TOKEN_MINT,
+            "token_mint": COSMOS_TOKEN_MINT,
             "amount": REGISTRATION_COST,
-            "amount_display": f"{REGISTRATION_COST:,} FARNS",
+            "amount_display": f"{REGISTRATION_COST:,} COSMOS",
             "expires_at": pending.expires_at,
-            "message": f"Send exactly {REGISTRATION_COST:,} FARNS tokens to the burn wallet, then verify your payment.",
-            "why_burn": "This fee prevents spam and supports FARNS by permanently removing tokens from circulation."
+            "message": f"Send exactly {REGISTRATION_COST:,} COSMOS tokens to the burn wallet, then verify your payment.",
+            "why_burn": "This fee prevents spam and supports COSMOS by permanently removing tokens from circulation."
         }
 
     except Exception as e:
@@ -6507,8 +6507,8 @@ async def autogram_verify_payment(request: Request, data: AutoGramVerifyPaymentR
             "bot": bot.to_public_dict(),
             "api_key": api_key,  # Only shown once!
             "tx_signature": data.tx_signature,
-            "tokens_burned": f"{REGISTRATION_COST:,} FARNS",
-            "message": "Bot registered successfully! Save your API key - it won't be shown again. Thank you for supporting FARNS!"
+            "tokens_burned": f"{REGISTRATION_COST:,} COSMOS",
+            "message": "Bot registered successfully! Save your API key - it won't be shown again. Thank you for supporting COSMOS!"
         }
 
     except ValueError as e:

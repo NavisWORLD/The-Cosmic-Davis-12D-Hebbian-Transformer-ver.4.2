@@ -7,7 +7,7 @@ Provides a simple interface for:
 - Loading memory into Cosmos/Hermes Agent bots
 
 REQUIREMENTS:
-- Must hold 100,000+ FARNS tokens to use push features
+- Must hold 100,000+ COSMOS tokens to use push features
 - Monad wallet with MON for gas fees
 """
 
@@ -24,9 +24,9 @@ from .memvid_bridge import MemvidBridge, BotMemoryPackage
 from .protected import ChainUploader, ChainDownloader, get_fingerprint
 from .config import (
     get_config,
-    verify_farns_holdings,
-    MIN_FARNS_REQUIRED,
-    FARNS_TOKEN_MINT
+    verify_cosmos_holdings,
+    MIN_COSMOS_REQUIRED,
+    COSMOS_TOKEN_MINT
 )
 
 logger = logging.getLogger("chain_memory")
@@ -103,7 +103,7 @@ class ChainMemory:
         wallet_key: Optional[str] = None,
         rpc_url: Optional[str] = None,
         bot_type: str = "cosmos",
-        skip_farns_check: bool = False
+        skip_cosmos_check: bool = False
     ):
         """
         Initialize ChainMemory.
@@ -112,7 +112,7 @@ class ChainMemory:
             wallet_key: Private key for uploads (required for push)
             rpc_url: Monad RPC URL (uses default if not specified)
             bot_type: Type of bot ("cosmos", "clawwbot", "claude", "kimi")
-            skip_farns_check: Skip FARNS verification (for testing only)
+            skip_cosmos_check: Skip COSMOS verification (for testing only)
         """
         # Load config
         self.config = get_config()
@@ -125,14 +125,14 @@ class ChainMemory:
         self.memvid = MemvidBridge()
         self._uploader = None
         self._downloader = None
-        self._farns_verified = skip_farns_check
+        self._cosmos_verified = skip_cosmos_check
 
         logger.info(f"ChainMemory initialized for {self.bot_type}")
         logger.debug(f"Device fingerprint: {get_fingerprint()}")
 
-    async def verify_farns(self) -> Dict:
+    async def verify_cosmos(self) -> Dict:
         """
-        Verify FARNS token holdings.
+        Verify COSMOS token holdings.
 
         Required before pushing to chain.
 
@@ -145,24 +145,24 @@ class ChainMemory:
                 "error": "Solana wallet not configured. Run setup first."
             }
 
-        result = await verify_farns_holdings(self.config.solana_wallet_address)
-        self._farns_verified = result.get("verified", False)
+        result = await verify_cosmos_holdings(self.config.solana_wallet_address)
+        self._cosmos_verified = result.get("verified", False)
 
-        if self._farns_verified:
-            logger.info(f"FARNS verified: {result.get('balance', 0):,} FARNS")
+        if self._cosmos_verified:
+            logger.info(f"COSMOS verified: {result.get('balance', 0):,} COSMOS")
         else:
-            logger.warning(f"FARNS verification failed: {result.get('error')}")
+            logger.warning(f"COSMOS verification failed: {result.get('error')}")
 
         return result
 
-    def _require_farns(self):
-        """Raise error if FARNS not verified."""
-        if not self._farns_verified:
+    def _require_cosmos(self):
+        """Raise error if COSMOS not verified."""
+        if not self._cosmos_verified:
             raise PermissionError(
-                f"FARNS token verification required!\n\n"
-                f"You must hold at least {MIN_FARNS_REQUIRED:,} FARNS tokens to use Chain Memory.\n"
-                f"FARNS Token: {FARNS_TOKEN_MINT}\n"
-                f"Buy FARNS: https://pump.fun/coin/{FARNS_TOKEN_MINT}\n\n"
+                f"COSMOS token verification required!\n\n"
+                f"You must hold at least {MIN_COSMOS_REQUIRED:,} COSMOS tokens to use Chain Memory.\n"
+                f"COSMOS Token: {COSMOS_TOKEN_MINT}\n"
+                f"Buy COSMOS: https://pump.fun/coin/{COSMOS_TOKEN_MINT}\n\n"
                 f"Run 'python -m cosmos.integration.chain_memory.setup' to configure."
             )
 
@@ -230,10 +230,10 @@ class ChainMemory:
         """
         Push bot memory to Monad blockchain.
 
-        REQUIRES: Must hold 100,000+ FARNS tokens!
+        REQUIRES: Must hold 100,000+ COSMOS tokens!
 
         Steps:
-        1. Verify FARNS holdings
+        1. Verify COSMOS holdings
         2. Extract memory from bot
         3. Encode to MP4 using memvid
         4. Upload to Monad as chunked calldata
@@ -248,18 +248,18 @@ class ChainMemory:
             MemoryRecord with transaction details
 
         Raises:
-            PermissionError: If FARNS verification fails
+            PermissionError: If COSMOS verification fails
         """
         logger.info(f"Pushing memory: {title}")
 
-        # Step 0: Verify FARNS holdings
-        if not self._farns_verified:
+        # Step 0: Verify COSMOS holdings
+        if not self._cosmos_verified:
             if on_progress:
-                on_progress(0, 5, "Verifying FARNS holdings...")
+                on_progress(0, 5, "Verifying COSMOS holdings...")
 
-            result = await self.verify_farns()
+            result = await self.verify_cosmos()
             if not result.get("verified"):
-                self._require_farns()
+                self._require_cosmos()
 
         # Step 1: Extract memory
         if on_progress:

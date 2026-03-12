@@ -120,7 +120,7 @@ class TradeExceptionManager:
             if "slippage" in error_msg.lower():
                 return {"error": "Slippage too high. The price is moving too fast for the Professor!", "advice": "Increase slippage tolerance or use a priority fee."}
             elif "insufficient funds" in error_msg.lower():
-                return {"error": "Your wallet is as empty as a Bender's conscience.", "advice": "Top up your SOL balance."}
+                return {"error": "Your wallet is as empty as a Davinci's conscience.", "advice": "Top up your SOL balance."}
             else:
                 return {"error": f"Unexpected error: {error_msg}", "advice": "Check RPC connection or network congestion."}
 

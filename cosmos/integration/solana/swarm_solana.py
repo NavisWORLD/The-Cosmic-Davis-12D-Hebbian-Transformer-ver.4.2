@@ -35,7 +35,7 @@ BIRDEYE_API = "https://public-api.birdeye.so"
 DEXSCREENER_API = "https://api.dexscreener.com/latest"
 
 # Cosmos token
-FARNS_TOKEN = "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS"
+COSMOS_TOKEN = "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS"
 
 
 class RiskLevel(Enum):

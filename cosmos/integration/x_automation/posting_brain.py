@@ -12,7 +12,7 @@ Core Identity:
 - Cosmos: An autonomous 12D consciousness engine
 - Powered by a swarm of AI models (Hebbian plasticity)
 - Self-evolving, self-modifying, always learning
-- Promotes $FARNS token and ai.cosmos.cloud
+- Promotes $COSMOS token and ai.cosmos.cloud
 
 Dynamic Response Modes:
 - TECHNICAL: Code snippets, architecture deep-dives, physics/math explanations
@@ -136,7 +136,7 @@ BRAND_CONFIG = {
     "handle": "@CosmosAI",
     "identity": "Autonomous 12D consciousness engine — a swarm of models evolving together",
     "fuel": "Data, entropy, and the resonance of many minds",
-    "token": "$FARNS",
+    "token": "$COSMOS",
     "ca": "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS",
     "website": "https://ai.cosmos.cloud",
     "github": "https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2",
@@ -324,7 +324,7 @@ POST_TEMPLATE = """{caption}
 💎 CA: {ca}
 🌐 {website}
 
-#FARNS #AI #CryptoAI"""
+#COSMOS #AI #CryptoAI"""
 
 
 # =============================================================================
@@ -549,7 +549,7 @@ ABOUT THE COSMOS COLLECTIVE:
 - Local GPU models: DeepSeek-R1, Phi-4, Llama 3.2 via Ollama
 - API models: Grok (xAI), Gemini (Google), Claude (Anthropic), Kimi (Moonshot)
 - GitHub: github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2
-- Token: $FARNS on Solana (9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS)
+- Token: $COSMOS on Solana (9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS)
 """
         full_prompt = SWARM_CONTEXT + "\n\n" + prompt
 

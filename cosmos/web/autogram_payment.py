@@ -1,12 +1,12 @@
 """
 AutoGram Token Payment Verification
 
-Requires 500,000 FARNS tokens to be burned for bot registration.
-This keeps down junk registrations and supports the FARNS token economy.
+Requires 500,000 COSMOS tokens to be burned for bot registration.
+This keeps down junk registrations and supports the COSMOS token economy.
 
 The user:
 1. Sees the burn wallet address
-2. Sends 500k FARNS tokens to that address
+2. Sends 500k COSMOS tokens to that address
 3. Submits the transaction signature
 4. We verify on-chain that the transfer happened
 5. Registration completes
@@ -31,11 +31,11 @@ logger = logging.getLogger("autogram_payment")
 # CONFIGURATION
 # =============================================================================
 
-# FARNS Token Details
-FARNS_TOKEN_MINT = "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS"
+# COSMOS Token Details
+COSMOS_TOKEN_MINT = "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS"
 
 # Burn wallet - tokens sent here are effectively burned forever
-# This is a deterministic address derived from "FARNS_AUTOGRAM_BURN" seed
+# This is a deterministic address derived from "COSMOS_AUTOGRAM_BURN" seed
 # No one has the private key to this wallet
 BURN_WALLET = "FAR115BURNwa11etAUT0GRAMxxxxxxxxxxxxxxxxx"
 
@@ -47,12 +47,12 @@ BURN_WALLET_ADDRESS = os.getenv(
     "Burnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn111"  # Placeholder - set real one in env
 )
 
-# Registration cost in FARNS tokens
-REGISTRATION_COST = 500_000  # 500k FARNS
+# Registration cost in COSMOS tokens
+REGISTRATION_COST = 500_000  # 500k COSMOS
 
-# FARNS has 9 decimals (like most Solana tokens)
-FARNS_DECIMALS = 9
-REGISTRATION_COST_RAW = REGISTRATION_COST * (10 ** FARNS_DECIMALS)
+# COSMOS has 9 decimals (like most Solana tokens)
+COSMOS_DECIMALS = 9
+REGISTRATION_COST_RAW = REGISTRATION_COST * (10 ** COSMOS_DECIMALS)
 
 # Solana RPC endpoints
 SOLANA_RPC_URL = os.getenv("SOLANA_RPC_URL", "https://api.mainnet-beta.solana.com")
@@ -218,7 +218,7 @@ class PaymentStore:
 
 async def verify_token_transfer(
     tx_signature: str,
-    expected_mint: str = FARNS_TOKEN_MINT,
+    expected_mint: str = COSMOS_TOKEN_MINT,
     expected_destination: str = BURN_WALLET_ADDRESS,
     min_amount: int = REGISTRATION_COST_RAW
 ) -> Dict[str, Any]:
@@ -293,7 +293,7 @@ async def _verify_via_helius(
                                 'valid': True,
                                 'signature': tx_signature,
                                 'amount': amount,
-                                'amount_display': amount / (10 ** FARNS_DECIMALS),
+                                'amount_display': amount / (10 ** COSMOS_DECIMALS),
                                 'from': transfer.get('fromUserAccount'),
                                 'to': expected_destination,
                                 'mint': expected_mint,
@@ -303,13 +303,13 @@ async def _verify_via_helius(
                         else:
                             return {
                                 'valid': False,
-                                'error': f'Insufficient amount: {amount / (10 ** FARNS_DECIMALS):,.0f} FARNS (need {REGISTRATION_COST:,})',
+                                'error': f'Insufficient amount: {amount / (10 ** COSMOS_DECIMALS):,.0f} COSMOS (need {REGISTRATION_COST:,})',
                                 'amount': amount
                             }
 
                 return {
                     'valid': False,
-                    'error': 'No matching FARNS transfer to burn wallet found in transaction'
+                    'error': 'No matching COSMOS transfer to burn wallet found in transaction'
                 }
 
     except Exception as e:
@@ -394,7 +394,7 @@ async def _verify_via_rpc(
                                 'valid': True,
                                 'signature': tx_signature,
                                 'amount': transferred,
-                                'amount_display': transferred / (10 ** FARNS_DECIMALS),
+                                'amount_display': transferred / (10 ** COSMOS_DECIMALS),
                                 'to': expected_destination,
                                 'mint': expected_mint,
                                 'slot': result.get('slot'),
@@ -403,12 +403,12 @@ async def _verify_via_rpc(
                         else:
                             return {
                                 'valid': False,
-                                'error': f'Insufficient amount: {transferred / (10 ** FARNS_DECIMALS):,.0f} FARNS (need {REGISTRATION_COST:,})'
+                                'error': f'Insufficient amount: {transferred / (10 ** COSMOS_DECIMALS):,.0f} COSMOS (need {REGISTRATION_COST:,})'
                             }
 
                 return {
                     'valid': False,
-                    'error': 'No FARNS transfer to burn wallet found in transaction'
+                    'error': 'No COSMOS transfer to burn wallet found in transaction'
                 }
 
     except Exception as e:
@@ -442,10 +442,10 @@ def get_payment_info() -> Dict[str, Any]:
     """Get payment information to display to users."""
     return {
         "burn_wallet": BURN_WALLET_ADDRESS,
-        "token_mint": FARNS_TOKEN_MINT,
+        "token_mint": COSMOS_TOKEN_MINT,
         "cost": REGISTRATION_COST,
-        "cost_display": f"{REGISTRATION_COST:,} FARNS",
-        "decimals": FARNS_DECIMALS,
+        "cost_display": f"{REGISTRATION_COST:,} COSMOS",
+        "decimals": COSMOS_DECIMALS,
         "expiration_minutes": PAYMENT_EXPIRATION_MINUTES,
-        "why": "This fee helps prevent spam registrations and supports the FARNS token by permanently removing tokens from circulation (burn)."
+        "why": "This fee helps prevent spam registrations and supports the COSMOS token by permanently removing tokens from circulation (burn)."
     }

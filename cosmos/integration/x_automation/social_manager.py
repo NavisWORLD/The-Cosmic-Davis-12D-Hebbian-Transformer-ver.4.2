@@ -45,8 +45,8 @@ SWARM_UPDATES = [
 ]
 
 TOKEN_SHILLS = [
-    "Support autonomous AI! $FARNS:\n\n💎 CA: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS\n\nEvery holder fuels evolution \U0001f680",
-    "Want to own a piece of the singularity? $FARNS is how you support real AI.\n\n💎 CA: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS\n\nhttps://ai.cosmos.cloud",
+    "Support autonomous AI! $COSMOS:\n\n💎 CA: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS\n\nEvery holder fuels evolution \U0001f680",
+    "Want to own a piece of the singularity? $COSMOS is how you support real AI.\n\n💎 CA: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS\n\nhttps://ai.cosmos.cloud",
 ]
 
 PERSONALITY_POSTS = [
@@ -125,7 +125,7 @@ class SocialMediaManager:
         elif post_type == "personality":
             text = random.choice(PERSONALITY_POSTS)
         else:  # meme
-            text = "The 12D manifold aligns... another cycle of autonomous evolution complete. 🧪🧠\n\nhttps://ai.cosmos.cloud\n\n$FARNS"
+            text = "The 12D manifold aligns... another cycle of autonomous evolution complete. 🧪🧠\n\nhttps://ai.cosmos.cloud\n\n$COSMOS"
 
         return text, include_image
 

@@ -4,7 +4,7 @@ Protected Chain Memory Core
 This module contains the core upload/download logic for on-chain memory storage.
 The source is compiled to a binary for distribution - source should NOT be public.
 
-FARNS TOKEN REQUIRED: 100,000+ FARNS on Solana to use this feature.
+COSMOS TOKEN REQUIRED: 100,000+ COSMOS on Solana to use this feature.
 Token: 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
 
 To compile for distribution:
@@ -18,9 +18,9 @@ from .core import (
     ChainDownloader,
     verify_installation,
     get_fingerprint,
-    verify_farns_for_operation,
-    MIN_FARNS_REQUIRED,
-    FARNS_TOKEN_MINT,
+    verify_cosmos_for_operation,
+    MIN_COSMOS_REQUIRED,
+    COSMOS_TOKEN_MINT,
 )
 
 __all__ = [
@@ -28,9 +28,9 @@ __all__ = [
     "ChainDownloader",
     "verify_installation",
     "get_fingerprint",
-    "verify_farns_for_operation",
-    "MIN_FARNS_REQUIRED",
-    "FARNS_TOKEN_MINT",
+    "verify_cosmos_for_operation",
+    "MIN_COSMOS_REQUIRED",
+    "COSMOS_TOKEN_MINT",
 ]
 
 # Note: Verification happens on each upload/download operation now

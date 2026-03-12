@@ -5,7 +5,7 @@ Store your AI bot's memory permanently on Monad blockchain.
 Uses memvid for efficient encoding and BetterClips-style calldata storage.
 
 REQUIREMENTS:
-- Must hold 100,000+ FARNS tokens (Solana) to use this feature
+- Must hold 100,000+ COSMOS tokens (Solana) to use this feature
 - Monad wallet with MON for gas fees
 
 SUPPORTED BOTS:
@@ -33,10 +33,10 @@ from .config import (
     ChainMemoryConfig,
     get_config,
     save_config,
-    verify_farns_holdings,
+    verify_cosmos_holdings,
     check_monad_balance,
-    MIN_FARNS_REQUIRED,
-    FARNS_TOKEN_MINT,
+    MIN_COSMOS_REQUIRED,
+    COSMOS_TOKEN_MINT,
 )
 
 from .memory_manager import ChainMemory
@@ -51,10 +51,10 @@ __all__ = [
     "ChainMemoryConfig",
     "get_config",
     "save_config",
-    "verify_farns_holdings",
+    "verify_cosmos_holdings",
     "check_monad_balance",
-    "MIN_FARNS_REQUIRED",
-    "FARNS_TOKEN_MINT",
+    "MIN_COSMOS_REQUIRED",
+    "COSMOS_TOKEN_MINT",
 
     # Core
     "ChainMemory",

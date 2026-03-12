@@ -1,5 +1,5 @@
 """
-FARNS - Feature Articulated Request Network System
+COSMOS - Feature Articulated Request Network System
 ====================================================
 
 High-speed bidirectional dialogue mesh protocol for the Cosmos AI Swarm.
@@ -12,5 +12,5 @@ Membership: Core nodes (auto) + PRO nodes (manual approval, RTX 4090+, <30ms lat
 """
 
 __version__ = "2.0.0"
-FARNS_PORT = 9999
+COSMOS_PORT = 9999
 PROTOCOL_VERSION = 2

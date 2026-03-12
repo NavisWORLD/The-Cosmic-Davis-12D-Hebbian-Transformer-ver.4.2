@@ -243,17 +243,17 @@ class QuantumTradingBroadcaster:
 
 
 # =============================================================================
-# FARNS TOKEN GATE — Balance verification for premium access
+# COSMOS TOKEN GATE — Balance verification for premium access
 # =============================================================================
 
-FARNS_TOKEN_MINT = "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS"
-FARNS_DECIMALS = 9
-MIN_FARNS_HOLDING = 100_000  # Minimum FARNS to access quantum signals
+COSMOS_TOKEN_MINT = "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS"
+COSMOS_DECIMALS = 9
+MIN_COSMOS_HOLDING = 100_000  # Minimum COSMOS to access quantum signals
 
 
-async def check_farns_balance(wallet_address: str, min_amount: int = MIN_FARNS_HOLDING) -> dict:
+async def check_cosmos_balance(wallet_address: str, min_amount: int = MIN_COSMOS_HOLDING) -> dict:
     """
-    Check FARNS token balance for a wallet via Solana RPC.
+    Check COSMOS token balance for a wallet via Solana RPC.
     Read-only check — no burn required.
 
     Returns: { has_access: bool, balance: int, required: int }
@@ -272,7 +272,7 @@ async def check_farns_balance(wallet_address: str, min_amount: int = MIN_FARNS_H
             "method": "getTokenAccountsByOwner",
             "params": [
                 wallet_address,
-                {"mint": FARNS_TOKEN_MINT},
+                {"mint": COSMOS_TOKEN_MINT},
                 {"encoding": "jsonParsed"}
             ]
         }
@@ -288,7 +288,7 @@ async def check_farns_balance(wallet_address: str, min_amount: int = MIN_FARNS_H
             info = account.get("account", {}).get("data", {}).get("parsed", {}).get("info", {})
             token_amount = info.get("tokenAmount", {})
             amount = int(token_amount.get("amount", "0"))
-            decimals = token_amount.get("decimals", FARNS_DECIMALS)
+            decimals = token_amount.get("decimals", COSMOS_DECIMALS)
             total_balance += amount / (10 ** decimals)
 
         return {
@@ -299,7 +299,7 @@ async def check_farns_balance(wallet_address: str, min_amount: int = MIN_FARNS_H
         }
 
     except Exception as e:
-        logger.debug(f"FARNS balance check failed for {wallet_address[:8]}...: {e}")
+        logger.debug(f"COSMOS balance check failed for {wallet_address[:8]}...: {e}")
         return {
             "has_access": False,
             "balance": 0,

@@ -10,7 +10,7 @@ Supports ANY provider type from AGENT_CONFIGS:
 - Ollama local models (phi, deepseek, qwen2_5, etc.) — zero cost
 - API bots (grok, gemini, kimi, claude) — uses their existing providers
 - CLI bridges (claude_cli, gemini_cli)
-- FARNS remote (qwen3_coder) — cross-mesh via ROUTE packets
+- COSMOS remote (qwen3_coder) — cross-mesh via ROUTE packets
 
 "The swarm doesn't sleep. It thinks." — The Collective
 """

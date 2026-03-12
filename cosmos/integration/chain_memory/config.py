@@ -1,7 +1,7 @@
 """
 Chain Memory Configuration
 
-Handles user wallet setup, FARNS token verification, and configuration.
+Handles user wallet setup, COSMOS token verification, and configuration.
 """
 
 import os
@@ -24,14 +24,14 @@ STATE_FILE = CONFIG_DIR / "state.json"
 MEMORIES_FILE = CONFIG_DIR / "memories.json"
 
 # =============================================================================
-# FARNS TOKEN VERIFICATION
+# COSMOS TOKEN VERIFICATION
 # =============================================================================
 
-# FARNS Token on Solana
-FARNS_TOKEN_MINT = "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS"
+# COSMOS Token on Solana
+COSMOS_TOKEN_MINT = "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS"
 
-# Minimum FARNS required to use chain memory (anti-spam + supporter verification)
-MIN_FARNS_REQUIRED = 100_000  # 100k FARNS minimum to use this feature
+# Minimum COSMOS required to use chain memory (anti-spam + supporter verification)
+MIN_COSMOS_REQUIRED = 100_000  # 100k COSMOS minimum to use this feature
 
 
 # =============================================================================
@@ -45,7 +45,7 @@ class ChainMemoryConfig:
     monad_private_key: Optional[str] = None
     monad_rpc: str = "https://rpc.monad.xyz"
 
-    # Solana wallet (for FARNS verification)
+    # Solana wallet (for COSMOS verification)
     solana_wallet_address: Optional[str] = None
 
     # Auto-save settings
@@ -58,9 +58,9 @@ class ChainMemoryConfig:
     # Bot type
     bot_type: str = "cosmos"  # cosmos, clawwbot, claude, kimi, other
 
-    # FARNS verification
-    farns_verified: bool = False
-    farns_balance: int = 0
+    # COSMOS verification
+    cosmos_verified: bool = False
+    cosmos_balance: int = 0
     last_verification: Optional[str] = None
 
     def to_dict(self) -> Dict:
@@ -105,12 +105,12 @@ class ChainMemoryConfig:
 
 
 # =============================================================================
-# FARNS TOKEN VERIFICATION
+# COSMOS TOKEN VERIFICATION
 # =============================================================================
 
-async def verify_farns_holdings(solana_address: str) -> Dict[str, Any]:
+async def verify_cosmos_holdings(solana_address: str) -> Dict[str, Any]:
     """
-    Verify user holds FARNS tokens on Solana.
+    Verify user holds COSMOS tokens on Solana.
 
     Required to use chain memory feature.
 
@@ -126,7 +126,7 @@ async def verify_farns_holdings(solana_address: str) -> Dict[str, Any]:
         "verified": False,
         "address": solana_address,
         "balance": 0,
-        "required": MIN_FARNS_REQUIRED,
+        "required": MIN_COSMOS_REQUIRED,
         "error": None
     }
 
@@ -146,7 +146,7 @@ async def verify_farns_holdings(solana_address: str) -> Dict[str, Any]:
                 "method": "getTokenAccountsByOwner",
                 "params": [
                     solana_address,
-                    {"mint": FARNS_TOKEN_MINT},
+                    {"mint": COSMOS_TOKEN_MINT},
                     {"encoding": "jsonParsed"}
                 ]
             }
@@ -161,10 +161,10 @@ async def verify_farns_holdings(solana_address: str) -> Dict[str, Any]:
                 accounts = data.get("result", {}).get("value", [])
 
                 if not accounts:
-                    result["error"] = "No FARNS tokens found in wallet"
+                    result["error"] = "No COSMOS tokens found in wallet"
                     return result
 
-                # Sum up all FARNS balances
+                # Sum up all COSMOS balances
                 total_balance = 0
                 for account in accounts:
                     token_amount = account.get("account", {}).get("data", {}).get("parsed", {}).get("info", {}).get("tokenAmount", {})
@@ -173,23 +173,23 @@ async def verify_farns_holdings(solana_address: str) -> Dict[str, Any]:
                     total_balance += amount / (10 ** decimals)
 
                 result["balance"] = int(total_balance)
-                result["verified"] = total_balance >= MIN_FARNS_REQUIRED
+                result["verified"] = total_balance >= MIN_COSMOS_REQUIRED
 
                 if not result["verified"]:
-                    result["error"] = f"Insufficient FARNS: {int(total_balance):,} < {MIN_FARNS_REQUIRED:,} required"
+                    result["error"] = f"Insufficient COSMOS: {int(total_balance):,} < {MIN_COSMOS_REQUIRED:,} required"
 
                 return result
 
     except Exception as e:
-        logger.error(f"FARNS verification failed: {e}")
+        logger.error(f"COSMOS verification failed: {e}")
         result["error"] = str(e)
         return result
 
 
-def verify_farns_sync(solana_address: str) -> Dict[str, Any]:
-    """Synchronous wrapper for FARNS verification."""
+def verify_cosmos_sync(solana_address: str) -> Dict[str, Any]:
+    """Synchronous wrapper for COSMOS verification."""
     import asyncio
-    return asyncio.run(verify_farns_holdings(solana_address))
+    return asyncio.run(verify_cosmos_holdings(solana_address))
 
 
 # =============================================================================

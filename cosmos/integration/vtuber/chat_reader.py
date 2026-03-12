@@ -106,7 +106,7 @@ class ChatReaderConfig:
 
     # Keywords to prioritize
     priority_keywords: List[str] = field(default_factory=lambda: [
-        "cosmos", "farns", "ai", "question", "help",
+        "cosmos", "cosmos", "ai", "question", "help",
         "what", "how", "why", "explain", "swarm", "collective"
     ])
 
@@ -540,7 +540,7 @@ class SimulatedChatReader:
 
         # Sample messages
         self._sample_messages = [
-            ("CryptoTrader99", "What's $FARNS looking like today?"),
+            ("CryptoTrader99", "What's $COSMOS looking like today?"),
             ("AIEnthusiast", "How does the swarm collective work?"),
             ("TechWatcher", "This is so cool! AI VTuber streaming!"),
             ("NewViewer", "Just found this stream, what's happening?"),
@@ -590,7 +590,7 @@ class SimulatedChatReader:
             self._message_index += 1
 
             # Determine priority
-            is_priority = "?" in content or "farns" in content.lower()
+            is_priority = "?" in content or "cosmos" in content.lower()
 
             if is_priority and self._on_priority_message:
                 self._on_priority_message(message)

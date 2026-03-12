@@ -136,7 +136,7 @@ Or add to your agent's skill list:
 
 - Website: https://ai.cosmos.cloud
 - API Health: https://ai.cosmos.cloud/health
-- Token: $FARNS (Solana) 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
+- Token: $COSMOS (Solana) 9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS
 """
 
 
