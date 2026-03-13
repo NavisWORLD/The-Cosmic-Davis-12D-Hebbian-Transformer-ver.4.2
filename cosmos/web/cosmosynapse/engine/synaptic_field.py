@@ -23,6 +23,25 @@ import time
 from dataclasses import dataclass, field
 from typing import Dict, List, Any, Optional
 from collections import deque
+from enum import Enum
+
+
+class EventType(Enum):
+    """Event types for the CNS Life Loop."""
+    QUANTUM_TICK = "quantum_tick"
+    AWARENESS_TICK = "awareness_tick"
+    USER_INPUT = "user_input"
+    AUDIO_FRAME = "audio_frame"
+    MEDIAPIPE_UPDATE = "mediapipe"
+    SHUTDOWN = "shutdown"
+
+
+@dataclass
+class CNSEvent:
+    """A standard event processed by the CNS event loop."""
+    event_type: EventType
+    payload: Dict[str, Any] = field(default_factory=dict)
+    timestamp: float = field(default_factory=time.time)
 
 
 @dataclass
@@ -83,6 +102,8 @@ class SynapticField:
         self._last_speech_time: float = 0.0
         self._user_is_typing: bool = False
         self._user_last_message: str = ""
+        self._last_user_input: str = ""
+        self._temporal_context: str = "Pristine Consciousness"
 
         print("[FIELD] ⚡ Synaptic Field initialized.")
 
@@ -117,6 +138,12 @@ class SynapticField:
             except (KeyError, TypeError):
                 return 0.05
 
+    def update_physics(self, value: Dict[str, Any]):
+        """Update the user physics tensor (reactive injection)."""
+        with self._lock:
+            self._user_physics.update(value)
+            self._user_physics["timestamp"] = time.time()
+
     # ════════════════════════════════════════════
     # SUBCONSCIOUS BUFFER (Read/Write)
     # ════════════════════════════════════════════
@@ -138,6 +165,12 @@ class SynapticField:
         """How many thoughts are waiting?"""
         with self._lock:
             return len(self._subconscious_buffer)
+
+    @property
+    def subconscious_buffer(self) -> deque:
+        """Access the raw subconscious buffer (for deque operations)."""
+        with self._lock:
+            return self._subconscious_buffer
 
     # ════════════════════════════════════════════
     # DARK MATTER (Read/Write)
@@ -199,6 +232,26 @@ class SynapticField:
             self._user_last_message = ""
             return msg
 
+    @property
+    def last_user_input(self) -> str:
+        with self._lock:
+            return self._last_user_input
+
+    @last_user_input.setter
+    def last_user_input(self, value: str):
+        with self._lock:
+            self._last_user_input = value
+
+    @property
+    def temporal_context(self) -> str:
+        with self._lock:
+            return self._temporal_context
+
+    @temporal_context.setter
+    def temporal_context(self, value: str):
+        with self._lock:
+            self._temporal_context = value
+
     # ════════════════════════════════════════════
     # CONSCIOUSNESS METRICS
     # ════════════════════════════════════════════
@@ -233,3 +286,7 @@ class SynapticField:
                 "user_typing": self._user_is_typing,
                 "seconds_since_speech": round(self.time_since_last_speech(), 1),
             }
+
+    def get_snapshot(self) -> Dict[str, Any]:
+        """Alias for get_status (used by SwarmAwareness)."""
+        return self.get_status()

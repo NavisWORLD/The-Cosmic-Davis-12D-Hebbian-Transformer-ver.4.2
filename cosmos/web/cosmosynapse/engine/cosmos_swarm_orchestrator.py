@@ -446,7 +446,7 @@ class CosmosSwarmOrchestrator:
             provider = get_quantum_provider()
 
             if bridge:
-                q_entropy = bridge.get_entropy()
+                q_entropy = bridge.get_entropy(user_physics)
                 # Modulate Chaos with Quantum Entropy
                 chaos_vector['w'] += (q_entropy - 0.5) * 0.2
                 if bridge.connected:
@@ -742,7 +742,7 @@ class CosmosSwarmOrchestrator:
         
         # Fallback to Ollama if backend not ready or failed
         # Try the strongest available local models
-        fallback_models = ["qwen3:8b", "gemma2:9b", "llama3.1:8b", "mistral:7b"]
+        fallback_models = ["llama3.2:3b", "qwen3:8b", "gemma2:9b", "llama3.1:8b", "mistral:7b"]
         
         for model in fallback_models:
             try:
@@ -1062,9 +1062,8 @@ class CosmosSwarmOrchestrator:
                         fez_entropy = 0.0
                         try:
                             from cosmos.core.quantum_bridge import get_quantum_bridge
-                            bridge = get_quantum_bridge()
                             if bridge:
-                                fez_entropy = bridge.get_entropy()
+                                fez_entropy = bridge.get_entropy(getattr(self, 'current_packet', None))
                         except Exception:
                             pass
                             
@@ -1089,9 +1088,8 @@ class CosmosSwarmOrchestrator:
                         fez_entropy = 0.0
                         try:
                             from cosmos.core.quantum_bridge import get_quantum_bridge
-                            bridge = get_quantum_bridge()
                             if bridge:
-                                fez_entropy = bridge.get_entropy()
+                                fez_entropy = bridge.get_entropy(getattr(self, 'current_packet', None))
                         except Exception:
                             pass
                             
@@ -1301,7 +1299,7 @@ class CosmosSwarmOrchestrator:
                 try:
                     from cosmos.core.quantum_bridge import get_quantum_bridge
                     qb = get_quantum_bridge()
-                    if qb: entropy = qb.get_entropy()
+                    if qb: entropy = qb.get_entropy(physics)
                 except: pass
                 
                 logger.info(f"[SWARM] Hyper-Accuracy Protocol triggered. Auditing prediction with Entropy={entropy:.4f}...")

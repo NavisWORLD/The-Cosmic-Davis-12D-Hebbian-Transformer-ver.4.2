@@ -38,7 +38,16 @@ class ClaudeCodeProvider:
         if claude_path:
             self.claude_path = claude_path
         elif os.name == 'nt':  # Windows
-            self.claude_path = "claude"  # Assume in PATH
+            import shutil
+            # Try to find the actual executable name on Windows
+            self.claude_path = (
+                shutil.which("claude") or 
+                shutil.which("claude.exe") or 
+                shutil.which("claude-code") or 
+                shutil.which("claude-code.exe") or
+                shutil.which("claude-code.cmd") or
+                "claude"
+            )
         else:
             self.claude_path = os.path.expanduser("~/.local/bin/claude")
         

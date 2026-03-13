@@ -388,7 +388,7 @@ def get_cosmos_cns():
 
             # Import the internal module
             import cosmosynapse
-            from cosmosynapse.engine.cns_core import CosmosCNS
+            from cosmosynapse.engine.cosmos_cns import CosmosCNS
             
             # Pass server interface for callbacks if needed
             # We can use a simple wrapper or just pass None for now and set it later
@@ -6285,8 +6285,7 @@ async def configure_quantum_bridge(config: QuantumConfig):
             # Persist to .env securely - HARDCODED PATH FALLBACK
             # Try PROJECT_ROOT first
             env_paths = [
-                PROJECT_ROOT / ".env",
-                Path("c:/Users/corys/The-Cosmic-Davis-12D-Hebbian-Transformer--1/cosmos/.env")
+                PROJECT_ROOT / ".env"
             ]
             
             saved_to = []

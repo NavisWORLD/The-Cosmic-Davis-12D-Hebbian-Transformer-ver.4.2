@@ -137,7 +137,7 @@ class CosmosMediaGenerator:
                 from Cosmos.core.quantum_bridge import get_quantum_bridge
                 qb = get_quantum_bridge()
                 if qb:
-                    cst["quantum_entropy"] = qb.get_entropy()
+                    cst["quantum_entropy"] = qb.get_entropy(physics)
         except Exception as e:
             logger.debug(f"[MEDIA] CST context read failed (using defaults): {e}")
 

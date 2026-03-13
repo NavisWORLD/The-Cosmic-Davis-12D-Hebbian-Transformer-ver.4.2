@@ -21,7 +21,7 @@ from loguru import logger
 
 # Try import quantum bridge for state awareness
 try:
-    from Cosmos.web.cosmosynapse.engine.cns_core import get_cns
+    from Cosmos.web.cosmosynapse.engine.cosmos_cns import get_cns
     CNS_AVAILABLE = True
 except ImportError:
     CNS_AVAILABLE = False

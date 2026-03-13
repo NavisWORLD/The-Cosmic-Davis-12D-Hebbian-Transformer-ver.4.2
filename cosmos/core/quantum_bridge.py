@@ -28,7 +28,8 @@ except ImportError:
 
 class QuantumEntanglementBridge:
     def __init__(self, api_token: Optional[str] = None):
-        self.api_token = api_token
+        import os
+        self.api_token = api_token or os.environ.get("IBM_QUANTUM_TOKEN")
         self.service = None
         self.backend = None
         self.connected = False
@@ -37,12 +38,13 @@ class QuantumEntanglementBridge:
         self.min_buffer_size = 10
         self.is_refilling = False
         self.last_error = None
+        self.last_physics: Optional[dict] = None  # Cache for background refills
         
         # Log init
         with open("quantum_debug.log", "a") as f:
             f.write(f"\n[INIT] Bridge Initialized. Token present: {bool(api_token)}. Qiskit Avail: {QISKIT_AVAILABLE}\n")
 
-        if QISKIT_AVAILABLE and api_token:
+        if QISKIT_AVAILABLE and self.api_token:
             self._connect()
         elif not QISKIT_AVAILABLE:
             self.last_error = f"Qiskit Import Error: {QISKIT_ERROR}"
@@ -63,7 +65,11 @@ class QuantumEntanglementBridge:
         return self.connected
 
     def _connect(self):
-        """Connect to IBM Quantum Service."""
+        """Internal connection logic - silences Qiskit warnings."""
+        import logging as py_logging
+        py_logging.getLogger("qiskit_ibm_runtime").setLevel(py_logging.ERROR)
+        py_logging.getLogger("qiskit_runtime_service").setLevel(py_logging.ERROR)
+
         import traceback
         
         with open("quantum_debug.log", "a") as f:
@@ -90,8 +96,8 @@ class QuantumEntanglementBridge:
                 f.write(f"[CONNECT] Failed: {error_msg}\n")
             return
             
-        token_str = f"{self.api_token[:5]}...{self.api_token[-5:]}" if self.api_token else "None"
-        print(f"[QUANTUM] Attempting connection with token: {token_str}")
+        if self.api_token:
+            print(f"[QUANTUM] Attempting connection to IBM Quantum...")
         
         try:
             # 1. Initialize Service
@@ -99,26 +105,22 @@ class QuantumEntanglementBridge:
                 self.service = QiskitRuntimeService(channel="ibm_quantum_platform", token=self.api_token)
             except Exception as e:
                 # Fallback: Try 'ibm_cloud' channel or just default if token implies it
-                print(f"[QUANTUM] 'ibm_quantum_platform' channel failed ({e}). Trying default...")
+                logger.debug(f"[QUANTUM] 'ibm_quantum_platform' failed: {e}")
                 self.service = QiskitRuntimeService(token=self.api_token)
 
-            print(f"[QUANTUM] Service initialized. Finding backend...")
-
             # 2. Find Backend
-            # Try to find a real quantum computer first
             try:
                 self.backend = self.service.least_busy(operational=True, simulator=False)
-                print(f"[QUANTUM] Connected to REAL backend: {self.backend.name}")
+                logger.info(f"[QUANTUM] Connected to REAL backend: {self.backend.name}")
             except Exception:
-                print("[QUANTUM] No real quantum computers available. Falling back to high-fidelity simulator...")
+                logger.debug("[QUANTUM] No real quantum computers available. Trying simulator...")
                 self.backend = self.service.least_busy(operational=True, simulator=True)
-                print(f"[QUANTUM] Connected to SIMULATOR backend: {self.backend.name}")
+                logger.info(f"[QUANTUM] Connected to SIMULATOR backend: {self.backend.name}")
             
             if not self.backend:
-                raise ValueError("No operational backends found (real or simulator).")
+                raise ValueError("No operational backends found.")
 
             self.connected = True
-            
             with open("quantum_debug.log", "a") as f:
                 f.write(f"[CONNECT] Success! Backend: {self.backend.name}\n")
             
@@ -126,12 +128,16 @@ class QuantumEntanglementBridge:
             self._trigger_refill()
             
         except Exception as e:
-            print(f"[QUANTUM] Connection failed: {e}")
-            traceback.print_exc()
-            self.last_error = str(e)
+            msg = str(e)
+            if "API key could not be found" in msg or "invalid API token" in msg.lower():
+                print(f"[QUANTUM] Virtual Bridge Offline: Invalid or missing API token.")
+            else:
+                print(f"[QUANTUM] Connection failed: {msg}")
+            
+            self.last_error = msg
             self.connected = False
             with open("quantum_debug.log", "a") as f:
-                f.write(f"[CONNECT] Failed with Exception: {e}\n{traceback.format_exc()}\n")
+                f.write(f"[CONNECT] Failed: {e}\n")
 
     # ════════════════════════════════════════════════════════
     # CNS ORGAN 2: THE QUANTUM HEARTBEAT
@@ -163,11 +169,14 @@ class QuantumEntanglementBridge:
         activation = (phase_signal * w_signal * 0.6) + (q * 0.4)
         return 1 if activation > threshold else 0
 
-    def get_entropy(self) -> float:
+    def get_entropy(self, user_physics: Optional[dict] = None) -> float:
         """
         Get a single float [0.0, 1.0] derived from true quantum randomness.
         Returns pseudo-randomness if bridge is down or buffer is empty.
         """
+        if user_physics:
+            self.last_physics = user_physics
+
         if not self.connected:
             return np.random.random()
 
@@ -175,12 +184,12 @@ class QuantumEntanglementBridge:
             if self.entropy_buffer:
                 val = self.entropy_buffer.pop(0)
                 if len(self.entropy_buffer) < self.min_buffer_size and not self.is_refilling:
-                    self._trigger_refill()
+                    self._trigger_refill(user_physics or self.last_physics)
                 print(f"[QUANTUM] Entropy Consumed: {val:.4f} (Buffer: {len(self.entropy_buffer)})") 
                 return val
             else:
                 if not self.is_refilling:
-                    self._trigger_refill()
+                    self._trigger_refill(user_physics or self.last_physics)
                 return np.random.random()
 
     def _trigger_refill(self, user_physics: Optional[dict] = None):
@@ -197,13 +206,30 @@ class QuantumEntanglementBridge:
         self.is_refilling = True
         try:
             # 1. Extract Symbiotic Parameters
+            if not user_physics:
+                 user_physics = self.last_physics or {}
+            else:
+                 self.last_physics = user_physics
+
             phase = 0.0
             entropy = 0.5
             resonance = 0.0
-            if user_physics:
-                phase = user_physics.get('cst_physics', {}).get('geometric_phase_rad', 0.0)
-                entropy = user_physics.get('entropy_field', 0.5)
-                resonance = user_physics.get('resonance_scalar', 0.0)
+            
+            # Robust mapping for 12D Physics
+            cst = user_physics.get('cst_physics', {})
+            bio = user_physics.get('bio_signatures', {})
+            
+            phase = cst.get('geometric_phase_rad', user_physics.get('geometric_phase_rad', 0.0))
+            entropy = user_physics.get('entropy_field', bio.get('intensity', 0.5))
+            
+            # Resonance Mapping: Prioritize resonance_scalar, then entanglement_score, then fallback to phase synchrony
+            resonance = user_physics.get('resonance_scalar', 0.0)
+            if resonance == 0.0:
+                resonance = cst.get('entanglement_score', 0.0)
+            if resonance == 0.0:
+                # If perfect synchrony (pi/4), use high resonance
+                deviation = abs(phase - (np.pi/4))
+                resonance = max(0.0, 1.0 - (deviation / (np.pi/4)))
 
             # Map values to valid rotation angles (0 to pi)
             theta_1 = float(abs(phase) % np.pi)

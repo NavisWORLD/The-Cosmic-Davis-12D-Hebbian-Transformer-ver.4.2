@@ -8659,8 +8659,18 @@
       "created_at": "2026-02-27T20:30:47.613226",
       "author_node": "c69815d1",
       "scope": "planetary"
+    },
+    "d452e8fd4b2c6ef6805134f66172f505": {
+      "text_hash": "d452e8fd4b2c6ef6805134f66172f505",
+      "audio_hash": "9f13d6b65482394fc84da4bbe72238f011c6a24a7ee82749cb19e874d4aaeec6",
+      "file_size": 482274,
+      "duration_ms": 0,
+      "voice_id": "cosmos",
+      "created_at": "2026-03-12T00:34:19.214159",
+      "author_node": "c300c995",
+      "scope": "planetary"
     }
   },
-  "node_id": "c69815d1",
-  "updated_at": "2026-02-27T20:30:47.613226"
+  "node_id": "c300c995",
+  "updated_at": "2026-03-12T00:34:19.216156"
 }

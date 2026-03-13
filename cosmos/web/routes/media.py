@@ -577,7 +577,13 @@ async def generate_image_api(prompt: str):
             from cosmos.core.quantum_bridge import get_quantum_bridge
             bridge = get_quantum_bridge()
             if bridge:
-                fez_entropy = bridge.get_entropy()
+                physics = {}
+                try:
+                    field = s.FIELD if hasattr(s, 'FIELD') else None
+                    if field:
+                        physics = field.user_physics
+                except: pass
+                fez_entropy = bridge.get_entropy(physics)
         except Exception as e:
             logger.debug(f"[MEDIA] Quantum bridge unavailable for entropy: {e}")
             

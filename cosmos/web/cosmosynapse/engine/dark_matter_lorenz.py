@@ -77,7 +77,7 @@ class DarkMatterLorenz:
              # Lazy import to avoid circular dependencies/path issues
             from cosmos.core.quantum_bridge import get_quantum_bridge
             bridge = get_quantum_bridge()
-            q_entropy = bridge.get_entropy() # 0.0 to 1.0
+            q_entropy = bridge.get_entropy(user_physics) # 0.0 to 1.0
         except ImportError:
             # Fallback to pseudo-random if bridge not found
             q_entropy = np.random.random()

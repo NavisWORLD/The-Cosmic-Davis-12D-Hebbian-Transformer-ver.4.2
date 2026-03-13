@@ -162,7 +162,7 @@ def main():
     sock.close()
 
     if is_port_open:
-        print(f"    [WARN]  Port {args.emotion_port} is busy - Emotional API probably running externally. Skipping internal start.")
+        print(f"    [INFO]  Port {args.emotion_port} is busy - Emotional API already running externally. Using Remote API.")
         args.no_emotion = True
 
     # -------------------------------------------------------------
