@@ -23,7 +23,7 @@ import time
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Callable, Tuple
+from typing import   Optional, Callable, Tuple
 from enum import Enum
 from collections import defaultdict
 import statistics
@@ -77,7 +77,7 @@ class BenchmarkResult:
     task_id: str = ""
     error: Optional[str] = None
 
-    def overall_score(self, weights: Dict[str, float] = None) -> float:
+    def overall_score(self, weights: dict[str, float] = None) -> float:
         """Calculate weighted overall score."""
         weights = weights or {
             "success": 0.3,
@@ -113,8 +113,8 @@ class HandlerProfile:
     provider: str
 
     # Capabilities
-    capabilities: List[ProviderCapability] = field(default_factory=list)
-    benchmark_types: List[BenchmarkType] = field(default_factory=list)
+    capabilities: list[ProviderCapability] = field(default_factory=list)
+    benchmark_types: list[BenchmarkType] = field(default_factory=list)
 
     # Performance history (exponentially weighted)
     ema_latency_ms: float = 1000.0
@@ -124,7 +124,7 @@ class HandlerProfile:
 
     # Counters
     total_benchmarks: int = 0
-    recent_benchmarks: List[BenchmarkResult] = field(default_factory=list)
+    recent_benchmarks: list[BenchmarkResult] = field(default_factory=list)
 
     # Evolution state
     fitness_score: float = 0.5
@@ -190,7 +190,7 @@ class BenchmarkTask:
     prompt: str
     expected_output: Optional[str] = None  # For quality evaluation
     timeout_ms: float = 30000.0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -203,7 +203,7 @@ class TournamentResult:
     # Results
     winner_id: str
     winner_score: float
-    rankings: List[Tuple[str, float]]  # [(handler_id, score), ...]
+    rankings: list[Tuple[str, float]]  # [(handler_id, score), ...]
 
     # Timing
     started_at: datetime
@@ -211,7 +211,7 @@ class TournamentResult:
 
     # Debate outcome (if collaborative evaluation was used)
     debate_consensus: bool = False
-    debate_votes: Dict[str, str] = field(default_factory=dict)  # voter_id -> voted_for
+    debate_votes: dict[str, str] = field(default_factory=dict)  # voter_id -> voted_for
 
 
 # =============================================================================
@@ -241,18 +241,18 @@ class HandlerBenchmarkEngine:
         self.enable_collab_eval = enable_collaborative_eval
 
         # Handler profiles
-        self._profiles: Dict[str, HandlerProfile] = {}
+        self._profiles: dict[str, HandlerProfile] = {}
 
         # Provider mappings
-        self._provider_handlers: Dict[str, List[str]] = defaultdict(list)
+        self._provider_handlers: dict[str[str]] = defaultdict(list)
 
         # Benchmark history
-        self._benchmark_history: List[BenchmarkResult] = []
-        self._tournament_history: List[TournamentResult] = []
+        self._benchmark_history: list[BenchmarkResult] = []
+        self._tournament_history: list[TournamentResult] = []
 
         # Callbacks
-        self._on_benchmark_complete: List[Callable] = []
-        self._on_tournament_complete: List[Callable] = []
+        self._on_benchmark_complete: list[Callable] = []
+        self._on_tournament_complete: list[Callable] = []
         self._executor: Optional[Callable] = None  # Set externally
 
         # Lock for thread safety
@@ -505,7 +505,7 @@ class HandlerBenchmarkEngine:
 
     async def run_tournament(
         self,
-        handler_ids: List[str],
+        handler_ids: list[str],
         task: BenchmarkTask,
         top_n: int = 1,
     ) -> TournamentResult:
@@ -584,7 +584,7 @@ class HandlerBenchmarkEngine:
     async def _collaborative_evaluate(
         self,
         tournament: TournamentResult,
-        benchmark_results: List[BenchmarkResult],
+        benchmark_results: list[BenchmarkResult],
     ):
         """
         Use collaborative debate to validate/adjust tournament results.
@@ -617,9 +617,9 @@ class HandlerBenchmarkEngine:
     def select_best_handlers(
         self,
         benchmark_type: BenchmarkType,
-        required_capabilities: Optional[List[ProviderCapability]] = None,
+        required_capabilities: Optional[list[ProviderCapability]] = None,
         top_n: int = 3,
-    ) -> List[Tuple[str, float]]:
+    ) -> list[Tuple[str, float]]:
         """
         Select the best handlers for a task type based on historical performance.
 
@@ -629,7 +629,7 @@ class HandlerBenchmarkEngine:
             top_n: Number of handlers to return
 
         Returns:
-            List of (handler_id, score) tuples
+            list of (handler_id, score) tuples
         """
         candidates = []
 
@@ -656,7 +656,7 @@ class HandlerBenchmarkEngine:
     def get_handler_for_task(
         self,
         task_description: str,
-        required_capabilities: Optional[List[ProviderCapability]] = None,
+        required_capabilities: Optional[list[ProviderCapability]] = None,
     ) -> Tuple[str, HandlerProfile]:
         """
         Get the best handler for a task based on description analysis.
@@ -717,7 +717,7 @@ class HandlerBenchmarkEngine:
     def get_provider_recommendation(
         self,
         benchmark_type: BenchmarkType,
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         """
         Get provider recommendations with reasoning.
 
@@ -752,7 +752,7 @@ class HandlerBenchmarkEngine:
             "reasoning": "; ".join(reasoning_parts) if reasoning_parts else "Best available option",
         }
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get benchmark engine statistics."""
         return {
             "total_handlers": len(self._profiles),
@@ -779,7 +779,7 @@ benchmark_engine = HandlerBenchmarkEngine()
 # CONVENIENCE FUNCTIONS
 # =============================================================================
 
-def get_best_handler(task: str, capabilities: List[ProviderCapability] = None) -> Tuple[str, HandlerProfile]:
+def get_best_handler(task: str, capabilities: list[ProviderCapability] = None) -> Tuple[str, HandlerProfile]:
     """Quick function to get best handler for a task."""
     return benchmark_engine.get_handler_for_task(task, capabilities)
 

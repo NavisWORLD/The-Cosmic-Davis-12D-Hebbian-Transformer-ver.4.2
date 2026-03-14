@@ -148,7 +148,7 @@ class ClaudeTmuxManager:
                 return None
 
         try:
-            # Clear any previous output
+            # Clear dict previous output
             self._send_keys("clear")
             await asyncio.sleep(0.5)
 

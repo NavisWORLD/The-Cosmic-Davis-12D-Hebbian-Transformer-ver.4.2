@@ -18,7 +18,7 @@ import math
 import numpy as np
 import sounddevice as sd
 from collections import deque
-from typing import List, Tuple
+, Tuple
 
 # ---------------------------------------------------------------------------
 # Configuration – tweak as needed
@@ -29,7 +29,7 @@ FRAME_SIZE = int(SAMPLE_RATE * FRAME_DURATION)
 TOP_BINS = 16                # Number of frequency bins turned into tokens
 TOKEN_VOCAB = [f"<freq_{i}>" for i in range(TOP_BINS)]
 
-def magnitudes_to_tokens(mags: np.ndarray) -> List[str]:
+def magnitudes_to_tokens(mags: np.ndarray) -> list[str]:
     if mags.size == 0:
         return []
     top_idx = np.argpartition(mags, -TOP_BINS)[-TOP_BINS:]
@@ -65,7 +65,7 @@ class RealTimeAudioPipe:
             self._stream.close()
         self._thread.join(timeout=1.0)
 
-    def pop_tokens(self) -> List[str]:
+    def pop_tokens(self) -> list[str]:
         tokens = list(self._token_buffer)
         self._token_buffer.clear()
         return tokens

@@ -26,7 +26,7 @@ import uuid
 import os
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Callable
+from typing import   Optional, Callable
 from enum import Enum
 import shutil
 
@@ -62,7 +62,7 @@ class SessionConfig:
     session_type: SessionType
     command: str                          # Initial command to run
     working_dir: str = "/workspace"       # Working directory
-    env_vars: Dict[str, str] = field(default_factory=dict)
+    env_vars: dict[str, str] = field(default_factory=dict)
     timeout_idle_minutes: int = 60        # Auto-destroy after idle
     capture_output: bool = True           # Capture output to buffer
     max_output_lines: int = 1000          # Max lines to keep in buffer
@@ -82,8 +82,8 @@ class TmuxSession:
     last_activity: datetime = field(default_factory=datetime.now)
 
     # Output capture
-    output_buffer: List[str] = field(default_factory=list)
-    error_buffer: List[str] = field(default_factory=list)
+    output_buffer: list[str] = field(default_factory=list)
+    error_buffer: list[str] = field(default_factory=list)
 
     # Metrics
     commands_executed: int = 0
@@ -129,8 +129,8 @@ class TmuxSessionManager:
         self.output_buffer_size = output_buffer_lines
 
         # Session storage
-        self._sessions: Dict[str, TmuxSession] = {}
-        self._session_by_type: Dict[SessionType, List[str]] = {t: [] for t in SessionType}
+        self._sessions: dict[str, TmuxSession] = {}
+        self._session_by_type: dict[SessionType[str]] = {t: [] for t in SessionType}
 
         # Cleanup task
         self._cleanup_task: Optional[asyncio.Task] = None
@@ -183,7 +183,7 @@ class TmuxSessionManager:
         session_type: SessionType,
         command: Optional[str] = None,
         working_dir: str = "/workspace",
-        env_vars: Optional[Dict[str, str]] = None,
+        env_vars: Optional[dict[str, str]] = None,
         handler_id: Optional[str] = None,
         agent_id: Optional[str] = None,
     ) -> TmuxSession:
@@ -331,7 +331,7 @@ class TmuxSessionManager:
         command: str,
         wait_for_output: bool = True,
         timeout_seconds: float = 30.0,
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """
         Send a command to a session and optionally wait for output.
 
@@ -342,7 +342,7 @@ class TmuxSessionManager:
             timeout_seconds: Timeout for waiting
 
         Returns:
-            Dict with success, output, error keys
+            dict with success, output, error keys
         """
         session = self._sessions.get(session_id)
         if not session:
@@ -432,7 +432,7 @@ class TmuxSessionManager:
         self,
         session_id: str,
         lines: int = 100,
-    ) -> List[str]:
+    ) -> list[str]:
         """Get recent output from a session."""
         session = self._sessions.get(session_id)
         if not session:
@@ -536,8 +536,8 @@ class TmuxSessionManager:
             except Exception as e:
                 logger.error(f"Cleanup loop error: {e}")
 
-    def list_sessions(self) -> List[Dict[str, Any]]:
-        """List all managed sessions."""
+    def list_sessions(self) -> list[dict]:
+        """list all managed sessions."""
         return [
             {
                 "session_id": s.session_id,
@@ -556,7 +556,7 @@ class TmuxSessionManager:
         """Get a session by ID."""
         return self._sessions.get(session_id)
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get session manager statistics."""
         return {
             "total_sessions": len(self._sessions),
@@ -600,7 +600,7 @@ async def run_in_session(
     session_type: SessionType,
     command: str,
     timeout: float = 30.0,
-) -> Dict[str, Any]:
+) -> dict:
     """Convenience function to run a command in a session."""
     session = await session_manager.get_or_create_session(session_type)
     return await session_manager.send_command(

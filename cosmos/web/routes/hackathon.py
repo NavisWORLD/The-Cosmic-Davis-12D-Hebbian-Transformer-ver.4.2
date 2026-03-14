@@ -118,7 +118,7 @@ async def hackathon_status():
             total = 0
             if hasattr(mem, "get_stats"):
                 stats = mem.get_stats()
-                if isinstance(stats, dict):
+                if isinstance(stats):
                     total += stats.get("archival_memory", {}).get("total_entries", 0)
                     total += stats.get("working_memory", {}).get("slot_count", 0)
                     total += stats.get("recall_memory", {}).get("total_turns", 0)

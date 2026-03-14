@@ -10,7 +10,7 @@ This module provides intelligent meeting support:
 """
 
 import asyncio
-from typing import List, Dict, Optional
+, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -20,16 +20,16 @@ from Cosmos.core.nexus import nexus, Signal, SignalType
 @dataclass
 class MeetingContext:
     topic: str
-    participants: List[str]
+    participants: list[str]
     time: datetime
-    relevant_memories: List[str] = field(default_factory=list)
-    relevant_tasks: List[Task] = field(default_factory=list)
+    relevant_memories: list[str] = field(default_factory=list)
+    relevant_tasks: list[Task] = field(default_factory=list)
 
 class MeetingAssistant:
     def __init__(self, tracker: ProjectTracker):
         self.tracker = tracker
 
-    async def prepare_briefing(self, topic: str, participants: List[str]) -> str:
+    async def prepare_briefing(self, topic: str, participants: list[str]) -> str:
         """
         Generate a meeting briefing.
         """
@@ -66,7 +66,7 @@ class MeetingAssistant:
         
         return briefing
 
-    async def extract_action_items(self, meeting_notes: str) -> List[Dict]:
+    async def extract_action_items(self, meeting_notes: str) -> list[dict]:
         """
         Parse meeting notes for action items (heuristics/LLM).
         """

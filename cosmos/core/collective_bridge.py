@@ -34,7 +34,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Set, Awaitable
+from typing import  Callable, Optional, Set, Awaitable
 from pathlib import Path
 
 from loguru import logger
@@ -69,13 +69,13 @@ class ConsensusResult:
     prompt: str
     final_response: str
     winning_agent: str
-    vote_breakdown: Dict[str, float]
+    vote_breakdown: dict[str, float]
     consensus_reached: bool
-    participating_agents: List[str]
+    participating_agents: list[str]
     timestamp: datetime = field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict:
         return {
             "deliberation_id": self.deliberation_id,
             "prompt": self.prompt,
@@ -95,13 +95,13 @@ class DispatchRequest:
     dispatch_id: str
     source: str  # "collective" or specific collective_id
     consensus: ConsensusResult
-    target_agents: List[str]
+    target_agents: list[str]
     priority: DispatchPriority = DispatchPriority.NORMAL
-    context: Dict[str, Any] = field(default_factory=dict)
+    context: dict = field(default_factory=dict)
     deadline: Optional[datetime] = None
     created_at: datetime = field(default_factory=datetime.now)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict:
         return {
             "dispatch_id": self.dispatch_id,
             "source": self.source,
@@ -119,13 +119,13 @@ class EscalationRequest:
     escalation_id: str
     agent_id: str
     reason: EscalationReason
-    issue: Dict[str, Any]
-    context: Dict[str, Any] = field(default_factory=dict)
-    suggested_agents: List[str] = field(default_factory=list)
+    issue: dict
+    context: dict = field(default_factory=dict)
+    suggested_agents: list[str] = field(default_factory=list)
     urgency: float = 0.5  # 0-1
     created_at: datetime = field(default_factory=datetime.now)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict:
         return {
             "escalation_id": self.escalation_id,
             "agent_id": self.agent_id,
@@ -143,15 +143,15 @@ class VoteRequest:
     vote_id: str
     agent_id: str
     question: str
-    options: List[Dict[str, Any]]
+    options: list[dict]
     default_option: Optional[int] = None
     timeout_seconds: float = 300.0
-    context: Dict[str, Any] = field(default_factory=dict)
+    context: dict = field(default_factory=dict)
     created_at: datetime = field(default_factory=datetime.now)
-    votes: Dict[str, int] = field(default_factory=dict)  # agent_id -> option_index
+    votes: dict[str, int] = field(default_factory=dict)  # agent_id -> option_index
     result: Optional[int] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict:
         return {
             "vote_id": self.vote_id,
             "agent_id": self.agent_id,
@@ -169,11 +169,11 @@ class CollectiveState:
     """State of a collective for syncing."""
     collective_id: str
     name: str
-    members: List[str]
+    members: list[str]
     active_deliberations: int
     memory_hash: str  # Hash of collective memory state
     last_consensus: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
 
 # =============================================================================
@@ -197,22 +197,22 @@ class CollectiveBridge:
 
         # Pending dispatches
         self._dispatch_queue: asyncio.Queue[DispatchRequest] = asyncio.Queue()
-        self._active_dispatches: Dict[str, DispatchRequest] = {}
-        self._dispatch_results: Dict[str, Dict[str, Any]] = {}
+        self._active_dispatches: dict[str, DispatchRequest] = {}
+        self._dispatch_results: dict[str[str]] = {}
 
         # Escalations
         self._escalation_queue: asyncio.Queue[EscalationRequest] = asyncio.Queue()
-        self._active_escalations: Dict[str, EscalationRequest] = {}
+        self._active_escalations: dict[str, EscalationRequest] = {}
 
         # Vote requests
-        self._vote_requests: Dict[str, VoteRequest] = {}
+        self._vote_requests: dict[str, VoteRequest] = {}
 
         # Collective registry
-        self._collectives: Dict[str, CollectiveState] = {}
+        self._collectives: dict[str, CollectiveState] = {}
 
         # Handlers
-        self._dispatch_handlers: Dict[str, Callable[[DispatchRequest], Awaitable[Dict[str, Any]]]] = {}
-        self._escalation_handlers: List[Callable[[EscalationRequest], Awaitable[None]]] = []
+        self._dispatch_handlers: dict[str, Callable[[DispatchRequest], Awaitable[dict]]] = {}
+        self._escalation_handlers: list[Callable[[EscalationRequest], Awaitable[None]]] = []
 
         # Nexus integration
         self._nexus = None
@@ -248,9 +248,9 @@ class CollectiveBridge:
     async def dispatch_consensus(
         self,
         consensus: ConsensusResult,
-        target_agents: List[str],
+        target_agents: list[str],
         priority: DispatchPriority = DispatchPriority.NORMAL,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict] = None,
         deadline_seconds: Optional[float] = None,
     ) -> str:
         """
@@ -302,9 +302,9 @@ class CollectiveBridge:
 
     async def assign_from_deliberation(
         self,
-        task: Dict[str, Any],
+        task: dict,
         winning_agent: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict] = None,
     ) -> bool:
         """
         Assign a task directly to the winning agent from deliberation.
@@ -341,7 +341,7 @@ class CollectiveBridge:
     def register_dispatch_handler(
         self,
         agent_id: str,
-        handler: Callable[[DispatchRequest], Awaitable[Dict[str, Any]]],
+        handler: Callable[[DispatchRequest], Awaitable[dict]],
     ) -> None:
         """Register a handler for an agent to receive dispatches."""
         self._dispatch_handlers[agent_id] = handler
@@ -351,7 +351,7 @@ class CollectiveBridge:
         self,
         dispatch_id: str,
         timeout: float = 60.0,
-    ) -> Optional[Dict[str, Any]]:
+    ) -> Optional[dict]:
         """Wait for and get the result of a dispatch."""
         start = datetime.now()
         while (datetime.now() - start).total_seconds() < timeout:
@@ -368,9 +368,9 @@ class CollectiveBridge:
         self,
         agent_id: str,
         reason: EscalationReason,
-        issue: Dict[str, Any],
-        context: Optional[Dict[str, Any]] = None,
-        suggested_agents: Optional[List[str]] = None,
+        issue: dict,
+        context: Optional[dict] = None,
+        suggested_agents: Optional[list[str]] = None,
         urgency: float = 0.5,
     ) -> str:
         """
@@ -507,10 +507,10 @@ class CollectiveBridge:
         self,
         agent_id: str,
         question: str,
-        options: List[Dict[str, Any]],
+        options: list[dict],
         default_option: Optional[int] = None,
         timeout_seconds: float = 300.0,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict] = None,
     ) -> str:
         """
         Request a collective vote on options.
@@ -518,7 +518,7 @@ class CollectiveBridge:
         Args:
             agent_id: Agent requesting the vote
             question: Question to vote on
-            options: List of options (each has "label" and "description")
+            options: list of options (each has "label" and "description")
             default_option: Default option index if no quorum
             timeout_seconds: Time limit for voting
             context: Additional context
@@ -594,7 +594,7 @@ class CollectiveBridge:
             return  # Already decided
 
         # Count votes
-        vote_counts: Dict[int, int] = {}
+        vote_counts: dict[int, int] = {}
         for option_idx in vote.votes.values():
             vote_counts[option_idx] = vote_counts.get(option_idx, 0) + 1
 
@@ -620,8 +620,8 @@ class CollectiveBridge:
         self,
         collective_id: str,
         name: str,
-        members: List[str],
-        metadata: Optional[Dict[str, Any]] = None,
+        members: list[str],
+        metadata: Optional[dict] = None,
     ) -> CollectiveState:
         """Register a collective for coordination."""
         state = CollectiveState(
@@ -641,7 +641,7 @@ class CollectiveBridge:
         self,
         collective_a: str,
         collective_b: str,
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """
         Synchronize state between two collectives.
 
@@ -681,9 +681,9 @@ class CollectiveBridge:
 
     async def merge_collective_memory(
         self,
-        sources: List[str],
+        sources: list[str],
         target: str,
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """
         Merge memory from multiple collectives into a target.
 
@@ -797,7 +797,7 @@ class CollectiveBridge:
     # INTERNAL HELPERS
     # =========================================================================
 
-    async def _emit_signal(self, signal_type: str, payload: Dict[str, Any]) -> None:
+    async def _emit_signal(self, signal_type: str, payload: dict) -> None:
         """Emit a signal to Nexus."""
         if not self._nexus:
             return
@@ -820,7 +820,7 @@ class CollectiveBridge:
     # STATUS AND METRICS
     # =========================================================================
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get bridge statistics."""
         return {
             "dispatch_queue_size": self._dispatch_queue.qsize(),
@@ -833,7 +833,7 @@ class CollectiveBridge:
             "escalation_handlers": len(self._escalation_handlers),
         }
 
-    def get_collective_list(self) -> List[Dict[str, Any]]:
+    def get_collective_list(self) -> list[dict]:
         """Get list of registered collectives."""
         return [
             {

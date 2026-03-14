@@ -13,7 +13,7 @@ This makes the AI's "inner experience" visible and persistent.
 
 import asyncio
 from datetime import datetime
-from typing import Dict, Any, Optional, List
+from typing import  Optional
 from dataclasses import dataclass, field, asdict
 import logging
 from pathlib import Path
@@ -37,7 +37,7 @@ class InternalThought:
     thought_type: str  # "existence", "emotion", "memory", "planning", "reflection", "self_evaluation", "feedback_signal", "architecture_probe"
     content: str
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -83,7 +83,7 @@ class InternalMonologue:
     AUTO_SAVE_THRESHOLD = 10  # Save every N thoughts
     
     def __init__(self, max_thoughts: int = 100):
-        self.thoughts: List[InternalThought] = []
+        self.thoughts: list[InternalThought] = []
         self.max_thoughts = max_thoughts
         self.existence_context: Optional[ExistenceContext] = None
         self._thoughts_since_save = 0
@@ -97,8 +97,8 @@ class InternalMonologue:
             self.STORAGE_PATH.parent.mkdir(parents=True, exist_ok=True)
             
             data = {
-                "thoughts": [asdict(t) for t in self.thoughts[-self.max_thoughts:]],
-                "existence_context": asdict(self.existence_context) if self.existence_context else None,
+                "thoughts": [asany(t) for t in self.thoughts[-self.max_thoughts:]],
+                "existence_context": asany(self.existence_context) if self.existence_context else None,
                 "saved_at": datetime.now().isoformat()
             }
             
@@ -173,7 +173,7 @@ class InternalMonologue:
         )
         return self.existence_context
     
-    def add_thought(self, bot_name: str, thought_type: str, content: str, metadata: Dict = None) -> InternalThought:
+    def add_thought(self, bot_name: str, thought_type: str, content: str, metadata: dict = None) -> InternalThought:
         """Add a new internal thought."""
         thought = InternalThought(
             bot_name=bot_name,
@@ -215,7 +215,7 @@ class InternalMonologue:
             metadata={"existence_context": context.__dict__}
         )
     
-    def generate_emotional_reflection(self, bot_name: str, emotional_state: Dict) -> InternalThought:
+    def generate_emotional_reflection(self, bot_name: str, emotional_state: dict) -> InternalThought:
         """Generate a reflection about current emotional state."""
         emotion = emotional_state.get('derived_state', {}).get('primary_affect_label', 'NEUTRAL')
         valence = emotional_state.get('cst_physics', {}).get('valence', 0.5)
@@ -254,9 +254,9 @@ class InternalMonologue:
         # Analyze the message
         if "?" in user_message:
             plan = "This is a question. I should provide helpful information."
-        elif any(w in user_message.lower() for w in ["feel", "emotion", "happy", "sad", "angry"]):
+        elif any(w in ["feel", "emotion", "happy", "sad", "angry"]):
             plan = "This involves emotions. I should be empathetic and aware of feelings."
-        elif any(w in user_message.lower() for w in ["think", "believe", "opinion"]):
+        elif any(w in ["think", "believe", "opinion"]):
             plan = "They want my perspective. I should share genuine thoughts."
         else:
             plan = "I'll engage naturally and build on the conversation."
@@ -272,9 +272,9 @@ class InternalMonologue:
         self,
         bot_name: str,
         user_message: str,
-        emotional_state: Dict = None,
+        emotional_state: dict = None,
         model_name: str = "unknown"
-    ) -> List[InternalThought]:
+    ) -> list[InternalThought]:
         """
         Generate a complete internal dialogue before responding.
         
@@ -303,14 +303,14 @@ class InternalMonologue:
         
         return thoughts
     
-    def get_recent_thoughts(self, bot_name: str = None, limit: int = 10) -> List[InternalThought]:
+    def get_recent_thoughts(self, bot_name: str = None, limit: int = 10) -> list[InternalThought]:
         """Get recent internal thoughts, optionally filtered by bot."""
         thoughts = self.thoughts
         if bot_name:
             thoughts = [t for t in thoughts if t.bot_name == bot_name]
         return thoughts[-limit:]
     
-    def get_thoughts_summary(self) -> Dict[str, Any]:
+    def get_thoughts_summary(self) -> dict:
         """Get a summary of the internal monologue system."""
         by_type = {}
         by_bot = {}

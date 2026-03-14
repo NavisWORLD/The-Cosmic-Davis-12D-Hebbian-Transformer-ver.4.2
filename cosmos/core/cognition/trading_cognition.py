@@ -11,7 +11,7 @@ This module provides high-level logic for:
 
 import asyncio
 from loguru import logger
-from typing import Dict, Any, List, Optional
+from typing import   Optional
 from datetime import datetime, timedelta
 
 from Cosmos.core.nexus import nexus, Signal, SignalType
@@ -20,10 +20,10 @@ from Cosmos.memory.memory_system import memory_system # type: ignore
 
 class TradingCognition:
     def __init__(self):
-        self.active_signals: Dict[str, Dict] = {}
-        self.learning_history: List[Dict] = []
+        self.active_signals: dict = {}
+        self.learning_history: list[dict] = []
 
-    async def evaluate_token(self, token_data: Dict) -> Dict:
+    async def evaluate_token(self, token_data: dict) -> dict:
         """
         Evaluate a token using Sequential Thinking.
         Synthesizes Market Sentiment, Bonding Curve, and Liquidity.

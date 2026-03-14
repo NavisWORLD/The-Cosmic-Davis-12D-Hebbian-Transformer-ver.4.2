@@ -18,7 +18,7 @@ Research Sources:
 
 import math
 from dataclasses import dataclass, field
-from typing import Optional, Union, List, Tuple
+from typing import Optional, Union, Tuple
 from enum import Enum
 
 from loguru import logger
@@ -59,8 +59,8 @@ class CSTState:
     detected_intent: DetectedIntent = DetectedIntent.UNCERTAIN
     
     # Raw measurements for debugging/analysis
-    raw_frequencies: List[float] = field(default_factory=list)
-    raw_amplitudes: List[float] = field(default_factory=list)
+    raw_frequencies: list[float] = field(default_factory=list)
+    raw_amplitudes: list[float] = field(default_factory=list)
     facial_landmarks_used: int = 0
     
     # Timestamps
@@ -141,9 +141,9 @@ class FrequencyAnalyzer:
     
     def analyze(
         self,
-        audio_buffer: Union[bytes, List[float], "np.ndarray"],
+        audio_buffer: Union[list[float], "np.ndarray"],
         normalize: bool = True,
-    ) -> Tuple[float, List[float], List[float]]:
+    ) -> Tuple[float, list[float], list[float]]:
         """
         Analyze audio buffer and return emotional mass.
         
@@ -164,7 +164,7 @@ class FrequencyAnalyzer:
         if isinstance(audio_buffer, bytes):
             audio = np.frombuffer(audio_buffer, dtype=np.int16).astype(np.float32)
             audio = audio / 32768.0  # Normalize from int16
-        elif isinstance(audio_buffer, list):
+        elif isinstance(audio_buffer):
             audio = np.array(audio_buffer, dtype=np.float32)
         else:
             audio = audio_buffer.astype(np.float32)
@@ -189,7 +189,7 @@ class FrequencyAnalyzer:
     def _calculate_energy_fft(
         self, 
         audio: "np.ndarray"
-    ) -> Tuple[float, List[float], List[float]]:
+    ) -> Tuple[float, list[float], list[float]]:
         """
         Calculate emotional energy using CST formula: E = ∫(Amp × Freq) dt
         
@@ -237,9 +237,9 @@ class FrequencyAnalyzer:
     
     def _analyze_fallback(
         self,
-        audio_buffer: Union[bytes, List[float]],
+        audio_buffer: Union[list[float]],
         normalize: bool,
-    ) -> Tuple[float, List[float], List[float]]:
+    ) -> Tuple[float, list[float], list[float]]:
         """
         Fallback analysis without NumPy - uses simple RMS energy.
         """
@@ -265,7 +265,7 @@ class FrequencyAnalyzer:
         
         return (emotional_mass, [], [])
     
-    def detect_tremor(self, audio_buffer: Union[bytes, List[float]]) -> float:
+    def detect_tremor(self, audio_buffer: Union[list[float]]) -> float:
         """
         Detect voice tremor as a stress indicator.
         
@@ -342,7 +342,7 @@ class GeometricPhaseMapper:
     RELAXED_EYE_OPENNESS = 0.08
     RELAXED_MOUTH_OPENNESS = 0.02
     
-    def __init__(self, baseline_landmarks: Optional[List[Tuple[float, float]]] = None):
+    def __init__(self, baseline_landmarks: Optional[list[Tuple[float, float]]] = None):
         """
         Initialize the geometric phase mapper.
         
@@ -356,14 +356,14 @@ class GeometricPhaseMapper:
     
     def calculate_phase(
         self,
-        landmarks: List[Tuple[float, float]],
+        landmarks: list[Tuple[float, float]],
         use_baseline: bool = True,
-    ) -> Tuple[float, dict]:
+    ) -> Tuple[float]:
         """
         Calculate geometric phase from facial landmarks.
         
         Args:
-            landmarks: List of (x, y) coordinates for facial landmarks
+            landmarks: list of (x, y) coordinates for facial landmarks
             use_baseline: Whether to use personalized baseline if available
             
         Returns:
@@ -405,7 +405,7 @@ class GeometricPhaseMapper:
         
         return (geometric_phase, tensions)
     
-    def _calculate_brow_tension(self, landmarks: List[Tuple[float, float]]) -> float:
+    def _calculate_brow_tension(self, landmarks: list[Tuple[float, float]]) -> float:
         """Calculate brow tension from landmark positions."""
         # Get brow center heights
         left_brow_y = sum(landmarks[i][1] for i in self.BROW_LEFT) / len(self.BROW_LEFT)
@@ -438,7 +438,7 @@ class GeometricPhaseMapper:
         tension = min(1.0, deviation * 0.5 + asymmetry * 0.5)
         return tension
     
-    def _calculate_eye_tension(self, landmarks: List[Tuple[float, float]]) -> float:
+    def _calculate_eye_tension(self, landmarks: list[Tuple[float, float]]) -> float:
         """Calculate eye tension from openness and squinting."""
         # Eye aspect ratio (height / width)
         left_ear = self._eye_aspect_ratio(landmarks, self.EYE_LEFT)
@@ -456,7 +456,7 @@ class GeometricPhaseMapper:
         tension = min(1.0, deviation * 0.6 + asymmetry * 0.4)
         return tension
     
-    def _calculate_mouth_tension(self, landmarks: List[Tuple[float, float]]) -> float:
+    def _calculate_mouth_tension(self, landmarks: list[Tuple[float, float]]) -> float:
         """Calculate mouth tension from tightness and asymmetry."""
         # Mouth aspect ratio (height / width)
         outer_width = self._distance(landmarks[48], landmarks[54])
@@ -484,7 +484,7 @@ class GeometricPhaseMapper:
         tension = min(1.0, deviation * 0.5 + asymmetry * 0.5)
         return tension
     
-    def _calculate_jaw_tension(self, landmarks: List[Tuple[float, float]]) -> float:
+    def _calculate_jaw_tension(self, landmarks: list[Tuple[float, float]]) -> float:
         """Calculate jaw tension from clenching indicators."""
         # Jaw width at different heights
         top_width = self._distance(landmarks[2], landmarks[14])
@@ -501,7 +501,7 @@ class GeometricPhaseMapper:
         tension = min(1.0, deviation * 2.0)
         return tension
     
-    def _eye_aspect_ratio(self, landmarks: List[Tuple[float, float]], eye_indices: List[int]) -> float:
+    def _eye_aspect_ratio(self, landmarks: list[Tuple[float, float]], eye_indices: list[int]) -> float:
         """Calculate Eye Aspect Ratio (EAR) for openness detection."""
         # Vertical distances
         v1 = self._distance(landmarks[eye_indices[1]], landmarks[eye_indices[5]])
@@ -517,7 +517,7 @@ class GeometricPhaseMapper:
         """Euclidean distance between two points."""
         return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
     
-    def _get_face_height(self, landmarks: List[Tuple[float, float]]) -> float:
+    def _get_face_height(self, landmarks: list[Tuple[float, float]]) -> float:
         """Get approximate face height from landmarks."""
         top = min(landmarks[i][1] for i in self.BROW_LEFT + self.BROW_RIGHT)
         bottom = landmarks[8][1]  # Chin
@@ -532,7 +532,7 @@ class GeometricPhaseMapper:
         left_eye_y = sum(self.baseline[i][1] for i in self.EYE_LEFT) / len(self.EYE_LEFT)
         return left_eye_y - left_brow_y
     
-    def calibrate(self, landmarks: List[Tuple[float, float]]):
+    def calibrate(self, landmarks: list[Tuple[float, float]]):
         """Set baseline from a relaxed face sample."""
         self.baseline = landmarks.copy()
         self._calibrated = True
@@ -568,7 +568,7 @@ class CSTSensoryBridge:
     def __init__(
         self,
         sample_rate: int = 16000,
-        calibration_landmarks: Optional[List[Tuple[float, float]]] = None,
+        calibration_landmarks: Optional[list[Tuple[float, float]]] = None,
     ):
         """
         Initialize the CST Sensory Bridge.
@@ -582,7 +582,7 @@ class CSTSensoryBridge:
         
         logger.info("CSTSensoryBridge initialized")
     
-    def analyze_audio(self, audio_buffer: Union[bytes, List[float]]) -> CSTState:
+    def analyze_audio(self, audio_buffer: Union[list[float]]) -> CSTState:
         """
         Analyze audio-only input.
         
@@ -621,12 +621,12 @@ class CSTSensoryBridge:
         
         return state
     
-    def analyze_visual(self, landmarks: List[Tuple[float, float]]) -> CSTState:
+    def analyze_visual(self, landmarks: list[Tuple[float, float]]) -> CSTState:
         """
         Analyze visual-only input (facial landmarks).
         
         Args:
-            landmarks: List of (x, y) facial landmark coordinates
+            landmarks: list of (x, y) facial landmark coordinates
             
         Returns:
             CSTState with geometric_phase populated
@@ -656,8 +656,8 @@ class CSTSensoryBridge:
     
     def analyze(
         self,
-        audio_buffer: Optional[Union[bytes, List[float]]] = None,
-        landmarks: Optional[List[Tuple[float, float]]] = None,
+        audio_buffer: Optional[Union[list[float]]] = None,
+        landmarks: Optional[list[Tuple[float, float]]] = None,
     ) -> CSTState:
         """
         Combined audio + visual analysis.
@@ -758,7 +758,7 @@ class CSTSensoryBridge:
         
         return DetectedIntent.UNCERTAIN
     
-    def calibrate_visual(self, landmarks: List[Tuple[float, float]]):
+    def calibrate_visual(self, landmarks: list[Tuple[float, float]]):
         """Calibrate the visual mapper with a relaxed face baseline."""
         self.phase_mapper.calibrate(landmarks)
     

@@ -122,7 +122,7 @@ class UnifiedMultimodalSystem:
     
     def process_multimodal_input(self, audio=None, image=None, text=None):
         """
-        Process any combination of modalities
+        Process dict combination of modalities
         
         Returns:
             token: MultimodalLightToken

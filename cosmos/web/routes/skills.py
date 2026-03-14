@@ -2,7 +2,7 @@
 Skill Registry Routes
 
 Endpoints:
-- GET /api/skills - List all registered skills
+- GET /api/skills - list all registered skills
 - GET /api/skills/search - Search skills by query
 - GET /api/skills/{name} - Get specific skill details
 - GET /api/skills/agent/{agent} - Get skills for a specific agent
@@ -19,7 +19,7 @@ router = APIRouter(tags=["skills"])
 
 @router.get("/api/skills")
 async def list_skills():
-    """List all registered skills in the swarm."""
+    """list all registered skills in the swarm."""
     from Cosmos.core.skill_registry import get_skill_registry, initialize_registry
     registry = get_skill_registry()
     if not registry._discovered:

@@ -24,7 +24,7 @@ import time
 import math
 import threading
 import logging
-from typing import Dict, List, Optional, Any
+from typing import Optional
 from dataclasses import dataclass
 
 logger = logging.getLogger("swarm_plasticity")
@@ -66,8 +66,8 @@ class PlasticityEvent:
     tick: int
     context: str
     winner: str
-    weights_before: Dict
-    weights_after: Dict
+    weights_before: dict
+    weights_after: dict
     lyapunov_stable: bool
     timestamp: float = 0.0
 
@@ -90,7 +90,7 @@ class SwarmPlasticity:
         self._lock = threading.RLock()
         self._weights_path = weights_path or WEIGHTS_FILE
         self._learning_rate = LEARNING_RATE
-        self._event_log: List[PlasticityEvent] = []
+        self._event_log: list[PlasticityEvent] = []
         self._tick = 0
         self._total_updates = 0
         self._total_blocked = 0  # Blocked by Lyapunov
@@ -114,7 +114,7 @@ class SwarmPlasticity:
     # ════════════════════════════════════════════════════════
 
     @staticmethod
-    def _default_weights() -> Dict[str, Dict[str, float]]:
+    def _default_weights() -> dict[str, dict[str, float]]:
         """
         The initial synaptic configuration — the organism's 'genome'.
         
@@ -168,7 +168,7 @@ class SwarmPlasticity:
     # CONTEXT RECOGNITION (The Sensory Cortex)
     # ════════════════════════════════════════════════════════
 
-    def identify_context(self, user_physics: Dict) -> str:
+    def identify_context(self, user_physics: dict) -> str:
         """
         Determine the current cognitive context from User Physics.
         
@@ -200,7 +200,7 @@ class SwarmPlasticity:
     # HEBBIAN UPDATE (The Learning Rule)
     # ════════════════════════════════════════════════════════
 
-    def update_weights(self, winner: Optional[str], user_physics: Dict, 
+    def update_weights(self, winner: Optional[str], user_physics: dict,
                        stable: bool = True) -> Optional[PlasticityEvent]:
         """
         Apply the Hebbian learning rule.
@@ -317,7 +317,7 @@ class SwarmPlasticity:
     # META-HEBBIAN LEARNING (Learning from Mistakes)
     # ════════════════════════════════════════════════════════
 
-    def penalize_instability(self, suppressed_model: str, user_physics: Dict):
+    def penalize_instability(self, suppressed_model: str, user_physics: dict):
         """
         Meta-Hebbian Learning: Punish a model that generates a thought resulting in Lyapunov suppression.
         """
@@ -352,7 +352,7 @@ class SwarmPlasticity:
     # WINNER DETECTION (Jaccard Similarity)
     # ════════════════════════════════════════════════════════
 
-    def find_winner(self, final_output: str, thoughts: List) -> Optional[str]:
+    def find_winner(self, final_output: str, thoughts: list) -> Optional[str]:
         """
         Determine which model's thought is most similar to the final output.
         
@@ -360,7 +360,7 @@ class SwarmPlasticity:
         
         Args:
             final_output: The synthesized text that Cosmos spoke.
-            thoughts: List of SwarmThought objects that were considered.
+            thoughts: list of SwarmThought objects that were considered.
             
         Returns:
             Name of the winning model, or None if no clear winner.
@@ -406,7 +406,7 @@ class SwarmPlasticity:
     # FEEDFORWARD: Get Optimal Mix for Emeth Harmonizer
     # ════════════════════════════════════════════════════════
 
-    def get_optimal_mix(self, context: str) -> Dict[str, float]:
+    def get_optimal_mix(self, context: str) -> dict[str, float]:
         """
         Return the current synaptic weights for a given context.
         
@@ -416,14 +416,14 @@ class SwarmPlasticity:
             context: One of LOGIC, EMPATHY, CREATIVITY
             
         Returns:
-            Dict mapping model name → current weight (0.1 to 2.0)
+            dict mapping model name → current weight (0.1 to 2.0)
         """
         with self._lock:
             if context in self._weights:
                 return dict(self._weights[context])
             return {m: 1.0 for m in MODELS}
 
-    def get_optimal_mix_from_physics(self, user_physics: Dict) -> Dict[str, float]:
+    def get_optimal_mix_from_physics(self, user_physics: dict) -> dict[str, float]:
         """
         Convenience: identify context from physics, then return weights.
         """
@@ -491,11 +491,11 @@ class SwarmPlasticity:
             logger.info(f"[PLASTICITY] {label} | {ctx}: " +
                        " | ".join(f"{m}={w[m]:.2f}" for m in MODELS))
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Return full plasticity state for debugging / UI."""
         with self._lock:
             return {
-                "weights": {ctx: dict(w) for ctx, w in self._weights.items()},
+                "weights": {ctx: dict(w.items()) for ctx, w in self._weights.items()},
                 "total_updates": self._total_updates,
                 "total_blocked": self._total_blocked,
                 "recent_events": [
@@ -516,7 +516,7 @@ class SwarmPlasticity:
     # V4.0: P2P TRANSFER LEARNING
     # ════════════════════════════════════════════════════════
 
-    def export_weights(self) -> Dict[str, Any]:
+    def export_weights(self) -> dict:
         """
         Serialize the full synaptic matrix for P2P transmission.
         Returns a JSON-safe dict that can be gossipped across the fabric.
@@ -531,14 +531,14 @@ class SwarmPlasticity:
                 "epoch": self._tick,
             }
 
-    def import_peer_weights(self, peer_weights: Dict[str, Any], trust_factor: float = 0.3):
+    def import_peer_weights(self, peer_weights: dict, trust_factor: float = 0.3):
         """
         Merge incoming peer weights using φ-dampened averaging.
 
         w_merged = w_local × (1 - trust × φ⁻¹) + w_peer × trust × φ⁻¹
 
         Args:
-            peer_weights: Dict from a peer's export_weights()
+            peer_weights: dict from a peer's export_weights()
             trust_factor: 0.0–1.0, how much to trust the peer's learning
         """
         if not peer_weights or "weights" not in peer_weights:

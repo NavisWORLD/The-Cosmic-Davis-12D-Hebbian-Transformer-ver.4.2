@@ -21,7 +21,7 @@ import aiohttp
 import hashlib
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional
 from dataclasses import dataclass, field, asdict
 import logging
 
@@ -86,11 +86,11 @@ class PendingPayment:
     tx_signature: Optional[str] = None
     verified_at: Optional[str] = None
 
-    def to_dict(self) -> Dict:
-        return asdict(self)
+    def to_any(self) -> dict:
+        return asany(self)
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'PendingPayment':
+    def from_any(cls, data: dict) -> 'PendingPayment':
         return cls(**data)
 
     def is_expired(self) -> bool:
@@ -106,7 +106,7 @@ class PaymentStore:
     """Manages pending payments for registration."""
 
     def __init__(self):
-        self.pending: Dict[str, PendingPayment] = {}
+        self.pending: dict[str, PendingPayment] = {}
         self.used_signatures: set = set()  # Prevent replay attacks
         self._load()
 
@@ -117,7 +117,7 @@ class PaymentStore:
                 with open(PAYMENTS_FILE, 'r') as f:
                     data = json.load(f)
                     for p in data.get('pending', []):
-                        payment = PendingPayment.from_dict(p)
+                        payment = PendingPayment.from_any(p)
                         if not payment.is_expired():
                             self.pending[payment.payment_id] = payment
                     self.used_signatures = set(data.get('used_signatures', []))
@@ -131,7 +131,7 @@ class PaymentStore:
             DATA_DIR.mkdir(parents=True, exist_ok=True)
             with open(PAYMENTS_FILE, 'w') as f:
                 json.dump({
-                    'pending': [p.to_dict() for p in self.pending.values()],
+                    'pending': [p.to_any() for p in self.pending.values()],
                     'used_signatures': list(self.used_signatures)[-1000:],  # Keep last 1000
                     'updated_at': datetime.now().isoformat()
                 }, f, indent=2)
@@ -221,7 +221,7 @@ async def verify_token_transfer(
     expected_mint: str = COSMOS_TOKEN_MINT,
     expected_destination: str = BURN_WALLET_ADDRESS,
     min_amount: int = REGISTRATION_COST_RAW
-) -> Dict[str, Any]:
+) -> dict:
     """
     Verify a Solana SPL token transfer on-chain.
 
@@ -265,7 +265,7 @@ async def _verify_via_helius(
     expected_mint: str,
     expected_destination: str,
     min_amount: int
-) -> Optional[Dict[str, Any]]:
+) -> Optional[dict]:
     """Verify using Helius parsed transaction API."""
     try:
         url = f"https://api.helius.xyz/v0/transactions/?api-key={HELIUS_API_KEY}"
@@ -322,7 +322,7 @@ async def _verify_via_rpc(
     expected_mint: str,
     expected_destination: str,
     min_amount: int
-) -> Dict[str, Any]:
+) -> dict:
     """Verify using direct Solana RPC (fallback method)."""
     try:
         async with aiohttp.ClientSession() as session:
@@ -438,7 +438,7 @@ def get_payment_store() -> PaymentStore:
 # API HELPERS
 # =============================================================================
 
-def get_payment_info() -> Dict[str, Any]:
+def get_payment_info() -> dict:
     """Get payment information to display to users."""
     return {
         "burn_wallet": BURN_WALLET_ADDRESS,

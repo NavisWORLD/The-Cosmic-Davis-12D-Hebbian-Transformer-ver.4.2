@@ -26,7 +26,7 @@ import random
 from collections import defaultdict, deque
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Callable, Tuple, Any
+from typing import   Optional, Callable, Tuple
 from loguru import logger
 
 try:
@@ -60,7 +60,7 @@ class QuantumTradingSignal:
     # Collective Intelligence
     collective_direction: str = "neutral"  # "bullish" | "bearish" | "neutral"
     collective_confidence: float = 0.0
-    agents_consulted: List[str] = field(default_factory=list)
+    agents_consulted: list[str] = field(default_factory=list)
 
     # Fused Signal
     direction: str = "HOLD"         # "LONG" | "SHORT" | "HOLD"
@@ -75,15 +75,15 @@ class QuantumTradingSignal:
     actual_price_5m: float = 0.0    # price 5 min after signal
     resolved_at: Optional[datetime] = None
 
-    def to_dict(self) -> dict:
-        d = asdict(self)
+    def to_any(self) -> dict:
+        d = asany(self)
         d["timestamp"] = self.timestamp.isoformat()
         if self.resolved_at:
             d["resolved_at"] = self.resolved_at.isoformat()
         return d
 
     @classmethod
-    def from_dict(cls, data: dict) -> "QuantumTradingSignal":
+    def from_any(cls, data: dict) -> "QuantumTradingSignal":
         data = dict(data)
         if isinstance(data.get("timestamp"), str):
             data["timestamp"] = datetime.fromisoformat(data["timestamp"])
@@ -100,10 +100,10 @@ class QuantumCorrelation:
     correlation: float = 0.0        # -1 to 1
     quantum_verified: bool = False  # verified via Bell-state circuit
     discovered_at: datetime = field(default_factory=datetime.now)
-    strength_over_time: List[float] = field(default_factory=list)
+    strength_over_time: list[float] = field(default_factory=list)
 
-    def to_dict(self) -> dict:
-        d = asdict(self)
+    def to_any(self) -> dict:
+        d = asany(self)
         d["discovered_at"] = self.discovered_at.isoformat()
         return d
 
@@ -123,7 +123,7 @@ class EMAEngine:
         self.fast_alpha = fast_alpha
         self.slow_alpha = slow_alpha
         # token_address -> { ema_fast, ema_slow, prev_crossover, tick_count }
-        self._state: Dict[str, dict] = {}
+        self._state: dict = {}
 
     def update(self, token_address: str, price: float) -> dict:
         """Update EMA state for a token and return current indicators."""
@@ -190,9 +190,9 @@ class TTLCache:
     def __init__(self, ttl_seconds: float = 5.0, max_size: int = 200):
         self.ttl = ttl_seconds
         self.max_size = max_size
-        self._cache: Dict[str, Tuple[float, Any]] = {}
+        self._cache: dict[str, Tuple[float]] = {}
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Optional[dict]:
         entry = self._cache.get(key)
         if entry is None:
             return None
@@ -202,7 +202,7 @@ class TTLCache:
             return None
         return value
 
-    def set(self, key: str, value: Any):
+    def set(self, key: str, value: dict):
         if len(self._cache) >= self.max_size:
             # Evict oldest
             oldest_key = min(self._cache, key=lambda k: self._cache[k][0])
@@ -230,10 +230,10 @@ class SignalAccuracyTracker:
     def __init__(self, window_size: int = 500, cache_ttl: float = 10.0):
         # All signals (bounded deque for O(1) ops)
         self.signals: deque = deque(maxlen=window_size)
-        self.pending: Dict[str, QuantumTradingSignal] = {}  # signal_id -> signal (awaiting resolution)
+        self.pending: dict[str, QuantumTradingSignal] = {}  # signal_id -> signal (awaiting resolution)
 
         # Per-source accuracy tracking
-        self.source_stats: Dict[str, deque] = defaultdict(lambda: deque(maxlen=200))
+        self.source_stats: dict[str, deque] = defaultany(lambda: deque(maxlen=200))
         # source -> deque of (correct: bool, confidence: float)
 
         # Fusion weights (learned via accuracy feedback)
@@ -373,11 +373,11 @@ class SignalAccuracyTracker:
         leaderboard.sort(key=lambda x: x["accuracy"], reverse=True)
         return leaderboard
 
-    def get_recent_signals(self, limit: int = 50) -> List[dict]:
+    def get_recent_signals(self, limit: int = 50) -> list[dict]:
         """Get recent signals for display."""
         recent = list(self.signals)[-limit:]
         recent.reverse()
-        return [s.to_dict() for s in recent]
+        return [s.to_any() for s in recent]
 
 
 # =============================================================================
@@ -406,13 +406,13 @@ class QuantumTradingCortex:
 
         self.ema_engine = EMAEngine()
         self.accuracy_tracker = SignalAccuracyTracker()
-        self.correlations: Dict[str, QuantumCorrelation] = {}
+        self.correlations: dict[str, QuantumCorrelation] = {}
 
         # Signal history (bounded)
         self._signal_history: deque = deque(maxlen=1000)
 
         # Price cache for resolution (token -> deque of (timestamp, price))
-        self._price_cache: Dict[str, deque] = defaultdict(lambda: deque(maxlen=300))
+        self._price_cache: dict[str, deque] = defaultany(lambda: deque(maxlen=300))
 
         self._initialized = False
         self._signal_count = 0
@@ -448,7 +448,7 @@ class QuantumTradingCortex:
         return self.ema_engine.update(token_address, price)
 
     async def generate_signal(
-        self, token_address: str, price_history: Optional[List[float]] = None,
+        self, token_address: str, price_history: Optional[list[float]] = None,
         current_price: float = 0.0, use_hardware: bool = False
     ) -> QuantumTradingSignal:
         """
@@ -574,7 +574,7 @@ class QuantumTradingCortex:
         return signal
 
     async def _quantum_simulate(
-        self, token_address: str, price_history: List[float],
+        self, token_address: str, price_history: list[float],
         use_hardware: bool = False
     ) -> dict:
         """
@@ -612,7 +612,7 @@ class QuantumTradingCortex:
         return result
 
     async def _quantum_monte_carlo(
-        self, price_history: List[float], use_hardware: bool = False
+        self, price_history: list[float], use_hardware: bool = False
     ) -> Optional[dict]:
         """
         Quantum-enhanced Monte Carlo simulation.
@@ -710,7 +710,7 @@ class QuantumTradingCortex:
             logger.debug(f"QuantumCortex: QMC failed: {e}")
             return None
 
-    def _classical_monte_carlo(self, price_history: List[float]) -> dict:
+    def _classical_monte_carlo(self, price_history: list[float]) -> dict:
         """Classical fallback: trend-weighted Monte Carlo."""
         if len(price_history) < 3:
             return {"bull_prob": 0.5, "confidence": 0.1, "entropy": 0.5, "method": "classical"}
@@ -748,7 +748,7 @@ class QuantumTradingCortex:
 
     async def _collective_deliberate(
         self, token_address: str, current_price: float,
-        ema_result: dict, quantum_result: dict
+        ema_result:  quantum_result: dict
     ) -> dict:
         """Ask shadow agents for their opinion on this token."""
         result = {"direction": "neutral", "confidence": 0.0, "agents": []}
@@ -817,8 +817,8 @@ class QuantumTradingCortex:
         }
 
     async def discover_correlations(
-        self, token_addresses: List[str]
-    ) -> List[QuantumCorrelation]:
+        self, token_addresses: list[str]
+    ) -> list[QuantumCorrelation]:
         """
         Use quantum circuits to discover cross-token correlations.
         Bell state preparation for token pairs, measure via quantum interference.
@@ -883,13 +883,13 @@ class QuantumTradingCortex:
         if correlations and self.nexus:
             await self._emit_nexus("QUANTUM_CORRELATION_DISCOVERED", {
                 "count": len(correlations),
-                "pairs": [c.to_dict() for c in correlations[:5]],
+                "pairs": [c.to_any() for c in correlations[:5]],
             })
 
         return correlations
 
     async def _bell_verify_correlation(
-        self, returns_a: List[float], returns_b: List[float], classical_corr: float
+        self, returns_a: list[float], returns_b: list[float], classical_corr: float
     ) -> bool:
         """Verify correlation using Bell state circuit on quantum hardware."""
         if not self.quantum:
@@ -931,7 +931,7 @@ class QuantumTradingCortex:
         return False
 
     async def quantum_scenario_analysis(
-        self, token_address: str, price_history: Optional[List[float]] = None,
+        self, token_address: str, price_history: Optional[list[float]] = None,
         use_hardware: bool = False
     ) -> dict:
         """
@@ -1045,7 +1045,7 @@ class QuantumTradingCortex:
                 await engine.initialize()
 
             # Define fitness function based on signal accuracy
-            def weight_fitness(params: Dict[str, float]) -> float:
+            def weight_fitness(params: dict[str, float]) -> float:
                 # Simulate accuracy with these weights
                 ema_w = max(0.05, params.get("exploration_rate", 0.3))
                 quantum_w = max(0.05, params.get("learning_rate", 0.35) * 10)
@@ -1119,8 +1119,8 @@ class QuantumTradingCortex:
         return 0.0
 
     def _build_reasoning(
-        self, direction: str, confidence: float, ema: dict,
-        quantum: dict, collective: dict, weights: dict
+        self, direction: str, confidence: float, ema: 
+        quantum:  collective:  weights: dict
     ) -> str:
         """Build human-readable reasoning string."""
         parts = []
@@ -1147,11 +1147,11 @@ class QuantumTradingCortex:
         if not self.nexus:
             return
         try:
-            await self._emit_nexus("QUANTUM_SIGNAL_GENERATED", signal.to_dict())
+            await self._emit_nexus("QUANTUM_SIGNAL_GENERATED", signal.to_any())
         except Exception as e:
             logger.debug(f"QuantumCortex: Failed to emit signal: {e}")
 
-    async def _emit_nexus(self, signal_type_name: str, payload: dict, urgency: float = 0.6):
+    async def _emit_nexus(self, signal_type_name: str, payload:  urgency: float = 0.6):
         """Emit a signal through the Nexus."""
         if not self.nexus:
             return
@@ -1259,7 +1259,7 @@ class QuantumAlgoOptimizer:
 
     def __init__(self, ibm_quantum=None):
         self.quantum = ibm_quantum
-        self._optimization_history: List[dict] = []
+        self._optimization_history: list[dict] = []
         self._current_best: Optional[dict] = None
         self._initialized = False
 
@@ -1282,7 +1282,7 @@ class QuantumAlgoOptimizer:
         self._initialized = True
         return True
 
-    def _get_trade_history(self) -> List[dict]:
+    def _get_trade_history(self) -> list[dict]:
         """Pull trade history from DegenTrader's AdaptiveLearner."""
         try:
             # Try to get from running trader instance
@@ -1339,7 +1339,7 @@ class QuantumAlgoOptimizer:
             genome += format(int_val, f'0{bits_per_param}b')
         return genome
 
-    def _fitness_from_trades(self, params: dict, trades: List[dict]) -> float:
+    def _fitness_from_trades(self, params:  trades: list[dict]) -> float:
         """
         Evaluate fitness of a parameter set against historical trade data.
         Simulates: "if we had used these params, how would trades have gone?"
@@ -1428,7 +1428,7 @@ class QuantumAlgoOptimizer:
         return win_score + return_score + preserve_score + freq_score
 
     async def optimize_with_qaoa(
-        self, trades: List[dict], estimated_hardware_seconds: float = 30.0
+        self, trades: list[dict], estimated_hardware_seconds: float = 30.0
     ) -> Optional[dict]:
         """
         Use QAOA on real IBM QPU hardware to find optimal trading parameters.
@@ -1436,7 +1436,7 @@ class QuantumAlgoOptimizer:
         This is the PRIMARY consumer of QPU hardware budget.
         Each call uses ~30-60s of the 600s/28-day budget.
 
-        Returns optimized parameters dict, or None if QPU unavailable.
+        Returns optimized parameters  or None if QPU unavailable.
         """
         if not self.quantum:
             logger.warning("QuantumAlgoOptimizer: No quantum provider")
@@ -1570,7 +1570,7 @@ class QuantumAlgoOptimizer:
             return await self._optimize_with_simulator(trades)
 
     async def optimize_with_qga(
-        self, trades: List[dict], generations: int = 10, population_size: int = 20
+        self, trades: list[dict], generations: int = 10, population_size: int = 20
     ) -> Optional[dict]:
         """
         Use Quantum Genetic Algorithm on real QPU for multi-parameter co-optimization.
@@ -1634,7 +1634,7 @@ class QuantumAlgoOptimizer:
             logger.error(f"QuantumAlgoOptimizer: QGA failed: {e}")
             return None
 
-    async def _optimize_with_simulator(self, trades: List[dict]) -> Optional[dict]:
+    async def _optimize_with_simulator(self, trades: list[dict]) -> Optional[dict]:
         """Fallback: optimize using simulator (unlimited, no budget cost)."""
         param_names = list(self.TUNABLE_PARAMS.keys())
         best_params = {k: v["default"] for k, v in self.TUNABLE_PARAMS.items()}
@@ -1692,7 +1692,7 @@ class QuantumAlgoOptimizer:
             logger.error(f"QuantumAlgoOptimizer: Failed to apply params: {e}")
             return False
 
-    def get_optimization_history(self) -> List[dict]:
+    def get_optimization_history(self) -> list[dict]:
         return self._optimization_history
 
     def get_current_best(self) -> Optional[dict]:

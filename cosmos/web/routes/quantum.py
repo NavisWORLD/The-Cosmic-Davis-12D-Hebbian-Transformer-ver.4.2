@@ -4,7 +4,7 @@ Quantum Computing & Evolution Routes
 Endpoints:
 - POST /api/quantum/bell - Run Bell state on IBM Quantum
 - GET /api/quantum/job/{job_id} - Quantum job status
-- GET /api/quantum/jobs - List quantum jobs
+- GET /api/quantum/jobs - list quantum jobs
 - GET /api/quantum/status - Quantum integration status
 - GET /api/quantum/budget - Strategic hardware budget allocation report
 - POST /api/quantum/initialize - Initialize quantum connection
@@ -84,7 +84,7 @@ async def quantum_job_status(job_id: str):
 
 @router.get("/api/quantum/jobs")
 async def quantum_list_jobs():
-    """List all submitted quantum jobs."""
+    """list all submitted quantum jobs."""
     try:
         from Cosmos.integration.hackathon.quantum_proof import get_quantum_proof
 

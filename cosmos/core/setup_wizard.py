@@ -13,7 +13,7 @@ import argparse
 import asyncio
 import sys
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
+from typing import   Optional, Tuple
 from enum import Enum
 from dataclasses import dataclass, field
 from dotenv import load_dotenv
@@ -43,9 +43,9 @@ class IntegrationGuide:
     """Setup guide for an integration."""
     name: str
     description: str
-    required_permissions: List[str]
-    setup_steps: List[str]
-    env_vars: Dict[str, str]
+    required_permissions: list[str]
+    setup_steps: list[str]
+    env_vars: dict[str, str]
     documentation_url: str
     estimated_time: str = "5-10 minutes"
 
@@ -56,9 +56,9 @@ class SetupWizard:
     def __init__(self, project_root: Path):
         self.project_root = project_root
         self.env_file = project_root / ".env"
-        self.config: Dict[str, str] = {}
-        self.selected_use_cases: List[UseCase] = []
-        self.guides_shown: List[str] = []
+        self.config: dict[str, str] = {}
+        self.selected_use_cases: list[UseCase] = []
+        self.guides_shown: list[str] = []
 
         # Load existing config if present
         if self.env_file.exists():
@@ -100,7 +100,7 @@ class SetupWizard:
             return default
         return val.startswith('y')
 
-    def _ask_select(self, question: str, options: List[str], default: str = None) -> str:
+    def _ask_select(self, question: str, options: list[str], default: str = None) -> str:
         """Ask user to select from options."""
         if HAS_QUESTIONARY:
             return questionary.select(question, choices=options, default=default).ask()
@@ -123,7 +123,7 @@ class SetupWizard:
                     return val
             print("  Invalid choice, please try again.")
 
-    def _ask_multi(self, question: str, options: List[str], defaults: List[str] = None) -> List[str]:
+    def _ask_multi(self, question: str, options: list[str], defaults: list[str] = None) -> list[str]:
         """Ask user to select multiple options."""
         if HAS_QUESTIONARY:
             return questionary.checkbox(question, choices=options, default=defaults).ask()
@@ -404,19 +404,19 @@ class SetupWizard:
         await self._setup_ai_providers()
 
         # Step 5: Cloud Integrations (based on use case)
-        if any(uc in self.selected_use_cases for uc in [UseCase.ENTERPRISE, UseCase.SYSADMIN, UseCase.FULL]):
+        if any(uc in [UseCase.ENTERPRISE, UseCase.SYSADMIN, UseCase.FULL]):
             await self._setup_cloud_providers()
 
         # Step 6: Email Integrations
-        if any(uc in self.selected_use_cases for uc in [UseCase.ENTERPRISE, UseCase.PERSONAL, UseCase.FULL]):
+        if any(uc in [UseCase.ENTERPRISE, UseCase.PERSONAL, UseCase.FULL]):
             await self._setup_email_integrations()
 
         # Step 7: Security Tools
-        if any(uc in self.selected_use_cases for uc in [UseCase.SECURITY, UseCase.SYSADMIN, UseCase.FULL]):
+        if any(uc in [UseCase.SECURITY, UseCase.SYSADMIN, UseCase.FULL]):
             await self._setup_security_tools()
 
         # Step 8: Health Tracking
-        if any(uc in self.selected_use_cases for uc in [UseCase.HEALTH, UseCase.PERSONAL, UseCase.FULL]):
+        if any(uc in [UseCase.HEALTH, UseCase.PERSONAL, UseCase.FULL]):
             await self._setup_health_tracking()
 
         # Step 9: Cognitive Engines
@@ -426,11 +426,11 @@ class SetupWizard:
         await self._setup_external_integrations()
 
         # Step 11: Financial Intelligence
-        if any(uc in self.selected_use_cases for uc in [UseCase.TRADING, UseCase.FULL]):
+        if any(uc in [UseCase.TRADING, UseCase.FULL]):
             await self._setup_financial()
 
         # Step 12: Sysadmin Tools
-        if any(uc in self.selected_use_cases for uc in [UseCase.SYSADMIN, UseCase.ENTERPRISE, UseCase.FULL]):
+        if any(uc in [UseCase.SYSADMIN, UseCase.ENTERPRISE, UseCase.FULL]):
             await self._setup_sysadmin_tools()
 
         # Save and finish
@@ -855,7 +855,7 @@ class SetupWizard:
             for category, prefixes in categories.items():
                 category_items = []
                 for key, value in self.config.items():
-                    if any(key.startswith(prefix) for prefix in prefixes) and key not in written_keys:
+                    if any(prefix in prefixes) and key not in written_keys:
                         category_items.append((key, value))
                         written_keys.add(key)
 
@@ -866,7 +866,7 @@ class SetupWizard:
                             # Mask secrets in comments
                             f.write(f"{key}={value}\n")
 
-            # Write any remaining keys
+            # Write dict remaining keys
             remaining = [(k, v) for k, v in self.config.items() if k not in written_keys and v]
             if remaining:
                 f.write("\n# Other\n")
@@ -919,11 +919,11 @@ class SetupWizard:
             print(f"\n  Enabled Features: {', '.join(enabled)}")
 
         print("\n  Next Steps:")
-        print("    1. Review the .env file and add any missing credentials")
+        print("    1. Review the .env file and add dict missing credentials")
         print("    2. Run 'python -m cosmos' to start cosmos")
         print("    3. Access the web dashboard at http://localhost:8080")
 
-        if any(uc in self.selected_use_cases for uc in [UseCase.SECURITY, UseCase.SYSADMIN]):
+        if any(uc in [UseCase.SECURITY, UseCase.SYSADMIN]):
             print("\n  Security Tools:")
             print("    - Vulnerability Scanner: cosmos scan <target>")
             print("    - EDR: cosmos edr --start")
@@ -970,6 +970,18 @@ OFFICE 365 QUICK SETUP
 """,
             "google": """
 GOOGLE WORKSPACE QUICK SETUP
+1. Go to Google Cloud Console > APIs & Services
+2. Enable Gmail API, Calendar API
+3. Create OAuth 2.0 Client ID
+4. Download credentials.json
+5. Add to .env:
+   GOOGLE_OAUTH_CREDENTIALS=path/to/credentials.json
+"""
+        }
+        return guides.get(name, "No guide found for that integration.")
+
+def main():
+    parser = argparse.ArgumentParser(description="cosmos Setup Wizard")
     parser.add_argument("--guide", type=str, help="Show quick guide for integration (azure, aws, office365, google)")
     parser.add_argument("--root", type=str, default=".", help="Project root directory")
 
@@ -980,3 +992,6 @@ GOOGLE WORKSPACE QUICK SETUP
     else:
         wizard = SetupWizard(Path(args.root))
         asyncio.run(wizard.run())
+
+if __name__ == "__main__":
+    main()

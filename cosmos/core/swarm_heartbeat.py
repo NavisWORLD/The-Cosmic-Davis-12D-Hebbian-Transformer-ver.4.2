@@ -25,7 +25,7 @@ import os
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Callable
+from typing import   Optional, Callable
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 import aiohttp
@@ -46,7 +46,7 @@ class HealthMetric:
     service: str
     status: ServiceStatus
     latency_ms: float = 0
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: dict = field(default_factory=dict)
     timestamp: datetime = field(default_factory=datetime.now)
     consecutive_failures: int = 0
     last_success: Optional[datetime] = None
@@ -58,7 +58,7 @@ class SwarmVitals:
     heartbeat_id: str
     timestamp: datetime
     overall_status: ServiceStatus
-    services: Dict[str, HealthMetric]
+    services: dict[str, HealthMetric]
     gpu_utilization: float = 0
     gpu_memory_used: float = 0
     gpu_memory_total: float = 0
@@ -66,9 +66,9 @@ class SwarmVitals:
     evolution_cycle: int = 0
     total_learnings: int = 0
     uptime_seconds: float = 0
-    anomalies: List[str] = field(default_factory=list)
+    anomalies: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> Dict:
+    def to_any(self) -> dict:
         return {
             "heartbeat_id": self.heartbeat_id,
             "timestamp": self.timestamp.isoformat(),
@@ -136,10 +136,10 @@ class SwarmHeartbeat:
         self.auto_recover = auto_recover
         self.check_interval = check_interval
         self.start_time = datetime.now()
-        self.health_history: List[SwarmVitals] = []
-        self.service_metrics: Dict[str, HealthMetric] = {}
+        self.health_history: list[SwarmVitals] = []
+        self.service_metrics: dict[str, HealthMetric] = {}
         self._running = False
-        self._recovery_cooldown: Dict[str, datetime] = {}
+        self._recovery_cooldown: dict[str, datetime] = {}
 
         # Ensure data directory exists
         (self.WORKSPACE / "data").mkdir(parents=True, exist_ok=True)
@@ -174,7 +174,7 @@ class SwarmHeartbeat:
                 details={"error": str(e)}
             )
 
-    async def check_tmux_sessions(self) -> Dict[str, HealthMetric]:
+    async def check_tmux_sessions(self) -> dict[str, HealthMetric]:
         """Check all tmux sessions are running."""
         metrics = {}
         try:
@@ -247,7 +247,7 @@ class SwarmHeartbeat:
                 details={"error": str(e)}
             )
 
-    async def check_gpu_health(self) -> Dict[str, Any]:
+    async def check_gpu_health(self) -> dict:
         """Check GPU utilization and memory."""
         try:
             result = subprocess.run(
@@ -266,7 +266,7 @@ class SwarmHeartbeat:
             logger.warning(f"GPU check failed: {e}")
         return {"healthy": False, "utilization": 0, "memory_used": 0, "memory_total": 0}
 
-    async def check_evolution_status(self) -> Dict[str, Any]:
+    async def check_evolution_status(self) -> dict:
         """Check evolution loop status."""
         try:
             async with aiohttp.ClientSession() as session:
@@ -377,14 +377,14 @@ class SwarmHeartbeat:
         try:
             # Save current vitals
             with open(self.HEARTBEAT_FILE, 'w') as f:
-                json.dump(vitals.to_dict(), f, indent=2)
+                json.dump(vitals.to_any(), f, indent=2)
 
             # Append to history (keep last 100)
             self.health_history.append(vitals)
             if len(self.health_history) > 100:
                 self.health_history = self.health_history[-100:]
 
-            history_data = [v.to_dict() for v in self.health_history[-100:]]
+            history_data = [v.to_any() for v in self.health_history[-100:]]
             with open(self.HEARTBEAT_HISTORY, 'w') as f:
                 json.dump({"history": history_data}, f)
 
@@ -477,7 +477,7 @@ if __name__ == "__main__":
 
         if args.once:
             vitals = await heartbeat.collect_vitals()
-            print(json.dumps(vitals.to_dict(), indent=2))
+            print(json.dumps(vitals.to_any(), indent=2))
         else:
             await heartbeat.run()
 

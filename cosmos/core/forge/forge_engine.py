@@ -8,7 +8,7 @@ plan-execute-verify pipeline using swarm deliberation.
 Unlike single-model approaches that degrade as context fills,
 FORGE distributes work across multiple AI models, each with
 fresh context, and uses collective consensus to catch errors
-that any single model would miss.
+that dict single model would miss.
 
 Workflow:
   1. RESEARCH  - Parallel agents investigate the problem space
@@ -27,7 +27,7 @@ import subprocess
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import  Callable, Optional, Tuple
 from dataclasses import dataclass
 from loguru import logger
 
@@ -89,7 +89,7 @@ class ForgeEngine:
     # CORE PIPELINE
     # =========================================================================
 
-    async def research(self, topic: str, phase: ForgePhase = None) -> Dict[str, str]:
+    async def research(self, topic: str, phase: ForgePhase = None) -> dict[str, str]:
         """
         Parallel multi-model research.
 
@@ -150,7 +150,7 @@ class ForgeEngine:
         return findings
 
     async def deliberate(self, objective: str, context: str = "",
-                         models: List[str] = None) -> Dict:
+                         models: list[str] = None) -> dict:
         """
         PROPOSE-CRITIQUE-REFINE-VOTE deliberation on a plan.
 
@@ -158,7 +158,7 @@ class ForgeEngine:
         before execution. No single model's blind spots survive the swarm.
 
         Returns:
-            Dict with plan, consensus_score, critiques, and votes
+            dict with plan, consensus_score, critiques, and votes
         """
         models = models or ["grok", "gemini", "claude", "deepseek"]
 
@@ -269,7 +269,7 @@ Return ONLY a number 0-100."""
             "models_consulted": models,
         }
 
-    async def execute_plan(self, plan: ForgePlan, dry_run: bool = False) -> Dict:
+    async def execute_plan(self, plan: ForgePlan, dry_run: bool = False) -> dict:
         """
         Execute a plan with optimal model assignment per task.
 
@@ -297,7 +297,7 @@ Return ONLY a number 0-100."""
             )
 
             for task, result in zip(wave_tasks, wave_results):
-                if isinstance(result, dict) and result.get("success"):
+                if isinstance(result) and result.get("success"):
                     results["tasks_completed"] += 1
                     if result.get("commit_hash"):
                         results["commits"].append(result["commit_hash"])
@@ -310,7 +310,7 @@ Return ONLY a number 0-100."""
         self.state._save_state()
         return results
 
-    async def _execute_task(self, task: ForgeTask, dry_run: bool = False) -> Dict:
+    async def _execute_task(self, task: ForgeTask, dry_run: bool = False) -> dict:
         """Execute a single task with the best-fit model."""
         start_time = time.time()
         task.status = "running"
@@ -370,7 +370,7 @@ Return the complete implementation."""
 
         return {"success": True, "response": response, "model": task.assigned_model}
 
-    async def verify_phase(self, phase: ForgePhase) -> Dict:
+    async def verify_phase(self, phase: ForgePhase) -> dict:
         """
         Goal-backward verification using swarm consensus.
 
@@ -454,7 +454,7 @@ Overall verdict: PASSED / GAPS_FOUND / FAILED"""
     # CONVENIENCE COMMANDS
     # =========================================================================
 
-    async def quick(self, task_description: str) -> Dict:
+    async def quick(self, task_description: str) -> dict:
         """
         Quick-mode: plan and execute a single task without full phase workflow.
         Uses deliberation for planning but skips research and full verification.
@@ -473,7 +473,7 @@ Overall verdict: PASSED / GAPS_FOUND / FAILED"""
             "status": "planned",
         }
 
-    def get_progress(self) -> Dict:
+    def get_progress(self) -> dict:
         """Get current project progress."""
         if not self.state.project:
             self.state.load_project()
@@ -481,7 +481,7 @@ Overall verdict: PASSED / GAPS_FOUND / FAILED"""
             return {"error": "No project initialized"}
         return self.state.get_progress()
 
-    def get_cost_report(self) -> Dict:
+    def get_cost_report(self) -> dict:
         """Get cost breakdown."""
         if not self.state.project:
             self.state.load_project()
@@ -504,7 +504,7 @@ Overall verdict: PASSED / GAPS_FOUND / FAILED"""
         return await self._fallback_query(prompt)
 
     async def _fallback_query(self, prompt: str) -> Optional[str]:
-        """Fallback: try any available provider."""
+        """Fallback: try dict available provider."""
         fallback_chain = ["grok", "gemini", "claude", "deepseek", "phi"]
         if self._call_agent:
             for model in fallback_chain:
@@ -522,17 +522,17 @@ Overall verdict: PASSED / GAPS_FOUND / FAILED"""
         action_lower = task.action.lower()
         combined = name_lower + " " + action_lower
 
-        if any(w in combined for w in ["test", "spec", "assert", "verify"]):
+        if any(w in ["test", "spec", "assert", "verify"]):
             return "testing"
-        if any(w in combined for w in ["debug", "fix", "bug", "error", "investigate"]):
+        if any(w in ["debug", "fix", "bug", "error", "investigate"]):
             return "debugging"
-        if any(w in combined for w in ["research", "investigate", "explore", "analyze"]):
+        if any(w in ["research", "investigate", "explore", "analyze"]):
             return "research"
-        if any(w in combined for w in ["document", "readme", "comment", "describe"]):
+        if any(w in ["document", "readme", "comment", "describe"]):
             return "documentation"
-        if any(w in combined for w in ["review", "audit", "check", "inspect"]):
+        if any(w in ["review", "audit", "check", "inspect"]):
             return "review"
-        if any(w in combined for w in ["plan", "design", "architect", "structure"]):
+        if any(w in ["plan", "design", "architect", "structure"]):
             return "planning"
         return "coding"
 
@@ -541,21 +541,21 @@ Overall verdict: PASSED / GAPS_FOUND / FAILED"""
 # CONVENIENCE FUNCTIONS
 # =============================================================================
 
-async def forge_quick(task: str, workspace: str = ".") -> Dict:
+async def forge_quick(task: str, workspace: str = ".") -> dict:
     """Quick-mode FORGE execution."""
     engine = ForgeEngine(workspace)
     return await engine.quick(task)
 
 
 async def forge_plan(objective: str, context: str = "",
-                     workspace: str = ".") -> Dict:
+                     workspace: str = ".") -> dict:
     """Plan with swarm deliberation."""
     engine = ForgeEngine(workspace)
     return await engine.deliberate(objective, context)
 
 
 async def forge_execute(plan: ForgePlan, workspace: str = ".",
-                        dry_run: bool = False) -> Dict:
+                        dry_run: bool = False) -> dict:
     """Execute a FORGE plan."""
     engine = ForgeEngine(workspace)
     return await engine.execute_plan(plan, dry_run)

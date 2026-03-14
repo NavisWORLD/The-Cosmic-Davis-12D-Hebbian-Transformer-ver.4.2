@@ -110,7 +110,7 @@ class ModelManager:
         self.max_loaded_models = max_loaded_models
 
         self.hardware: Optional[HardwareInfo] = None
-        self.model_configs: dict[str, dict] = {}
+        self.model_configs: dict = {}
         self.loaded_backends: dict[str, LLMBackend] = {}
         self.model_infos: dict[str, ModelInfo] = {}
         self.usage_history: list[tuple[str, datetime]] = []
@@ -256,6 +256,20 @@ class ModelManager:
                 "strengths": ["balanced", "fast", "multimodal"],
                 "env_key": "GEMINI_API_KEY",
             },
+            # Hermes Models
+            "hermes-4-70b": {
+                "name": "Hermes-4-70B",
+                "backend": "openai_compatible",
+                "api_model": "Hermes-4-70B",
+                "api_base": "https://inference-api.nousresearch.com/v1",
+                "params": 70e9,
+                "vram_gb": 0,
+                "ram_gb": 0.5,
+                "context_length": 128000,
+                "quantization": "cloud",
+                "strengths": ["reasoning", "code", "agentic", "research"],
+                "env_key": "HERMES_API_KEY",
+            },
         }
 
     async def _scan_available_models(self):
@@ -380,6 +394,8 @@ class ModelManager:
                     api_key = os.environ.get(env_key)
 
                     # Also check for common alternatives
+                    if not api_key:
+                        api_key = os.environ.get('HERMES_API_KEY')
                     if not api_key:
                         api_key = os.environ.get('DEEPINFRA_API_KEY')
                     if not api_key:
@@ -536,9 +552,10 @@ class ModelManager:
         """Get a loaded backend by key."""
         return self.loaded_backends.get(model_key)
 
-    def get_best_model_for_task(self, task_type: str) -> Optional[str]:
+    def get_best_model_for_task(self, task_type: str, field: Optional[dict] = None) -> Optional[str]:
         """
         Novel: Intelligent model selection based on task type and hardware.
+        V4.2: Integrated UQ Layer support for reasoning escalation.
 
         Returns the best available model for the given task type.
         """
@@ -552,6 +569,11 @@ class ModelManager:
         }
 
         required_strengths = task_strengths.get(task_type, ["general"])
+        
+        # Swarm Upgrade: Response to Uncertainty Quantification (UQ)
+        is_uncertain = False
+        if field and hasattr(field, 'is_uncertain'):
+            is_uncertain = field.is_uncertain()
 
         # Score available models
         best_model = None
@@ -570,6 +592,11 @@ class ModelManager:
 
             # Score based on strength match
             score = sum(1 for s in required_strengths if s in info.strengths)
+            
+            # [UQ ESCALATION] If system is uncertain, prioritize high-reasoning models
+            if is_uncertain and "reasoning" in info.strengths:
+                score += 2.0
+                logger.info(f"[UQ] Identifying reasoning model {key} for escalation due to high uncertainty.")
 
             # Bonus for already loaded models
             if info.is_loaded:

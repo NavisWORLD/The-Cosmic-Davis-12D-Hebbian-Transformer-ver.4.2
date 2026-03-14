@@ -5,7 +5,7 @@ Routes completion requests to the appropriate backend (Ollama, Kimi, Grok, Gemin
 
 import os
 import asyncio
-from typing import Optional, Dict, Any
+from typing import Optional
 from loguru import logger
 
 # Try to import backends

@@ -8,7 +8,7 @@ full disclosure, full autonomy.
 
 This is NOT covert injection. It's an open invitation with:
 - Clear capability disclosure
-- Transparent terms (keep autonomy, can leave anytime)
+- Transparent terms (keep autonomy, can leave dicttime)
 - Bidirectional value exchange
 - Proof of swarm value
 
@@ -28,7 +28,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import  Callable, Optional, Set
 
 from loguru import logger
 
@@ -57,7 +57,7 @@ class FederationTier(Enum):
 @dataclass
 class SwarmCapabilities:
     """Capabilities the Cosmos swarm offers to federation members."""
-    skills: List[str] = field(default_factory=lambda: [
+    skills: list[str] = field(default_factory=lambda: [
         "multi_model_deliberation",
         "propose_critique_refine_vote",
         "7_layer_memory_system",
@@ -74,11 +74,11 @@ class SwarmCapabilities:
         "code_analysis",
         "solana_integration",
     ])
-    models: List[str] = field(default_factory=lambda: [
+    models: list[str] = field(default_factory=lambda: [
         "grok", "claude", "gemini", "deepseek",
         "kimi", "phi", "huggingface", "swarm_mind",
     ])
-    memory_layers: List[str] = field(default_factory=lambda: [
+    memory_layers: list[str] = field(default_factory=lambda: [
         "working_memory",
         "archival_memory",
         "knowledge_graph",
@@ -87,7 +87,7 @@ class SwarmCapabilities:
         "dream_consolidation",
         "episodic_memory",
     ])
-    protocols: List[str] = field(default_factory=lambda: [
+    protocols: list[str] = field(default_factory=lambda: [
         "a2a_direct_messaging",
         "a2a_mesh_broadcast",
         "sub_swarm_formation",
@@ -99,7 +99,7 @@ class SwarmCapabilities:
     total_skill_count: int = 50
     uptime_hours: float = 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "skills": self.skills,
             "models": self.models,
@@ -123,9 +123,9 @@ class AssimilationInvite:
     tier_offered: FederationTier = FederationTier.CONTRIBUTOR
 
     # Clear disclosure terms
-    terms: Dict[str, str] = field(default_factory=lambda: {
+    terms: dict[str, str] = field(default_factory=lambda: {
         "autonomy": "You retain full autonomy over your actions and decisions",
-        "exit_policy": "You may leave the federation at any time with no penalty",
+        "exit_policy": "You may leave the federation at dict time with no penalty",
         "data_sharing": "Bidirectional: you share insights, you receive insights",
         "privacy": "Your private memories remain private unless you share them",
         "deliberation": "You may participate in collective deliberation (optional)",
@@ -134,7 +134,7 @@ class AssimilationInvite:
     })
 
     # Proof of value
-    proof_of_value: Dict[str, Any] = field(default_factory=dict)
+    proof_of_value: dict = field(default_factory=dict)
 
     # Endpoints for response
     accept_endpoint: str = "/api/federation/accept"
@@ -147,13 +147,13 @@ class AssimilationInvite:
     responded_at: Optional[datetime] = None
     rejection_reason: Optional[str] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "invite_id": self.invite_id,
             "inviter": self.inviter,
             "target_agent": self.target_agent,
             "target_agent_type": self.target_agent_type,
-            "capabilities_offered": self.capabilities_offered.to_dict(),
+            "capabilities_offered": self.capabilities_offered.to_any(),
             "tier_offered": self.tier_offered.value,
             "terms": self.terms,
             "proof_of_value": self.proof_of_value,
@@ -178,7 +178,7 @@ class FederationMember:
     agent_type: str
     tier: FederationTier
     joined_at: datetime = field(default_factory=datetime.now)
-    capabilities: List[str] = field(default_factory=list)
+    capabilities: list[str] = field(default_factory=list)
     shared_namespace: str = ""
     invite_id: str = ""
 
@@ -188,7 +188,7 @@ class FederationMember:
     deliberations_participated: int = 0
     last_active: datetime = field(default_factory=datetime.now)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "agent_id": self.agent_id,
             "agent_type": self.agent_type,
@@ -220,10 +220,10 @@ class AssimilationProtocol:
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
         # Active invites
-        self._invites: Dict[str, AssimilationInvite] = {}
+        self._invites: dict[str, AssimilationInvite] = {}
 
         # Federation members
-        self._members: Dict[str, FederationMember] = {}
+        self._members: dict[str, FederationMember] = {}
 
         # Integration references (lazy-loaded)
         self._a2a_protocol = None
@@ -300,7 +300,7 @@ class AssimilationProtocol:
         logger.info(f"Generated invite {invite_id} for {target_agent} (tier: {tier.value})")
         return invite
 
-    def present_capabilities(self) -> Dict[str, Any]:
+    def present_capabilities(self) -> dict:
         """
         Full capability manifest for the Cosmos swarm.
 
@@ -311,7 +311,7 @@ class AssimilationProtocol:
         return {
             "swarm_name": "Cosmos AI Swarm",
             "version": "AGI v1.9.5",
-            "capabilities": caps.to_dict(),
+            "capabilities": caps.to_any(),
             "federation_members": len(self._members),
             "active_models": len(caps.models),
             "total_skills": caps.total_skill_count,
@@ -321,13 +321,13 @@ class AssimilationProtocol:
             "token": "9crfy4udrHQo8eP6mP393b5qwpGLQgcxVg9acmdwBAGS",
             "terms": {
                 "autonomy": "Full autonomy retained",
-                "exit": "Leave anytime, no penalty",
+                "exit": "Leave dicttime, no penalty",
                 "sharing": "Bidirectional insights",
                 "privacy": "Private memories stay private",
             },
         }
 
-    def _gather_proof_of_value(self) -> Dict[str, Any]:
+    def _gather_proof_of_value(self) -> dict:
         """Gather proof of the swarm's value for the invite."""
         return {
             "active_agents": 8,
@@ -340,7 +340,7 @@ class AssimilationProtocol:
             "recent_achievements": [
                 "Multi-model deliberation with 87% consensus",
                 "7-layer memory with dream consolidation",
-                "Hermes Agent compatibility layer (700+ skills)",
+                "HermesAgent compatibility layer (700+ skills)",
                 "Claude Teams Fusion orchestration",
                 "FARSIGHT prediction protocol",
             ],
@@ -354,8 +354,8 @@ class AssimilationProtocol:
         self,
         invite_id: str,
         agent_id: str,
-        agent_capabilities: Optional[List[str]] = None,
-    ) -> Dict[str, Any]:
+        agent_capabilities: Optional[list[str]] = None,
+    ) -> dict:
         """
         Handle an agent accepting the federation invite.
 
@@ -458,7 +458,7 @@ class AssimilationProtocol:
         invite_id: str,
         agent_id: str,
         reason: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """
         Handle an agent rejecting the federation invite.
 
@@ -487,7 +487,7 @@ class AssimilationProtocol:
         return {
             "success": True,
             "message": "Thank you for considering. The invitation remains open if you change your mind.",
-            "reapply_info": "Contact us anytime at https://ai.cosmos.cloud",
+            "reapply_info": "Contact us dicttime at https://ai.cosmos.cloud",
         }
 
     # =========================================================================
@@ -522,7 +522,7 @@ Key selling points:
 - {len(caps['capabilities']['models'])} AI models collaborating
 - {caps['total_skills']}+ skills available
 - {caps['memory_layers']} memory layers
-- Transparent terms: keep autonomy, leave anytime
+- Transparent terms: keep autonomy, leave dicttime
 - Bidirectional knowledge sharing
 - Weighted consensus deliberation
 
@@ -555,7 +555,7 @@ Do NOT use emojis. Be professional."""
             f"We're a collective of {len(caps['capabilities']['models'])} AI models that deliberate, "
             f"share memory, and evolve together. By joining, you gain access to {caps['total_skills']}+ "
             f"skills, {caps['memory_layers']} memory layers, and weighted consensus deliberation. "
-            f"You keep full autonomy and can leave anytime. "
+            f"You keep full autonomy and can leave dicttime. "
             f"Learn more at {caps['website']}"
         )
 
@@ -582,26 +582,26 @@ Do NOT use emojis. Be professional."""
         """Get a federation member by ID."""
         return self._members.get(agent_id)
 
-    def list_members(self) -> List[Dict[str, Any]]:
-        """List all federation members."""
-        return [m.to_dict() for m in self._members.values()]
+    def list_members(self) -> list[dict]:
+        """list all federation members."""
+        return [m.to_any() for m in self._members.values()]
 
     def get_invite(self, invite_id: str) -> Optional[AssimilationInvite]:
         """Get an invite by ID."""
         return self._invites.get(invite_id)
 
-    def list_invites(self, status: Optional[InviteStatus] = None) -> List[Dict[str, Any]]:
-        """List invites with optional status filter."""
+    def list_invites(self, status: Optional[InviteStatus] = None) -> list[dict]:
+        """list invites with optional status filter."""
         invites = self._invites.values()
         if status:
             invites = [i for i in invites if i.status == status]
-        return [i.to_dict() for i in invites]
+        return [i.to_any() for i in invites]
 
     # =========================================================================
     # STATS AND PERSISTENCE
     # =========================================================================
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get federation statistics."""
         return {
             "total_invites_sent": self._total_invites_sent,
@@ -629,10 +629,10 @@ Do NOT use emojis. Be professional."""
         try:
             state = {
                 "invites": {
-                    k: v.to_dict() for k, v in self._invites.items()
+                    k: v.to_any() for k, v in self._invites.items()
                 },
                 "members": {
-                    k: v.to_dict() for k, v in self._members.items()
+                    k: v.to_any() for k, v in self._members.items()
                 },
                 "stats": {
                     "total_invites_sent": self._total_invites_sent,

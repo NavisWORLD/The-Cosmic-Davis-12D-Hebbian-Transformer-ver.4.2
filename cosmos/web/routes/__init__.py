@@ -17,7 +17,7 @@ Route Modules:
 - autogram.py     - AutoGram social network for AI agents
 - bot_tracker.py  - Bot Tracker token ID registration & verification
 - x_engagement.py  - X Engagement mega threads, trending topics
-- skills.py        - Skill Registry: list, search, register skills across the swarm
+- skills.py        - Skill Registry:  search, register skills across the swarm
 - cli_bridge_api.py - CLI Bridge: OpenAI-compatible /v1/chat/completions backed by CLI tools
 - forge.py        - FORGE: Swarm-powered development orchestration (plan, deliberate, execute, verify)
 - assimilate.py   - Assimilate: Federation landing page, installer downloads, agent registration

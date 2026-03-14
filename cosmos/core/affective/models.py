@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+, Optional
 from enum import Enum
 from datetime import datetime
 
@@ -27,7 +27,7 @@ class SystemAction:
     action_id: str
     priority_delta: float = 0.0 # Change in priority
     description: str = ""
-    parameters: Dict[str, str] = field(default_factory=dict)
+    parameters: dict[str, str] = field(default_factory=dict)
 
 class SystemPriority(Enum):
     CRITICAL = 5

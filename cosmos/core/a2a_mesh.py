@@ -26,7 +26,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Set, Awaitable
+from typing import  Callable, Optional, Set, Awaitable
 from pathlib import Path
 
 from loguru import logger
@@ -48,17 +48,17 @@ class PeerStatus(Enum):
 class AgentPeer:
     """Represents a peer agent in the mesh."""
     agent_id: str
-    capabilities: List[str]
+    capabilities: list[str]
     status: PeerStatus = PeerStatus.IDLE
     last_seen: datetime = field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
     # Performance metrics
     response_time_ms: float = 0.0
     success_rate: float = 1.0
     total_interactions: int = 0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "agent_id": self.agent_id,
             "capabilities": self.capabilities,
@@ -83,13 +83,13 @@ class A2AMessage:
     source: str
     target: str  # Can be specific agent or "*" for broadcast
     message_type: str
-    payload: Dict[str, Any]
+    payload: dict
     ttl: int = 30  # seconds
     created_at: datetime = field(default_factory=datetime.now)
     correlation_id: Optional[str] = None
     requires_response: bool = False
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "message_id": self.message_id,
             "source": self.source,
@@ -116,10 +116,10 @@ class SubSwarm:
     leader: Optional[str] = None
     created_at: datetime = field(default_factory=datetime.now)
     status: str = "active"
-    shared_context: Dict[str, Any] = field(default_factory=dict)
-    results: Dict[str, Any] = field(default_factory=dict)
+    shared_context: dict = field(default_factory=dict)
+    results: dict = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "swarm_id": self.swarm_id,
             "purpose": self.purpose,
@@ -140,11 +140,11 @@ class SharedInsight:
     insight_type: str  # "connection", "pattern", "solution", "warning"
     relevance_score: float
     visibility: str = "public"  # "public", "team", "private"
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
     created_at: datetime = field(default_factory=datetime.now)
     acknowledged_by: Set[str] = field(default_factory=set)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "insight_id": self.insight_id,
             "source": self.source,
@@ -176,21 +176,21 @@ class A2AMesh:
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
         # Peer registry
-        self._peers: Dict[str, AgentPeer] = {}
+        self._peers: dict[str, AgentPeer] = {}
 
         # Message handling
-        self._message_handlers: Dict[str, Callable[[A2AMessage], Awaitable[Any]]] = {}
-        self._pending_responses: Dict[str, asyncio.Future] = {}
-        self._message_history: List[A2AMessage] = []
+        self._message_handlers: dict[str, Callable[[A2AMessage], Awaitable[dict]]] = {}
+        self._pending_responses: dict[str, asyncio.Future] = {}
+        self._message_history: list[A2AMessage] = []
         self._max_history: int = 1000
 
         # Sub-swarms
-        self._sub_swarms: Dict[str, SubSwarm] = {}
-        self._agent_swarms: Dict[str, Set[str]] = {}  # agent_id -> swarm_ids
+        self._sub_swarms: dict[str, SubSwarm] = {}
+        self._agent_swarms: dict[str, Set[str]] = {}  # agent_id -> swarm_ids
 
         # Shared knowledge
-        self._insights: Dict[str, SharedInsight] = {}
-        self._insight_subscribers: Dict[str, Callable[[SharedInsight], Awaitable[None]]] = {}
+        self._insights: dict[str, SharedInsight] = {}
+        self._insight_subscribers: dict[str, Callable[[SharedInsight], Awaitable[None]]] = {}
 
         # Nexus integration
         self._nexus = None
@@ -212,15 +212,15 @@ class A2AMesh:
     async def register_peer(
         self,
         agent_id: str,
-        capabilities: List[str],
-        metadata: Optional[Dict[str, Any]] = None,
+        capabilities: list[str],
+        metadata: Optional[dict] = None,
     ) -> AgentPeer:
         """
         Register a peer in the mesh.
 
         Args:
             agent_id: Unique identifier for the agent
-            capabilities: List of capabilities (e.g., ["code", "reasoning", "vision"])
+            capabilities: list of capabilities (e.g., ["code", "reasoning", "vision"])
             metadata: Optional additional metadata
 
         Returns:
@@ -254,7 +254,7 @@ class A2AMesh:
                 source=agent_id,
                 target="*",
                 message_type="peer.announce",
-                payload={"peer": peer.to_dict()},
+                payload={"peer": peer.to_any()},
             )
         )
 
@@ -285,9 +285,9 @@ class A2AMesh:
 
     async def discover_peers(
         self,
-        capabilities: Optional[List[str]] = None,
+        capabilities: Optional[list[str]] = None,
         status: Optional[PeerStatus] = None,
-    ) -> List[AgentPeer]:
+    ) -> list[AgentPeer]:
         """
         Discover peers in the mesh with optional filtering.
 
@@ -296,7 +296,7 @@ class A2AMesh:
             status: Filter by peer status
 
         Returns:
-            List of matching peers
+            list of matching peers
         """
         peers = list(self._peers.values())
 
@@ -304,7 +304,7 @@ class A2AMesh:
         if capabilities:
             peers = [
                 p for p in peers
-                if any(cap in p.capabilities for cap in capabilities)
+                if any(cap in capabilities)
             ]
 
         # Filter by status
@@ -342,10 +342,10 @@ class A2AMesh:
         source: str,
         target: str,
         message_type: str,
-        payload: Dict[str, Any],
+        payload: dict,
         requires_response: bool = False,
         timeout: float = 30.0,
-    ) -> Optional[Dict[str, Any]]:
+    ) -> Optional[dict]:
         """
         Send a direct message to another agent.
 
@@ -471,7 +471,7 @@ class A2AMesh:
     def register_message_handler(
         self,
         message_type: str,
-        handler: Callable[[A2AMessage], Awaitable[Any]],
+        handler: Callable[[A2AMessage], Awaitable[dict]],
     ) -> None:
         """Register a handler for a message type."""
         self._message_handlers[message_type] = handler
@@ -483,16 +483,16 @@ class A2AMesh:
 
     async def form_sub_swarm(
         self,
-        agents: List[str],
+        agents: list[str],
         purpose: str,
         leader: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict] = None,
     ) -> SubSwarm:
         """
         Form a sub-swarm from a group of agents.
 
         Args:
-            agents: List of agent IDs to include
+            agents: list of agent IDs to include
             purpose: Description of the swarm's purpose
             leader: Optional leader agent ID
             context: Shared context for the swarm
@@ -659,7 +659,7 @@ class A2AMesh:
         """Get a sub-swarm by ID."""
         return self._sub_swarms.get(swarm_id)
 
-    def get_agent_swarms(self, agent_id: str) -> List[SubSwarm]:
+    def get_agent_swarms(self, agent_id: str) -> list[SubSwarm]:
         """Get all sub-swarms an agent is part of."""
         swarm_ids = self._agent_swarms.get(agent_id, set())
         return [self._sub_swarms[sid] for sid in swarm_ids if sid in self._sub_swarms]
@@ -674,7 +674,7 @@ class A2AMesh:
         content: str,
         insight_type: str = "general",
         visibility: str = "public",
-        tags: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
         relevance_score: float = 0.5,
     ) -> SharedInsight:
         """
@@ -730,9 +730,9 @@ class A2AMesh:
         self,
         source: str,
         query: str,
-        peers: Optional[List[str]] = None,
+        peers: Optional[list[str]] = None,
         timeout: float = 30.0,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict]:
         """
         Request knowledge from peers.
 
@@ -743,14 +743,14 @@ class A2AMesh:
             timeout: Response timeout
 
         Returns:
-            List of responses from peers
+            list of responses from peers
         """
         if peers is None:
             peers = [p.agent_id for p in self._peers.values() if p.agent_id != source]
 
         responses = []
 
-        async def query_peer(peer_id: str) -> Optional[Dict[str, Any]]:
+        async def query_peer(peer_id: str) -> Optional[dict]:
             try:
                 response = await self.send_direct(
                     source=source,
@@ -771,7 +771,7 @@ class A2AMesh:
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
         for result in results:
-            if isinstance(result, dict):
+            if isinstance(result):
                 responses.append(result)
 
         return responses
@@ -791,21 +791,21 @@ class A2AMesh:
     def get_insights(
         self,
         insight_type: Optional[str] = None,
-        tags: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
         min_relevance: float = 0.0,
         limit: int = 100,
-    ) -> List[SharedInsight]:
+    ) -> list[SharedInsight]:
         """
         Get insights with optional filtering.
 
         Args:
             insight_type: Filter by type
-            tags: Filter by tags (any match)
+            tags: Filter by tags (dict match)
             min_relevance: Minimum relevance score
             limit: Maximum results
 
         Returns:
-            List of matching insights
+            list of matching insights
         """
         insights = list(self._insights.values())
 
@@ -815,7 +815,7 @@ class A2AMesh:
 
         # Filter by tags
         if tags:
-            insights = [i for i in insights if any(t in i.tags for t in tags)]
+            insights = [i for i in insights if any(t in tags)]
 
         # Filter by relevance
         insights = [i for i in insights if i.relevance_score >= min_relevance]
@@ -882,7 +882,7 @@ class A2AMesh:
         if len(self._message_history) > self._max_history:
             self._message_history = self._message_history[-self._max_history:]
 
-    async def _emit_signal(self, signal_type: str, payload: Dict[str, Any]) -> None:
+    async def _emit_signal(self, signal_type: str, payload: dict) -> None:
         """Emit a signal to Nexus."""
         if not self._nexus:
             return
@@ -905,7 +905,7 @@ class A2AMesh:
     # STATUS AND METRICS
     # =========================================================================
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get mesh statistics."""
         online_peers = sum(1 for p in self._peers.values() if p.status == PeerStatus.ONLINE)
 
@@ -920,13 +920,13 @@ class A2AMesh:
             "insight_subscribers": len(self._insight_subscribers),
         }
 
-    def get_peer_list(self) -> List[Dict[str, Any]]:
+    def get_peer_list(self) -> list[dict]:
         """Get list of all peers."""
-        return [peer.to_dict() for peer in self._peers.values()]
+        return [peer.to_any() for peer in self._peers.values()]
 
-    def get_swarm_list(self) -> List[Dict[str, Any]]:
+    def get_swarm_list(self) -> list[dict]:
         """Get list of all sub-swarms."""
-        return [swarm.to_dict() for swarm in self._sub_swarms.values()]
+        return [swarm.to_any() for swarm in self._sub_swarms.values()]
 
 
 # =============================================================================

@@ -17,7 +17,7 @@ Impact: The system actually gets smarter *overnight* based on what you worked on
 import asyncio
 import json
 import random
-from typing import List, Dict
+
 from datetime import datetime
 from loguru import logger
 
@@ -26,7 +26,7 @@ class DreamCatcher:
         self.output_dir = output_dir
         self.dream_log = []
         
-    async def enter_rem_sleep(self, recent_memories: List[str]):
+    async def enter_rem_sleep(self, recent_memories: list[str]):
         """
         The core loop. Takes raw memories and 'dreams' up synthetic training examples.
         """
@@ -78,7 +78,7 @@ class DreamCatcher:
         """
         return f"Based on our records: {context}"
 
-    def _save_dreams(self, dreams: List[Dict]):
+    def _save_dreams(self, dreams: list[dict]):
         """Append to JSONL dataset."""
         import os
         os.makedirs(self.output_dir, exist_ok=True)

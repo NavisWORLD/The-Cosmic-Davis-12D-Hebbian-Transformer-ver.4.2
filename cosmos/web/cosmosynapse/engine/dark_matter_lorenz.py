@@ -15,7 +15,7 @@ must "speak the unspoken" for the user.
 """
 
 import numpy as np
-from typing import Dict, Any
+
 try:
     from .phi_constants import PHI, PHI_INV
 except ImportError:
@@ -30,7 +30,7 @@ class DarkMatterLorenz:
         self.beta = 8.0 / 3.0
         self.dt = 0.01
 
-    def update(self, user_physics: Dict[str, Any]) -> Dict[str, float]:
+    def update(self, user_physics: dict) -> dict[str, float]:
         """
         Steps the chaos engine forward based on User Physics.
         """
@@ -113,7 +113,7 @@ class DarkMatterLorenz:
     # V4.0: P2P DARK MATTER ANCHORING
     # ════════════════════════════════════════════════════════
 
-    def anchor_for_p2p(self) -> Dict[str, float]:
+    def anchor_for_p2p(self) -> dict[str, float]:
         """
         Serialize the 4D (x, y, z, w) attractor state for P2P transmission.
         Returns a compact dict that can be JSON-serialized and sent to peers.
@@ -129,14 +129,14 @@ class DarkMatterLorenz:
             "beta": self.beta,
         }
 
-    def apply_peer_anchor(self, peer_state: Dict[str, float], trust: float = 0.5):
+    def apply_peer_anchor(self, peer_state: dict[str, float], trust: float = 0.5):
         """
         Merge incoming peer dark matter state via φ-dampened averaging.
 
         w_merged = w_local × (1 - trust × φ⁻¹) + w_peer × trust × φ⁻¹
 
         Args:
-            peer_state: Dict with keys 'x', 'y', 'z', 'w' from peer
+            peer_state: dict with keys 'x', 'y', 'z', 'w' from peer
             trust: Trust factor 0.0–1.0 (how much to weight the peer's state)
         """
         if not peer_state:
@@ -158,7 +158,7 @@ class DarkMatterLorenz:
             self.state[3] * local_weight + pw * peer_weight,
         ])
 
-    def get_divergence(self, peer_state: Dict[str, float]) -> float:
+    def get_divergence(self, peer_state: dict[str, float]) -> float:
         """
         Calculate Euclidean distance between local and peer chaos vectors.
         Higher divergence = the swarm nodes are experiencing different chaos dynamics.

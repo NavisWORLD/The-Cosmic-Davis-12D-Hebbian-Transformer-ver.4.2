@@ -26,7 +26,7 @@ import asyncio
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Callable, Tuple
+from typing import   Optional, Callable, Tuple
 from enum import Enum
 from collections import defaultdict
 
@@ -70,7 +70,7 @@ class SubSwarmConfig:
     consensus_threshold: float = 0.7     # 70% agreement needed
     parallel_execution: bool = True      # Run agents in parallel
     merge_strategy: str = "vote"         # "vote", "aggregate", "best", "chain"
-    agent_types: List[str] = field(default_factory=list)  # Specific agent types
+    agent_types: list[str] = field(default_factory=list)  # Specific agent types
 
 
 @dataclass
@@ -81,7 +81,7 @@ class SubSwarmAgent:
     role: str  # "leader", "worker", "critic", "synthesizer"
 
     # Results
-    result: Optional[Any] = None
+    result: Optional[dict] = None
     confidence: float = 0.0
     execution_time_ms: float = 0.0
 
@@ -99,11 +99,11 @@ class SubSwarm:
 
     # Task info
     task: str
-    context: Dict[str, Any] = field(default_factory=dict)
+    context: dict = field(default_factory=dict)
     trigger_source: str = ""  # What triggered this (API, agent, user)
 
     # Agents
-    agents: List[SubSwarmAgent] = field(default_factory=list)
+    agents: list[SubSwarmAgent] = field(default_factory=list)
 
     # State
     state: SubSwarmState = SubSwarmState.SPAWNING
@@ -111,7 +111,7 @@ class SubSwarm:
     completed_at: Optional[datetime] = None
 
     # Results
-    merged_result: Optional[Any] = None
+    merged_result: Optional[dict] = None
     consensus_reached: bool = False
     consensus_score: float = 0.0
 
@@ -137,8 +137,8 @@ class SubSwarmResult:
     success: bool
 
     # Results
-    merged_result: Any
-    individual_results: List[Tuple[str, Any, float]]  # [(agent_id, result, confidence), ...]
+    merged_result: dict
+    individual_results: list[Tuple[str, float]]  # [(agent_id, result, confidence), ...]
 
     # Consensus
     consensus_reached: bool
@@ -150,7 +150,7 @@ class SubSwarmResult:
 
     # Metadata
     trigger_source: str
-    context: Dict[str, Any] = field(default_factory=dict)
+    context: dict = field(default_factory=dict)
 
 
 # =============================================================================
@@ -180,16 +180,16 @@ class SubSwarmSpawner:
         self.default_timeout = default_timeout
 
         # Active swarms
-        self._swarms: Dict[str, SubSwarm] = {}
-        self._swarm_history: List[SubSwarmResult] = []
+        self._swarms: dict[str, SubSwarm] = {}
+        self._swarm_history: list[SubSwarmResult] = []
 
         # Agent factory (set externally)
         self._agent_factory: Optional[Callable] = None
         self._agent_executor: Optional[Callable] = None
 
         # Callbacks
-        self._on_swarm_complete: List[Callable] = []
-        self._on_agent_result: List[Callable] = []
+        self._on_swarm_complete: list[Callable] = []
+        self._on_agent_result: list[Callable] = []
 
         # Lock
         self._lock = asyncio.Lock()
@@ -199,7 +199,7 @@ class SubSwarmSpawner:
 
         logger.info("SubSwarmSpawner initialized")
 
-    def _init_type_configs(self) -> Dict[SubSwarmType, Dict[str, Any]]:
+    def _init_type_configs(self) -> dict[SubSwarmType[str]]:
         """Initialize default configurations for swarm types."""
         return {
             SubSwarmType.TRADING: {
@@ -258,7 +258,7 @@ class SubSwarmSpawner:
         self,
         swarm_type: SubSwarmType,
         task: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict] = None,
         trigger_source: str = "api",
         config_override: Optional[SubSwarmConfig] = None,
     ) -> SubSwarm:
@@ -507,7 +507,7 @@ class SubSwarmSpawner:
             # Normalize weights
             weights = {r[0]: r[2] / total_confidence for r in results}
 
-            # For now, mark consensus if any agent has majority confidence
+            # For now, mark consensus if dict agent has majority confidence
             max_weight = max(weights.values())
             swarm.consensus_reached = max_weight >= swarm.config.consensus_threshold
             swarm.consensus_score = max_weight
@@ -611,11 +611,11 @@ class SubSwarmSpawner:
         """Get a sub-swarm by ID."""
         return self._swarms.get(swarm_id)
 
-    def get_active_swarms(self) -> List[SubSwarm]:
+    def get_active_swarms(self) -> list[SubSwarm]:
         """Get all active sub-swarms."""
         return [s for s in self._swarms.values() if s.is_active()]
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get spawner statistics."""
         return {
             "total_swarms": len(self._swarms),
@@ -644,7 +644,7 @@ subswarm_spawner = SubSwarmSpawner()
 
 async def spawn_trading_swarm(
     task: str,
-    market_data: Optional[Dict] = None,
+    market_data: Optional[dict] = None,
     trigger: str = "api",
 ) -> SubSwarm:
     """Spawn a trading analysis sub-swarm."""
@@ -658,7 +658,7 @@ async def spawn_trading_swarm(
 
 async def spawn_research_swarm(
     query: str,
-    sources: Optional[List[str]] = None,
+    sources: Optional[list[str]] = None,
     trigger: str = "api",
 ) -> SubSwarm:
     """Spawn a research sub-swarm."""
@@ -672,7 +672,7 @@ async def spawn_research_swarm(
 
 async def spawn_prediction_swarm(
     question: str,
-    odds_data: Optional[Dict] = None,
+    odds_data: Optional[dict] = None,
     trigger: str = "polymarket",
 ) -> SubSwarm:
     """Spawn a prediction analysis sub-swarm (for Polymarket etc)."""

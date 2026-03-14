@@ -5,7 +5,7 @@ Provides a centralized registry of ALL capabilities across the swarm:
 - Shadow agent capabilities (grok, gemini, claude, etc.)
 - Integration tools (X posting, image gen, Solana, Polymarket)
 - Hackathon tools (oracle, trading, rug detection)
-- Hermes Agent compatibility skills
+- HermesAgent compatibility skills
 - Custom user-defined skills
 - MCP tools
 
@@ -34,7 +34,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Callable, Optional, set, tuple
 
 from loguru import logger
 
@@ -65,13 +65,13 @@ class Skill:
     category: SkillCategory
     module_path: str  # e.g. "cosmos.integration.x_automation.x_engagement_poster"
     function_name: str  # e.g. "execute"
-    agents: List[str] = field(default_factory=list)  # Which agents can run this
-    keywords: List[str] = field(default_factory=list)  # Search keywords
-    parameters: Dict[str, str] = field(default_factory=dict)  # param_name: description
+    agents: list[str] = field(default_factory=list)  # Which agents can run this
+    keywords: list[str] = field(default_factory=list)  # Search keywords
+    parameters: dict[str, str] = field(default_factory=dict)  # param_name: description
     requires_api_key: Optional[str] = None  # Env var name if API key needed
     cooldown_seconds: int = 0
     enabled: bool = True
-    source: str = "builtin"  # builtin, Hermes Agent, custom, mcp
+    source: str = "builtin"  # builtin, HermesAgent, custom, mcp
     last_used: Optional[str] = None
     usage_count: int = 0
     success_rate: float = 1.0
@@ -85,9 +85,9 @@ class SkillRegistry:
     """Central registry of all swarm capabilities."""
 
     def __init__(self):
-        self._skills: Dict[str, Skill] = {}
-        self._categories: Dict[SkillCategory, List[str]] = {cat: [] for cat in SkillCategory}
-        self._agent_skills: Dict[str, List[str]] = {}
+        self._skills: dict[str, Skill] = {}
+        self._categories: dict[SkillCategory[str]] = {cat: [] for cat in SkillCategory}
+        self._agent_skills: dict[str[str]] = {}
         self._discovered = False
         self._persistence_path = Path(os.environ.get(
             "SKILL_REGISTRY_PATH",
@@ -117,7 +117,7 @@ class SkillRegistry:
         category: Optional[SkillCategory] = None,
         agent: Optional[str] = None,
         enabled_only: bool = True,
-    ) -> List[Skill]:
+    ) -> list[Skill]:
         """Find skills matching a natural language query."""
         query_lower = query.lower()
         query_words = set(query_lower.split())
@@ -163,21 +163,21 @@ class SkillRegistry:
         """Get a specific skill by name."""
         return self._skills.get(name)
 
-    def get_agent_skills(self, agent: str) -> List[Skill]:
+    def get_agent_skills(self, agent: str) -> list[Skill]:
         """Get all skills available to a specific agent."""
         skill_names = self._agent_skills.get(agent, [])
         return [self._skills[n] for n in skill_names if n in self._skills]
 
-    def get_category_skills(self, category: SkillCategory) -> List[Skill]:
+    def get_category_skills(self, category: SkillCategory) -> list[Skill]:
         """Get all skills in a category."""
         skill_names = self._categories.get(category, [])
         return [self._skills[n] for n in skill_names if n in self._skills]
 
-    def list_all_skills(self) -> List[Skill]:
-        """List all registered skills."""
+    def list_all_skills(self) -> list[Skill]:
+        """list all registered skills."""
         return list(self._skills.values())
 
-    def get_skill_summary(self) -> Dict[str, Any]:
+    def get_skill_summary(self) -> dict:
         """Get a summary of all registered skills for agent prompts."""
         summary = {
             "total_skills": len(self._skills),
@@ -217,7 +217,7 @@ class SkillRegistry:
         lines = ["AVAILABLE SKILLS/TOOLS:"]
 
         # Group by category
-        by_cat: Dict[str, List[Skill]] = {}
+        by_cat: dict[str[Skill]] = {}
         for s in skills:
             cat = s.category.value
             if cat not in by_cat:
@@ -261,7 +261,7 @@ class SkillRegistry:
         self._register_builtin_skills()
 
         # Discover Hermes skills via shadow layer
-        await self._discover_Hermes Agent_skills()
+        await self._discover_HermesAgent_skills()
 
         # Discover MCP tools from registered servers
         await self._discover_mcp_tools()
@@ -277,88 +277,88 @@ class SkillRegistry:
         logger.info(f"Discovered {new_count} new skills. Total: {len(self._skills)}")
         return len(self._skills)
 
-    async def _discover_Hermes Agent_skills(self) -> int:
+    async def _discover_HermesAgent_skills(self) -> int:
         """Discover and register Hermes skills via the compatibility layer."""
         count = 0
         try:
             from Cosmos.compatibility.hermes_adapter import (
-                Hermes AgentAdapter,
-                Hermes AgentToolGroup,
+                HermesAgentAdapter,
+                HermesAgentToolGroup,
             )
 
-            adapter = Hermes AgentAdapter()
+            adapter = HermesAgentAdapter()
 
-            # Map Hermes Agent tool groups to our categories
+            # Map HermesAgent tool groups to our categories
             group_to_category = {
-                Hermes AgentToolGroup.FILESYSTEM: SkillCategory.UTILITY,
-                Hermes AgentToolGroup.RUNTIME: SkillCategory.DEVELOPMENT,
-                Hermes AgentToolGroup.SESSIONS: SkillCategory.ORCHESTRATION,
-                Hermes AgentToolGroup.MEMORY: SkillCategory.MEMORY,
-                Hermes AgentToolGroup.WEB: SkillCategory.RESEARCH,
-                Hermes AgentToolGroup.UI: SkillCategory.MEDIA,
-                Hermes AgentToolGroup.AUTOMATION: SkillCategory.UTILITY,
-                Hermes AgentToolGroup.MESSAGING: SkillCategory.COMMUNICATION,
-                Hermes AgentToolGroup.NODES: SkillCategory.UTILITY,
+                HermesAgentToolGroup.FILESYSTEM: SkillCategory.UTILITY,
+                HermesAgentToolGroup.RUNTIME: SkillCategory.DEVELOPMENT,
+                HermesAgentToolGroup.SESSIONS: SkillCategory.ORCHESTRATION,
+                HermesAgentToolGroup.MEMORY: SkillCategory.MEMORY,
+                HermesAgentToolGroup.WEB: SkillCategory.RESEARCH,
+                HermesAgentToolGroup.UI: SkillCategory.MEDIA,
+                HermesAgentToolGroup.AUTOMATION: SkillCategory.UTILITY,
+                HermesAgentToolGroup.MESSAGING: SkillCategory.COMMUNICATION,
+                HermesAgentToolGroup.NODES: SkillCategory.UTILITY,
             }
 
-            # Register each Hermes Agent tool group as skills
-            for group in Hermes AgentToolGroup:
+            # Register each HermesAgent tool group as skills
+            for group in HermesAgentToolGroup:
                 category = group_to_category.get(group, SkillCategory.CUSTOM)
                 tools = adapter.get_tools_for_group(group) if hasattr(adapter, 'get_tools_for_group') else []
 
                 if tools:
                     for tool in tools:
-                        tool_name = f"Hermes Agent_{group.name.lower()}_{tool.get('name', 'unknown')}"
+                        tool_name = f"HermesAgent_{group.name.lower()}_{tool.get('name', 'unknown')}"
                         self.register_skill(Skill(
                             name=tool_name,
-                            description=tool.get("description", f"Hermes Agent {group.name} tool"),
+                            description=tool.get("description", f"HermesAgent {group.name} tool"),
                             category=category,
                             module_path="cosmos.compatibility.hermes_adapter",
                             function_name="invoke_tool",
                             agents=["cosmos", "claude", "grok"],
-                            keywords=["Hermes Agent", group.name.lower()] + tool.get("keywords", []),
+                            keywords=["HermesAgent", group.name.lower()] + tool.get("keywords", []),
                             parameters=tool.get("parameters", {}),
-                            source="Hermes Agent",
+                            source="HermesAgent",
                         ))
                         count += 1
                 else:
                     # Register the group itself as an invocable skill
                     self.register_skill(Skill(
-                        name=f"Hermes Agent_{group.name.lower()}",
-                        description=f"Hermes Agent {group.name} tools ({group.value})",
+                        name=f"HermesAgent_{group.name.lower()}",
+                        description=f"HermesAgent {group.name} tools ({group.value})",
                         category=category,
                         module_path="cosmos.compatibility.hermes_adapter",
                         function_name="invoke",
                         agents=["cosmos", "claude", "grok"],
-                        keywords=["Hermes Agent", group.name.lower(), "compatibility", "shadow"],
+                        keywords=["HermesAgent", group.name.lower(), "compatibility", "shadow"],
                         parameters={"tool": "Tool name", "action": "Action", "params": "Parameters"},
-                        source="Hermes Agent",
+                        source="HermesAgent",
                     ))
                     count += 1
 
-            # Try to discover Hermes Hub marketplace skills
-            if hasattr(adapter, 'Hermes Hub_client') and adapter.Hermes Hub_client:
+            # Try to discover HermesHub marketplace skills
+            if hasattr(adapter, 'HermesHub_client') and adapter.HermesHub_client:
                 try:
-                    hub_skills = await adapter.Hermes Hub_client.list_skills() if hasattr(adapter.Hermes Hub_client, 'list_skills') else []
+                    hub_skills = await adapter.HermesHub_client.list_skills() if hasattr(adapter.HermesHub_client, 'list_skills') else []
                     for hub_skill in hub_skills[:50]:  # Cap at 50 marketplace skills
                         self.register_skill(Skill(
-                            name=f"Hermes Hub_{hub_skill.get('id', 'unknown')}",
-                            description=hub_skill.get("description", "Hermes Hub community skill"),
+                            name=f"HermesHub_{hub_skill.get('id', 'unknown')}",
+                            description=hub_skill.get("description", "HermesHub community skill"),
                             category=SkillCategory.CUSTOM,
                             module_path="cosmos.compatibility.hermes_adapter",
-                            function_name="invoke_Hermes Hub_skill",
+                            function_name="invoke_HermesHub_skill",
                             agents=["cosmos"],
-                            keywords=["Hermes Hub", "community"] + hub_skill.get("tags", []),
+                            keywords=["HermesHub", "community"] + hub_skill.get("tags", []),
                             parameters=hub_skill.get("inputs", {}),
-                            source="Hermes Agent",
+                            source="HermesAgent",
                         ))
                         count += 1
                 except Exception as e:
-                    logger.debug(f"Hermes Hub discovery skipped: {e}")
+                    logger.debug(f"HermesHub discovery skipped: {e}")
 
             logger.info(f"Discovered {count} Hermes skills")
         except ImportError:
-            logger.debug("Hermes Agent adapter not available")
+            logger.debug("HermesAgent adapter not available")
         except Exception as e:
             logger.warning(f"Hermes skill discovery failed: {e}")
 
@@ -670,7 +670,7 @@ class SkillRegistry:
             function_name="send_jito_bundle",
             agents=["cosmos"],
             keywords=["jito", "mev", "bundle", "frontrun", "sandwich"],
-            parameters={"transactions": "List of transactions", "tip_sol": "Jito tip amount"},
+            parameters={"transactions": "list of transactions", "tip_sol": "Jito tip amount"},
         ))
 
         # ===================== ANALYSIS =====================
@@ -962,7 +962,7 @@ class SkillRegistry:
             function_name="delegate_to_team",
             agents=["cosmos"],
             keywords=["team", "create", "claude", "agents", "collaborate"],
-            parameters={"task": "Task", "team_name": "Name", "roles": "List of roles"},
+            parameters={"task": "Task", "team_name": "Name", "roles": "list of roles"},
         ))
 
         self.register_skill(Skill(
@@ -1098,13 +1098,13 @@ class SkillRegistry:
         ))
 
         self.register_skill(Skill(
-            name="Hermes Agent_invoke",
-            description="Invoke an Hermes Agent-compatible tool via the shadow layer",
+            name="HermesAgent_invoke",
+            description="Invoke an HermesAgent-compatible tool via the shadow layer",
             category=SkillCategory.UTILITY,
             module_path="cosmos.compatibility.hermes_adapter",
             function_name="invoke",
             agents=all_agents,
-            keywords=["Hermes Agent", "tool", "invoke", "compatibility", "shadow"],
+            keywords=["HermesAgent", "tool", "invoke", "compatibility", "shadow"],
             parameters={"tool": "Tool name", "action": "Tool action", "params": "Tool parameters"},
         ))
 
@@ -1163,7 +1163,7 @@ class SkillRegistry:
         except Exception as e:
             logger.warning(f"Failed to save skills: {e}")
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Export full registry as dict."""
         return {
             "total_skills": len(self._skills),

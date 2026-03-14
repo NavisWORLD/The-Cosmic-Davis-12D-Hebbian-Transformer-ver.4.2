@@ -6,7 +6,7 @@ import asyncio
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Optional
 import logging
 
 from .agent_spawner import (
@@ -27,7 +27,7 @@ class ParallelWorkerManager:
         self.model_swarm = model_swarm
         self.ollama_client = ollama_client
         self.running = False
-        self.worker_tasks: List[asyncio.Task] = []
+        self.worker_tasks: list[asyncio.Task] = []
 
         # Model mapping for workers
         self.agent_models = {
@@ -232,7 +232,7 @@ Output your findings as a detailed analysis with actionable recommendations.""",
         except Exception as e:
             logger.error(f"Announcement failed: {e}")
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict:
         """Get worker manager status"""
         spawner_status = self.spawner.get_status()
         return {

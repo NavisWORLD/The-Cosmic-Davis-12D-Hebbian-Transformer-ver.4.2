@@ -21,7 +21,8 @@ Version: 1.0.0 (The Conductor)
 """
 
 from dataclasses import dataclass
-from typing import Dict, List, Any
+
+
 try:
     from .phi_constants import PHI, PHI_INV, phi_influence_radius, phi_scale_emotional
 except ImportError:
@@ -48,7 +49,7 @@ class EmethHarmonizer:
         """Connect the Swarm Plasticity module for dynamic weight adaptation."""
         self.plasticity = plasticity
     
-    def calculate_mix(self, user_physics: Dict) -> SwarmMix:
+    def calculate_mix(self, user_physics: dict) -> SwarmMix:
         """
         Conducts the orchestra based on User Physics using class 5 rules.
         
@@ -166,7 +167,8 @@ class EmethHarmonizer:
     # CNS ORGAN 4: THE THALAMUS (Signal Filter)
     # ════════════════════════════════════════════════════════
 
-    def filter_signals(self, thoughts: List, user_physics: Dict, min_weight: float = 0.1) -> List:
+    def filter_signals(self, thoughts: list, user_physics: dict, min_weight: float = 0.1) -> list:
+
         """
         Filter and weight Subconscious Daemon thoughts based on User Physics.
 
@@ -174,7 +176,7 @@ class EmethHarmonizer:
         Uses calculate_mix() gains to boost/suppress thoughts by source.
 
         Args:
-            thoughts: List of SwarmThought objects from the Subconscious Buffer.
+            thoughts: list of SwarmThought objects from the Subconscious Buffer.
             user_physics: Current 12D User Physics state.
             min_weight: Minimum adjusted weight to pass the filter.
 

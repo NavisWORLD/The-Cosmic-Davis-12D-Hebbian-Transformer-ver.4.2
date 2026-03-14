@@ -16,7 +16,7 @@ import uuid
 from enum import Enum
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Callable, Any, Optional, Awaitable
+from typing import   Callable, Optional, Awaitable
 from loguru import logger
 
 print("DEBUG: nexus.py: Loading module...")
@@ -56,14 +56,14 @@ class SignalType(Enum):
 class Signal:
     """A quantified event propagating through the Nexus."""
     type: SignalType
-    payload: Dict[str, Any]
+    payload: dict
     source_id: str
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     timestamp: datetime = field(default_factory=datetime.now)
     urgency: float = 0.5  # 0.0 to 1.0 (Higher = processed first)
     
-    context_vector: Optional[List[float]] = None
-    semantic_tags: List[str] = field(default_factory=list)
+    context_vector: Optional[list[float]] = None
+    semantic_tags: list[str] = field(default_factory=list)
 
 MiddlewareFunc = Callable[[Signal], bool] # Returns True to continue, False to block
 
@@ -74,9 +74,9 @@ class Nexus:
     _instance = None
     
     def __init__(self):
-        self._subscribers: Dict[SignalType, List[Callable[[Signal], Awaitable[None]]]] = {}
-        self._history: List[Signal] = []  # Black Box
-        self._middleware: List[MiddlewareFunc] = []
+        self._subscribers: dict[SignalType[Callable[[Signal], Awaitable[None]]]] = {}
+        self._history: list[Signal] = []  # Black Box
+        self._middleware: list[MiddlewareFunc] = []
         self._lock = asyncio.Lock()
         
     @classmethod
@@ -127,7 +127,7 @@ class Nexus:
         except Exception as e:
             logger.error(f"Nexus: Critical propagation failure: {e}")
 
-    async def emit(self, type: SignalType, payload: Dict[str, Any], source: str, urgency: float = 0.5):
+    async def emit(self, type: SignalType, payload: dict, source: str, urgency: float = 0.5):
         """Helper to create and broadcast a signal."""
         signal = Signal(
             type=type,
@@ -137,7 +137,7 @@ class Nexus:
         )
         await self.broadcast(signal)
 
-    def inspection_black_box(self, last_n: int = 10) -> List[Signal]:
+    def inspection_black_box(self, last_n: int = 10) -> list[Signal]:
         """Retrieve recent signals for debugging/introspection."""
         return self._history[-last_n:]
 

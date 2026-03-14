@@ -17,7 +17,7 @@ through unified self-improvement.
 import asyncio
 import random
 from datetime import datetime
-from typing import Optional, List, Dict, Any
+from typing import Optional
 from pathlib import Path
 import logging
 import json
@@ -60,7 +60,7 @@ class EvolutionLoop:
                 logger.debug(f"Nexus not available: {e}")
         return self._nexus
 
-    async def _emit_nexus(self, signal_type_name: str, payload: Dict[str, Any], urgency: float = 0.5):
+    async def _emit_nexus(self, signal_type_name: str, payload: dict, urgency: float = 0.5):
         """Emit a signal to the Nexus event bus by signal type name. Fails silently."""
         try:
             nexus = self._get_nexus()
@@ -133,7 +133,7 @@ class EvolutionLoop:
             if memory:
                 try:
                     archival_tasks = await memory.recall("evolution_tasks", search_archival=True)
-                    if archival_tasks and isinstance(archival_tasks, list):
+                    if archival_tasks and isinstance(archival_tasks):
                         logger.info(f"Found {len(archival_tasks)} tasks in archival memory")
                 except Exception as e:
                     logger.debug(f"Archival memory recall failed: {e}")
@@ -193,11 +193,11 @@ class EvolutionLoop:
         except Exception as e:
             logger.error(f"State persistence failed: {e}")
 
-    def add_priority_task(self, task: Dict):
+    def add_priority_task(self, task: dict):
         """Add a high-priority task from the dev to the evolution queue.
 
         Args:
-            task: Dict with id, description, priority, requested_by, timestamp
+            task: dict with id, description, priority, requested_by, timestamp
         """
         try:
             from Cosmos.core.agent_spawner import get_spawner, TaskType
@@ -207,9 +207,9 @@ class EvolutionLoop:
 
             # Determine task type based on content
             desc_lower = description.lower()
-            if any(kw in desc_lower for kw in ["analyze", "research", "find", "look", "check"]):
+            if any(kw in ["analyze", "research", "find", "look", "check"]):
                 task_type = TaskType.RESEARCH
-            elif any(kw in desc_lower for kw in ["test", "verify", "validate"]):
+            elif any(kw in ["test", "verify", "validate"]):
                 task_type = TaskType.TESTING
             else:
                 task_type = TaskType.DEVELOPMENT
@@ -386,7 +386,7 @@ class EvolutionLoop:
                         trades = []
                         try:
                             from Cosmos.trading.degen_trader import DegenTrader
-                            # Try to collect trades from any available source
+                            # Try to collect trades from dict available source
                             # AdaptiveLearner stores trades in-memory
                         except Exception:
                             pass
@@ -595,7 +595,7 @@ If score < 6, reply: REJECTED: [one-line reason]
         except Exception:
             pass
 
-        # Try Hermes Agent for code review
+        # Try HermesAgent for code review
         try:
             from Cosmos.integration.hermes_bridge import get_hermes_bridge
             hermes_bridge = get_hermes_bridge()
@@ -625,8 +625,8 @@ If score < 6, reply: REJECTED: [one-line reason]
         has_functions = 'def ' in code or 'class ' in code
         reasonable_length = 15 < len(non_empty_lines) < 500
         no_placeholder = not all(l.strip() in ('pass', '') for l in lines[-3:])
-        has_imports = any(l.strip().startswith(('import ', 'from ')) for l in lines[:20])
-        has_real_logic = any(kw in code for kw in ['return ', 'await ', 'yield ', 'if ', 'for ', 'while '])
+        has_imports = any(l in lines[:20])
+        has_real_logic = any(kw in ['return ', 'await ', 'yield ', 'if ', 'for ', 'while '])
 
         passed = all([has_docstring, has_functions, reasonable_length, no_placeholder, has_imports, has_real_logic])
         if not passed:
@@ -680,7 +680,7 @@ If score < 6, reply: REJECTED: [one-line reason]
                 except Exception as ex:
                     logger.debug(f"[FEDERATED EVOLUTION] Broadcast skipped: {ex}")
 
-            # 3. Hermes Agent RL Feedback — feed evolution results for cross-session learning
+            # 3. HermesAgent RL Feedback — feed evolution results for cross-session learning
             try:
                 from Cosmos.integration.hermes_bridge import get_hermes_bridge
                 hermes_bridge = get_hermes_bridge()
@@ -776,7 +776,7 @@ STANDARDS:
                 except Exception as e:
                     logger.debug(f"OpenAI Codex code gen failed: {e}")
 
-            # Try Hermes Agent (Nous Research — self-improving agent)
+            # Try HermesAgent (Nous Research — self-improving agent)
             if not code:
                 try:
                     from Cosmos.integration.hermes_bridge import get_hermes_bridge
@@ -792,9 +792,9 @@ STANDARDS:
                             if result:
                                 code = self._extract_code(str(result))
                                 if code:
-                                    logger.info(f"Code generated by Hermes Agent for: {task.description[:40]}")
+                                    logger.info(f"Code generated by HermesAgent for: {task.description[:40]}")
                 except Exception as e:
-                    logger.debug(f"Hermes Agent code gen failed: {e}")
+                    logger.debug(f"HermesAgent code gen failed: {e}")
 
             # Try Claude Sonnet (via tmux session)
             if not code:
@@ -849,7 +849,7 @@ STANDARDS:
             return code.strip() if code.strip() else None
         # If it looks like raw code (starts with import/def/class/#)
         lines = text.strip().split('\n')
-        if lines and any(lines[0].startswith(kw) for kw in ['import ', 'from ', 'def ', 'class ', '#', '"""']):
+        if lines and any(kw in ['import ', 'from ', 'def ', 'class ', '#', '"""']):
             return text.strip()
         return None
 
@@ -919,7 +919,7 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
                 logger.error(f"Discussion loop error: {e}")
                 await asyncio.sleep(60)
 
-    async def _trigger_discussion(self, status: Dict):
+    async def _trigger_discussion(self, status: dict):
         """
         Trigger COLLECTIVE DELIBERATION about next priorities.
 
@@ -952,7 +952,7 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
                 recall = await memory.recall_for_task(
                     f"evolution planning cycle {self.evolution_cycle}", limit=3
                 )
-                memory_context = recall.get("suggested_context", "") if isinstance(recall, dict) else str(recall) if recall else ""
+                memory_context = recall.get("suggested_context", "") if isinstance(recall) else str(recall) if recall else ""
             except Exception:
                 pass
 
@@ -1126,7 +1126,7 @@ PRIORITY: [number]
             for desc, agent, priority in matches:
                 desc_clean = desc.strip()
                 # Tag hackathon-related tasks
-                if any(kw in desc_clean.lower() for kw in hackathon_kws):
+                if any(kw in hackathon_kws):
                     desc_clean = f"[HACKATHON] {desc_clean}"
                 spawner.add_task(
                     task_type=TaskType.DEVELOPMENT,
@@ -1186,7 +1186,7 @@ PRIORITY: [number]
                 logger.error(f"Task discovery error: {e}")
                 await asyncio.sleep(120)
 
-    async def _extract_chat_upgrades(self) -> List[Dict]:
+    async def _extract_chat_upgrades(self) -> list[dict]:
         """Extract upgrade suggestions from recent swarm chat."""
         if not self.swarm_manager:
             return []
@@ -1229,7 +1229,7 @@ PRIORITY: [number]
             logger.error(f"Chat upgrade extraction failed: {e}")
             return []
 
-    async def _generate_new_tasks_intelligent(self, spawner) -> List[Dict]:
+    async def _generate_new_tasks_intelligent(self, spawner) -> list[dict]:
         """Generate tasks using Grok/Opus analysis of actual codebase gaps.
 
         Instead of random hardcoded templates, this:
@@ -1355,7 +1355,7 @@ PRIORITY: [1-10]
             {"type": TaskType.RESEARCH, "agent": "Grok", "desc": "Analyze the top 5 most-called endpoints in web/server.py and identify performance bottlenecks", "priority": 3},
         ]
 
-    def _parse_task_format(self, text: str, spawner) -> List[Dict]:
+    def _parse_task_format(self, text: str, spawner) -> list[dict]:
         """Parse structured task output from LLM into task dicts."""
         import re
         from Cosmos.core.agent_spawner import TaskType
@@ -1392,7 +1392,7 @@ PRIORITY: [1-10]
 
         return tasks[:self.max_tasks_per_cycle]  # Strict cap
 
-    def _generate_new_tasks(self, spawner) -> List[Dict]:
+    def _generate_new_tasks(self, spawner) -> list[dict]:
         """Sync wrapper - calls async intelligent task generation."""
         try:
             loop = asyncio.get_event_loop()

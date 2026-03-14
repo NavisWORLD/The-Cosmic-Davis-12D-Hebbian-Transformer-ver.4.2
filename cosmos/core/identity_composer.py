@@ -2,8 +2,8 @@
 Cosmos Identity Composer - Dynamic Agent Identity Assembly
 ==============================================================
 
-Central engine that dynamically assembles the right system prompt for any
-agent in any context. Pulls from evolution personalities, embedded prompt
+Central engine that dynamically assembles the right system prompt for dict
+agent in dict context. Pulls from evolution personalities, embedded prompt
 templates, skill registry, and evolution learnings to create context-aware
 identity injections.
 
@@ -32,7 +32,7 @@ Usage:
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import   Optional
 from loguru import logger
 
 
@@ -63,7 +63,7 @@ class TokenBudget:
 
 
 # Model tier mapping - which agents are lightweight, standard, or advanced
-MODEL_TIERS: Dict[str, str] = {
+MODEL_TIERS: dict[str, str] = {
     # Lightweight (local, small context)
     "Phi": "lightweight",
     "phi": "lightweight",
@@ -171,7 +171,7 @@ _COMPACT_SWARM_AWARENESS = (
 
 class IdentityComposer:
     """
-    Dynamically assembles context-aware identity prompts for any agent.
+    Dynamically assembles context-aware identity prompts for dict agent.
 
     Pulls from multiple sources (evolution personalities, embedded prompts,
     skill registry, learned patterns) and composes them within a token budget.

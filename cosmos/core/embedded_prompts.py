@@ -25,7 +25,7 @@ Best Practices Implemented:
 
 import json
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any, Callable
+from typing import   Optional, Callable
 from enum import Enum
 from datetime import datetime
 from loguru import logger
@@ -76,7 +76,7 @@ class PromptTemplate:
     usage_count: int = 0
     success_rate: float = 0.5
     last_used: Optional[datetime] = None
-    mutations: List[str] = field(default_factory=list)
+    mutations: list[str] = field(default_factory=list)
 
     def render(self, **kwargs) -> str:
         """Render the template with provided variables."""
@@ -90,9 +90,9 @@ class PromptTemplate:
 @dataclass
 class PromptComposition:
     """A composed prompt from multiple templates."""
-    base_prompts: List[PromptTemplate]
-    context_injections: List[str] = field(default_factory=list)
-    model_adaptations: Dict[str, str] = field(default_factory=dict)
+    base_prompts: list[PromptTemplate]
+    context_injections: list[str] = field(default_factory=list)
+    model_adaptations: dict[str, str] = field(default_factory=dict)
 
     def compose(self, model_tier: ModelTier = ModelTier.STANDARD, **kwargs) -> str:
         """Compose all prompts into a single instruction set."""
@@ -575,7 +575,7 @@ Initiate handoff when:
 
 ### Handoff Checklist (Source Agent)
 1. [ ] Document current state completely
-2. [ ] List what you tried and why it didn't work
+2. [ ] list what you tried and why it didn't work
 3. [ ] Identify the specific capability needed
 4. [ ] Package all relevant memory references
 5. [ ] Set clear success criteria for receiver
@@ -871,9 +871,9 @@ class EmbeddedPromptManager:
     """
 
     def __init__(self):
-        self._prompts: Dict[str, PromptTemplate] = {}
-        self._compositions: Dict[str, PromptComposition] = {}
-        self._usage_stats: Dict[str, Dict[str, Any]] = {}
+        self._prompts: dict[str, PromptTemplate] = {}
+        self._compositions: dict[str, PromptComposition] = {}
+        self._usage_stats: dict[str[str]] = {}
 
         # Register all base prompts
         self._register_base_prompts()
@@ -904,7 +904,7 @@ class EmbeddedPromptManager:
         """Get a prompt template by ID."""
         return self._prompts.get(prompt_id)
 
-    def get_prompts_by_category(self, category: PromptCategory) -> List[PromptTemplate]:
+    def get_prompts_by_category(self, category: PromptCategory) -> list[PromptTemplate]:
         """Get all prompts in a category."""
         return [p for p in self._prompts.values() if p.category == category]
 
@@ -1000,7 +1000,7 @@ class EmbeddedPromptManager:
 
         return "\n\n---\n\n".join(filter(None, sections))
 
-    def _track_usage(self, prompt_id: str, variables: Dict[str, Any]):
+    def _track_usage(self, prompt_id: str, variables: dict):
         """Track prompt usage for analytics."""
         if prompt_id not in self._usage_stats:
             self._usage_stats[prompt_id] = {
@@ -1048,7 +1048,7 @@ class EmbeddedPromptManager:
                 "timestamp": datetime.now().isoformat()
             })
 
-    def get_prompt_analytics(self) -> Dict[str, Any]:
+    def get_prompt_analytics(self) -> dict:
         """Get analytics on prompt usage and effectiveness."""
         analytics = {
             "total_prompts": len(self._prompts),
@@ -1096,7 +1096,7 @@ class EmbeddedPromptManager:
 
         return analytics
 
-    def export_prompts(self) -> Dict[str, Any]:
+    def export_prompts(self) -> dict:
         """Export all prompts for backup or evolution."""
         return {
             prompt_id: {
@@ -1112,7 +1112,7 @@ class EmbeddedPromptManager:
             for prompt_id, prompt in self._prompts.items()
         }
 
-    def import_evolved_prompt(self, prompt_data: Dict[str, Any]):
+    def import_evolved_prompt(self, prompt_data: dict):
         """Import an evolved prompt from the genetic optimizer."""
         prompt_id = prompt_data.get("id")
         if not prompt_id:

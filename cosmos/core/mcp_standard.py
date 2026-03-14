@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set, Awaitable, Union
+from typing import  Callable, Optional, Set, Awaitable, Union
 
 from loguru import logger
 
@@ -68,10 +68,10 @@ class MCPToolSchema:
     """
     name: str
     description: str
-    input_schema: Dict[str, Any]
+    input_schema: dict
     version: str = "1.0.0"
     category: MCPToolCategory = MCPToolCategory.SYSTEM
-    capabilities_required: List[MCPCapability] = field(default_factory=list)
+    capabilities_required: list[MCPCapability] = field(default_factory=list)
 
     # Performance metadata
     avg_latency_ms: float = 0.0
@@ -79,14 +79,14 @@ class MCPToolSchema:
     invocation_count: int = 0
 
     # Handler reference
-    handler: Optional[Callable[..., Awaitable[Any]]] = None
+    handler: Optional[Callable[..., Awaitable[dict]]] = None
 
     # Additional metadata
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
     deprecated: bool = False
     replacement: Optional[str] = None
 
-    def to_mcp_format(self) -> Dict[str, Any]:
+    def to_mcp_format(self) -> dict:
         """Convert to MCP protocol format."""
         return {
             "name": self.name,
@@ -94,7 +94,7 @@ class MCPToolSchema:
             "inputSchema": self.input_schema,
         }
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict:
         """Convert to full dictionary representation."""
         return {
             "name": self.name,
@@ -120,9 +120,9 @@ class MCPResource:
     description: str
     mime_type: MCPResourceType = MCPResourceType.TEXT
     handler: Optional[Callable[[], Awaitable[str]]] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_mcp_format(self) -> Dict[str, Any]:
+    def to_mcp_format(self) -> dict:
         """Convert to MCP protocol format."""
         return {
             "uri": self.uri,
@@ -137,11 +137,11 @@ class MCPPrompt:
     """Standardized MCP prompt template."""
     name: str
     description: str
-    arguments: List[Dict[str, Any]] = field(default_factory=list)
+    arguments: list[dict] = field(default_factory=list)
     template: str = ""
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_mcp_format(self) -> Dict[str, Any]:
+    def to_mcp_format(self) -> dict:
         """Convert to MCP protocol format."""
         return {
             "name": self.name,
@@ -154,11 +154,11 @@ class MCPPrompt:
 class MCPInvocationResult:
     """Result of an MCP tool invocation."""
     success: bool
-    result: Any
+    result: dict
     error: Optional[str] = None
     latency_ms: float = 0.0
     tool_name: str = ""
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
 
 # =============================================================================
@@ -174,16 +174,16 @@ class MCPToolRegistry:
     """
 
     def __init__(self):
-        self._tools: Dict[str, MCPToolSchema] = {}
-        self._resources: Dict[str, MCPResource] = {}
-        self._prompts: Dict[str, MCPPrompt] = {}
+        self._tools: dict[str, MCPToolSchema] = {}
+        self._resources: dict[str, MCPResource] = {}
+        self._prompts: dict[str, MCPPrompt] = {}
 
         # Capability tracking
         self._capabilities: Set[MCPCapability] = set()
 
         # Discovery index
-        self._category_index: Dict[MCPToolCategory, List[str]] = {}
-        self._tag_index: Dict[str, List[str]] = {}
+        self._category_index: dict[MCPToolCategory[str]] = {}
+        self._tag_index: dict[str[str]] = {}
 
         logger.info("MCPToolRegistry initialized")
 
@@ -191,11 +191,11 @@ class MCPToolRegistry:
         self,
         name: str,
         description: str,
-        input_schema: Dict[str, Any],
-        handler: Callable[..., Awaitable[Any]],
+        input_schema: dict,
+        handler: Callable[..., Awaitable[dict]],
         version: str = "1.0.0",
         category: MCPToolCategory = MCPToolCategory.SYSTEM,
-        tags: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
     ) -> MCPToolSchema:
         """Register a new tool in the registry."""
         schema = MCPToolSchema(
@@ -251,7 +251,7 @@ class MCPToolRegistry:
         self,
         name: str,
         description: str,
-        arguments: List[Dict[str, Any]],
+        arguments: list[dict],
         template: str,
     ) -> MCPPrompt:
         """Register a new prompt template in the registry."""
@@ -275,7 +275,7 @@ class MCPToolRegistry:
     async def invoke_tool(
         self,
         name: str,
-        arguments: Dict[str, Any],
+        arguments: dict,
     ) -> MCPInvocationResult:
         """Invoke a tool by name with arguments."""
         import time
@@ -348,7 +348,7 @@ class MCPToolRegistry:
             logger.error(f"Failed to read resource {uri}: {e}")
             return None
 
-    def get_prompt(self, name: str, arguments: Dict[str, Any]) -> Optional[str]:
+    def get_prompt(self, name: str, arguments: dict) -> Optional[str]:
         """Get a rendered prompt template."""
         if name not in self._prompts:
             return None
@@ -369,29 +369,29 @@ class MCPToolRegistry:
     # DISCOVERY
     # =========================================================================
 
-    def list_tools(self) -> List[Dict[str, Any]]:
-        """List all tools in MCP format."""
+    def list_tools(self) -> list[dict]:
+        """list all tools in MCP format."""
         return [schema.to_mcp_format() for schema in self._tools.values()]
 
-    def list_resources(self) -> List[Dict[str, Any]]:
-        """List all resources in MCP format."""
+    def list_resources(self) -> list[dict]:
+        """list all resources in MCP format."""
         return [res.to_mcp_format() for res in self._resources.values()]
 
-    def list_prompts(self) -> List[Dict[str, Any]]:
-        """List all prompts in MCP format."""
+    def list_prompts(self) -> list[dict]:
+        """list all prompts in MCP format."""
         return [prompt.to_mcp_format() for prompt in self._prompts.values()]
 
-    def discover_by_category(self, category: MCPToolCategory) -> List[MCPToolSchema]:
+    def discover_by_category(self, category: MCPToolCategory) -> list[MCPToolSchema]:
         """Discover tools by category."""
         tool_names = self._category_index.get(category, [])
         return [self._tools[name] for name in tool_names if name in self._tools]
 
-    def discover_by_tag(self, tag: str) -> List[MCPToolSchema]:
+    def discover_by_tag(self, tag: str) -> list[MCPToolSchema]:
         """Discover tools by tag."""
         tool_names = self._tag_index.get(tag, [])
         return [self._tools[name] for name in tool_names if name in self._tools]
 
-    def search_tools(self, query: str) -> List[MCPToolSchema]:
+    def search_tools(self, query: str) -> list[MCPToolSchema]:
         """Search tools by name or description."""
         query_lower = query.lower()
         results = []
@@ -405,7 +405,7 @@ class MCPToolRegistry:
 
         return results
 
-    def get_capabilities(self) -> List[str]:
+    def get_capabilities(self) -> list[str]:
         """Get list of supported capabilities."""
         return [cap.value for cap in self._capabilities]
 
@@ -413,7 +413,7 @@ class MCPToolRegistry:
     # METRICS
     # =========================================================================
 
-    def get_tool_metrics(self, name: str) -> Optional[Dict[str, Any]]:
+    def get_tool_metrics(self, name: str) -> Optional[dict]:
         """Get performance metrics for a tool."""
         if name not in self._tools:
             return None
@@ -426,7 +426,7 @@ class MCPToolRegistry:
             "success_rate": schema.success_rate,
         }
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get registry statistics."""
         return {
             "total_tools": len(self._tools),
@@ -459,10 +459,10 @@ class AgentMCPClient:
         self.registry = registry
 
         # Connected agents
-        self._connected_agents: Dict[str, "AgentMCPClient"] = {}
+        self._connected_agents: dict[str, "AgentMCPClient"] = {}
 
         # Remote tool cache
-        self._remote_tools: Dict[str, Dict[str, MCPToolSchema]] = {}
+        self._remote_tools: dict[str[str, MCPToolSchema]] = {}
 
         # Message queue for async communication
         self._message_queue: asyncio.Queue = asyncio.Queue()
@@ -514,7 +514,7 @@ class AgentMCPClient:
         self,
         target_agent_id: str,
         tool_name: str,
-        arguments: Dict[str, Any],
+        arguments: dict,
     ) -> MCPInvocationResult:
         """Invoke a tool on a remote agent."""
         if target_agent_id not in self._connected_agents:
@@ -537,14 +537,14 @@ class AgentMCPClient:
         # Invoke on target's registry
         return await target.registry.invoke_tool(tool_name, arguments)
 
-    def get_remote_tools(self, agent_id: str) -> List[MCPToolSchema]:
+    def get_remote_tools(self, agent_id: str) -> list[MCPToolSchema]:
         """Get list of tools available from a remote agent."""
         return list(self._remote_tools.get(agent_id, {}).values())
 
     def discover_remote_tool(
         self,
         tool_name: str,
-    ) -> List[tuple[str, MCPToolSchema]]:
+    ) -> list[tuple[str, MCPToolSchema]]:
         """Discover which agents have a specific tool."""
         results = []
 
@@ -558,7 +558,7 @@ class AgentMCPClient:
     # CAPABILITY DISCOVERY
     # =========================================================================
 
-    async def discover_capabilities(self, agent_id: str) -> Dict[str, Any]:
+    async def discover_capabilities(self, agent_id: str) -> dict:
         """Discover capabilities of a connected agent."""
         if agent_id not in self._connected_agents:
             return {"error": f"Not connected to agent: {agent_id}"}
@@ -582,7 +582,7 @@ class AgentMCPClient:
     # NEXUS INTEGRATION
     # =========================================================================
 
-    async def _emit_signal(self, signal_type: str, payload: Dict[str, Any]) -> None:
+    async def _emit_signal(self, signal_type: str, payload: dict) -> None:
         """Emit a signal to Nexus."""
         if not self._nexus:
             return
@@ -605,7 +605,7 @@ class AgentMCPClient:
     # STATUS
     # =========================================================================
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict:
         """Get client status."""
         return {
             "agent_id": self.agent_id,
@@ -634,7 +634,7 @@ class MCPStandardProtocol:
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
         self.registry = MCPToolRegistry()
-        self._agent_clients: Dict[str, AgentMCPClient] = {}
+        self._agent_clients: dict[str, AgentMCPClient] = {}
 
         # Nexus integration
         self._nexus = None
@@ -656,11 +656,11 @@ class MCPStandardProtocol:
     def convert_to_mcp(
         self,
         name: str,
-        handler: Callable[..., Awaitable[Any]],
+        handler: Callable[..., Awaitable[dict]],
         description: str,
-        parameters: Dict[str, Any],
+        parameters: dict,
         category: MCPToolCategory = MCPToolCategory.SYSTEM,
-        tags: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
     ) -> MCPToolSchema:
         """
         Convert an existing tool to MCP standard format.
@@ -731,7 +731,7 @@ class MCPStandardProtocol:
     # NEXUS INTEGRATION
     # =========================================================================
 
-    async def _emit_signal(self, signal_type: str, payload: Dict[str, Any]) -> None:
+    async def _emit_signal(self, signal_type: str, payload: dict) -> None:
         """Emit a signal to Nexus."""
         if not self._nexus:
             return
@@ -754,7 +754,7 @@ class MCPStandardProtocol:
     # STATUS
     # =========================================================================
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get protocol statistics."""
         return {
             "registry": self.registry.get_stats(),

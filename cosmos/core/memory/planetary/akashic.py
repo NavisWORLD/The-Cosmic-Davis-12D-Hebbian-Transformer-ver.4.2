@@ -18,7 +18,7 @@ import json
 import hashlib
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Dict, Optional, Any
+, Optional
 from enum import Enum
 
 from loguru import logger
@@ -41,7 +41,7 @@ class SkillVector:
     """A shareable unit of knowledge (solution to a specific problem)."""
     id: str
     problem_hash: str     # Semantic hash of the problem description
-    vector: List[float]   # The embedding of the solution logic
+    vector: list[float]   # The embedding of the solution logic
     
     # Textual description (Anonymized)
     # Good: "Restart docker daemon when getting error X"
@@ -55,8 +55,8 @@ class SkillVector:
 class PlanetaryMemory:
     def __init__(self, use_p2p: bool = False):
         self.use_p2p = use_p2p
-        self.local_skills: Dict[str, SkillVector] = {}
-        self.global_cache: Dict[str, SkillVector] = {}  # Skills learned from others
+        self.local_skills: dict[str, SkillVector] = {}
+        self.global_cache: dict[str, SkillVector] = {}  # Skills learned from others
         self.privacy_mode = True
         self._setup_signal_handlers()
 
@@ -87,7 +87,7 @@ class PlanetaryMemory:
 
         nexus.subscribe(SignalType.EXTERNAL_EVENT, on_skill_received)
 
-    async def share_skill(self, problem: str, solution: str, embedding: List[float]) -> Optional[str]:
+    async def share_skill(self, problem: str, solution: str, embedding: list[float]) -> Optional[str]:
         """
         Publish a learned skill to the Planetary Memory.
         """
@@ -116,7 +116,7 @@ class PlanetaryMemory:
         
         return skill_id
 
-    async def retrieve_wisdom(self, problem_embedding: List[float], query_text: str) -> List[SkillVector]:
+    async def retrieve_wisdom(self, problem_embedding: list[float], query_text: str) -> list[SkillVector]:
         """
         Retrieve relevant skills from Global Cache + Local.
         """
@@ -170,7 +170,7 @@ class PlanetaryMemory:
         if re.search(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', text): return False # IP
         return True
 
-    def _cosine_sim(self, v1: List[float], v2: List[float]) -> float:
+    def _cosine_sim(self, v1: list[float], v2: list[float]) -> float:
         """Manual cosine similarity."""
         import math
         dot_product = sum(p*q for p,q in zip(v1, v2))

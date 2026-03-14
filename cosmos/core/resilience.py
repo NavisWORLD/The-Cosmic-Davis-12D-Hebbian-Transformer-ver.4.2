@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Callable, Any, Optional, Dict
+from typing import Callable, Optional
 from loguru import logger
 from functools import wraps
 
@@ -99,11 +99,11 @@ class HealthMonitor:
     """
 
     def __init__(self):
-        self._checks: Dict[str, Callable] = {}
+        self._checks: dict[str, Callable] = {}
         self._last_check: Optional[float] = None
         self._status: SystemState = SystemState.HEALTHY
-        self._component_status: Dict[str, str] = {}
-        self._metrics: Dict[str, Any] = {}
+        self._component_status: dict[str, str] = {}
+        self._metrics: dict = {}
 
     def register_check(self, name: str, check_fn: Callable[[], str]):
         """
@@ -166,7 +166,7 @@ class HealthMonitor:
             timestamp=datetime.now().isoformat(),
         )
 
-    def _collect_system_metrics(self) -> Dict[str, Any]:
+    def _collect_system_metrics(self) -> dict:
         """Collect basic system metrics."""
         try:
             import os
@@ -190,7 +190,7 @@ class HealthMonitor:
         except Exception:
             return {}
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict:
         """Get current status without running checks."""
         return {
             "status": self._status.value,
@@ -203,8 +203,8 @@ class HealthMonitor:
 class HealthStatus:
     """Result of a health check."""
     status: str
-    components: Dict[str, str]
-    system_metrics: Dict[str, Any]
+    components: dict[str, str]
+    system_metrics: dict
     timestamp: str
 
 
@@ -364,7 +364,7 @@ class BackupManager:
             return False
 
     def list_backups(self) -> list[dict]:
-        """List available backups."""
+        """list available backups."""
         backups = []
         for backup_file in sorted(
             self.backup_dir.glob("cosmos_backup_*.zip"),

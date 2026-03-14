@@ -22,7 +22,7 @@ import uuid
 import time
 from datetime import datetime
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any, Callable, Awaitable
+from typing import   Optional, Callable, Awaitable
 from enum import Enum
 from loguru import logger
 
@@ -66,9 +66,9 @@ class CollectiveThought:
     role: ThoughtRole = ThoughtRole.REASONER
     content: str = ""
     round_num: int = 0
-    addressing: List[str] = field(default_factory=list)  # Which speakers being responded to
+    addressing: list[str] = field(default_factory=list)  # Which speakers being responded to
     confidence: float = 0.5
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -78,8 +78,8 @@ class ResonancePacket:
     source_collective_id: str = ""
     timestamp: float = field(default_factory=time.time)
     insight: str = ""                    # Final synthesized conclusion
-    snippet: List[Dict] = field(default_factory=list)  # Last few thoughts for context
-    domains: List[str] = field(default_factory=list)   # Tags: "reasoning", "code", "philosophy"
+    snippet: list[dict] = field(default_factory=list)  # Last few thoughts for context
+    domains: list[str] = field(default_factory=list)   # Tags: "reasoning", "code", "philosophy"
     confidence: float = 0.5
     query_hash: str = ""                 # Hash of original query for dedup
 
@@ -91,16 +91,16 @@ class DeliberationSession:
     query: str = ""
     domain: str = "general"
     visibility: ThoughtVisibility = ThoughtVisibility.INTERNAL
-    thoughts: List[CollectiveThought] = field(default_factory=list)
+    thoughts: list[CollectiveThought] = field(default_factory=list)
     final_synthesis: str = ""
     consensus_reached: bool = False
     started_at: datetime = field(default_factory=datetime.now)
     ended_at: Optional[datetime] = None
-    participating_speakers: List[str] = field(default_factory=list)
+    participating_speakers: list[str] = field(default_factory=list)
 
 
 # Type alias for inference function
-InferenceFunc = Callable[[str, List[Dict], Optional[str]], Awaitable[str]]
+InferenceFunc = Callable[[str, list[dict], Optional[str]], Awaitable[str]]
 
 
 class CollectiveMind:
@@ -115,8 +115,8 @@ class CollectiveMind:
 
     def __init__(self, collective_id: Optional[str] = None):
         self.collective_id = collective_id or str(uuid.uuid4())[:8]
-        self.active_sessions: Dict[str, DeliberationSession] = {}
-        self.session_history: List[DeliberationSession] = []
+        self.active_sessions: dict[str, DeliberationSession] = {}
+        self.session_history: list[DeliberationSession] = []
 
         # Inference router callback (set by integrator)
         self._infer_fn: Optional[InferenceFunc] = None
@@ -150,7 +150,7 @@ class CollectiveMind:
         domain: str = "general",
         visibility: ThoughtVisibility = ThoughtVisibility.INTERNAL,
         max_rounds: int = 3,
-        participants: Optional[List[ThoughtRole]] = None,
+        participants: Optional[list[ThoughtRole]] = None,
     ) -> str:
         """
         Conduct collective deliberation with visibility control.
@@ -276,7 +276,7 @@ class CollectiveMind:
     async def _get_role_thought(
         self,
         session: DeliberationSession,
-        transcript: List[Dict],
+        transcript: list[dict],
         role: ThoughtRole,
         round_num: int,
     ) -> Optional[CollectiveThought]:
@@ -319,7 +319,7 @@ class CollectiveMind:
             logger.warning(f"Role {role.value} failed to contribute: {e}")
             return None
 
-    async def _detect_consensus(self, thoughts: List[CollectiveThought]) -> bool:
+    async def _detect_consensus(self, thoughts: list[CollectiveThought]) -> bool:
         """
         Detect if the collective has reached consensus.
 
@@ -339,9 +339,9 @@ class CollectiveMind:
 
         for thought in thoughts:
             content_lower = thought.content.lower()
-            if any(marker in content_lower for marker in agreement_markers):
+            if any(marker in agreement_markers):
                 agreement_count += 1
-            if any(marker in content_lower for marker in disagreement_markers):
+            if any(marker in disagreement_markers):
                 disagreement_count += 1
 
         # Consensus if more agreement than disagreement
@@ -355,7 +355,7 @@ class CollectiveMind:
     async def _synthesize(
         self,
         session: DeliberationSession,
-        transcript: List[Dict],
+        transcript: list[dict],
     ) -> str:
         """Synthesize all thoughts into a final collective response."""
         if not session.thoughts:
@@ -375,7 +375,7 @@ The collective mind has deliberated. Here are the key thoughts:
 
 Now synthesize these perspectives into a unified, coherent response.
 Capture the essential insights while resolving contradictions.
-Speak as THE COLLECTIVE, not as any individual voice.
+Speak as THE COLLECTIVE, not as dict individual voice.
 Be clear and actionable (3-5 sentences max)."""
 
         messages = [
@@ -415,7 +415,7 @@ Be clear and actionable (3-5 sentences max)."""
         except Exception as e:
             logger.debug(f"Nexus emit failed: {e}")
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get collective mind statistics."""
         return {
             "collective_id": self.collective_id,
@@ -451,8 +451,8 @@ class ResonanceProtocol:
     def __init__(self, collective_id: str, p2p_fabric=None):
         self.collective_id = collective_id
         self._p2p = p2p_fabric  # SwarmFabric instance
-        self._received_packets: List[ResonancePacket] = []
-        self._sent_packets: List[ResonancePacket] = []
+        self._received_packets: list[ResonancePacket] = []
+        self._sent_packets: list[ResonancePacket] = []
 
         # Callback for processing received resonance
         self._on_resonance_fn: Optional[Callable[[ResonancePacket], Awaitable[None]]] = None
@@ -473,7 +473,7 @@ class ResonanceProtocol:
     async def prepare_and_broadcast(
         self,
         conclusion: str,
-        thoughts: List[CollectiveThought],
+        thoughts: list[CollectiveThought],
         query: str,
         domain: str,
     ):
@@ -582,7 +582,7 @@ class ResonanceProtocol:
             except Exception as e:
                 logger.error(f"Resonance handler failed: {e}")
 
-    def process_p2p_message(self, msg: Dict) -> Optional[ResonancePacket]:
+    def process_p2p_message(self, msg: dict) -> Optional[ResonancePacket]:
         """Convert a P2P message to a ResonancePacket if applicable."""
         if msg.get("type") != "GOSSIP_RESONANCE":
             return None
@@ -602,7 +602,7 @@ class ResonanceProtocol:
             logger.warning(f"Failed to parse resonance packet: {e}")
             return None
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get resonance protocol statistics."""
         return {
             "collective_id": self.collective_id,
@@ -658,7 +658,7 @@ async def integrate_with_swarm_fabric(resonance: ResonanceProtocol, fabric):
     # Store original message processor
     original_processor = fabric._process_peer_message
 
-    async def enhanced_processor(msg: Dict, writer):
+    async def enhanced_processor(msg:  writer):
         # Check for resonance messages
         if msg.get("type") == "GOSSIP_RESONANCE":
             packet = resonance.process_p2p_message(msg)

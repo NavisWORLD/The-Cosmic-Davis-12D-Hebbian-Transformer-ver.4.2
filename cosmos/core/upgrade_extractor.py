@@ -13,7 +13,7 @@ Patterns detected:
 """
 import re
 import logging
-from typing import List, Dict, Any, Optional
+, Optional
 from datetime import datetime
 from collections import Counter
 
@@ -81,10 +81,10 @@ class UpgradeExtractor:
     """Extracts and prioritizes upgrade suggestions from chat history."""
 
     def __init__(self):
-        self.extracted_upgrades: List[Dict] = []
+        self.extracted_upgrades: list[dict] = []
         self.pattern_cache = [(re.compile(p, re.IGNORECASE), cat) for p, cat in UPGRADE_PATTERNS]
 
-    def extract_from_message(self, message: str, speaker: str = None) -> List[Dict]:
+    def extract_from_message(self, message: str, speaker: str = None) -> list[dict]:
         """
         Extract upgrade suggestions from a single message.
 
@@ -93,7 +93,7 @@ class UpgradeExtractor:
             speaker: Who said it (affects priority - Cosmos/Claude suggestions weighted higher)
 
         Returns:
-            List of extracted upgrades with metadata
+            list of extracted upgrades with metadata
         """
         upgrades = []
         message_lower = message.lower()
@@ -160,16 +160,16 @@ class UpgradeExtractor:
 
         return max(1, min(score, 10))  # Clamp between 1-10
 
-    def extract_from_history(self, chat_history: List[Dict], limit: int = 100) -> List[Dict]:
+    def extract_from_history(self, chat_history: list[dict], limit: int = 100) -> list[dict]:
         """
         Extract upgrades from chat history.
 
         Args:
-            chat_history: List of chat messages with 'content', 'bot_name'/'user_name'
+            chat_history: list of chat messages with 'content', 'bot_name'/'user_name'
             limit: Maximum messages to analyze
 
         Returns:
-            List of extracted upgrades, deduplicated and sorted by score
+            list of extracted upgrades, deduplicated and sorted by score
         """
         all_upgrades = []
 
@@ -191,7 +191,7 @@ class UpgradeExtractor:
 
         return deduped
 
-    def _deduplicate(self, upgrades: List[Dict]) -> List[Dict]:
+    def _deduplicate(self, upgrades: list[dict]) -> list[dict]:
         """Remove duplicate or very similar suggestions."""
         if not upgrades:
             return []
@@ -214,7 +214,7 @@ class UpgradeExtractor:
         return unique
 
 
-async def extract_upgrades(chat_history: List[Dict], limit: int = 50) -> List[str]:
+async def extract_upgrades(chat_history: list[dict], limit: int = 50) -> list[str]:
     """
     Convenience function to extract upgrade suggestions from chat.
 
@@ -223,14 +223,14 @@ async def extract_upgrades(chat_history: List[Dict], limit: int = 50) -> List[st
         limit: Max messages to analyze
 
     Returns:
-        List of upgrade suggestion strings (just the text)
+        list of upgrade suggestion strings (just the text)
     """
     extractor = UpgradeExtractor()
     upgrades = extractor.extract_from_history(chat_history, limit)
     return [u["suggestion"] for u in upgrades[:10]]  # Top 10
 
 
-async def prioritize_upgrades(upgrades: List[str]) -> List[Dict]:
+async def prioritize_upgrades(upgrades: list[str]) -> list[dict]:
     """
     Prioritize upgrade suggestions using a model assessment.
 
@@ -238,7 +238,7 @@ async def prioritize_upgrades(upgrades: List[str]) -> List[Dict]:
     model-based feasibility assessment.
 
     Args:
-        upgrades: List of upgrade suggestion strings
+        upgrades: list of upgrade suggestion strings
 
     Returns:
         Sorted list of dicts with suggestion, priority, feasibility

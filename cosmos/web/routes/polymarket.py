@@ -27,7 +27,7 @@ async def get_polymarket_predictions(limit: int = 10):
         predictions = predictor.get_recent_predictions(limit)
 
         return {
-            "predictions": [p.to_dict() for p in predictions],
+            "predictions": [p.to_any() for p in predictions],
             "count": len(predictions),
             "generated_at": datetime.now().isoformat()
         }
@@ -47,7 +47,7 @@ async def get_polymarket_stats():
         stats = predictor.get_stats()
 
         return {
-            "stats": asdict(stats),
+            "stats": asany(stats),
             "updated_at": datetime.now().isoformat()
         }
     except Exception as e:
@@ -65,7 +65,7 @@ async def trigger_polymarket_predictions():
 
         return {
             "success": True,
-            "predictions": [p.to_dict() for p in predictions],
+            "predictions": [p.to_any() for p in predictions],
             "count": len(predictions)
         }
     except Exception as e:

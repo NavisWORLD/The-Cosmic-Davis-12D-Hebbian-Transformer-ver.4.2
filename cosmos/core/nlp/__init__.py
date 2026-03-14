@@ -38,7 +38,7 @@ async def process_command(command: str) -> dict:
         command: Natural language command (with or without wake word)
 
     Returns:
-        Result dict with response and any actions taken
+        Result dict with response and dict actions taken
     """
     global _router
     if _router is None:

@@ -9,15 +9,15 @@ and fusing the results.
 """
 
 import asyncio
-from typing import List, Dict, Any, Callable
+, Callable
 from loguru import logger
 from Cosmos.core.nexus import nexus, Signal, SignalType
 
 class ParallelAIOrchestrator:
-    def __init__(self, backends: List[Callable]):
-        self.backends = backends # List of LLM generate functions
+    def __init__(self, backends: list[Callable]):
+        self.backends = backends # list of LLM generate functions
         
-    async def dispatch_parallel(self, prompt: str) -> List[str]:
+    async def dispatch_parallel(self, prompt: str) -> list[str]:
         """Run the same prompt on all configured backends simultaneously."""
         logger.info(f"ParallelAI: Dispatching to {len(self.backends)} backends.")
         

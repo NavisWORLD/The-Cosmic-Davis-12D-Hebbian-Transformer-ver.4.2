@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, TypedDict, Set, Awaitable
+from typing import  Callable, Optional, TypedDict, Set, Awaitable
 
 from loguru import logger
 
@@ -53,12 +53,12 @@ class WorkflowState(TypedDict, total=False):
     workflow_id: str
     current_node: str
     status: str
-    context: Dict[str, Any]
-    history: List[Dict[str, Any]]
-    inputs: Dict[str, Any]
-    outputs: Dict[str, Any]
-    metadata: Dict[str, Any]
-    errors: List[str]
+    context: dict
+    history: list[dict]
+    inputs: dict
+    outputs: dict
+    metadata: dict
+    errors: list[str]
     created_at: str
     updated_at: str
 
@@ -70,7 +70,7 @@ class WorkflowNode:
     name: str
     node_type: NodeType
     handler: Optional[Callable[[WorkflowState], Awaitable[WorkflowState]]] = None
-    transitions: Dict[str, str] = field(default_factory=dict)  # condition -> next_node
+    transitions: dict[str, str] = field(default_factory=dict)  # condition -> next_node
     timeout_seconds: float = 300.0
     retry_count: int = 0
     max_retries: int = 3
@@ -84,9 +84,9 @@ class WorkflowCheckpoint:
     state: WorkflowState
     node_id: str
     timestamp: datetime = field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict:
         return {
             "checkpoint_id": self.checkpoint_id,
             "workflow_id": self.workflow_id,
@@ -97,7 +97,7 @@ class WorkflowCheckpoint:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "WorkflowCheckpoint":
+    def from_dict(cls, data: dict) -> "WorkflowCheckpoint":
         return cls(
             checkpoint_id=data["checkpoint_id"],
             workflow_id=data["workflow_id"],
@@ -114,7 +114,7 @@ class WorkflowDefinition:
     id: str
     name: str
     description: str
-    nodes: Dict[str, WorkflowNode] = field(default_factory=dict)
+    nodes: dict[str, WorkflowNode] = field(default_factory=dict)
     start_node: str = "start"
     end_nodes: Set[str] = field(default_factory=lambda: {"end"})
     version: str = "1.0"
@@ -141,16 +141,16 @@ class LangGraphNexusHybrid:
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
         # Workflow registries
-        self._definitions: Dict[str, WorkflowDefinition] = {}
-        self._active_workflows: Dict[str, WorkflowState] = {}
-        self._checkpoints: Dict[str, WorkflowCheckpoint] = {}
+        self._definitions: dict[str, WorkflowDefinition] = {}
+        self._active_workflows: dict[str, WorkflowState] = {}
+        self._checkpoints: dict[str, WorkflowCheckpoint] = {}
 
         # Nexus integration
         self._nexus = None
-        self._signal_handlers: Dict[str, Callable] = {}
+        self._signal_handlers: dict[str, Callable] = {}
 
         # Metrics
-        self._workflow_metrics: Dict[str, Dict[str, Any]] = {}
+        self._workflow_metrics: dict[str[str]] = {}
 
         logger.info("LangGraphNexusHybrid initialized")
 
@@ -172,7 +172,7 @@ class LangGraphNexusHybrid:
         self,
         name: str,
         description: str,
-        nodes: List[WorkflowNode],
+        nodes: list[WorkflowNode],
         start_node: str = "start",
         end_nodes: Optional[Set[str]] = None,
     ) -> WorkflowDefinition:
@@ -198,8 +198,8 @@ class LangGraphNexusHybrid:
     async def start_workflow(
         self,
         definition_id: str,
-        inputs: Dict[str, Any],
-        context: Optional[Dict[str, Any]] = None,
+        inputs: dict,
+        context: Optional[dict] = None,
     ) -> str:
         """Start a new workflow instance."""
         if definition_id not in self._definitions:
@@ -438,7 +438,7 @@ class LangGraphNexusHybrid:
     # NEXUS INTEGRATION
     # =========================================================================
 
-    async def _emit_signal(self, signal_type: str, payload: Dict[str, Any]) -> None:
+    async def _emit_signal(self, signal_type: str, payload: dict) -> None:
         """Emit a signal to Nexus."""
         if not self._nexus:
             return
@@ -462,7 +462,7 @@ class LangGraphNexusHybrid:
     def on_nexus_signal(
         self,
         signal_type: str,
-        handler: Callable[[Any], Awaitable[None]],
+        handler: Callable[[dict], Awaitable[None]],
     ) -> None:
         """Register a handler for Nexus signals."""
         self._signal_handlers[signal_type] = handler
@@ -471,7 +471,7 @@ class LangGraphNexusHybrid:
         self,
         workflow_id: str,
         signal_type: str,
-        additional_payload: Optional[Dict[str, Any]] = None,
+        additional_payload: Optional[dict] = None,
     ) -> None:
         """Emit a Nexus signal with workflow state context."""
         state = self._active_workflows.get(workflow_id)
@@ -491,7 +491,7 @@ class LangGraphNexusHybrid:
     # STATUS AND METRICS
     # =========================================================================
 
-    def get_workflow_status(self, workflow_id: str) -> Optional[Dict[str, Any]]:
+    def get_workflow_status(self, workflow_id: str) -> Optional[dict]:
         """Get the current status of a workflow."""
         state = self._active_workflows.get(workflow_id)
         if not state:
@@ -507,7 +507,7 @@ class LangGraphNexusHybrid:
             "updated_at": state["updated_at"],
         }
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get workflow system statistics."""
         active_count = sum(
             1 for s in self._active_workflows.values()
@@ -601,8 +601,8 @@ class DeliberationWorkflow:
     async def start(
         self,
         topic: str,
-        participants: List[str],
-        context: Optional[Dict[str, Any]] = None,
+        participants: list[str],
+        context: Optional[dict] = None,
     ) -> str:
         """Start a new deliberation."""
         inputs = {
@@ -730,8 +730,8 @@ class TaskExecutionWorkflow:
     async def start(
         self,
         task_description: str,
-        required_capabilities: Optional[List[str]] = None,
-        context: Optional[Dict[str, Any]] = None,
+        required_capabilities: Optional[list[str]] = None,
+        context: Optional[dict] = None,
     ) -> str:
         """Start a new task execution."""
         inputs = {

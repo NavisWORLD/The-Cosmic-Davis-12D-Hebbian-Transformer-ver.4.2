@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import Tuple, List
+from typing import Tuple
 
 logger = logging.getLogger("CosmicEthics")
 

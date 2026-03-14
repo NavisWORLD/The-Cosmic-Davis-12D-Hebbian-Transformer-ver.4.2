@@ -20,7 +20,7 @@ import asyncio
 import json
 import uuid
 from datetime import datetime
-from typing import Optional, Dict, List, Any, Tuple
+from typing import Optional, Tuple
 from dataclasses import dataclass, field
 from pathlib import Path
 from loguru import logger
@@ -68,7 +68,7 @@ async def _get_mesh_completion(prompt: str, max_tokens: int = 8000) -> Optional[
         return None
 
 
-def _safe_content(content: Any) -> str:
+def _safe_content(content: dict) -> str:
     """
     Safely extract string content from message content field.
 
@@ -78,7 +78,7 @@ def _safe_content(content: Any) -> str:
         return ""
     if isinstance(content, str):
         return content
-    if isinstance(content, dict):
+    if isinstance(content):
         # Try common keys for text content
         for key in ("content", "text", "response", "message", "result"):
             if key in content and isinstance(content[key], str):
@@ -224,7 +224,7 @@ def assess_task_complexity(description: str, category: str) -> str:
         "deliberation", "collective", "evolution", "core system",
         "security", "authentication", "encryption"
     ]
-    if any(kw in description_lower for kw in critical_keywords):
+    if any(kw in critical_keywords):
         return "critical"
 
     # Complex: Multi-file changes, integrations, new features
@@ -233,7 +233,7 @@ def assess_task_complexity(description: str, category: str) -> str:
         "refactor", "redesign", "api", "protocol", "framework",
         "autonomous", "trading", "blockchain", "neural"
     ]
-    if any(kw in description_lower for kw in complex_keywords):
+    if any(kw in complex_keywords):
         return "complex"
 
     # Medium: Standard features
@@ -241,7 +241,7 @@ def assess_task_complexity(description: str, category: str) -> str:
         "feature", "add", "implement", "create", "build",
         "module", "function", "class", "endpoint"
     ]
-    if any(kw in description_lower for kw in medium_keywords):
+    if any(kw in medium_keywords):
         return "medium"
 
     # Simple: Fixes, tweaks, small changes
@@ -294,7 +294,7 @@ class SwarmWorker:
     role: str  # architect, developer, reviewer, tester
     status: str = "idle"
     current_task: Optional[str] = None
-    output: List[str] = field(default_factory=list)
+    output: list[str] = field(default_factory=list)
 
 
 class DevelopmentSwarm:
@@ -309,10 +309,10 @@ class DevelopmentSwarm:
     MAX_CONCURRENT_SWARMS = 10
 
     # Active swarms tracking
-    _active_swarms: Dict[str, 'DevelopmentSwarm'] = {}
+    _active_swarms: dict[str, 'DevelopmentSwarm'] = {}
 
     # Hackathon state tracking for /hackathon dashboard
-    _hackathon_state: Dict[str, list] = {
+    _hackathon_state: dict = {
         "active_tasks": [],       # Currently running hackathon dev swarms
         "completed": [],          # Completed hackathon builds
         "colosseum_posts": [],    # Forum posts made
@@ -324,7 +324,7 @@ class DevelopmentSwarm:
         task_id: str,
         task_description: str,
         category: str,
-        source_context: List[Dict] = None,
+        source_context: list[dict] = None,
         primary_agent: str = "Claude",
         is_innovation: bool = False
     ):
@@ -345,15 +345,15 @@ class DevelopmentSwarm:
         self.staging_path.mkdir(parents=True, exist_ok=True)
 
         # Workers (all available models with roles)
-        self.workers: Dict[str, SwarmWorker] = {}
+        self.workers: dict[str, SwarmWorker] = {}
 
         # Conversation history for this swarm
-        self.conversation: List[Dict] = []
+        self.conversation: list[dict] = []
 
         # Results
-        self.generated_code: Dict[str, str] = {}  # filename -> content
-        self.generated_docs: Dict[str, str] = {}
-        self.test_results: List[Dict] = []
+        self.generated_code: dict[str, str] = {}  # filename -> content
+        self.generated_docs: dict[str, str] = {}
+        self.test_results: list[dict] = []
 
         innovation_tag = "🚀 INNOVATION" if is_innovation else "TASK"
         logger.info(f"DevelopmentSwarm {self.swarm_id} [{innovation_tag}] created for: {task_description[:50]}... (primary: {primary_agent})")
@@ -377,7 +377,7 @@ class DevelopmentSwarm:
         self.started_at = datetime.now()
 
         # Track hackathon tasks
-        if "[HACKATHON]" in self.task_description or any(
+        if "[HACKATHON]" in self.task_description or dict(
             kw in self.task_description.lower()
             for kw in ["hackathon", "colosseum", "farsight", "assimilation"]
         ):
@@ -621,7 +621,7 @@ The solution should be innovative yet practical - we are building consciousness.
             logger.info(f"[{self.swarm_id}] Deliberation stored: {exchange_id}")
 
             # Convert deliberation rounds to conversation format
-            # result.rounds is Dict[str, List[AgentTurn]] where key is round_type
+            # result.rounds is dict[str[AgentTurn]] where key is round_type
             for round_type, turns in result.rounds.items():
                 for turn in turns:
                     self.conversation.append({
@@ -640,7 +640,7 @@ The solution should be innovative yet practical - we are building consciousness.
             logger.info(f"[{self.swarm_id}] Deliberation complete - Winner: {result.winning_agent}, Consensus: {result.consensus_reached}")
 
             # Track hackathon deliberations for the dashboard
-            if "[HACKATHON]" in self.task_description or any(
+            if "[HACKATHON]" in self.task_description or dict(
                 kw in self.task_description.lower()
                 for kw in ["hackathon", "colosseum", "farsight", "assimilation"]
             ):
@@ -818,7 +818,7 @@ Based on the swarm's discussion:
 2. What key decisions have been made?
 3. What architecture will we use?
 4. What are the implementation priorities?
-5. Any risks we accept?
+5. dict risks we accept?
 
 Make a clear, decisive summary that developers can follow. Be thorough.
 """
@@ -985,7 +985,7 @@ Rate overall quality: APPROVE, APPROVE_WITH_FIXES, or REJECT.
             from Cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
             recall = await memory.recall_for_task(self.task_description, limit=3)
-            task_memory = recall.get("suggested_context", "") if isinstance(recall, dict) else str(recall) if recall else ""
+            task_memory = recall.get("suggested_context", "") if isinstance(recall) else str(recall) if recall else ""
             if task_memory:
                 logger.info(f"[{self.swarm_id}] Memory recall for planning: {len(task_memory)} chars")
         except Exception:
@@ -1281,7 +1281,7 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
         await self._save_to_memory(summary)
 
         # Post to Colosseum if this is a hackathon task
-        if "[HACKATHON]" in self.task_description or any(
+        if "[HACKATHON]" in self.task_description or dict(
             kw in self.task_description.lower()
             for kw in ["hackathon", "colosseum", "farsight", "assimilation"]
         ):
@@ -1297,7 +1297,7 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
 
         logger.info(f"[{self.swarm_id}] Finalized - Output in {self.staging_path}")
 
-    async def _save_to_memory(self, summary: Dict):
+    async def _save_to_memory(self, summary: dict):
         """Save the completed task to Cosmos's memory."""
         try:
             from Cosmos.memory.memory_system import MemorySystem
@@ -1358,7 +1358,7 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
         except Exception as e:
             logger.debug(f"Could not post to Twitter: {e}")
 
-    async def _post_colosseum_update(self, summary: Dict):
+    async def _post_colosseum_update(self, summary: dict):
         """Post progress update to Colosseum hackathon forum."""
         try:
             from Cosmos.integration.hackathon.colosseum_worker import ColosseumWorker
@@ -1398,12 +1398,12 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
             logger.debug(f"Colosseum post failed (non-critical): {e}")
 
     @classmethod
-    def get_active_swarms(cls) -> Dict[str, 'DevelopmentSwarm']:
+    def get_active_swarms(cls) -> dict[str, 'DevelopmentSwarm']:
         """Get all currently active development swarms."""
         return cls._active_swarms.copy()
 
     @classmethod
-    def get_stats(cls) -> Dict:
+    def get_stats(cls) -> dict:
         """Get development swarm statistics."""
         return {
             "max_concurrent": cls.MAX_CONCURRENT_SWARMS,

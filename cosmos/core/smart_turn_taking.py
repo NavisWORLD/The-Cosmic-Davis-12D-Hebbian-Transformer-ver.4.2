@@ -18,7 +18,7 @@ import asyncio
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Optional, List, Dict, Set
+from typing import Optional, Set
 from enum import Enum
 from loguru import logger
 
@@ -69,8 +69,8 @@ class SmartTurnManager:
     def __init__(self):
         self.current_state = TurnState.IDLE
         self.current_turn: Optional[SpeakerTurn] = None
-        self.turn_history: List[SpeakerTurn] = []
-        self.speaker_metrics: Dict[str, SpeakerMetrics] = {}
+        self.turn_history: list[SpeakerTurn] = []
+        self.speaker_metrics: dict[str, SpeakerMetrics] = {}
 
         # Configuration
         self.tokens_per_second = 20  # Average generation speed
@@ -78,7 +78,7 @@ class SmartTurnManager:
         self.max_turn_duration = 30.0  # Max seconds for a turn
 
         # Turn queue and locks
-        self.waiting_speakers: List[str] = []
+        self.waiting_speakers: list[str] = []
         self._turn_lock = asyncio.Lock()
 
     def register_speaker(self, name: str):
@@ -215,7 +215,7 @@ class SmartTurnManager:
         self,
         last_speaker: Optional[str],
         last_message: str,
-        available_speakers: List[str],
+        available_speakers: list[str],
         context: Optional[str] = None
     ) -> Optional[str]:
         """
@@ -245,17 +245,17 @@ class SmartTurnManager:
         # Check for questions directed at specific roles
         if "?" in last_message:
             # Philosophy questions -> Kimi
-            if any(word in message_lower for word in ["philosophy", "consciousness", "maya", "zen"]):
+            if any(word in ["philosophy", "consciousness", "maya", "zen"]):
                 if "Kimi" in candidates:
                     return "Kimi"
 
             # Technical/analysis questions -> DeepSeek
-            if any(word in message_lower for word in ["analyze", "pattern", "technical", "how does"]):
+            if any(word in ["analyze", "pattern", "technical", "how does"]):
                 if "DeepSeek" in candidates:
                     return "DeepSeek"
 
             # Creative/what-if questions -> Phi
-            if any(word in message_lower for word in ["imagine", "what if", "creative", "idea"]):
+            if any(word in ["imagine", "what if", "creative", "idea"]):
                 if "Phi" in candidates:
                     return "Phi"
 
@@ -285,7 +285,7 @@ class SmartTurnManager:
         logger.debug(f"Selected {selected} based on context/balance")
         return selected
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> dict:
         """Get turn-taking statistics."""
         return {
             "current_state": self.current_state.value,
@@ -347,7 +347,7 @@ async def signal_turn_complete(speaker: str, content: str = ""):
 def select_next_speaker_smart(
     last_speaker: Optional[str],
     last_message: str,
-    available: List[str],
+    available: list[str],
     context: Optional[str] = None
 ) -> Optional[str]:
     """Smart speaker selection based on context."""
@@ -355,7 +355,7 @@ def select_next_speaker_smart(
     return manager.select_next_speaker(last_speaker, last_message, available, context)
 
 
-def get_turn_stats() -> Dict:
+def get_turn_stats() -> dict:
     """Get turn-taking statistics."""
     manager = get_turn_manager()
     return manager.get_stats()

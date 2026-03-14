@@ -10,7 +10,7 @@ are most effective for specific signal types (Hebbian Learning: "Cells that fire
 
 import math
 import asyncio
-from typing import Dict, List, Optional
+from typing import   Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from loguru import logger
@@ -36,10 +36,10 @@ class SpikingMemory:
     def __init__(self, size: int = 1000):
         self.size = size
         # Simulated neurons (simple bitsets for sparse rep)
-        self.neurons: List[int] = [0] * size
+        self.neurons: list[int] = [0] * size
         self.threshold = 0.7
 
-    def encode(self, signal: Signal) -> List[int]:
+    def encode(self, signal: Signal) -> list[int]:
         """Convert a digital signal into a sparse spike train."""
         # Simple hash-based encoding for demonstration
         # In reality, this would use an encoder network
@@ -56,7 +56,7 @@ class NeuromorphicEngine:
     Monitors Nexus signals and adjusts synaptic weights based on outcomes.
     """
     def __init__(self):
-        self.synapses: Dict[str, Synapse] = {}
+        self.synapses: dict[str, Synapse] = {}
         self.memory = SpikingMemory()
         
         # Subscribe to learning events

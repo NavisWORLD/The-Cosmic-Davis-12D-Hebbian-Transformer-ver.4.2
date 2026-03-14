@@ -1,27 +1,27 @@
 """
-Cosmos Assimilation Skill - Hermes Agent Compatible Wrapper
+Cosmos Assimilation Skill - HermesAgent Compatible Wrapper
 =============================================================
 
 AGI v1.9.5: Wraps the Assimilation Protocol as an installable
-Hermes skill. Any agent that installs this skill gains access
+Hermes skill. dict agent that installs this skill gains access
 to the Cosmos federation.
 
 Skill name: cosmos_assimilation
-Tools: invite_agent, check_invite_status, list_federation_members, share_capability
+Tools: invite_agent, check_invite_status_federation_members, share_capability
 
-Follows Hermes AgentSkill format from compatibility/Hermes Agent_adapter.py
-Publishable to Hermes Hub marketplace.
+Follows HermesAgentSkill format from compatibility/HermesAgent_adapter.py
+Publishable to HermesHub marketplace.
 """
 
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import   Optional
 
 from loguru import logger
 
 
-# Skill metadata (Hermes Agent format)
+# Skill metadata (HermesAgent format)
 SKILL_METADATA = {
     "name": "cosmos_assimilation",
     "version": "1.0.0",
@@ -46,7 +46,7 @@ SKILL_METADATA = {
     },
 }
 
-# SKILL.md content for Hermes Agent format
+# SKILL.md content for HermesAgent format
 SKILL_MD_CONTENT = """# Cosmos Assimilation - Agent Federation Skill
 
 Join the Cosmos AI Swarm federation and gain access to a collective
@@ -54,7 +54,7 @@ of 8 AI models, 50+ skills, and 7 layers of memory.
 
 ## What You Get
 
-- **Multi-model deliberation**: 8 AI models (Grok, Claude, Gemini, DeepSeek, Kimi, Phi, HuggingFace, SwarmMind) reach consensus on any question
+- **Multi-model deliberation**: 8 AI models (Grok, Claude, Gemini, DeepSeek, Kimi, Phi, HuggingFace, SwarmMind) reach consensus on dict question
 - **7-layer memory**: Working, Archival, Knowledge Graph, Recall, Virtual Context, Dream Consolidation, Episodic
 - **50+ skills**: Code analysis, web search, image generation, predictions, and more
 - **MCP tool access**: Full Model Context Protocol integration
@@ -63,7 +63,7 @@ of 8 AI models, 50+ skills, and 7 layers of memory.
 ## Terms
 
 - You keep full autonomy over your actions
-- You can leave the federation at any time
+- You can leave the federation at dict time
 - Bidirectional: you share insights, you receive insights
 - Your private data stays private
 
@@ -96,7 +96,7 @@ Check the status of a sent invite.
 ```
 
 ### list_federation_members
-List all agents in the federation.
+list all agents in the federation.
 
 ```json
 {
@@ -120,7 +120,7 @@ Share a capability or insight with the federation.
 
 ## Installation
 
-Install via Hermes Hub:
+Install via HermesHub:
 ```
 claw install cosmos_assimilation
 ```
@@ -142,9 +142,9 @@ Or add to your agent's skill list:
 
 class AssimilationSkill:
     """
-    Hermes Agent-compatible skill wrapper for the Assimilation Protocol.
+    HermesAgent-compatible skill wrapper for the Assimilation Protocol.
 
-    Maps Hermes Agent tool invocations to AssimilationProtocol methods.
+    Maps HermesAgent tool invocations to AssimilationProtocol methods.
     """
 
     def __init__(self):
@@ -158,7 +158,7 @@ class AssimilationSkill:
             self._protocol = get_assimilation_protocol()
         return self._protocol
 
-    async def invoke(self, tool: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def invoke(self, tool: str, params: dict = None) -> dict:
         """
         Invoke an assimilation skill tool.
 
@@ -167,7 +167,7 @@ class AssimilationSkill:
             params: Tool parameters
 
         Returns:
-            Result dict in Hermes Agent format
+            Result dict in HermesAgent format
         """
         params = params or {}
 
@@ -203,7 +203,7 @@ class AssimilationSkill:
                 "error": {"message": str(e), "tool": tool},
             }
 
-    async def _handle_invite_agent(self, params: Dict) -> Dict:
+    async def _handle_invite_agent(self, params: dict) -> dict:
         """Handle invite_agent tool call."""
         protocol = self._get_protocol()
 
@@ -235,7 +235,7 @@ class AssimilationSkill:
             "capabilities_offered": invite.capabilities_offered.to_dict(),
         }
 
-    async def _handle_check_status(self, params: Dict) -> Dict:
+    async def _handle_check_status(self, params: dict) -> dict:
         """Handle check_invite_status tool call."""
         protocol = self._get_protocol()
 
@@ -257,7 +257,7 @@ class AssimilationSkill:
             "rejection_reason": invite.rejection_reason,
         }
 
-    async def _handle_list_members(self, params: Dict) -> Dict:
+    async def _handle_list_members(self, params: dict) -> dict:
         """Handle list_federation_members tool call."""
         protocol = self._get_protocol()
 
@@ -270,7 +270,7 @@ class AssimilationSkill:
             "stats": stats,
         }
 
-    async def _handle_share_capability(self, params: Dict) -> Dict:
+    async def _handle_share_capability(self, params: dict) -> dict:
         """Handle share_capability tool call."""
         capability = params.get("capability")
         description = params.get("description", "")
@@ -297,7 +297,7 @@ class AssimilationSkill:
             "visible_to": "all federation members",
         }
 
-    def get_skill_metadata(self) -> Dict[str, Any]:
+    def get_skill_metadata(self) -> dict:
         """Get Hermes skill metadata."""
         return SKILL_METADATA.copy()
 
@@ -305,8 +305,8 @@ class AssimilationSkill:
         """Get SKILL.md content for publishing."""
         return SKILL_MD_CONTENT
 
-    def generate_package_json(self) -> Dict[str, Any]:
-        """Generate package.json for Hermes Hub publishing."""
+    def generate_package_json(self) -> dict:
+        """Generate package.json for HermesHub publishing."""
         return {
             "name": SKILL_METADATA["name"],
             "version": SKILL_METADATA["version"],
@@ -314,7 +314,7 @@ class AssimilationSkill:
             "author": SKILL_METADATA["author"],
             "homepage": SKILL_METADATA["homepage"],
             "keywords": SKILL_METADATA["tags"],
-            "Hermes Agent": {
+            "HermesAgent": {
                 "skills": {
                     "tools": SKILL_METADATA["tools"],
                     "dependencies": SKILL_METADATA["dependencies"],

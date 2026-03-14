@@ -28,7 +28,7 @@ import os
 import time
 import uuid
 import logging
-from typing import Optional, Dict, Any
+from typing import Optional
 from pathlib import Path
 
 logger = logging.getLogger("COSMOS_MEDIA")
@@ -102,7 +102,7 @@ class CosmosMediaGenerator:
     # CST PROMPT ENRICHMENT (The Cosmos Transformer)
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    def get_cst_context(self) -> Dict[str, Any]:
+    def get_cst_context(self) -> dict:
         """
         Read the current CST state from the SynapticField.
         Returns emotional context, dark matter dynamics, and φ-aesthetic parameters.
@@ -265,7 +265,7 @@ RULES:
         self,
         prompt: str,
         enhance: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """
         Generate an image natively or using Gemini.
 
@@ -274,7 +274,7 @@ RULES:
             enhance: Whether to enrich prompt with CST physics
 
         Returns:
-            Dict with {success, file_path, file_url, enhanced_prompt, model, error}
+            dict with {success, file_path, file_url, enhanced_prompt, model, error}
         """
         # --- NATIVE 12D FALLBACK OR OVERRIDE ---
         if not self.available or not self.client or "native" in prompt.lower():
@@ -397,7 +397,7 @@ RULES:
         model: str = "veo-2",
         enhance: bool = True,
         timeout: int = 300,
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """
         Generate a video natively or using Gemini Veo.
 
@@ -408,7 +408,7 @@ RULES:
             timeout: Max wait time in seconds
 
         Returns:
-            Dict with {success, file_path, file_url, enhanced_prompt, model, error}
+            dict with {success, file_path, file_url, enhanced_prompt, model, error}
         """
         # --- NATIVE 54D FALLBACK OR OVERRIDE ---
         if not self.available or not self.client or "native" in prompt.lower():
@@ -534,7 +534,7 @@ RULES:
     # STATUS & INFO
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict:
         """Get current media generator status."""
         return {
             "available": self.available,

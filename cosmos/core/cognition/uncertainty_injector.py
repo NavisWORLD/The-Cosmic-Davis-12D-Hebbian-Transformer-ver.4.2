@@ -11,7 +11,7 @@ Adds stochastic "human" elements to AI decision making:
 import random
 import time
 from dataclasses import dataclass
-from typing import Dict, Optional, List
+from typing import  Optional
 
 @dataclass
 class IntuitionState:

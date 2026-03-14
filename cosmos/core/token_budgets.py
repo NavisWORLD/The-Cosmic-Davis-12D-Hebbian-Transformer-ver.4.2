@@ -36,7 +36,7 @@ The Deliberation Chamber:
 
 import asyncio
 from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Callable
+from typing import   Optional, Callable
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
@@ -125,13 +125,13 @@ class TokenBudget:
 
     # Tier and permissions
     tier: UsageTier = UsageTier.FREE
-    allowed_models: List[str] = field(default_factory=list)  # Empty = all
-    allowed_tiers: List[ModelTier] = field(default_factory=lambda: [ModelTier.ECONOMY, ModelTier.STANDARD])
+    allowed_models: list[str] = field(default_factory=list)  # Empty = all
+    allowed_tiers: list[ModelTier] = field(default_factory=lambda: [ModelTier.ECONOMY, ModelTier.STANDARD])
     davinci_mode_enabled: bool = False
 
     # Alerts
     warning_threshold: float = 0.8  # 80% of budget
-    alert_emails: List[str] = field(default_factory=list)
+    alert_emails: list[str] = field(default_factory=list)
 
     # Metadata
     created_at: datetime = field(default_factory=datetime.utcnow)
@@ -153,7 +153,7 @@ class TokenBudget:
             return 0
         return (self.tokens_used / self.max_tokens_per_period) * 100
 
-    def to_dict(self) -> Dict:
+    def to_any(self) -> dict:
         return {
             "profile_id": self.profile_id,
             "name": self.name,
@@ -188,8 +188,8 @@ class DavinciSession:
     id: str
     profile_id: str
     query: str
-    models: List[str]
-    rounds: List[DavinciDebateRound] = field(default_factory=list)
+    models: list[str]
+    rounds: list[DavinciDebateRound] = field(default_factory=list)
 
     # Configuration
     max_rounds: int = 20  # Up to 20 cycles, or until agreement
@@ -198,14 +198,14 @@ class DavinciSession:
     fact_checker: str = "grok-2"  # Grok validates the final answer
 
     # Debate box state
-    debate_log: List[Dict] = field(default_factory=list)  # Visual debate history
-    agreements: Dict[str, List[str]] = field(default_factory=dict)  # model -> points agreed
-    disagreements: Dict[str, List[str]] = field(default_factory=dict)  # model -> objections
+    debate_log: list[dict] = field(default_factory=list)  # Visual debate history
+    agreements: dict[str[str]] = field(default_factory=dict)  # model -> points agreed
+    disagreements: dict[str[str]] = field(default_factory=dict)  # model -> objections
 
     # Results
     raw_consensus: str = ""  # Unvalidated consensus answer
     final_response: str = ""  # After Grok fact-check
-    fact_check_result: Dict = field(default_factory=dict)  # Grok's validation
+    fact_check_result: dict = field(default_factory=dict)  # Grok's validation
     consensus_reached: bool = False
     total_tokens: int = 0
     total_cost: float = 0.0
@@ -260,7 +260,7 @@ class DavinciSession:
         lines.append("└─────────────────────────────────────────────────────────────┘")
         return "\n".join(lines)
 
-    def to_dict(self) -> Dict:
+    def to_any(self) -> dict:
         return {
             "id": self.id,
             "profile_id": self.profile_id,
@@ -297,11 +297,11 @@ class TokenBudgetManager:
         self.storage_path = Path(storage_path) if storage_path else Path("./data/budgets")
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
-        self.budgets: Dict[str, TokenBudget] = {}
-        self.usage_history: List[TokenUsage] = []
-        self.bender_sessions: Dict[str, DavinciSession] = {}
-        self.model_pricing: Dict[str, ModelPricing] = {}
-        self.alert_handlers: List[Callable] = []
+        self.budgets: dict[str, TokenBudget] = {}
+        self.usage_history: list[TokenUsage] = []
+        self.bender_sessions: dict[str, DavinciSession] = {}
+        self.model_pricing: dict[str, ModelPricing] = {}
+        self.alert_handlers: list[Callable] = []
 
         self._load_model_pricing()
         self._load_budgets()
@@ -496,7 +496,7 @@ class TokenBudgetManager:
     def _save_budgets(self):
         """Save budgets to storage."""
         budgets_file = self.storage_path / "budgets.json"
-        data = {pid: budget.to_dict() for pid, budget in self.budgets.items()}
+        data = {pid: budget.to_any() for pid, budget in self.budgets.items()}
         with open(budgets_file, "w") as f:
             json.dump(data, f, indent=2)
 
@@ -606,7 +606,7 @@ class TokenBudgetManager:
         profile_id: str,
         model_id: str,
         estimated_tokens: int,
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """Check if usage is within budget."""
         budget = self.get_budget(profile_id)
         if not budget:
@@ -701,9 +701,9 @@ class TokenBudgetManager:
     async def check_bender_mode(
         self,
         profile_id: str,
-        models: List[str],
+        models: list[str],
         estimated_rounds: int = 20,
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """
         Check if BENDER mode is available and estimate cost.
 
@@ -787,7 +787,7 @@ class TokenBudgetManager:
         self,
         profile_id: str,
         query: str,
-        models: List[str],
+        models: list[str],
         max_rounds: int = 20,
         consensus_check_interval: int = 2,
         model_caller: Callable = None,
@@ -878,8 +878,8 @@ Based on the discussion so far:
 2. Do you AGREE or DISAGREE with other models? Be explicit.
 3. What points do you want to emphasize or correct?
 4. Your confidence level (0-1)
-5. List any points of agreement with other models
-6. List any remaining disagreements
+5. list dict points of agreement with other models
+6. list dict remaining disagreements
 
 Build toward consensus while maintaining accuracy. If you agree with the emerging consensus, state so clearly."""
 
@@ -971,7 +971,7 @@ Build toward consensus while maintaining accuracy. If you agree with the emergin
             session, model_caller
         )
 
-        # Apply fact-check corrections if any
+        # Apply fact-check corrections if dict
         if session.fact_check_result.get("valid"):
             session.final_response = session.raw_consensus
             session.add_to_deliberation_box("GROK", 0, "✅ Answer verified", "verified")
@@ -997,9 +997,9 @@ Build toward consensus while maintaining accuracy. If you agree with the emergin
     async def _grok_consensus_check(
         self,
         session: DavinciSession,
-        all_responses: List[Dict],
+        all_responses: list[dict],
         model_caller: Callable,
-    ) -> Dict:
+    ) -> dict:
         """
         Have Grok analyze if models have reached consensus.
 
@@ -1007,8 +1007,8 @@ Build toward consensus while maintaining accuracy. If you agree with the emergin
             {
                 "consensus_reached": bool,
                 "consensus_answer": str (if reached),
-                "agreement_points": List[str],
-                "disagreements": List[str],
+                "agreement_points": list[str],
+                "disagreements": list[str],
                 "confidence": float
             }
         """
@@ -1033,8 +1033,8 @@ Respond in this exact JSON format:
 {{
     "consensus_reached": true/false,
     "consensus_answer": "The agreed-upon answer if consensus reached, else empty string",
-    "agreement_points": ["List of points all models agree on"],
-    "disagreements": ["List of remaining points of disagreement"],
+    "agreement_points": ["list of points all models agree on"],
+    "disagreements": ["list of remaining points of disagreement"],
     "confidence": 0.0-1.0,
     "reasoning": "Why you determined consensus was/wasn't reached"
 }}
@@ -1080,7 +1080,7 @@ Minor differences in phrasing are OK. Fundamental disagreements on facts or appr
         self,
         session: DavinciSession,
         model_caller: Callable,
-    ) -> Dict:
+    ) -> dict:
         """
         Have Grok fact-check the final raw consensus answer.
 
@@ -1089,7 +1089,7 @@ Minor differences in phrasing are OK. Fundamental disagreements on facts or appr
                 "valid": bool,
                 "corrections": str,
                 "confidence": float,
-                "issues": List[str]
+                "issues": list[str]
             }
         """
         fact_check_prompt = f"""You are Grok, acting as the final fact-checker for a multi-model consensus answer.
@@ -1111,10 +1111,10 @@ Respond in this exact JSON format:
 {{
     "valid": true/false,
     "confidence": 0.0-1.0,
-    "issues": ["List of any issues found"],
+    "issues": ["list of dict issues found"],
     "corrections": "Suggested corrections or clarifications if needed, else empty string",
-    "verified_facts": ["List of facts you verified as correct"],
-    "unverifiable": ["List of claims that cannot be verified"]
+    "verified_facts": ["list of facts you verified as correct"],
+    "unverifiable": ["list of claims that cannot be verified"]
 }}
 
 Be thorough but pragmatic. Minor style issues don't make an answer invalid.
@@ -1162,7 +1162,7 @@ Focus on substantive factual or logical problems."""
     async def _synthesize_davinci_response(
         self,
         session: DavinciSession,
-        all_responses: List[Dict],
+        all_responses: list[dict],
         model_caller: Callable,
     ) -> str:
         """Synthesize final response from deliberation."""
@@ -1183,7 +1183,7 @@ Final round responses:
 
 Please provide:
 1. A comprehensive final answer that incorporates the best points from all models
-2. Any points of disagreement that users should be aware of
+2. dict points of disagreement that users should be aware of
 3. Confidence assessment
 
 Format your response in a clear, detailed manner suitable for the user."""
@@ -1207,7 +1207,7 @@ Format your response in a clear, detailed manner suitable for the user."""
         self,
         profile_id: str = None,
         days: int = 30,
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """Get usage statistics."""
         cutoff = datetime.utcnow() - timedelta(days=days)
 
@@ -1250,7 +1250,7 @@ Format your response in a clear, detailed manner suitable for the user."""
         self,
         profile_id: str,
         days: int = 30,
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """Project future costs based on usage patterns."""
         stats = self.get_usage_stats(profile_id, days=7)
 

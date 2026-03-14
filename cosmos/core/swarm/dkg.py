@@ -9,7 +9,7 @@ P2P nodes. It uses a CRDT-inspired conflict resolution strategy.
 
 import hashlib
 import json
-from typing import Dict, List, Any, Set, Tuple
+from typing import   Set, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime
 from loguru import logger
@@ -27,7 +27,7 @@ class GraphEdge:
 class GraphNode:
     id: str
     label: str
-    properties: Dict[str, Any]
+    properties: dict
     timestamp: float
     author_node: str
 
@@ -37,10 +37,10 @@ class DecentralizedKnowledgeGraph:
     """
     def __init__(self, node_id: str):
         self.node_id = node_id
-        self.nodes: Dict[str, GraphNode] = {}
-        self.edges: Dict[str, GraphEdge] = {} # Key: Hash(src+target+relation)
+        self.nodes: dict[str, GraphNode] = {}
+        self.edges: dict[str, GraphEdge] = {} # Key: Hash(src+target+relation)
         
-    def add_fact(self, source: str, relation: str, target: str, properties: Dict = {}):
+    def add_fact(self, source: str, relation: str, target: str, properties: dict = {}):
         """Add a factual edge between two local or remote entities."""
         ts = datetime.now().timestamp()
         
@@ -89,7 +89,7 @@ class DecentralizedKnowledgeGraph:
         except Exception as e:
             logger.error(f"DKG: Failed to merge fragment: {e}")
 
-    def get_neighbors(self, node_id: str) -> List[Tuple[str, str]]:
+    def get_neighbors(self, node_id: str) -> list[Tuple[str, str]]:
         """Query connections for a node."""
         res = []
         for e in self.edges.values():

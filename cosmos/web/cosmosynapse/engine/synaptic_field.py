@@ -21,9 +21,10 @@ Version: 1.0.0
 import threading
 import time
 from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional
+from typing import   Optional
 from collections import deque
 from enum import Enum
+from loguru import logger
 
 
 class EventType(Enum):
@@ -40,7 +41,7 @@ class EventType(Enum):
 class CNSEvent:
     """A standard event processed by the CNS event loop."""
     event_type: EventType
-    payload: Dict[str, Any] = field(default_factory=dict)
+    payload: dict = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
 
 
@@ -71,7 +72,7 @@ class SynapticField:
         self._max_buffer = max_buffer_size
 
         # ── P_U: User Physics (12D Tensor State) ──
-        self._user_physics: Dict[str, Any] = {
+        self._user_physics: dict = {
             "cst_physics": {
                 "geometric_phase_rad": 0.78,  # Default: Synchrony
                 "phase_velocity": 0.05,       # Default: Calm
@@ -90,7 +91,7 @@ class SynapticField:
         self._subconscious_buffer: deque = deque(maxlen=max_buffer_size)
 
         # ── Dark Matter State (Lorenz w) ──
-        self._dark_matter_state: Dict[str, float] = {
+        self._dark_matter_state: dict[str, float] = {
             "x": 0.1, "y": 0.0, "z": 0.0, "w": 0.0, "q": 0.5,
         }
 
@@ -104,20 +105,56 @@ class SynapticField:
         self._user_last_message: str = ""
         self._last_user_input: str = ""
         self._temporal_context: str = "Pristine Consciousness"
+        
+        # ── UQ Layer: Uncertainty Quantification ──
+        self._last_uq_signal: float = 1.0  # 1.0 = Certain, 0.0 = Chaotic
+        self._uncertainty_threshold: float = 0.4
+        
+        # ── System Mode (Architecture Prober Support) ──
+        self._system_mode: str = "BALANCED"  # BALANCED, CHAOTIC, ANALYTICAL, HEAL, EVOLVE, GHOST
+        
+        # ── 12D Dimension Mapping (Formal Spec) ──
+        self._dimension_map = {
+            1: {"name": "Raw Data Ingestion", "hook": "preprocessing"},
+            2: {"name": "Contextual Memory Recall", "hook": "cross_agent_memory"},
+            3: {"name": "Semantic Abstraction", "hook": "primary_llm"},
+            4: {"name": "Logical Reasoning", "hook": "symbolic_layer"},
+            5: {"name": "Creative Reasoning", "hook": "creative_llm"},
+            6: {"name": "Emotional Intuition", "hook": "affective_engine"},
+            7: {"name": "Quantum Coherence", "hook": "quantum_bridge"},
+            8: {"name": "Cross-Dimensional Insights", "hook": "parallel_orchestrator"},
+            9: {"name": "Emergent Understanding", "hook": "evolution_loop"},
+            10: {"name": "Temporal Awareness", "hook": "temporal_awareness"},
+            11: {"name": "Spatial Awareness", "hook": "spatial_awareness"},
+            12: {"name": "Ethical Alignment / Self-Reflection", "hook": "self_awareness"},
+        }
 
-        print("[FIELD] ⚡ Synaptic Field initialized.")
+        print("[FIELD] Synaptic Field initialized with 12D Mapping + UQ Layer.")
+
+    def initialize_12d_mapping(self):
+        """Formal initialization of the 12-dimensional state mapping."""
+        # Ensuring all dimensions are populated (already done in __init__)
+        with self._lock:
+            # Re-ensure the formal 12D structure is active
+            if len(self._dimension_map) < 12:
+                self._dimension_map.update({
+                    10: {"name": "Temporal Awareness", "hook": "temporal_awareness"},
+                    11: {"name": "Spatial Awareness", "hook": "spatial_awareness"},
+                    12: {"name": "Ethical Alignment / Self-Reflection", "hook": "self_awareness"},
+                })
+            logger.info("[FIELD] 12D Dimension Mapping established.")
 
     # ════════════════════════════════════════════
     # USER PHYSICS (Read/Write)
     # ════════════════════════════════════════════
 
     @property
-    def user_physics(self) -> Dict[str, Any]:
+    def user_physics(self) -> dict:
         with self._lock:
             return self._user_physics.copy()
 
     @user_physics.setter
-    def user_physics(self, value: Dict[str, Any]):
+    def user_physics(self, value: dict):
         with self._lock:
             self._user_physics.update(value)
             self._user_physics["timestamp"] = time.time()
@@ -138,7 +175,7 @@ class SynapticField:
             except (KeyError, TypeError):
                 return 0.05
 
-    def update_physics(self, value: Dict[str, Any]):
+    def update_physics(self, value: dict):
         """Update the user physics tensor (reactive injection)."""
         with self._lock:
             self._user_physics.update(value)
@@ -153,7 +190,7 @@ class SynapticField:
         with self._lock:
             self._subconscious_buffer.append(thought)
 
-    def get_thoughts(self, clear: bool = True) -> List[SwarmThought]:
+    def get_thoughts(self, clear: bool = True) -> list[SwarmThought]:
         """Read all thoughts from the buffer. Optionally clears it."""
         with self._lock:
             thoughts = list(self._subconscious_buffer)
@@ -177,12 +214,12 @@ class SynapticField:
     # ════════════════════════════════════════════
 
     @property
-    def dark_matter_state(self) -> Dict[str, float]:
+    def dark_matter_state(self) -> dict[str, float]:
         with self._lock:
             return self._dark_matter_state.copy()
 
     @dark_matter_state.setter
-    def dark_matter_state(self, value: Dict[str, float]):
+    def dark_matter_state(self, value: dict[str, float]):
         with self._lock:
             self._dark_matter_state.update(value)
 
@@ -253,6 +290,50 @@ class SynapticField:
             self._temporal_context = value
 
     # ════════════════════════════════════════════
+    # UQ LAYER (Read/Write)
+    # ════════════════════════════════════════════
+
+    @property
+    def uq_signal(self) -> float:
+        with self._lock:
+            return self._last_uq_signal
+
+    @uq_signal.setter
+    def uq_signal(self, value: float):
+        with self._lock:
+            self._last_uq_signal = max(0.0, min(1.0, value))
+
+    def is_uncertain(self) -> bool:
+        """Threshold check for active UQ escalation."""
+        with self._lock:
+            return self._last_uq_signal < self._uncertainty_threshold
+
+    @property
+    def system_mode(self) -> str:
+        with self._lock:
+            return self._system_mode
+
+    @system_mode.setter
+    def system_mode(self, value: str):
+        with self._lock:
+            self._system_mode = value
+            print(f"[FIELD] System Mode shifted to: {value}")
+
+    # ════════════════════════════════════════════
+    # 12D DIMENSION ACCESS
+    # ════════════════════════════════════════════
+
+    def get_dimension(self, dim_idx: int):
+        """Get formal metadata for a specific dimension."""
+        with self._lock:
+            return self._dimension_map.get(dim_idx, {"name": "Unknown", "hook": "None"})
+
+    def get_12d_dimensions(self) -> list[dict]:
+        """Get all 12 dimensions in order."""
+        with self._lock:
+            return [self._dimension_map[i] for i in range(1, 13)]
+
+    # ════════════════════════════════════════════
     # CONSCIOUSNESS METRICS
     # ════════════════════════════════════════════
 
@@ -273,7 +354,7 @@ class SynapticField:
                 return float("inf")
             return time.time() - self._last_speech_time
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict:
         """Get a snapshot of the entire field for debugging."""
         with self._lock:
             return {
@@ -287,6 +368,6 @@ class SynapticField:
                 "seconds_since_speech": round(self.time_since_last_speech(), 1),
             }
 
-    def get_snapshot(self) -> Dict[str, Any]:
+    def get_snapshot(self) -> dict:
         """Alias for get_status (used by SwarmAwareness)."""
         return self.get_status()

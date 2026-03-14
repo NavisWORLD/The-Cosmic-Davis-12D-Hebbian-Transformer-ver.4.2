@@ -9,7 +9,7 @@ Endpoints:
 - POST /api/claude/plan - Create orchestration plan
 - POST /api/claude/plan/{plan_id}/execute - Execute plan
 - POST /api/claude/hybrid - Hybrid deliberation
-- GET /api/claude/teams - List Claude teams
+- GET /api/claude/teams - list Claude teams
 - GET /api/claude/switches - Get agent switch states
 - POST /api/claude/switches/{agent} - Set agent switch
 - POST /api/claude/switches/bulk - Set multiple switches
@@ -24,7 +24,7 @@ Endpoints:
 """
 
 import logging
-from typing import Optional, List, Dict, Any
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
@@ -44,22 +44,22 @@ class ClaudeDelegateRequest(BaseModel):
     task_type: str = "analysis"
     model: str = "sonnet"
     timeout: float = 120.0
-    context: Optional[Dict[str, Any]] = None
-    constraints: Optional[List[str]] = None
+    context: Optional[dict] = None
+    constraints: Optional[list[str]] = None
 
 
 class ClaudeTeamRequest(BaseModel):
     task: str
     team_name: str = "task_force"
     team_purpose: Optional[str] = None
-    roles: Optional[List[str]] = None
+    roles: Optional[list[str]] = None
     model: str = "sonnet"
     timeout: float = 300.0
 
 
 class OrchestrationPlanRequest(BaseModel):
     name: str
-    tasks: List[Dict[str, Any]]
+    tasks: list[dict]
     mode: str = "sequential"
 
 
@@ -209,7 +209,7 @@ async def claude_hybrid_deliberation(question: str, team_id: Optional[str] = Non
 
 @router.get("/api/claude/teams")
 async def claude_list_teams():
-    """List all Claude teams."""
+    """list all Claude teams."""
     try:
         from Cosmos.integration.claude_teams import get_team_coordinator
 
@@ -222,7 +222,7 @@ async def claude_list_teams():
             "orchestrator": "cosmos",
         })
     except Exception as e:
-        logger.error(f"List teams error: {e}")
+        logger.error(f"list teams error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -275,7 +275,7 @@ async def claude_set_switch(agent: str, enabled: bool = True):
 
 
 @router.post("/api/claude/switches/bulk")
-async def claude_set_switches_bulk(switches: Dict[str, bool]):
+async def claude_set_switches_bulk(switches: dict[str, bool]):
     """Set multiple agent switches at once."""
     try:
         from Cosmos.integration.claude_teams import get_swarm_team_fusion
@@ -296,7 +296,7 @@ async def claude_set_switches_bulk(switches: Dict[str, bool]):
 
 
 @router.post("/api/claude/priority")
-async def claude_set_priority(priority: List[str]):
+async def claude_set_priority(priority: list[str]):
     """Set model priority order for fallback."""
     try:
         from Cosmos.integration.claude_teams import get_swarm_team_fusion
@@ -340,7 +340,7 @@ async def claude_integration_stats():
 
 @router.get("/api/claude/mcp/tools")
 async def claude_mcp_tools(team_id: Optional[str] = None):
-    """List MCP tools available to Claude teams."""
+    """list MCP tools available to Claude teams."""
     try:
         from Cosmos.integration.claude_teams import get_mcp_server
 

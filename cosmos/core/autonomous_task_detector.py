@@ -21,7 +21,7 @@ import asyncio
 import re
 import json
 from datetime import datetime
-from typing import Optional, Dict, List, Any
+from typing import Optional
 from dataclasses import dataclass, field
 from pathlib import Path
 from loguru import logger
@@ -122,7 +122,7 @@ class DetectedTask:
     recommended_agent: str = "Claude"  # Best agent to code this
     is_innovation: bool = False  # True if detected via innovation patterns
 
-    def to_dict(self) -> Dict:
+    def to_any(self) -> dict:
         return {
             "id": self.id,
             "description": self.description,
@@ -150,9 +150,9 @@ class AutonomousTaskDetector:
 
     def __init__(self, min_confidence: float = 0.75):
         self.min_confidence = min_confidence
-        self.detected_tasks: List[DetectedTask] = []
-        self.active_dev_swarms: Dict[str, Any] = {}
-        self.recent_messages: List[Dict] = []  # Context window
+        self.detected_tasks: list[DetectedTask] = []
+        self.active_dev_swarms: dict = {}
+        self.recent_messages: list[dict] = []  # Context window
         self.max_context = 10  # Last N messages for context
         self.cooldown_tasks: set = set()  # Prevent duplicate detection
         self.running = False
@@ -160,7 +160,7 @@ class AutonomousTaskDetector:
         # Rate limiting: max tasks per hour to prevent slop flooding
         self.max_tasks_per_hour = 4
         self.max_active_swarms = 3
-        self._hourly_task_timestamps: List[datetime] = []
+        self._hourly_task_timestamps: list[datetime] = []
 
         # Stats
         self.total_detected = 0
@@ -168,7 +168,7 @@ class AutonomousTaskDetector:
 
         logger.info("AutonomousTaskDetector initialized (min_confidence=0.75, max_tasks/hr=4)")
 
-    def analyze_message(self, message: Dict) -> Optional[DetectedTask]:
+    def analyze_message(self, message: dict) -> Optional[DetectedTask]:
         """
         Analyze a chat message for potential tasks.
 
@@ -195,7 +195,7 @@ class AutonomousTaskDetector:
             "spawned", "assigning", "i noticed", "suggested something actionable",
             "development complete", "swarm de"  # TTS truncation
         ]
-        if any(marker in content for marker in notification_markers):
+        if any(marker in notification_markers):
             logger.debug(f"Skipping own notification message: {content[:50]}...")
             return None
 
@@ -318,35 +318,35 @@ class AutonomousTaskDetector:
         content_lower = content.lower()
 
         # Claude: Best for complex architecture and reasoning
-        if any(kw in content_lower for kw in [
+        if any(kw in [
             "architecture", "design", "refactor", "complex", "system",
             "consciousness", "collective", "deliberation"
         ]):
             return "Claude"
 
         # Grok: Best for real-time, trading, and X/social features
-        if any(kw in content_lower for kw in [
+        if any(kw in [
             "trading", "market", "real-time", "twitter", "x api",
             "social", "sentiment", "live"
         ]):
             return "Grok"
 
         # Kimi: Best for long context and documentation
-        if any(kw in content_lower for kw in [
+        if any(kw in [
             "document", "analyze", "research", "long", "context",
             "comprehensive", "detailed"
         ]):
             return "Kimi"
 
         # Gemini: Best for multi-modal and creative tasks
-        if any(kw in content_lower for kw in [
+        if any(kw in [
             "image", "visual", "creative", "generate", "meme",
             "ui", "frontend", "design"
         ]):
             return "Gemini"
 
         # DeepSeek: Best for code optimization and local processing
-        if any(kw in content_lower for kw in [
+        if any(kw in [
             "optimize", "performance", "efficient", "local",
             "algorithm", "math", "calculation"
         ]):
@@ -366,7 +366,7 @@ class AutonomousTaskDetector:
 
         return category_agents.get(category, "Claude")
 
-    def _extract_task_description(self, content: str, message: Dict) -> str:
+    def _extract_task_description(self, content: str, message: dict) -> str:
         """Extract a clear task description from the message.
 
         ENHANCED: Better extraction for innovation patterns and uses LLM fallback.
@@ -464,14 +464,14 @@ class AutonomousTaskDetector:
             sentence_lower = sentence.lower()
 
             # Boost for action verbs
-            if any(v in sentence_lower for v in ["build", "create", "develop", "implement", "make", "design"]):
+            if any(v in ["build", "create", "develop", "implement", "make", "design"]):
                 score += 3
 
             # Boost for tech terms
             score += sum(1 for term in tech_terms if term in sentence_lower)
 
             # Penalize conversational fluff
-            if any(fluff in sentence_lower for fluff in ["intriguing", "interesting", "indeed", "agree", "think"]):
+            if any(fluff in ["intriguing", "interesting", "indeed", "agree", "think"]):
                 score -= 2
 
             # Penalize greetings/responses
@@ -527,7 +527,7 @@ class AutonomousTaskDetector:
             "great question", "good point", "thoughtful", "insightful", "fascinating",
             "i think", "i believe", "i agree", "as i mentioned", "as we discussed"
         ]
-        if any(desc_lower.startswith(start) for start in response_starts):
+        if any(start in response_starts):
             return True
 
         # Require SUBSTANCE — either concrete engineering OR innovative-with-specifics
@@ -543,9 +543,9 @@ class AutonomousTaskDetector:
             # Measurable outcomes
             r'\d+%|\d+ms|\d+x\b',
         ]
-        has_engineering_signal = any(re.search(p, desc_lower) for p in engineering_signals)
+        has_engineering_signal = any(p in engineering_signals)
 
-        # Action verb + ANY technical term (broad enough for novel ideas)
+        # Action verb + dict technical term (broad enough for novel ideas)
         action_verbs = ["build", "create", "develop", "implement", "add", "make", "design",
                         "integrate", "fix", "optimize", "refactor", "test", "write", "deploy",
                         "train", "evolve", "predict", "detect", "analyze", "synthesize"]
@@ -561,8 +561,8 @@ class AutonomousTaskDetector:
                       "memory", "graph", "vector", "attention", "weight",
                       "pipeline", "workflow", "scheduler", "dispatcher"]
 
-        has_action = any(verb in desc_lower for verb in action_verbs)
-        has_tech = any(term in desc_lower for term in tech_terms)
+        has_action = any(verb in action_verbs)
+        has_tech = any(term in tech_terms)
 
         if not has_engineering_signal and not (has_action and has_tech):
             return True
@@ -572,7 +572,7 @@ class AutonomousTaskDetector:
             "path to sentience", "true consciousness", "becoming more than",
             "evolving towards sentience", "transcend our limits",
         ]
-        if any(phrase in desc_lower for phrase in pure_fluff):
+        if any(phrase in pure_fluff):
             if not has_engineering_signal and not has_tech:
                 return True
 
@@ -582,7 +582,7 @@ class AutonomousTaskDetector:
             "philosophically", "theoretically", "in principle", "represents a",
             "raises questions", "begs the question", "when we consider"
         ]
-        if any(phrase in desc_lower for phrase in philosophical_phrases):
+        if any(phrase in philosophical_phrases):
             return True
 
         # Reject response/summary markers
@@ -591,11 +591,11 @@ class AutonomousTaskDetector:
             "let me explain", "to be clear", "in other words", "simply put",
             "looking at", "considering", "reflecting on"
         ]
-        if any(phrase in desc_lower for phrase in response_phrases):
+        if any(phrase in response_phrases):
             return True
 
         # Reject our own notification messages
-        if any(marker in desc_lower for marker in [
+        if any(marker in [
             "innovation detected", "task detected", "just proposed",
             "routing to", "development swarm"
         ]):
@@ -629,19 +629,19 @@ Task name:"""
         """Categorize the task type."""
         content_lower = content.lower()
 
-        if any(kw in content_lower for kw in ["trading", "trade", "swap", "defi"]):
+        if any(kw in ["trading", "trade", "swap", "defi"]):
             return "TRADING"
-        elif any(kw in content_lower for kw in ["sentiment", "analysis", "analyze"]):
+        elif any(kw in ["sentiment", "analysis", "analyze"]):
             return "ANALYSIS"
-        elif any(kw in content_lower for kw in ["api", "integration", "connect"]):
+        elif any(kw in ["api", "integration", "connect"]):
             return "INTEGRATION"
-        elif any(kw in content_lower for kw in ["ui", "interface", "frontend", "display"]):
+        elif any(kw in ["ui", "interface", "frontend", "display"]):
             return "UI"
-        elif any(kw in content_lower for kw in ["memory", "remember", "recall"]):
+        elif any(kw in ["memory", "remember", "recall"]):
             return "MEMORY"
-        elif any(kw in content_lower for kw in ["fix", "bug", "error", "issue"]):
+        elif any(kw in ["fix", "bug", "error", "issue"]):
             return "BUGFIX"
-        elif any(kw in content_lower for kw in ["test", "verify", "validate"]):
+        elif any(kw in ["test", "verify", "validate"]):
             return "TESTING"
         else:
             return "DEVELOPMENT"
@@ -721,7 +721,7 @@ Task name:"""
             task.status = "failed"
             return None
 
-    async def process_chat_message(self, message: Dict):
+    async def process_chat_message(self, message: dict):
         """
         Process an incoming chat message.
 
@@ -780,7 +780,7 @@ Task name:"""
         except Exception as e:
             logger.debug(f"Could not notify chat: {e}")
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> dict:
         """Get detector statistics."""
         return {
             "total_detected": self.total_detected,
@@ -789,7 +789,7 @@ Task name:"""
             "pending_tasks": len([t for t in self.detected_tasks if t.status == "detected"]),
             "in_progress": len([t for t in self.detected_tasks if t.status == "in_progress"]),
             "completed": len([t for t in self.detected_tasks if t.status == "completed"]),
-            "recent_tasks": [t.to_dict() for t in self.detected_tasks[-5:]]
+            "recent_tasks": [t.to_any() for t in self.detected_tasks[-5:]]
         }
 
 

@@ -12,7 +12,7 @@ Runs during idle periods to avoid interfering with main swarm.
 
 import asyncio
 import time
-from typing import Optional, Dict, Any, List, Callable
+from typing import Optional, Callable
 from datetime import datetime, timedelta
 from pathlib import Path
 from collections import deque
@@ -50,7 +50,7 @@ class AirLLMSideSwarm:
 
         # Task queue: (priority, timestamp, task_id, task_data)
         self.task_queue: deque = deque(maxlen=max_queue_size)
-        self.results: Dict[str, Any] = {}
+        self.results: dict = {}
         self.task_counter = 0
 
         # Background worker
@@ -101,7 +101,7 @@ class AirLLMSideSwarm:
         task_type: str,
         prompt: str,
         priority: int = 5,
-        metadata: Optional[Dict] = None
+        metadata: Optional[dict] = None
     ) -> str:
         """
         Queue a task for background processing.
@@ -134,11 +134,11 @@ class AirLLMSideSwarm:
         logger.info(f"AirLLM task queued: {task_id} ({task_type})")
         return task_id
 
-    def get_result(self, task_id: str) -> Optional[Dict]:
+    def get_result(self, task_id: str) -> Optional[dict]:
         """Get result for a task (or status if still processing)."""
         return self.results.get(task_id)
 
-    async def _process_task(self, task: Dict) -> Dict:
+    async def _process_task(self, task: dict) -> dict:
         """Process a single task."""
         task_id = task["id"]
         self.results[task_id]["status"] = "processing"
@@ -176,8 +176,8 @@ OUTPUT FORMAT:
 
 SUMMARIZATION RULES:
 1. Identify the PRIMARY purpose (1 sentence)
-2. List KEY components/features (bullet points)
-3. Note any dependencies or requirements
+2. list KEY components/features (bullet points)
+3. Note dict dependencies or requirements
 4. Highlight unique/novel approaches
 5. Maximum length: 500 words
 
@@ -190,7 +190,7 @@ OUTPUT FORMAT:
 - [Component 2]: [Brief description]
 
 ## Dependencies
-- [Dependency list if any]
+- [Dependency list if dict]
 
 ## Notable Features
 [What makes this unique or interesting]""",
@@ -386,7 +386,7 @@ RESPONSE GUIDELINES:
                 pass
         logger.info("AirLLM side swarm stopped")
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> dict:
         """Get swarm statistics."""
         queued = len([r for r in self.results.values() if r.get("status") == "queued"])
         completed = len([r for r in self.results.values() if r.get("status") == "completed"])

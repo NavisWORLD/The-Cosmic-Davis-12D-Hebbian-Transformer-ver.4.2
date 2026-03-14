@@ -13,7 +13,7 @@ import random
 import math
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Callable, Any
+from typing import   Optional, Callable
 from enum import Enum
 from loguru import logger
 
@@ -39,7 +39,7 @@ class TemporalEvent:
     next_scheduled: Optional[datetime] = None
     execution_count: int = 0
     priority: float = 0.5          # 0-1 priority
-    context: Dict[str, Any] = field(default_factory=dict)
+    context: dict = field(default_factory=dict)
 
     def calculate_next_time(self, energy_level: float = 1.0) -> datetime:
         """Calculate next execution with human-like variance"""
@@ -125,12 +125,12 @@ class TemporalAwareness:
 
     def __init__(self):
         self.circadian = CircadianRhythm()
-        self.events: Dict[str, TemporalEvent] = {}
+        self.events: dict[str, TemporalEvent] = {}
         self.running = False
 
         # Temporal memory
-        self.activity_history: List[Dict] = []  # Recent activities
-        self.time_preferences: Dict[str, float] = {}  # Learned preferences
+        self.activity_history: list[dict] = []  # Recent activities
+        self.time_preferences: dict[str, float] = {}  # Learned preferences
 
         # Current state
         self.last_activity_time = datetime.now()
@@ -206,7 +206,7 @@ class TemporalAwareness:
         else:
             self.idle_start = None
 
-    def record_activity(self, activity_type: str, metadata: Dict = None):
+    def record_activity(self, activity_type: str, metadata: dict = None):
         """Record an activity for temporal learning"""
         now = datetime.now()
         self.last_activity_time = now
@@ -308,7 +308,7 @@ class TemporalAwareness:
         target = (now + timedelta(days=1)).replace(hour=first_peak, minute=0, second=0)
         return target - now
 
-    def get_status(self) -> Dict:
+    def get_status(self) -> dict:
         """Get current temporal status"""
         return {
             "energy_level": self.circadian.get_energy_level(),

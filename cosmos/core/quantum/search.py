@@ -18,7 +18,7 @@ import math
 import random
 import asyncio
 from dataclasses import dataclass, field
-from typing import List, Optional, Callable, Dict, Any
+, Optional, Callable
 from enum import Enum
 import numpy as np
 
@@ -64,7 +64,7 @@ class QBit:
 @dataclass
 class EntanglementGroup:
     """Group of Q-bits that are entangled (correlated)."""
-    qbits: List[str] # IDs of interacting qbits
+    qbits: list[str] # IDs of interacting qbits
     correlation_strength: float = 0.5 
 
 class SchrodingerSearch:
@@ -72,10 +72,10 @@ class SchrodingerSearch:
     Quantum-Inspired Search Engine for Reasoning Paths.
     """
     def __init__(self, observation_threshold: float = 0.85):
-        self.qbits: Dict[str, QBit] = {}
-        self.entanglements: List[EntanglementGroup] = []
+        self.qbits: dict[str, QBit] = {}
+        self.entanglements: list[EntanglementGroup] = []
         self.observation_threshold = observation_threshold
-        self.history: List[str] = []
+        self.history: list[str] = []
 
     def add_reasoning_node(self, id: str, content: str, initial_confidence: float = 0.5):
         """
@@ -147,7 +147,7 @@ class SchrodingerSearch:
             q_a.alpha = math.sqrt(1 - min(q_a.beta**2, 1.0))
             q_b.alpha = math.sqrt(1 - min(q_b.beta**2, 1.0))
 
-    def collapse(self) -> List[tuple[str, str, float]]:
+    def collapse(self) -> list[tuple[str, str, float]]:
         """
         Observe the system. Collapse wavefunctions and return valid paths.
         Returns list of (id, content, confidence).

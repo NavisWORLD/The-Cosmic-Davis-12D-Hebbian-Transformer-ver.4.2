@@ -11,7 +11,7 @@ import subprocess
 import platform
 import os
 import shutil
-from typing import Dict, Any, List, Optional, Tuple
+from typing import   Optional, Tuple
 from dataclasses import dataclass
 from pathlib import Path, PureWindowsPath, PurePosixPath
 from enum import Enum
@@ -35,7 +35,7 @@ class WSLInfo:
     is_available: bool = False
     version: int = 0  # WSL 1 or 2
     default_distro: str = ""
-    installed_distros: List[str] = None
+    installed_distros: list[str] = None
     is_wsl_environment: bool = False  # Running inside WSL
 
     def __post_init__(self):
@@ -150,7 +150,7 @@ class WSLBridge:
 
         return info
 
-    def _parse_distro_list(self, output: str) -> List[str]:
+    def _parse_distro_list(self, output: str) -> list[str]:
         """Parse WSL distribution list output."""
         distros = []
 
@@ -239,7 +239,7 @@ class WSLBridge:
         command: str,
         distro: Optional[str] = None,
         working_dir: Optional[str] = None,
-        env: Optional[Dict[str, str]] = None,
+        env: Optional[dict[str, str]] = None,
         timeout: int = 60,
         shell: bool = True,
     ) -> CommandResult:
@@ -492,7 +492,7 @@ class WSLBridge:
 
     # ========== Utility Functions ==========
 
-    async def get_linux_info(self, distro: Optional[str] = None) -> Dict[str, Any]:
+    async def get_linux_info(self, distro: Optional[str] = None) -> dict:
         """Get information about the Linux environment."""
         info = {}
 
@@ -536,7 +536,7 @@ def is_wsl_available() -> bool:
     return wsl_bridge.info.is_available
 
 
-def get_wsl_distros() -> List[str]:
+def get_wsl_distros() -> list[str]:
     """Get installed WSL distributions."""
     return wsl_bridge.info.installed_distros
 

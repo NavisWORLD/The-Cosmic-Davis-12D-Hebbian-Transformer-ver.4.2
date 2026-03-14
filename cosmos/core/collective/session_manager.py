@@ -16,7 +16,7 @@ import asyncio
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Optional, Any
+from typing import   Optional
 from loguru import logger
 
 from .deliberation import DeliberationRoom, DeliberationResult, get_deliberation_room
@@ -26,7 +26,7 @@ _dynamic_limits_loaded = False
 _session_limits_cache = {}
 
 
-def _get_dynamic_session_config(session_type: str) -> Dict[str, Any]:
+def _get_dynamic_session_config(session_type: str) -> dict:
     """
     AGI v1.8: Get session configuration from dynamic limits.
 
@@ -68,7 +68,7 @@ def _get_dynamic_session_config(session_type: str) -> Dict[str, Any]:
 @dataclass
 class CollectiveConfig:
     """Configuration for a collective session."""
-    agents: List[str]
+    agents: list[str]
     deliberation_rounds: int = 2
     tool_awareness: bool = True
     max_tokens: int = 5000
@@ -91,7 +91,7 @@ class CollectiveSession:
     last_active: datetime
     deliberation_count: int = 0
     total_turns: int = 0
-    history: List[DeliberationResult] = field(default_factory=list)
+    history: list[DeliberationResult] = field(default_factory=list)
 
     def record_deliberation(self, result: DeliberationResult):
         """Record a completed deliberation."""
@@ -170,7 +170,7 @@ class CollectiveSessionManager:
     # Legacy DEFAULT_CONFIGS for backward compatibility
     # These are now dynamically generated
     @property
-    def DEFAULT_CONFIGS(self) -> Dict[str, "CollectiveConfig"]:
+    def DEFAULT_CONFIGS(self) -> dict[str, "CollectiveConfig"]:
         """Dynamic configs - rebuilds on each access to pick up limit changes."""
         return {
             session_type: self._build_config(session_type)
@@ -178,7 +178,7 @@ class CollectiveSessionManager:
         }
 
     def __init__(self):
-        self.sessions: Dict[str, CollectiveSession] = {}
+        self.sessions: dict[str, CollectiveSession] = {}
         self._deliberation_room = get_deliberation_room()
         self._lock = asyncio.Lock()
         self._agents_initialized = False
@@ -245,7 +245,7 @@ class CollectiveSessionManager:
         self,
         session_type: str,
         prompt: str,
-        context: Dict[str, Any] = None,
+        context: dict = None,
         session_id: str = None,
     ) -> DeliberationResult:
         """
@@ -305,12 +305,12 @@ class CollectiveSessionManager:
         self,
         session_type: str,
         prompt: str,
-        context: Dict[str, Any] = None,
-    ) -> Dict[str, Any]:
+        context: dict = None,
+    ) -> dict:
         """
         Run deliberation and handle tool decisions.
 
-        Returns both the response and any tool decisions made by the collective.
+        Returns both the response and dict tool decisions made by the collective.
 
         Args:
             session_type: Type of session
@@ -318,7 +318,7 @@ class CollectiveSessionManager:
             context: Optional context
 
         Returns:
-            Dict with 'response', 'tool_decision', 'deliberation_summary', etc.
+            dict with 'response', 'tool_decision', 'deliberation_summary', etc.
         """
         result = await self.deliberate_in_session(session_type, prompt, context)
 
@@ -337,7 +337,7 @@ class CollectiveSessionManager:
             "vote_breakdown": result.vote_breakdown,
         }
 
-    def get_session_stats(self, session_id: str = None) -> Dict[str, Any]:
+    def get_session_stats(self, session_id: str = None) -> dict:
         """Get statistics for a session or all sessions."""
         if session_id:
             session = self.sessions.get(session_id)
@@ -395,19 +395,19 @@ def get_session_manager() -> CollectiveSessionManager:
     return _session_manager
 
 
-async def website_deliberate(prompt: str, context: Dict = None) -> DeliberationResult:
+async def website_deliberate(prompt: str, context: dict = None) -> DeliberationResult:
     """Quick helper for website chat deliberation."""
     manager = get_session_manager()
     return await manager.deliberate_in_session("website_chat", prompt, context)
 
 
-async def grok_thread_deliberate(prompt: str, context: Dict = None) -> DeliberationResult:
+async def grok_thread_deliberate(prompt: str, context: dict = None) -> DeliberationResult:
     """Quick helper for Grok thread deliberation."""
     manager = get_session_manager()
     return await manager.deliberate_in_session("grok_thread", prompt, context)
 
 
-async def autonomous_deliberate(prompt: str, context: Dict = None) -> DeliberationResult:
+async def autonomous_deliberate(prompt: str, context: dict = None) -> DeliberationResult:
     """Quick helper for autonomous task deliberation."""
     manager = get_session_manager()
     return await manager.deliberate_in_session("autonomous_task", prompt, context)

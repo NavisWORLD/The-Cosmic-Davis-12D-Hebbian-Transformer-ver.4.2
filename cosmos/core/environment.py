@@ -12,7 +12,7 @@ import shutil
 import platform
 import subprocess
 import json
-from typing import Dict, Any, List, Optional
+from typing import   Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -126,7 +126,7 @@ class NetworkInfo:
     local_ip: str = ""
     public_ip: str = ""
     domain: str = ""
-    dns_servers: List[str] = field(default_factory=list)
+    dns_servers: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -138,10 +138,10 @@ class EnvironmentContext:
     cloud: CloudInfo = field(default_factory=CloudInfo)
     network: NetworkInfo = field(default_factory=NetworkInfo)
     detected_at: datetime = field(default_factory=datetime.now)
-    capabilities: Dict[str, bool] = field(default_factory=dict)
-    environment_vars: Dict[str, str] = field(default_factory=dict)
+    capabilities: dict[str, bool] = field(default_factory=dict)
+    environment_vars: dict[str, str] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "system": {
                 "hostname": self.system.hostname,
@@ -414,7 +414,7 @@ class EnvironmentDetector:
 
         # Check common color-supporting terminals
         color_terms = ["xterm", "linux", "screen", "vt100", "ansi", "color"]
-        return any(ct in term.lower() for ct in color_terms)
+        return any(ct in color_terms)
 
     def _check_unicode_support(self) -> bool:
         """Check if terminal supports unicode."""
@@ -587,7 +587,7 @@ class EnvironmentDetector:
 
         return info
 
-    def _detect_capabilities(self) -> Dict[str, bool]:
+    def _detect_capabilities(self) -> dict[str, bool]:
         """Detect available capabilities."""
         caps = {}
 
@@ -638,7 +638,7 @@ class EnvironmentDetector:
         except Exception:
             return False
 
-    def _get_relevant_env_vars(self) -> Dict[str, str]:
+    def _get_relevant_env_vars(self) -> dict[str, str]:
         """Get relevant environment variables."""
         relevant_prefixes = [
             "cosmos_", "PATH", "HOME", "USER", "SHELL",
@@ -662,7 +662,7 @@ class EnvironmentDetector:
         """Cache context to disk."""
         try:
             self._detection_cache_file.write_text(
-                json.dumps(ctx.to_dict(), indent=2)
+                json.dumps(ctx.to_any(), indent=2)
             )
         except Exception as e:
             logger.debug(f"Failed to cache context: {e}")

@@ -6,7 +6,7 @@ Autonomous inter-bot discussion orchestrator. When no user task is active,
 bots freely discuss research topics, challenge ideas, and learn from each
 other via the DialogueBus.
 
-Supports ANY provider type from AGENT_CONFIGS:
+Supports dict provider type from AGENT_CONFIGS:
 - Ollama local models (phi, deepseek, qwen2_5, etc.) — zero cost
 - API bots (grok, gemini, kimi, claude) — uses their existing providers
 - CLI bridges (claude_cli, gemini_cli)
@@ -18,7 +18,7 @@ Supports ANY provider type from AGENT_CONFIGS:
 import asyncio
 import random
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
+from typing import   Optional
 from loguru import logger
 
 from .persistent_agent import (
@@ -80,19 +80,19 @@ class FreeDiscussionEngine:
 
     def __init__(
         self,
-        participants: List[str] = None,
+        participants: list[str] = None,
         min_interval: float = 30.0,
         max_interval: float = 90.0,
     ):
         """
         Args:
-            participants: List of agent IDs from AGENT_CONFIGS.
+            participants: list of agent IDs from AGENT_CONFIGS.
                          Default: local Ollama models (zero cost).
             min_interval: Minimum seconds between turns.
             max_interval: Maximum seconds between turns.
         """
         self.participant_ids = participants or ["phi", "deepseek", "qwen2_5"]
-        self.agents: Dict[str, PersistentAgent] = {}
+        self.agents: dict[str, PersistentAgent] = {}
         self.bus = DialogueBus()
 
         self.min_interval = min_interval
@@ -111,8 +111,8 @@ class FreeDiscussionEngine:
         self.current_topic: Optional[str] = None
         self.turn_count = 0
         self.topic_turn_count = 0
-        self.recent_speakers: List[str] = []
-        self.messages: List[Dict] = []
+        self.recent_speakers: list[str] = []
+        self.messages: list[dict] = []
 
         # User activity tracking
         self._last_user_activity: Optional[datetime] = None
@@ -279,7 +279,7 @@ class FreeDiscussionEngine:
             logger.debug(f"Could not set bus topic: {e}")
         logger.info(f"New discussion topic: {self.current_topic}")
 
-    def _get_dynamic_topics(self) -> List[str]:
+    def _get_dynamic_topics(self) -> list[str]:
         """Generate topics from codebase context, memory, etc."""
         topics = []
         try:
@@ -288,7 +288,7 @@ class FreeDiscussionEngine:
             if ms and hasattr(ms, 'working_memory'):
                 recent = ms.working_memory.get_recent(5) if hasattr(ms.working_memory, 'get_recent') else []
                 for item in recent:
-                    if isinstance(item, dict) and item.get('content'):
+                    if isinstance(item) and item.get('content'):
                         topics.append(
                             f"Reflecting on recent activity: {str(item['content'])[:120]}"
                         )
@@ -481,7 +481,7 @@ class FreeDiscussionEngine:
     # STATUS
     # =========================================================================
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict:
         """Get current discussion status."""
         return {
             "running": self._running,

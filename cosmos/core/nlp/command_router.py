@@ -5,7 +5,7 @@ Routes parsed intents to appropriate handlers.
 """
 
 import logging
-from typing import Dict, Any, Optional, Callable
+from typing import  Optional, Callable
 from dataclasses import dataclass
 
 from .intent_parser import IntentParser, Intent
@@ -22,7 +22,7 @@ class CommandResult:
     task_type: TaskType
     handler: str
     response: str
-    data: Dict[str, Any] = None
+    data: dict = None
     error: Optional[str] = None
 
 
@@ -55,7 +55,7 @@ class CommandRouter:
             command: User's natural language command
 
         Returns:
-            CommandResult with response and any data
+            CommandResult with response and dict data
         """
         try:
             # Parse intent
@@ -96,7 +96,7 @@ class CommandRouter:
         intent: Intent,
         classification: Classification,
         entities
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """Route to the appropriate handler based on classification."""
 
         task_type = classification.task_type
@@ -155,7 +155,7 @@ class CommandRouter:
                 return None
         return self._bankr_polymarket
 
-    async def _handle_trade(self, intent: Intent, entities) -> Dict:
+    async def _handle_trade(self, intent: Intent, entities) -> dict:
         """Handle trading commands via Bankr."""
         trading = await self._get_bankr_trading()
 
@@ -192,7 +192,7 @@ class CommandRouter:
                 "response": f"Trade error: {str(e)}",
             }
 
-    async def _handle_crypto(self, intent: Intent, entities) -> Dict:
+    async def _handle_crypto(self, intent: Intent, entities) -> dict:
         """Handle crypto queries via Bankr."""
         try:
             from Cosmos.integration.bankr import get_bankr_client
@@ -238,7 +238,7 @@ class CommandRouter:
                 "response": f"Crypto query error: {str(e)}",
             }
 
-    async def _handle_prediction(self, intent: Intent, entities) -> Dict:
+    async def _handle_prediction(self, intent: Intent, entities) -> dict:
         """Handle Polymarket predictions via Bankr."""
         polymarket = await self._get_bankr_polymarket()
 
@@ -285,7 +285,7 @@ class CommandRouter:
                 "response": f"Prediction error: {str(e)}",
             }
 
-    async def _handle_code(self, intent: Intent, entities) -> Dict:
+    async def _handle_code(self, intent: Intent, entities) -> dict:
         """Handle code generation via evolution loop."""
         try:
             # Try to add to evolution loop
@@ -310,7 +310,7 @@ class CommandRouter:
             "response": f"I understand you want me to {intent.action} {intent.target}. Let me work on that.",
         }
 
-    async def _handle_automation(self, intent: Intent, entities) -> Dict:
+    async def _handle_automation(self, intent: Intent, entities) -> dict:
         """Handle browser automation."""
         try:
             from Cosmos.agents.browser import get_browser_agent
@@ -332,7 +332,7 @@ class CommandRouter:
             "response": "Browser automation module not installed.",
         }
 
-    async def _handle_research(self, intent: Intent, entities) -> Dict:
+    async def _handle_research(self, intent: Intent, entities) -> dict:
         """Handle research queries."""
         # Route to swarm for research
         try:
@@ -356,14 +356,14 @@ class CommandRouter:
             "response": f"Researching: {intent.target}",
         }
 
-    async def _handle_communication(self, intent: Intent, entities) -> Dict:
+    async def _handle_communication(self, intent: Intent, entities) -> dict:
         """Handle communication tasks."""
         return {
             "success": True,
             "response": f"I'll help you {intent.action}: {intent.target}",
         }
 
-    async def _handle_general(self, intent: Intent, entities) -> Dict:
+    async def _handle_general(self, intent: Intent, entities) -> dict:
         """Handle general/unknown commands."""
         return {
             "success": True,

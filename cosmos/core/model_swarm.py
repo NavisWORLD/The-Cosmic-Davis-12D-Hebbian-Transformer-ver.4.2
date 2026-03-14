@@ -18,7 +18,7 @@ import asyncio
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Optional, Any, Callable
+from typing import Optional, Callable
 import random
 import math
 import json
@@ -309,11 +309,11 @@ class ModelSwarm:
         self.analyzer = QueryAnalyzer()
 
         # Backend references (set by external code)
-        self.backends: dict[str, Any] = {}
+        self.backends: dict = {}
 
         # Statistics
         self.total_queries = 0
-        self.strategy_stats: dict[str, dict] = defaultdict(lambda: {"count": 0, "success": 0, "latency": []})
+        self.strategy_stats: dict = defaultdict(lambda: {"count": 0, "success": 0, "latency": []})
 
         # Initialize with default models if provided
         if models:
@@ -323,7 +323,7 @@ class ModelSwarm:
     def register_model(
         self,
         config: dict,
-        backend: Optional[Any] = None,
+        backend: Optional[dict] = None,
     ) -> ModelParticle:
         """Register a model in the swarm."""
         model_id = config.get("id", config.get("name", f"model_{len(self.particles)}"))
@@ -366,7 +366,7 @@ class ModelSwarm:
         logger.info(f"Registered model {model_id} with role {role.value}")
         return particle
 
-    def set_backend(self, model_id: str, backend: Any):
+    def set_backend(self, model_id: str, backend: dict):
         """Set backend for a registered model."""
         self.backends[model_id] = backend
 

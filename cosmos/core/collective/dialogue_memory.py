@@ -18,7 +18,7 @@ import asyncio
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import   Optional
 from loguru import logger
 
 from .deliberation import AgentTurn, DeliberationResult, DeliberationRound
@@ -34,16 +34,16 @@ class DeliberationExchange:
     exchange_id: str
     timestamp: str
     prompt: str
-    participating_agents: List[str]
-    rounds: Dict[str, List[Dict]]  # Serialized AgentTurn dicts
+    participating_agents: list[str]
+    rounds: dict[str, list[dict]]  # Serialized AgentTurn dicts
     final_response: str
     winning_agent: str
-    vote_breakdown: Dict[str, float]
+    vote_breakdown: dict[str, float]
     tool_used: Optional[str] = None
     consensus_reached: bool = False
     duration_ms: float = 0
     session_type: Optional[str] = None  # website_chat, grok_thread, etc.
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
 
 class DialogueMemory:
@@ -67,8 +67,8 @@ class DialogueMemory:
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
         # In-memory caches
-        self._exchanges: List[DeliberationExchange] = []
-        self._agent_stats: Dict[str, Dict[str, Any]] = {}
+        self._exchanges: list[DeliberationExchange] = []
+        self._agent_stats: dict[str, dict] = {}
 
         # Load existing data
         self._load_state()
@@ -281,7 +281,7 @@ CONSENSUS: {'Yes' if exchange.consensus_reached else 'No'}
         self,
         limit: int = 10,
         session_type: str = None
-    ) -> List[DeliberationExchange]:
+    ) -> list[DeliberationExchange]:
         """
         Get recent deliberation exchanges.
 
@@ -290,7 +290,7 @@ CONSENSUS: {'Yes' if exchange.consensus_reached else 'No'}
             session_type: Filter by session type
 
         Returns:
-            List of recent exchanges
+            list of recent exchanges
         """
         exchanges = self._exchanges
 
@@ -303,7 +303,7 @@ CONSENSUS: {'Yes' if exchange.consensus_reached else 'No'}
         self,
         agent_id: str,
         limit: int = 20
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict]:
         """
         Get all contributions from a specific agent.
 
@@ -312,7 +312,7 @@ CONSENSUS: {'Yes' if exchange.consensus_reached else 'No'}
             limit: Maximum number of turns to return
 
         Returns:
-            List of agent turns with context
+            list of agent turns with context
         """
         history = []
 
@@ -391,7 +391,7 @@ CONSENSUS: {'Yes' if exchange.consensus_reached else 'No'}
 
         return "\n".join(context_parts) if context_parts else ""
 
-    async def get_consensus_patterns(self) -> Dict[str, Any]:
+    async def get_consensus_patterns(self) -> dict:
         """
         Analyze consensus patterns from past deliberations.
 
@@ -424,7 +424,7 @@ CONSENSUS: {'Yes' if exchange.consensus_reached else 'No'}
             }
         }
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get overall dialogue memory statistics."""
         return {
             "total_exchanges": len(self._exchanges),

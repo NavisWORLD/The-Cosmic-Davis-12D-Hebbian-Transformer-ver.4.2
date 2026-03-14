@@ -6,7 +6,7 @@ Classifies parsed intents into task categories for routing.
 
 import logging
 from enum import Enum, auto
-from typing import Dict, List, Set, Callable, Any
+from typing import   Set, Callable
 from dataclasses import dataclass
 
 from .intent_parser import Intent
@@ -45,7 +45,7 @@ class TaskType(Enum):
 
 
 # Keywords that map to task types
-CATEGORY_KEYWORDS: Dict[TaskType, List[str]] = {
+CATEGORY_KEYWORDS: dict[TaskType[str]] = {
     TaskType.CODE: [
         "write", "build", "create", "implement", "code", "make",
         "add", "modify", "update", "develop", "program"
@@ -119,7 +119,7 @@ class TaskClassifier:
 
     def __init__(self):
         # Build reverse lookup for keywords
-        self._keyword_to_type: Dict[str, TaskType] = {}
+        self._keyword_to_type: dict[str, TaskType] = {}
         for task_type, keywords in CATEGORY_KEYWORDS.items():
             for keyword in keywords:
                 self._keyword_to_type[keyword.lower()] = task_type

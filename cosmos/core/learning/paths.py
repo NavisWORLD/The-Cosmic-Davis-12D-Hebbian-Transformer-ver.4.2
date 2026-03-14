@@ -13,7 +13,7 @@ Features:
 import math
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import List, Dict, Optional
+, Optional
 from loguru import logger
 
 @dataclass
@@ -34,7 +34,7 @@ class SkillNode:
     name: str
     description: str
     level: int = 0          # 0=Novice, 5=Master
-    prerequisites: List[str] = field(default_factory=list)
+    prerequisites: list[str] = field(default_factory=list)
     progress: float = 0.0   # 0 to 1.0
 
 class SpacedRepetitionSystem:
@@ -67,17 +67,17 @@ class SpacedRepetitionSystem:
 
 class LearningPathManager:
     def __init__(self):
-        self.skills: Dict[str, SkillNode] = {}
-        self.cards: List[Flashcard] = []
+        self.skills: dict[str, SkillNode] = {}
+        self.cards: list[Flashcard] = []
         self.srs = SpacedRepetitionSystem()
 
-    def add_skill(self, name: str, description: str, prerequisites: List[str] = []) -> SkillNode:
+    def add_skill(self, name: str, description: str, prerequisites: list[str] = []) -> SkillNode:
         sid = name.lower().replace(" ", "_")
         node = SkillNode(id=sid, name=name, description=description, prerequisites=prerequisites)
         self.skills[sid] = node
         return node
 
-    def suggest_next_step(self) -> List[SkillNode]:
+    def suggest_next_step(self) -> list[SkillNode]:
         """
         Returns skills where prerequisites are met but progress < 100%.
         """
@@ -98,7 +98,7 @@ class LearningPathManager:
         
         return available
 
-    def get_review_queue(self) -> List[Flashcard]:
+    def get_review_queue(self) -> list[Flashcard]:
         """Get cards due for review today."""
         now = datetime.now()
         return [c for c in self.cards if c.next_review <= now]

@@ -21,7 +21,7 @@ import base64
 import os
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, Optional, List, Any
+from typing import  Optional
 from pathlib import Path
 from enum import Enum
 
@@ -59,7 +59,7 @@ class AudioMetadata:
     author_node: str = ""       # Node that generated this audio
     scope: str = "planetary"    # Sharing scope
 
-    def to_dict(self) -> dict:
+    def to_any(self) -> dict:
         return {
             "text_hash": self.text_hash,
             "audio_hash": self.audio_hash,
@@ -72,7 +72,7 @@ class AudioMetadata:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> "AudioMetadata":
+    def from_any(cls, data: dict) -> "AudioMetadata":
         return cls(
             text_hash=data["text_hash"],
             audio_hash=data["audio_hash"],
@@ -111,13 +111,13 @@ class PlanetaryAudioShard:
         self.num_shards = num_shards
 
         # Local metadata index (text_hash -> AudioMetadata)
-        self.local_index: Dict[str, AudioMetadata] = {}
+        self.local_index: dict[str, AudioMetadata] = {}
 
         # Global cache from P2P network (text_hash -> AudioMetadata + peer info)
-        self.global_index: Dict[str, Dict[str, Any]] = {}
+        self.global_index: dict[str[str]] = {}
 
         # Pending audio requests (for P2P fetching)
-        self.pending_requests: Dict[str, asyncio.Future] = {}
+        self.pending_requests: dict[str, asyncio.Future] = {}
 
         # Initialize directories
         self._init_shard_dirs()
@@ -147,7 +147,7 @@ class PlanetaryAudioShard:
                 with open(self.index_path, "r") as f:
                     data = json.load(f)
                     for text_hash, meta_dict in data.get("local", {}).items():
-                        self.local_index[text_hash] = AudioMetadata.from_dict(meta_dict)
+                        self.local_index[text_hash] = AudioMetadata.from_any(meta_dict)
                     logger.info(f"Loaded {len(self.local_index)} cached audio entries")
             except Exception as e:
                 logger.warning(f"Failed to load audio index: {e}")
@@ -156,7 +156,7 @@ class PlanetaryAudioShard:
         """Persist audio index to disk."""
         try:
             data = {
-                "local": {k: v.to_dict() for k, v in self.local_index.items()},
+                "local": {k: v.to_any() for k, v in self.local_index.items()},
                 "node_id": self.node_id,
                 "updated_at": datetime.now().isoformat()
             }
@@ -183,7 +183,7 @@ class PlanetaryAudioShard:
                     # Don't overwrite local entries
                     if text_hash not in self.local_index:
                         self.global_index[text_hash] = {
-                            "metadata": AudioMetadata.from_dict(meta_data),
+                            "metadata": AudioMetadata.from_any(meta_data),
                             "peer_id": peer_id,
                             "received_at": datetime.now().isoformat()
                         }
@@ -307,7 +307,7 @@ class PlanetaryAudioShard:
             # Send via P2P fabric
             message = {
                 "type": "GOSSIP_AUDIO",
-                "metadata": metadata.to_dict(),
+                "metadata": metadata.to_any(),
                 "node_id": self.node_id
             }
 

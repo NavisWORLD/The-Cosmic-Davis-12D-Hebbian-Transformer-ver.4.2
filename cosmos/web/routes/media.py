@@ -6,7 +6,7 @@ Endpoints:
 - GET /api/speak - Retrieve cached audio
 - GET /api/speak/stats - TTS cache statistics
 - POST /api/speak/bot - Generate speech as specific bot
-- GET /api/voices - List available voices
+- GET /api/voices - list available voices
 - GET /api/voices/queue - Speech queue status
 - POST /api/voices/queue/add - Add to speech queue
 - POST /api/voices/queue/complete - Mark speech complete
@@ -273,7 +273,7 @@ async def speak_as_bot(request):
 
 @router.get("/api/voices")
 async def list_voices():
-    """List all available swarm voices."""
+    """list all available swarm voices."""
     s = _get_shared()
     if not s.MULTI_VOICE_AVAILABLE:
         return JSONResponse({

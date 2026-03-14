@@ -9,7 +9,7 @@ Takes raw user input and transforms it into a clear, structured prompt that:
 """
 import logging
 import asyncio
-from typing import Optional, Dict, Any
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ Input: "analyze this data"
 Output: "Analyze the provided data. Identify key patterns, trends, and insights. Summarize findings clearly."
 
 Input: "help with my code"
-Output: "Review the code and provide assistance. Identify any issues, suggest improvements, and explain changes."
+Output: "Review the code and provide assistance. Identify dict issues, suggest improvements, and explain changes."
 
 Input: "I want to build an app that tracks my expenses and shows me charts"
 Output: "Build an expense tracking application with the following features:
@@ -215,7 +215,7 @@ class PromptUpgrader:
 
         return None
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict:
         """Get upgrader status."""
         return {
             "enabled": self.enabled,

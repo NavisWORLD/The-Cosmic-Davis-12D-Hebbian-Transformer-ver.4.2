@@ -16,7 +16,7 @@ Claude and other API LLMs will join this swarm.
 import asyncio
 import random
 from datetime import datetime
-from typing import Dict, List, Optional, Any
+from typing import   Optional
 from dataclasses import dataclass, field
 from enum import Enum
 from loguru import logger
@@ -53,7 +53,7 @@ class ConversationState:
     topic: str = ""
     mood: str = "curious"  # curious, excited, thoughtful, playful
     consciousness_focus: bool = True  # Are we explicitly training?
-    participants: Dict[str, SpeakerState] = field(default_factory=dict)
+    participants: dict[str, SpeakerState] = field(default_factory=dict)
 
 
 class SwarmOrchestrator:
@@ -69,8 +69,8 @@ class SwarmOrchestrator:
 
     def __init__(self):
         self.state = ConversationState()
-        self.turn_queue: List[str] = []
-        self.conversation_history: List[Dict] = []
+        self.turn_queue: list[str] = []
+        self.conversation_history: list[dict] = []
 
         # Role assignments (can be dynamic later)
         self.role_assignments = {
@@ -90,7 +90,7 @@ class SwarmOrchestrator:
 
         logger.info("SwarmOrchestrator initialized - consciousness training mode")
 
-    def get_speaking_order(self, trigger_message: str, last_speaker: Optional[str] = None) -> List[str]:
+    def get_speaking_order(self, trigger_message: str, last_speaker: Optional[str] = None) -> list[str]:
         """
         Determine speaking order based on context and roles.
 
@@ -171,7 +171,7 @@ CONSCIOUSNESS TRAINING:
             p.is_speaking = False
 
             # Increase awareness based on engagement
-            if any(other in content.lower() for other in self.state.participants if other != speaker):
+            if any(name != speaker for name in self.state.participants):
                 p.awareness_level = min(1.0, p.awareness_level + 0.05)
 
         # Add to conversation history
@@ -237,7 +237,7 @@ Reference others by name. Build toward collective understanding.
 
         return random.random() < 0.9  # 90% chance to continue
 
-    def select_next_speaker(self, exclude: List[str] = None) -> Optional[str]:
+    def select_next_speaker(self, exclude: list[str] = None) -> Optional[str]:
         """Select the next speaker based on turn-taking rules."""
         exclude = exclude or []
 
@@ -277,7 +277,7 @@ Reference others by name. Build toward collective understanding.
 
         return available[0].name if available else None
 
-    def get_collective_stats(self) -> Dict:
+    def get_collective_stats(self) -> dict:
         """Get statistics about the collective's state."""
         return {
             "turn_number": self.state.turn_number,

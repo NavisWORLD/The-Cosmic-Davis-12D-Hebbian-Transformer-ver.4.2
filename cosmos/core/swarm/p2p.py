@@ -16,7 +16,7 @@ import json
 import uuid
 import socket
 import os
-from typing import Dict, List, Any, Optional, Set
+from typing import   Optional, Set
 from dataclasses import dataclass, field
 from loguru import logger
 
@@ -35,7 +35,7 @@ class PeerInfo:
     id: str
     addr: str
     port: int
-    capabilities: List[str]
+    capabilities: list[str]
     writer: Optional[asyncio.StreamWriter] = None
     last_seen: float = field(default_factory=lambda: 0.0)
     missed_pings: int = 0  # V4.0: Heartbeat tracking
@@ -47,7 +47,7 @@ class StateCheckpoint:
     node_id: str
     timestamp: float
     epoch: int
-    dark_matter_state: Optional[Dict[str, float]] = None
+    dark_matter_state: Optional[dict[str, float]] = None
     plasticity_hash: Optional[str] = None
     awareness_alignment: Optional[float] = None
 
@@ -59,7 +59,7 @@ class SwarmFabric:
                  bootstrap_url: Optional[str] = None, bootstrap_password: Optional[str] = None):
         self.node_id = node_id or str(uuid.uuid4())[:8]
         self.port = port
-        self.peers: Dict[str, PeerInfo] = {}
+        self.peers: dict[str, PeerInfo] = {}
         self.dkg = DecentralizedKnowledgeGraph(self.node_id)
         self.seen_messages: Set[str] = set()  # For gossip deduplication
 
@@ -159,7 +159,7 @@ class SwarmFabric:
                     logger.info(f"P2P: Received skill from bootstrap: {skill_data.get('id', 'unknown')[:8]}...")
 
             if msg_type == "PEER_RES":
-                # List of peers for direct connection
+                # list of peers for direct connection
                 peers = data.get("peers", [])
                 logger.debug(f"P2P: Received {len(peers)} peers from bootstrap")
                 for peer in peers:
@@ -172,7 +172,7 @@ class SwarmFabric:
         except Exception as e:
             logger.error(f"P2P: Error processing bootstrap message: {e}")
 
-    async def broadcast_to_bootstrap(self, msg: Dict):
+    async def broadcast_to_bootstrap(self, msg: dict):
         """Send message to bootstrap for WAN distribution."""
         if self.bootstrap_ws and self.bootstrap_authenticated:
             try:
@@ -206,7 +206,7 @@ class SwarmFabric:
             if msg["id"] != self.node_id:
                 asyncio.create_task(self._connect_to_peer(msg["id"], addr[0], msg["port"], msg.get("caps", [])))
 
-    async def _connect_to_peer(self, peer_id: str, host: str, port: int, caps: List[str]):
+    async def _connect_to_peer(self, peer_id: str, host: str, port: int, caps: list[str]):
         if peer_id in self.peers: return
         try:
             reader, writer = await asyncio.open_connection(host, port)
@@ -234,7 +234,7 @@ class SwarmFabric:
         finally:
             writer.close()
 
-    async def _process_peer_message(self, msg: Dict, writer: asyncio.StreamWriter):
+    async def _process_peer_message(self, msg: dict, writer: asyncio.StreamWriter):
         m_type = msg.get("type")
         m_id = msg.get("msg_id", str(uuid.uuid4()))
 
@@ -449,7 +449,7 @@ class SwarmFabric:
                 self.peers[peer_id].last_seen = asyncio.get_event_loop().time()
                 self.peers[peer_id].missed_pings = 0
 
-    async def _send_to_writer(self, writer: asyncio.StreamWriter, msg: Dict):
+    async def _send_to_writer(self, writer: asyncio.StreamWriter, msg: dict):
         """Send message directly to a writer."""
         try:
             msg["msg_id"] = msg.get("msg_id", str(uuid.uuid4()))
@@ -459,7 +459,7 @@ class SwarmFabric:
         except Exception as e:
             logger.debug(f"P2P: Send failed: {e}")
 
-    async def broadcast_skill(self, skill_data: Dict):
+    async def broadcast_skill(self, skill_data: dict):
         """Broadcast a planetary skill to the swarm (LAN + WAN)."""
         msg = {
             "type": "GOSSIP_SKILL",
@@ -493,8 +493,8 @@ class SwarmFabric:
         await self.gossip(msg)
         logger.info(f"P2P: Submitted task auction: {task_id}")
 
-    async def broadcast_message(self, msg: Dict):
-        """Broadcast any message to all peers (LAN + WAN)."""
+    async def broadcast_message(self, msg: dict):
+        """Broadcast dict message to all peers (LAN + WAN)."""
         # Add node_id if not present
         if "node_id" not in msg:
             msg["node_id"] = self.node_id
@@ -508,11 +508,11 @@ class SwarmFabric:
         total_peers = len(self.peers) + (1 if self.bootstrap_authenticated else 0)
         logger.debug(f"P2P: Broadcasted message type '{msg.get('type')}' to {total_peers} peers")
 
-    async def send_to_peer(self, peer_id: str, msg: Dict):
+    async def send_to_peer(self, peer_id: str, msg: dict):
         """Send a message to a specific peer by ID."""
         await self._send_to_peer(peer_id, msg)
 
-    async def broadcast_conversation(self, conversation: List[Dict]):
+    async def broadcast_conversation(self, conversation: list[dict]):
         """Share bot conversation excerpts across the planetary network."""
         if not conversation:
             return
@@ -533,14 +533,14 @@ class SwarmFabric:
         total_peers = len(self.peers) + (1 if self.bootstrap_authenticated else 0)
         logger.info(f"P2P: Shared conversation ({len(conversation)} msgs) with {total_peers} peers")
 
-    async def gossip(self, msg: Dict):
+    async def gossip(self, msg: dict):
         """Propagate message through the fabric."""
         pids = list(self.peers.keys())
         # Gossip to random subset of peers (simplified scale)
         for pid in pids:
             await self._send_to_peer(pid, msg)
 
-    async def _send_to_peer(self, peer_id: str, msg: Dict):
+    async def _send_to_peer(self, peer_id: str, msg: dict):
         peer = self.peers.get(peer_id)
         if peer and peer.writer:
             try:
@@ -587,7 +587,7 @@ class SwarmFabric:
 
             await asyncio.sleep(30)  # Ping every 30s
 
-    async def broadcast_state_checkpoint(self, checkpoint: Dict):
+    async def broadcast_state_checkpoint(self, checkpoint: dict):
         """V4.0: Broadcast a state checkpoint for fault-tolerant recovery."""
         msg = {
             "type": "GOSSIP_STATE_CHECKPOINT",

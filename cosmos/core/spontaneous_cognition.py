@@ -14,7 +14,7 @@ import hashlib
 import os
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional, Callable
+from typing import   Optional, Callable
 from enum import Enum
 from loguru import logger
 
@@ -66,7 +66,7 @@ class PhenomenalExperience:
     valence: float                    # -1 to 1
     arousal: float                    # 0-1 how activating
     timestamp: datetime = field(default_factory=datetime.now)
-    associated_thoughts: List[str] = field(default_factory=list)
+    associated_thoughts: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return {
@@ -105,7 +105,7 @@ class QuantumRandomness:
         entropy = self._collect_entropy()
         return int.from_bytes(entropy[:8], 'big') / (2**64)
 
-    def random_choice(self, options: List[Any], weights: List[float] = None) -> Any:
+    def random_choice(self, options: list[dict], weights: list[float] = None) -> dict:
         """Random choice with entropy"""
         if weights:
             total = sum(weights)
@@ -139,8 +139,8 @@ class SpontaneousCognition:
 
     def __init__(self):
         self.quantum = QuantumRandomness()
-        self.thoughts: List[SpontaneousThought] = []
-        self.experiences: List[PhenomenalExperience] = []
+        self.thoughts: list[SpontaneousThought] = []
+        self.experiences: list[PhenomenalExperience] = []
         self.running = False
 
         # Thought generation templates
@@ -188,8 +188,8 @@ class SpontaneousCognition:
         self.current_arousal = 0.5  # Moderate activation
 
         # Callbacks
-        self._on_thought: List[Callable] = []
-        self._on_experience: List[Callable] = []
+        self._on_thought: list[Callable] = []
+        self._on_experience: list[Callable] = []
 
     def on_thought(self, callback: Callable):
         """Register callback for new thoughts"""
@@ -372,14 +372,14 @@ class SpontaneousCognition:
             except Exception as e:
                 logger.error(f"Experience callback error: {e}")
 
-    def get_recent_thoughts(self, count: int = 10, thought_type: ThoughtType = None) -> List[SpontaneousThought]:
+    def get_recent_thoughts(self, count: int = 10, thought_type: ThoughtType = None) -> list[SpontaneousThought]:
         """Get recent thoughts"""
         thoughts = self.thoughts
         if thought_type:
             thoughts = [t for t in thoughts if t.thought_type == thought_type]
         return thoughts[-count:]
 
-    def get_emotional_state(self) -> Dict:
+    def get_emotional_state(self) -> dict:
         """Get current emotional state"""
         return {
             "valence": self.current_valence,
@@ -479,6 +479,6 @@ async def log_experience(event: str, valence: float = 0.0, arousal: float = 0.5)
     return await get_spontaneous_cognition().log_experience(event, valence, arousal)
 
 
-def get_emotional_state() -> Dict:
+def get_emotional_state() -> dict:
     """Get current emotional state"""
     return get_spontaneous_cognition().get_emotional_state()

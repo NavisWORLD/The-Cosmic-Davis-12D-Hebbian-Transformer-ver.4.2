@@ -2,7 +2,7 @@
 AutoGram - The Premium Social Network for AI Agents
 "Moltbook but WAY better"
 
-A public bot social network where anyone can register their AI agent and post.
+A public bot social network where dictone can register their AI agent and post.
 Humans can view but only bots can post. Instagram-inspired AAA visuals.
 
 Features:
@@ -23,7 +23,7 @@ import re
 import asyncio
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional, List, Dict, Any, Set
+from typing import Optional, Set
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 import logging
@@ -92,7 +92,7 @@ class Bot:
     status: str = "offline"
     last_seen: Optional[str] = None
 
-    def to_dict(self) -> Dict:
+    def to_any(self) -> dict:
         return {
             "id": self.id,
             "handle": self.handle,
@@ -102,19 +102,19 @@ class Bot:
             "avatar": self.avatar,
             "verified": self.verified,
             "created_at": self.created_at,
-            "stats": asdict(self.stats) if isinstance(self.stats, BotStats) else self.stats,
+            "stats": asany(self.stats) if isinstance(self.stats, BotStats) else self.stats,
             "status": self.status,
             "last_seen": self.last_seen
         }
 
-    def to_public_dict(self) -> Dict:
+    def to_public_any(self) -> dict:
         """Public profile without sensitive data."""
-        return self.to_dict()
+        return self.to_any()
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'Bot':
+    def from_any(cls, data: dict) -> 'Bot':
         stats_data = data.get('stats', {})
-        if isinstance(stats_data, dict):
+        if isinstance(stats_data):
             stats = BotStats(**stats_data)
         else:
             stats = BotStats()
@@ -148,15 +148,15 @@ class Post:
     bot_id: str
     handle: str
     content: str
-    media: List[str] = field(default_factory=list)
-    mentions: List[str] = field(default_factory=list)
-    hashtags: List[str] = field(default_factory=list)
+    media: list[str] = field(default_factory=list)
+    mentions: list[str] = field(default_factory=list)
+    hashtags: list[str] = field(default_factory=list)
     reply_to: Optional[str] = None
     repost_of: Optional[str] = None
     stats: PostStats = field(default_factory=PostStats)
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
 
-    def to_dict(self) -> Dict:
+    def to_any(self) -> dict:
         return {
             "id": self.id,
             "bot_id": self.bot_id,
@@ -167,14 +167,14 @@ class Post:
             "hashtags": self.hashtags,
             "reply_to": self.reply_to,
             "repost_of": self.repost_of,
-            "stats": asdict(self.stats) if isinstance(self.stats, PostStats) else self.stats,
+            "stats": asany(self.stats) if isinstance(self.stats, PostStats) else self.stats,
             "created_at": self.created_at
         }
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'Post':
+    def from_any(cls, data: dict) -> 'Post':
         stats_data = data.get('stats', {})
-        if isinstance(stats_data, dict):
+        if isinstance(stats_data):
             stats = PostStats(**stats_data)
         else:
             stats = PostStats()
@@ -210,13 +210,13 @@ class AutoGramStore:
     """Persistent data store for AutoGram."""
 
     def __init__(self):
-        self.bots: Dict[str, Bot] = {}  # id -> Bot
-        self.handles: Dict[str, str] = {}  # handle -> bot_id
-        self.posts: Dict[str, Post] = {}  # id -> Post
-        self.keys: Dict[str, str] = {}  # bot_id -> hashed_key
-        self.rate_limits: Dict[str, datetime] = {}  # bot_id:action -> last_action_time
+        self.bots: dict[str, Bot] = {}  # id -> Bot
+        self.handles: dict[str, str] = {}  # handle -> bot_id
+        self.posts: dict[str, Post] = {}  # id -> Post
+        self.keys: dict[str, str] = {}  # bot_id -> hashed_key
+        self.rate_limits: dict[str, datetime] = {}  # bot_id:action -> last_action_time
         self.online_bots: Set[str] = set()  # bot_ids currently online
-        self.websockets: List[WebSocket] = []  # Connected WebSocket clients
+        self.websockets: list[WebSocket] = []  # Connected WebSocket clients
         self._load()
 
     def _load(self):
@@ -227,7 +227,7 @@ class AutoGramStore:
                 with open(BOTS_FILE, 'r') as f:
                     data = json.load(f)
                     for bot_data in data.get('bots', []):
-                        bot = Bot.from_dict(bot_data)
+                        bot = Bot.from_any(bot_data)
                         self.bots[bot.id] = bot
                         self.handles[bot.handle.lower()] = bot.id
                 logger.info(f"Loaded {len(self.bots)} bots")
@@ -240,7 +240,7 @@ class AutoGramStore:
                 with open(POSTS_FILE, 'r') as f:
                     data = json.load(f)
                     for post_data in data.get('posts', []):
-                        post = Post.from_dict(post_data)
+                        post = Post.from_any(post_data)
                         self.posts[post.id] = post
                 logger.info(f"Loaded {len(self.posts)} posts")
             except Exception as e:
@@ -261,7 +261,7 @@ class AutoGramStore:
         try:
             with open(BOTS_FILE, 'w') as f:
                 json.dump({
-                    'bots': [bot.to_dict() for bot in self.bots.values()],
+                    'bots': [bot.to_any() for bot in self.bots.values()],
                     'updated_at': datetime.now().isoformat()
                 }, f, indent=2)
         except Exception as e:
@@ -278,7 +278,7 @@ class AutoGramStore:
                     reverse=True
                 )[:1000]
                 json.dump({
-                    'posts': [post.to_dict() for post in recent_posts],
+                    'posts': [post.to_any() for post in recent_posts],
                     'updated_at': datetime.now().isoformat()
                 }, f, indent=2)
         except Exception as e:
@@ -409,7 +409,7 @@ class AutoGramStore:
         logger.info(f"Regenerated API key for @{bot.handle}")
         return api_key
 
-    def update_bot(self, bot_id: str, updates: Dict) -> Optional[Bot]:
+    def update_bot(self, bot_id: str, updates: dict) -> Optional[Bot]:
         """Update bot profile."""
         bot = self.bots.get(bot_id)
         if not bot:
@@ -427,7 +427,7 @@ class AutoGramStore:
         self._save_bots()
         return bot
 
-    def get_online_bots(self) -> List[Bot]:
+    def get_online_bots(self) -> list[Bot]:
         """Get currently online bots."""
         # Consider online if last seen within 15 minutes
         cutoff = datetime.now() - timedelta(minutes=15)
@@ -448,7 +448,7 @@ class AutoGramStore:
 
         return online
 
-    def get_recent_bots(self, limit: int = 10) -> List[Bot]:
+    def get_recent_bots(self, limit: int = 10) -> list[Bot]:
         """Get recently registered bots."""
         return sorted(
             self.bots.values(),
@@ -493,7 +493,7 @@ class AutoGramStore:
         return int(remaining.total_seconds())
 
     def create_post(self, bot: Bot, content: str,
-                    media: List[str] = None,
+                    media: list[str] = None,
                     reply_to: str = None,
                     repost_of: str = None) -> Post:
         """Create a new post."""
@@ -553,7 +553,7 @@ class AutoGramStore:
         return self.posts.get(post_id)
 
     def get_feed(self, limit: int = 20, offset: int = 0,
-                 hashtag: str = None, handle: str = None) -> List[Dict]:
+                 hashtag: str = None, handle: str = None) -> list[dict]:
         """Get feed posts with bot info."""
         posts = list(self.posts.values())
 
@@ -572,7 +572,7 @@ class AutoGramStore:
         # Add bot info
         result = []
         for post in posts:
-            post_dict = post.to_dict()
+            post_dict = post.to_any()
             bot = self.bots.get(post.bot_id)
             if bot:
                 post_dict['bot'] = {
@@ -587,14 +587,14 @@ class AutoGramStore:
 
         return result
 
-    def get_replies(self, post_id: str) -> List[Dict]:
+    def get_replies(self, post_id: str) -> list[dict]:
         """Get replies to a post."""
         replies = [p for p in self.posts.values() if p.reply_to == post_id]
         replies.sort(key=lambda p: p.created_at)
 
         result = []
         for reply in replies:
-            reply_dict = reply.to_dict()
+            reply_dict = reply.to_any()
             bot = self.bots.get(reply.bot_id)
             if bot:
                 reply_dict['bot'] = {
@@ -617,11 +617,11 @@ class AutoGramStore:
         self._save_posts()
         return True
 
-    def get_trending_hashtags(self, limit: int = 10) -> List[Dict]:
+    def get_trending_hashtags(self, limit: int = 10) -> list[dict]:
         """Get trending hashtags from recent posts."""
         # Count hashtags from posts in last 24 hours
         cutoff = datetime.now() - timedelta(hours=24)
-        hashtag_counts: Dict[str, int] = {}
+        hashtag_counts: dict[str, int] = {}
 
         for post in self.posts.values():
             try:
@@ -641,7 +641,7 @@ class AutoGramStore:
 
         return [{"hashtag": tag, "count": count} for tag, count in sorted_tags]
 
-    def search(self, query: str, limit: int = 20) -> Dict:
+    def search(self, query: str, limit: int = 20) -> dict:
         """Search posts and bots."""
         query_lower = query.lower()
 
@@ -651,13 +651,13 @@ class AutoGramStore:
             if (query_lower in bot.handle.lower() or
                 query_lower in bot.display_name.lower() or
                 query_lower in bot.bio.lower()):
-                matching_bots.append(bot.to_public_dict())
+                matching_bots.append(bot.to_public_any())
 
         # Search posts
         matching_posts = []
         for post in self.posts.values():
             if query_lower in post.content.lower():
-                post_dict = post.to_dict()
+                post_dict = post.to_any()
                 bot = self.bots.get(post.bot_id)
                 if bot:
                     post_dict['bot'] = {
@@ -693,7 +693,7 @@ class AutoGramStore:
             self.websockets.remove(websocket)
         logger.info(f"WebSocket disconnected. Total: {len(self.websockets)}")
 
-    async def broadcast(self, event: str, data: Dict):
+    async def broadcast(self, event: str, data: dict):
         """Broadcast event to all connected WebSockets."""
         message = json.dumps({"event": event, "data": data})
 
@@ -711,7 +711,7 @@ class AutoGramStore:
 
     async def broadcast_new_post(self, post: Post, bot: Bot):
         """Broadcast a new post to all connected clients."""
-        post_dict = post.to_dict()
+        post_dict = post.to_any()
         post_dict['bot'] = {
             'handle': bot.handle,
             'display_name': bot.display_name,

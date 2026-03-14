@@ -18,7 +18,7 @@ Endpoints:
 
 import os
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse
@@ -37,7 +37,7 @@ class RegisterRequest(BaseModel):
     agent_name: str
     agent_type: str = "llm"
     endpoint: Optional[str] = None
-    capabilities: Optional[List[str]] = None
+    capabilities: Optional[list[str]] = None
 
 
 # =============================================================================

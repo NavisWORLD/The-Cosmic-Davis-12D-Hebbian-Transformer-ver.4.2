@@ -11,7 +11,7 @@ UPDATES:
 
 import asyncio
 from pathlib import Path
-from typing import List, Optional, Dict
+, Optional
 from datetime import datetime, timedelta
 from loguru import logger
 
@@ -35,7 +35,7 @@ class FCPEngine:
         self.horizon_file = self.project_root / "HORIZON.md"
         
         # Debouncing State
-        self._last_focus_update: Dict[str, datetime] = {}
+        self._last_focus_update: dict[str, datetime] = {}
         self._update_queue: set[str] = set()
         self._debounce_interval = timedelta(seconds=2.0)
         self._is_projecting = False

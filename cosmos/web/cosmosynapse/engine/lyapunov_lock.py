@@ -22,7 +22,7 @@ Version: 1.0.0 (Class 5 Hard Lock)
 import math
 import time
 from dataclasses import dataclass
-from typing import Dict, Any, Tuple
+from typing import Tuple
 import re
 try:
     from .phi_constants import PHI, PHI_INV, phi_influence_radius
@@ -50,7 +50,7 @@ class LyapunovGatekeeper:
         self.history = []
         self.learning_rate = 0.05  # For dynamic adjustment
         
-    def calculate_informational_mass(self, text: str, physics_state: Dict) -> float:
+    def calculate_informational_mass(self, text: str, physics_state: dict) -> float:
         """
         Calculates the "Gravity" (G) of the interaction.
         G = (EmotionalIntensity * 3) + FactualDensity + VoiceTremor
@@ -128,7 +128,7 @@ class LyapunovGatekeeper:
         return min(100.0, penalty)
 
     def validate_response(self, draft_response: str, 
-                          current_physics: Dict) -> StabilityReport:
+                          current_physics: dict) -> StabilityReport:
         """
         The Main Check. Compares Draft Response to User Physics.
         Returns a StabilityReport.
@@ -183,7 +183,7 @@ class LyapunovGatekeeper:
         If drift exceeds threshold mid-stream, truncates and returns partial output.
 
         Args:
-            tokens: List of token strings to validate.
+            tokens: list of token strings to validate.
             current_physics: Current 12D User Physics state.
             check_every_n: How often to check alignment (default: every 5 tokens).
 

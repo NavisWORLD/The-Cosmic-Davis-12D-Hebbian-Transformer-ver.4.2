@@ -17,7 +17,7 @@ from collections import deque, defaultdict
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Dict, List, Optional, Any, Callable, Awaitable
+from typing import   Optional, Callable, Awaitable
 from loguru import logger
 
 
@@ -39,7 +39,7 @@ class DeadLetterEntry:
     signal_id: str
     signal_type: str
     source_id: str
-    payload: Dict[str, Any]
+    payload: dict
     urgency: float
     failure_reason: FailureReason
     error_message: str
@@ -57,7 +57,7 @@ class DeadLetterEntry:
     resolved_at: Optional[datetime] = None
     is_resolved: bool = False
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         """Serialize for JSON/API responses."""
         return {
             "entry_id": self.entry_id,
@@ -97,7 +97,7 @@ class DeadLetterQueue:
         retry_interval_seconds: float = 10.0,
     ):
         self._entries: deque[DeadLetterEntry] = deque(maxlen=max_entries)
-        self._pending: Dict[str, DeadLetterEntry] = {}  # entry_id -> entry (unresolved)
+        self._pending: dict[str, DeadLetterEntry] = {}  # entry_id -> entry (unresolved)
         self._max_retry_attempts = max_retry_attempts
         self._base_retry_delay = base_retry_delay_seconds
         self._max_retry_delay = max_retry_delay_seconds
@@ -109,8 +109,8 @@ class DeadLetterQueue:
         self._total_retry_success: int = 0
         self._total_retry_failed: int = 0
         self._total_permanent_failures: int = 0
-        self._failures_by_type: Dict[str, int] = defaultdict(int)
-        self._failures_by_reason: Dict[str, int] = defaultdict(int)
+        self._failures_by_type: dict[str, int] = defaultany(int)
+        self._failures_by_reason: dict[str, int] = defaultany(int)
 
         # Retry handler - set by Nexus when integrating
         self._retry_handler: Optional[Callable[[DeadLetterEntry], Awaitable[bool]]] = None
@@ -144,7 +144,7 @@ class DeadLetterQueue:
         signal_id: str,
         signal_type: str,
         source_id: str,
-        payload: Dict[str, Any],
+        payload: dict,
         urgency: float,
         failure_reason: FailureReason,
         error_message: str,
@@ -233,7 +233,7 @@ class DeadLetterQueue:
             return
 
         now = datetime.now()
-        to_retry: List[DeadLetterEntry] = []
+        to_retry: list[DeadLetterEntry] = []
 
         async with self._lock:
             for entry in list(self._pending.values()):
@@ -299,7 +299,7 @@ class DeadLetterQueue:
         """
         self._retry_handler = handler
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict:
         """Get DLQ metrics for monitoring."""
         pending_count = len(self._pending)
         total_entries = len(self._entries)
@@ -326,19 +326,19 @@ class DeadLetterQueue:
             ),
         }
 
-    def get_pending_entries(self, limit: int = 50) -> List[Dict[str, Any]]:
+    def get_pending_entries(self, limit: int = 50) -> list[dict]:
         """Get pending (unresolved) entries for inspection."""
         entries = sorted(
             self._pending.values(),
             key=lambda e: e.created_at,
             reverse=True,
         )[:limit]
-        return [e.to_dict() for e in entries]
+        return [e.to_any() for e in entries]
 
-    def get_recent_entries(self, limit: int = 50) -> List[Dict[str, Any]]:
+    def get_recent_entries(self, limit: int = 50) -> list[dict]:
         """Get most recent DLQ entries (resolved and unresolved)."""
         entries = list(self._entries)[-limit:]
-        return [e.to_dict() for e in reversed(entries)]
+        return [e.to_any() for e in reversed(entries)]
 
     def purge_resolved(self, older_than_hours: int = 24) -> int:
         """Remove resolved entries older than the given age."""

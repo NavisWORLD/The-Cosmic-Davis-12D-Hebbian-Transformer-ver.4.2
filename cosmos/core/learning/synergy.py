@@ -13,7 +13,6 @@ Functionality:
 """
 
 import asyncio
-from typing import Dict, Any, List
 from loguru import logger
 
 from Cosmos.core.nexus import nexus, Signal, SignalType
@@ -54,10 +53,10 @@ class SynergyEngine:
         task_title = signal.payload.get("title", "")
         
         # Heuristic Skill Identification
-        if any(w in task_title.lower() for w in ["fix", "bug", "issue", "error"]):
+        if any(w in ["fix", "bug", "issue", "error"]):
             learning_copilot.add_skill("Debugging", "Resolving code anomalies")
             # In real system: update progress
-        elif any(w in task_title.lower() for w in ["implement", "add", "feature"]):
+        elif any(w in ["implement", "add", "feature"]):
             learning_copilot.add_skill("Software Engineering", "Building complex systems")
 
     async def _handle_user_context(self, signal: Signal):

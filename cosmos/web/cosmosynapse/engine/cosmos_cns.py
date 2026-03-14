@@ -4,7 +4,7 @@ import asyncio
 import threading
 import numpy as np
 from enum import Enum
-from typing import List, Dict, Any, Optional
+from typing import Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -23,6 +23,8 @@ try:
     from .lyapunov_lock import LyapunovGatekeeper
     from .cosmos_swarm_orchestrator import CosmosSwarmOrchestrator
     from .synaptic_field import SynapticField, CNSEvent, EventType
+    from .architecture_prober import ArchitectureProber
+    from .meta_cognition import MetaCognition
 except ImportError:
     # Fallback for direct execution
     from lyapunov_lock import LyapunovGatekeeper
@@ -96,6 +98,8 @@ class CosmosCNS:
         self.server = server_interface
         self.orchestrator = orchestrator or CosmosSwarmOrchestrator()
         self.lock = LyapunovGatekeeper()
+        self.prober = ArchitectureProber(synaptic_field=self.field)
+        self.meta = MetaCognition(cns_instance=self)
         
         # Async Event Queue
         self._event_queue: Optional[asyncio.Queue] = None
@@ -124,7 +128,9 @@ class CosmosCNS:
         try:
             from cosmos.core.quantum_bridge import get_quantum_bridge
             self.quantum = get_quantum_bridge()
-            logger.info("⚛️ Quantum Bridge Connected.")
+            if self.quantum and self.field:
+                self.quantum.set_synaptic_field(self.field)
+            logger.info("⚛️ Quantum Bridge Connected & Linked to Synaptic Field.")
         except ImportError:
             logger.warning("Quantum Bridge not found. Falling back to classical entropy.")
             
@@ -139,6 +145,7 @@ class CosmosCNS:
             self.plasticity = SwarmPlasticity()
             # Pass the instance if available
             if self.field:
+                self.orchestrator.set_synaptic_field(self.field)
                 self.awareness = SwarmAwareness(
                     synaptic_field=self.field,
                     plasticity=self.plasticity,
@@ -152,8 +159,8 @@ class CosmosCNS:
     # EVENT INJECTION & KINEMATICS
     # ════════════════════════════════════════════════════════
 
-    def push_event(self, event_type, payload: Dict = None):
-        """Push an event to the CNS queue from any sensor/source."""
+    def push_event(self, event_type, payload: dict = None):
+        """Push an event to the CNS queue from dict sensor/source."""
         if self._event_queue and self._loop:
             # Reconstruct class dynamically if needed
             if "CNSEvent" in globals():
@@ -191,10 +198,11 @@ class CosmosCNS:
     # SYNTHESIS
     # ════════════════════════════════════════════════════════
 
-    async def synthesize(self, user_input: str, thoughts: List[Dict], physics: Dict, temporal_context: str) -> str:
+    async def synthesize(self, user_input: str, thoughts: list[dict], physics: dict, temporal_context: str) -> str:
         """
         Produce a response filtered through the 12D swarm state and Lyapunov checks.
         """
+        start_time_all = time.time()
         try:
             # 1. Apply Kinematic updates before synthesis
             self._apply_physics_tick()
@@ -215,6 +223,8 @@ class CosmosCNS:
             report = self.lock.validate_response(response, physics)
             
             if report.is_stable:
+                 if self.meta:
+                     self.meta.record_interaction(time.time() - start_time_all)
                  return response
             else:
                  logger.warning(f"⛔ Lyapunov Reject in Cosmos Ego: {report.rejection_reason}")
@@ -270,7 +280,30 @@ class CosmosCNS:
                     payload={"tick": tick_count}
                 ))
             
+            # Architecture Prober Tick (Every 5 seconds @ 10Hz = 50 ticks)
+            if tick_count % 50 == 0:
+                self._run_architecture_probe()
+            
             await asyncio.sleep(0.1)
+
+    def _run_architecture_probe(self):
+        """Analyze system health and adjust 12D structure."""
+        if not self.prober: return
+        
+        metrics = {
+            "lyapunov_drift": getattr(self.lock, 'drift', 0.1),
+            "quantum_entropy": 0.5,
+            "swarm_coherence": 0.8, # Default baseline
+            "error_rate": 0.0
+        }
+        
+        if self.quantum:
+            metrics["quantum_entropy"] = self.quantum.get_entropy({})
+            
+        if self.orchestrator:
+             metrics["swarm_coherence"] = getattr(self.orchestrator, '_last_swarm_coherence', 0.8)
+             
+        self.prober.probe(metrics)
 
     async def _async_life_loop(self):
         """Awaits physical triggers and sensor events."""
@@ -336,7 +369,7 @@ class CosmosCNS:
                 self.field.last_user_input = user_input
                 self.field.update_physics(user_physics)
 
-    async def process_user_input(self, user_input: str, user_physics: Dict):
+    async def process_user_input(self, user_input: str, user_physics: dict):
         """Direct entry point for reactive speech synthesis."""
         if self.field:
             self.field.last_user_input = user_input

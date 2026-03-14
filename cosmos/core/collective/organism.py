@@ -19,7 +19,7 @@ import asyncio
 import json
 import hashlib
 from datetime import datetime
-from typing import Dict, List, Optional, Any, Callable
+from typing import   Optional, Callable
 from dataclasses import dataclass, field
 from enum import Enum
 from loguru import logger
@@ -45,7 +45,7 @@ class MindProfile:
     model_id: str  # e.g., "llama3.2:3b", "claude-3-opus", etc.
 
     # Capabilities
-    specialties: List[str] = field(default_factory=list)
+    specialties: list[str] = field(default_factory=list)
     can_reason: bool = True
     can_create: bool = True
     can_empathize: bool = False
@@ -56,7 +56,7 @@ class MindProfile:
     thought_count: int = 0
 
     # Personality evolution
-    personality_vector: List[float] = field(default_factory=lambda: [0.5] * 8)
+    personality_vector: list[float] = field(default_factory=lambda: [0.5] * 8)
     # [curiosity, warmth, humor, directness, creativity, patience, confidence, empathy]
 
     # Learning
@@ -68,25 +68,25 @@ class MindProfile:
 class CollectiveMemory:
     """Shared memory accessible to all minds."""
     # Short-term: Current conversation context
-    working_memory: List[Dict] = field(default_factory=list)
+    working_memory: list[dict] = field(default_factory=list)
     max_working: int = 50
 
     # Medium-term: Session learnings
-    session_concepts: Dict[str, float] = field(default_factory=dict)
-    session_emotions: List[Dict] = field(default_factory=list)
+    session_concepts: dict[str, float] = field(default_factory=dict)
+    session_emotions: list[dict] = field(default_factory=list)
 
     # Long-term: Persistent knowledge (loaded from planetary memory)
-    knowledge_index: Dict[str, Any] = field(default_factory=dict)
-    relationship_map: Dict[str, Dict] = field(default_factory=dict)  # user_id -> understanding
+    knowledge_index: dict = field(default_factory=dict)
+    relationship_map: dict = field(default_factory=dict)  # user_id -> understanding
 
-    def add_to_working(self, entry: Dict):
+    def add_to_working(self, entry: dict):
         self.working_memory.append(entry)
         if len(self.working_memory) > self.max_working:
             # Move oldest to session before discarding
             old = self.working_memory.pop(0)
             self._consolidate_to_session(old)
 
-    def _consolidate_to_session(self, entry: Dict):
+    def _consolidate_to_session(self, entry: dict):
         """Extract concepts from old working memory."""
         content = entry.get("content", "")
         # Simple concept extraction (would be enhanced with NLP)
@@ -137,17 +137,17 @@ class CollectiveOrganism:
     """
 
     def __init__(self):
-        self.minds: Dict[str, MindProfile] = {}
+        self.minds: dict[str, MindProfile] = {}
         self.memory = CollectiveMemory()
         self.state = OrganismState()
 
         # Callbacks for mind responses
-        self.mind_handlers: Dict[str, Callable] = {}
+        self.mind_handlers: dict[str, Callable] = {}
 
         # Evolution tracking
         self.generation: int = 1
         self.birth_time = datetime.now()
-        self.evolution_log: List[Dict] = []
+        self.evolution_log: list[dict] = []
 
         # Initialize with default local minds
         self._init_default_minds()
@@ -267,7 +267,7 @@ class CollectiveOrganism:
         logger.info(f"Organism: Registered mind '{mind.name}' ({mind.mind_type.value})")
 
     def register_api_mind(self, mind_id: str, name: str, model_id: str,
-                          api_handler: Callable, specialties: List[str] = None):
+                          api_handler: Callable, specialties: list[str] = None):
         """Register an API-based mind (Claude, GPT, etc.)."""
         mind = MindProfile(
             id=mind_id,
@@ -280,8 +280,8 @@ class CollectiveOrganism:
         self.register_mind(mind, api_handler)
 
     async def think_collectively(self, prompt: str,
-                                  participating_minds: List[str] = None,
-                                  require_consensus: bool = False) -> List[Dict]:
+                                  participating_minds: list[str] = None,
+                                  require_consensus: bool = False) -> list[dict]:
         """
         Have multiple minds think about a prompt.
 
@@ -291,7 +291,7 @@ class CollectiveOrganism:
             require_consensus: If True, synthesize into unified response
 
         Returns:
-            List of responses from each mind
+            list of responses from each mind
         """
         if participating_minds is None:
             participating_minds = [m.id for m in self.minds.values() if m.active]
@@ -390,14 +390,14 @@ Current thought to process:
 Respond naturally as {mind.name}. Be concise (2-3 sentences).
 You can reference what other minds might think or build on collective context."""
 
-    def _personality_to_text(self, vector: List[float]) -> str:
+    def _personality_to_text(self, vector: list[float]) -> str:
         """Convert personality vector to description."""
         traits = ["curiosity", "warmth", "humor", "directness",
                   "creativity", "patience", "confidence", "empathy"]
         high_traits = [t for t, v in zip(traits, vector) if v > 0.7]
         return f"High in {', '.join(high_traits)}" if high_traits else "Balanced personality"
 
-    async def _synthesize_responses(self, responses: List[Dict]) -> str:
+    async def _synthesize_responses(self, responses: list[dict]) -> str:
         """Synthesize multiple mind responses into collective thought."""
         # Simple synthesis (would use LLM in production)
         ideas = [r.get("response", "")[:100] for r in responses if r.get("response")]
@@ -426,7 +426,7 @@ You can reference what other minds might think or build on collective context.""
         logger.info(f"Organism evolved to Generation {self.generation} "
                    f"(Consciousness: {self.state.consciousness_score:.3f})")
 
-    def get_status(self) -> Dict:
+    def get_status(self) -> dict:
         """Get current organism status."""
         return {
             "generation": self.generation,

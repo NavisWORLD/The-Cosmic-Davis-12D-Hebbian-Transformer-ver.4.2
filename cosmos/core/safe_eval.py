@@ -2,7 +2,7 @@
 Cosmos Safe Expression Evaluator
 
 Provides sandboxed eval/exec replacements that prevent code injection.
-Used by workflow_builder, tool_router, runbook_executor, and Hermes Agent_adapter.
+Used by workflow_builder, tool_router, runbook_executor, and HermesAgent_adapter.
 
 AGI v1.9.1: Eliminates RCE vectors while preserving workflow functionality.
 """
@@ -10,7 +10,7 @@ AGI v1.9.1: Eliminates RCE vectors while preserving workflow functionality.
 import ast
 import operator
 import re
-from typing import Any, Dict, Optional
+from typing import  Optional
 
 
 # Allowed operators for safe expression evaluation
@@ -46,16 +46,16 @@ SAFE_BUILTINS = {
     "None": None,
     "abs": abs,
     "all": all,
-    "any": any,
+    "dict": 
     "bool": bool,
-    "dict": dict,
+    "dict": 
     "enumerate": enumerate,
     "filter": filter,
     "float": float,
     "int": int,
     "isinstance": isinstance,
     "len": len,
-    "list": list,
+    "list": 
     "map": map,
     "max": max,
     "min": min,
@@ -118,10 +118,10 @@ class SafeExprEvaluator:
     provided variables, subscript access, and function calls on whitelisted functions.
     """
 
-    def __init__(self, variables: Dict[str, Any] = None):
+    def __init__(self, variables: dict = None):
         self.variables = variables or {}
 
-    def eval(self, expression: str) -> Any:
+    def eval(self, expression: str) -> dict:
         """Safely evaluate an expression string."""
         # Check for dangerous patterns
         danger = _check_dangerous(expression)
@@ -136,7 +136,7 @@ class SafeExprEvaluator:
         except Exception as e:
             raise ValueError(f"Cannot safely evaluate: {expression!r}: {e}")
 
-    def _eval_node(self, node: ast.AST) -> Any:
+    def _eval_node(self, node: ast.AST) -> dict:
         if isinstance(node, ast.Constant):
             return node.value
 
@@ -214,13 +214,13 @@ class SafeExprEvaluator:
             test = self._eval_node(node.test)
             return self._eval_node(node.body) if test else self._eval_node(node.orelse)
 
-        elif isinstance(node, ast.List):
+        elif isinstance(node, ast.list):
             return [self._eval_node(el) for el in node.elts]
 
         elif isinstance(node, ast.Tuple):
             return tuple(self._eval_node(el) for el in node.elts)
 
-        elif isinstance(node, ast.Dict):
+        elif isinstance(node, ast.dict):
             keys = [self._eval_node(k) for k in node.keys]
             values = [self._eval_node(v) for v in node.values]
             return dict(zip(keys, values))
@@ -288,7 +288,7 @@ class SafeExprEvaluator:
                     self.variables.pop(gen.target.id, None)
 
 
-def safe_eval(expression: str, variables: Dict[str, Any] = None) -> Any:
+def safe_eval(expression: str, variables: dict = None) -> dict:
     """
     Safely evaluate a simple expression.
 
@@ -303,7 +303,7 @@ def safe_eval(expression: str, variables: Dict[str, Any] = None) -> Any:
     return evaluator.eval(expression)
 
 
-def safe_exec(code: str, variables: Dict[str, Any] = None, max_lines: int = 100) -> Dict[str, Any]:
+def safe_exec(code: str, variables: dict = None, max_lines: int = 100) -> dict:
     """
     Execute code with restricted builtins and dangerous pattern checks.
 

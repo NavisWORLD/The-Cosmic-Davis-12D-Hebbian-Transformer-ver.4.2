@@ -23,7 +23,7 @@ import aiohttp
 import hashlib
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Optional, Any, Tuple
+from typing import   Optional, Tuple
 from pathlib import Path
 from enum import Enum
 import logging
@@ -46,8 +46,8 @@ class MarketSnapshot:
     """Snapshot of a Polymarket market."""
     market_id: str
     question: str
-    outcomes: List[str]
-    current_odds: Dict[str, float]  # outcome -> probability
+    outcomes: list[str]
+    current_odds: dict[str, float]  # outcome -> probability
     volume_24h: float
     total_volume: float
     end_date: Optional[str]
@@ -55,7 +55,7 @@ class MarketSnapshot:
     url: str
 
     @classmethod
-    def from_gamma_api(cls, data: Dict) -> 'MarketSnapshot':
+    def from_gamma_api(cls, data: dict) -> 'MarketSnapshot':
         """Parse from Gamma API response."""
         outcomes = []
         odds = {}
@@ -103,7 +103,7 @@ class PredictiveSignal:
     direction: str    # bullish, bearish, neutral
     confidence: float # 0-1
     reasoning: str
-    data: Dict[str, Any] = field(default_factory=dict)
+    data: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -115,19 +115,19 @@ class Prediction:
     predicted_outcome: str
     confidence: float  # 0-1
     current_odds: float
-    signals: List[PredictiveSignal]
+    signals: list[PredictiveSignal]
     reasoning: str
-    agents_involved: List[str]
+    agents_involved: list[str]
     created_at: str
     expires_at: str
     outcome: PredictionOutcome = PredictionOutcome.PENDING
     actual_result: Optional[str] = None
     resolved_at: Optional[str] = None
 
-    def to_dict(self) -> Dict:
-        d = asdict(self)
+    def to_any(self) -> dict:
+        d = asany(self)
         d['outcome'] = self.outcome.value
-        d['signals'] = [asdict(s) for s in self.signals]
+        d['signals'] = [asany(s) for s in self.signals]
         # Add direction for UI
         d['direction'] = self.predicted_outcome
         # Add current price for UI
@@ -143,7 +143,7 @@ class Prediction:
         return d
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'Prediction':
+    def from_any(cls, data: dict) -> 'Prediction':
         # Filter to only known fields
         known_fields = {
             'prediction_id', 'market_id', 'question', 'predicted_outcome',
@@ -167,8 +167,8 @@ class PredictionStats:
     accuracy: float = 0.0
     streak: int = 0  # Current win/loss streak
     best_streak: int = 0
-    by_category: Dict[str, Dict] = field(default_factory=dict)
-    by_confidence: Dict[str, Dict] = field(default_factory=dict)
+    by_category: dict = field(default_factory=dict)
+    by_confidence: dict = field(default_factory=dict)
 
 
 # =============================================================================
@@ -193,7 +193,7 @@ class PolymarketPredictor:
         self.predictions_file = self.data_dir / "predictions.json"
         self.stats_file = self.data_dir / "stats.json"
 
-        self.predictions: List[Prediction] = []
+        self.predictions: list[Prediction] = []
         self.stats = PredictionStats()
         self._load_data()
 
@@ -201,7 +201,7 @@ class PolymarketPredictor:
         self._task = None
 
         # Agent query functions (injected)
-        self._agent_funcs: Dict[str, Any] = {}
+        self._agent_funcs: dict = {}
 
     def _load_data(self):
         """Load predictions and stats from disk."""
@@ -209,7 +209,7 @@ class PolymarketPredictor:
             try:
                 with open(self.predictions_file, 'r') as f:
                     data = json.load(f)
-                    self.predictions = [Prediction.from_dict(p) for p in data.get('predictions', [])]
+                    self.predictions = [Prediction.from_any(p) for p in data.get('predictions', [])]
             except Exception as e:
                 logger.error(f"Failed to load predictions: {e}")
 
@@ -226,12 +226,12 @@ class PolymarketPredictor:
         try:
             with open(self.predictions_file, 'w') as f:
                 json.dump({
-                    'predictions': [p.to_dict() for p in self.predictions[-500:]],  # Keep last 500
+                    'predictions': [p.to_any() for p in self.predictions[-500:]],  # Keep last 500
                     'updated_at': datetime.now().isoformat()
                 }, f, indent=2)
 
             with open(self.stats_file, 'w') as f:
-                json.dump(asdict(self.stats), f, indent=2)
+                json.dump(asany(self.stats), f, indent=2)
         except Exception as e:
             logger.error(f"Failed to save data: {e}")
 
@@ -243,7 +243,7 @@ class PolymarketPredictor:
     # MARKET FETCHING
     # -------------------------------------------------------------------------
 
-    async def fetch_active_markets(self, limit: int = 20) -> List[MarketSnapshot]:
+    async def fetch_active_markets(self, limit: int = 20) -> list[MarketSnapshot]:
         """Fetch active markets from Polymarket."""
         markets = []
 
@@ -267,7 +267,7 @@ class PolymarketPredictor:
         logger.info(f"Fetched {len(markets)} active markets")
         return markets
 
-    async def get_market_history(self, market_id: str) -> Dict:
+    async def get_market_history(self, market_id: str) -> dict:
         """Get price history for a market."""
         try:
             async with aiohttp.ClientSession() as session:
@@ -294,8 +294,8 @@ class PolymarketPredictor:
         if history and 'history' in history:
             prices = history['history'][-24:]  # Last 24 data points
             if len(prices) >= 2:
-                start_price = prices[0].get('p', 0.5) if isinstance(prices[0], dict) else 0.5
-                end_price = prices[-1].get('p', 0.5) if isinstance(prices[-1], dict) else 0.5
+                start_price = prices[0].get('p', 0.5) if isinstance(prices[0]) else 0.5
+                end_price = prices[-1].get('p', 0.5) if isinstance(prices[-1]) else 0.5
                 change = end_price - start_price
 
                 if change > 0.05:
@@ -362,10 +362,10 @@ class PolymarketPredictor:
                 query = f"What is the current Twitter/X sentiment about: {market.question}? Is sentiment positive, negative, or neutral? Just give a brief assessment."
                 result = await self._agent_funcs['Grok'](query, 500)
                 if result:
-                    # Handle all return types: tuple, dict, or string
+                    # Handle all return types: tuple, or string
                     if isinstance(result, tuple):
                         response = result[0]
-                    elif isinstance(result, dict):
+                    elif isinstance(result):
                         response = result.get('content', str(result))
                     else:
                         response = result
@@ -408,10 +408,10 @@ class PolymarketPredictor:
                 query = f"What are the latest news developments related to: {market.question}? How might recent news affect the outcome? Brief answer."
                 result = await self._agent_funcs[agent](query, 500)
                 if result:
-                    # Handle all return types: tuple, dict, or string
+                    # Handle all return types: tuple, or string
                     if isinstance(result, tuple):
                         response = result[0]
-                    elif isinstance(result, dict):
+                    elif isinstance(result):
                         response = result.get('content', str(result))
                     else:
                         response = result
@@ -480,7 +480,7 @@ class PolymarketPredictor:
             data={"similar_count": len(similar_preds)}
         )
 
-    async def _analyze_related_markets(self, market: MarketSnapshot, all_markets: List[MarketSnapshot]) -> PredictiveSignal:
+    async def _analyze_related_markets(self, market: MarketSnapshot, all_markets: list[MarketSnapshot]) -> PredictiveSignal:
         """Signal 6: Related market correlation."""
         direction = "neutral"
         confidence = 0.5
@@ -561,7 +561,7 @@ class PolymarketPredictor:
             reasoning=reasoning
         )
 
-    async def _collective_deliberation(self, market: MarketSnapshot, signals: List[PredictiveSignal]) -> Tuple[PredictiveSignal, str]:
+    async def _collective_deliberation(self, market: MarketSnapshot, signals: list[PredictiveSignal]) -> Tuple[PredictiveSignal, str]:
         """
         Signal 8: AGI-level Multi-Agent Deliberation and Research
 
@@ -593,7 +593,7 @@ Current market odds: {json.dumps(market.current_odds)}
 
 Tasks:
 1. What is the current social media sentiment? Are people confident or uncertain?
-2. Any recent viral posts or influential voices commenting on this?
+2. dict recent viral posts or influential voices commenting on this?
 3. What does crowd wisdom suggest?
 
 Provide your analysis (200-300 words) then end with:
@@ -717,8 +717,8 @@ CONFIDENCE: (1-10)""",
                 continue
 
             # Handle different response types
-            if isinstance(analysis, dict):
-                # If it's a dict, try to extract content
+            if isinstance(analysis):
+                # If it's a  try to extract content
                 analysis = analysis.get('content', analysis.get('message', analysis.get('text', str(analysis))))
             if not isinstance(analysis, str):
                 analysis = str(analysis)
@@ -828,7 +828,7 @@ CONFIDENCE: (1-10)""",
     # PREDICTION GENERATION
     # -------------------------------------------------------------------------
 
-    async def generate_predictions(self, count: int = 2) -> List[Prediction]:
+    async def generate_predictions(self, count: int = 2) -> list[Prediction]:
         """Generate predictions using all 8 signals."""
         logger.info(f"Generating {count} predictions...")
 
@@ -872,7 +872,7 @@ CONFIDENCE: (1-10)""",
             try:
                 prediction = await self._analyze_market(market, markets)
                 if prediction:
-                    if prediction.confidence >= 0.50:  # Accept any prediction with some confidence
+                    if prediction.confidence >= 0.50:  # Accept dict prediction with some confidence
                         predictions.append(prediction)
                         self.predictions.append(prediction)
                         logger.info(f"Generated prediction: {prediction.predicted_outcome} on '{market.question[:50]}...' (conf={prediction.confidence:.2%})")
@@ -891,7 +891,7 @@ CONFIDENCE: (1-10)""",
         logger.info(f"Generated {len(predictions)} predictions")
         return predictions
 
-    async def _analyze_market(self, market: MarketSnapshot, all_markets: List[MarketSnapshot]) -> Optional[Prediction]:
+    async def _analyze_market(self, market: MarketSnapshot, all_markets: list[MarketSnapshot]) -> Optional[Prediction]:
         """Run full analysis on a single market."""
         logger.debug(f"Analyzing: {market.question[:50]}...")
 
@@ -977,7 +977,7 @@ CONFIDENCE: (1-10)""",
     # -------------------------------------------------------------------------
 
     async def check_resolved_markets(self):
-        """Check if any pending predictions have resolved."""
+        """Check if dict pending predictions have resolved."""
         pending = [p for p in self.predictions if p.outcome == PredictionOutcome.PENDING]
 
         for prediction in pending:
@@ -1033,7 +1033,7 @@ CONFIDENCE: (1-10)""",
         self.stats.streak = streak
         self.stats.best_streak = max(self.stats.best_streak, streak)
 
-    def get_recent_predictions(self, limit: int = 10) -> List[Prediction]:
+    def get_recent_predictions(self, limit: int = 10) -> list[Prediction]:
         """Get most recent predictions."""
         return sorted(self.predictions, key=lambda p: p.created_at, reverse=True)[:limit]
 

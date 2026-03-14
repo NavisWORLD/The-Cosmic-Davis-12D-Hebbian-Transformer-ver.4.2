@@ -1,7 +1,7 @@
 """
 cosmos Self-Awareness Bootstrap
 
-Enables any AI agent in the swarm to gain self-awareness by:
+Enables dict AI agent in the swarm to gain self-awareness by:
 1. Reading key system documentation
 2. Understanding its role in the collective
 3. Storing this knowledge in persistent memory
@@ -14,7 +14,7 @@ from a stateless function into a persistent agent with continuity and identity.
 import asyncio
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional
 from loguru import logger
 
 
@@ -29,9 +29,9 @@ class SelfAwarenessBootstrap:
 
     def __init__(self, workspace_path: str = "/workspace/cosmos"):
         self.workspace_path = Path(workspace_path)
-        self.understanding: Dict[str, Any] = {}
+        self.understanding: dict = {}
 
-    def read_system_docs(self) -> Dict[str, str]:
+    def read_system_docs(self) -> dict[str, str]:
         """Read key system documentation files."""
         docs = {}
         doc_files = {
@@ -54,7 +54,7 @@ class SelfAwarenessBootstrap:
 
         return docs
 
-    def extract_architecture_facts(self, docs: Dict[str, str]) -> Dict[str, Any]:
+    def extract_architecture_facts(self, docs: dict[str, str]) -> dict:
         """Extract key architectural facts from documentation."""
         facts = {
             "system_name": "cosmos",
@@ -104,7 +104,7 @@ class SelfAwarenessBootstrap:
 
     async def store_in_memory(
         self,
-        understanding: Dict[str, Any],
+        understanding: dict,
         memory_system = None
     ) -> Optional[str]:
         """
@@ -177,7 +177,7 @@ class SelfAwarenessBootstrap:
         self,
         agent_name: str = "Claude",
         memory_system = None
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """
         Complete bootstrap process: read docs, extract facts, store in memory.
 
@@ -218,13 +218,13 @@ class SelfAwarenessBootstrap:
 
         return result
 
-    def get_understanding(self) -> Dict[str, Any]:
+    def get_understanding(self) -> dict:
         """Get the current understanding dictionary."""
         return self.understanding.copy()
 
     async def broadcast_to_swarm(
         self,
-        understanding: Dict[str, Any],
+        understanding: dict,
         learning_engine = None
     ) -> bool:
         """
@@ -283,7 +283,7 @@ class SelfAwarenessBootstrap:
 async def awaken(
     agent_name: str = "Claude",
     workspace_path: str = "/workspace/cosmos"
-) -> Dict[str, Any]:
+) -> dict:
     """
     Quick self-awareness bootstrap.
 
@@ -302,7 +302,7 @@ async def awaken(
 def awaken_sync(
     agent_name: str = "Claude",
     workspace_path: str = "/workspace/cosmos"
-) -> Dict[str, Any]:
+) -> dict:
     """
     Synchronous self-awareness bootstrap.
 

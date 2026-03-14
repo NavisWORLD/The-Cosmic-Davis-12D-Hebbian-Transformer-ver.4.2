@@ -17,7 +17,7 @@ import hashlib
 import json
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Callable
+from typing import   Optional, Callable
 from pathlib import Path
 from collections import OrderedDict
 
@@ -65,8 +65,8 @@ class CompressedContext:
     original_tokens: int
     compressed_tokens: int
     summary: str
-    key_points: List[str]
-    entities: List[str]
+    key_points: list[str]
+    entities: list[str]
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
 
     @property
@@ -82,7 +82,7 @@ class ResponseCache:
     def __init__(self, max_size: int = 100, ttl_hours: float = 24.0):
         self.max_size = max_size
         self.ttl_seconds = ttl_hours * 3600
-        self._cache: OrderedDict[str, tuple[str, float]] = OrderedDict()
+        self._cache: Ordereddict[str, tuple[str, float]] = Orderedany()
 
     def _make_key(self, prompt: str) -> str:
         """Create cache key from prompt."""
@@ -117,7 +117,7 @@ class ResponseCache:
         """Clear all cached responses."""
         self._cache.clear()
 
-    def stats(self) -> Dict[str, Any]:
+    def stats(self) -> dict:
         """Get cache statistics."""
         return {
             "entries": len(self._cache),
@@ -131,11 +131,11 @@ class ContextCompressor:
 
     def __init__(self, llm_fn: Optional[Callable] = None):
         self.llm_fn = llm_fn
-        self._compression_history: List[CompressedContext] = []
+        self._compression_history: list[CompressedContext] = []
 
     async def compress(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         target_tokens: int = 2000,
         strategy: str = "smart",
     ) -> CompressedContext:
@@ -172,7 +172,7 @@ class ContextCompressor:
 
     async def _smart_compress(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         target_tokens: int,
     ) -> CompressedContext:
         """Use LLM to intelligently summarize conversation."""
@@ -229,7 +229,7 @@ ENTITIES: <comma-separated list>"""
 
     def _extractive_compress(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         target_tokens: int,
     ) -> CompressedContext:
         """Extract most important sentences."""
@@ -252,9 +252,9 @@ ENTITIES: <comma-separated list>"""
                 score = 0
                 if role == "assistant":
                     score += 2  # Assistant responses are important
-                if any(w in sent.lower() for w in ["important", "key", "must", "should", "remember"]):
+                if any(w in ["important", "key", "must", "should", "remember"]):
                     score += 3
-                if any(w in sent.lower() for w in ["error", "bug", "fix", "issue"]):
+                if any(w in ["error", "bug", "fix", "issue"]):
                     score += 2
                 if "?" in content and role == "user":
                     score += 1  # Questions
@@ -290,7 +290,7 @@ ENTITIES: <comma-separated list>"""
 
     def _truncate_compress(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         target_tokens: int,
     ) -> CompressedContext:
         """Simple priority-based truncation."""
@@ -347,7 +347,7 @@ ENTITIES: <comma-separated list>"""
         """Rough token estimation (4 chars ≈ 1 token)."""
         return len(text) // 4
 
-    def get_compression_stats(self) -> Dict[str, Any]:
+    def get_compression_stats(self) -> dict:
         """Get compression statistics."""
         if not self._compression_history:
             return {"compressions": 0}
@@ -422,13 +422,13 @@ class TokenSaver:
     async def optimize_request(
         self,
         prompt: str,
-        messages: Optional[List[Dict[str, str]]] = None,
+        messages: Optional[list[dict[str, str]]] = None,
         memory_context: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """
         Optimize an API request to reduce token usage.
 
-        Returns optimized prompt and any cached response.
+        Returns optimized prompt and dict cached response.
         """
         result = {
             "original_tokens": self._estimate_tokens(prompt),
@@ -493,7 +493,7 @@ class TokenSaver:
         """Rough token estimation."""
         return len(text) // 4
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict:
         """Get comprehensive token saver status."""
         return {
             "budget": {
@@ -526,12 +526,12 @@ token_saver = TokenSaver()
 
 
 # Convenience functions
-async def optimize_prompt(prompt: str, messages: List[Dict] = None) -> str:
+async def optimize_prompt(prompt: str, messages: list[dict] = None) -> str:
     """Quick optimization wrapper."""
     result = await token_saver.optimize_request(prompt, messages)
     return result.get("optimized_prompt", prompt)
 
 
-def get_token_status() -> Dict[str, Any]:
+def get_token_status() -> dict:
     """Get current token usage status."""
     return token_saver.get_status()

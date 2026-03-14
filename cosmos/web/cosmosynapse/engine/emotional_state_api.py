@@ -31,7 +31,7 @@ import random
 import uuid
 from enum import Enum
 from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Tuple, Optional
 from datetime import datetime
 from pathlib import Path
 import numpy as np
@@ -237,7 +237,7 @@ class UpperTensor:
             self.AU5**2 + self.AU6**2 + self.AU7**2
         )
     
-    def to_vector(self) -> List[float]:
+    def to_vector(self) -> list[float]:
         """Return as vector in R^6."""
         return [self.AU1, self.AU2, self.AU4, self.AU5, self.AU6, self.AU7]
 
@@ -263,7 +263,7 @@ class LowerTensor:
             self.AU20**2 + self.AU24**2
         )
     
-    def to_vector(self) -> List[float]:
+    def to_vector(self) -> list[float]:
         """Return as vector in R^5."""
         return [self.AU12, self.AU15, self.AU17, self.AU20, self.AU24]
 
@@ -563,7 +563,7 @@ def derive_emotional_state(upper: UpperTensor, lower: LowerTensor,
 
 def calculate_emotion_vectors(upper: UpperTensor, lower: LowerTensor,
                                pleasure: float, arousal: float, 
-                               dominance: float) -> Dict[str, float]:
+                               dominance: float) -> dict[str, float]:
     """
     Calculate intensity values for all emotions in the spectrum.
     Returns a dictionary mapping emotion names to intensity values (0.0-1.0).
@@ -741,7 +741,7 @@ class MediaPipeFaceTracker:
             print(f"⚠️ MediaPipe Tasks API failed: {e}")
             self.face_landmarker = None
     
-    def process_frame(self, frame: np.ndarray) -> Dict[str, Any]:
+    def process_frame(self, frame: np.ndarray) -> dict:
         """
         Process a video frame and extract facial data.
         
@@ -768,7 +768,7 @@ class MediaPipeFaceTracker:
         
         return result
     
-    def _process_with_tasks_api(self, frame: np.ndarray) -> Dict[str, Any]:
+    def _process_with_tasks_api(self, frame: np.ndarray) -> dict:
         """Process using MediaPipe Tasks API (0.10.x+)"""
         result = {
             'landmarks': None,
@@ -829,7 +829,7 @@ class MediaPipeFaceTracker:
         
         return result
     
-    def _process_with_solutions_api(self, frame: np.ndarray) -> Dict[str, Any]:
+    def _process_with_solutions_api(self, frame: np.ndarray) -> dict:
         """Process using MediaPipe Solutions API (older versions)"""
         result = {
             'landmarks': None,
@@ -885,7 +885,7 @@ class MediaPipeFaceTracker:
         
         return result
     
-    def _estimate_blendshapes_from_landmarks(self, landmarks, w, h) -> Dict[str, float]:
+    def _estimate_blendshapes_from_landmarks(self, landmarks, w, h) -> dict[str, float]:
         """
         Estimate blendshape-like values from landmark geometry.
         Uses key facial ratios for AU estimation.
@@ -994,7 +994,7 @@ class MediaPipeFaceTracker:
         
         return blendshapes
     
-    def get_action_units(self, blendshapes: Dict[str, float]) -> Tuple[UpperTensor, LowerTensor]:
+    def get_action_units(self, blendshapes: dict[str, float]) -> Tuple[UpperTensor, LowerTensor]:
         """
         Convert MediaPipe blendshapes to CST Action Units.
         """
@@ -1256,7 +1256,7 @@ def calculate_audio_spectral_density(audio_data: np.ndarray,
 
 def generate_cosmos_packet(physics: CSTPhysicsState, 
                                  sequence_id: int = 0,
-                                 session_id: str = None) -> Dict[str, Any]:
+                                 session_id: str = None) -> dict:
     """
     Generate a complete cosmos_packet for LLM steering.
     
@@ -1611,7 +1611,7 @@ class EmotionalStateAPI:
         
         return self.physics
 
-    def get_cosmos_packet(self) -> Dict[str, Any]:
+    def get_cosmos_packet(self) -> dict:
         """Generate a cosmos_packet for LLM steering."""
         self.sequence_counter += 1
         return generate_cosmos_packet(
@@ -1622,7 +1622,7 @@ class EmotionalStateAPI:
     
     def get_state(self, frame: np.ndarray = None, 
                    audio: np.ndarray = None,
-                   sample_rate: int = 16000) -> Dict[str, Any]:
+                   sample_rate: int = 16000) -> dict:
         """
         Unified state getter - analyzes inputs and returns cosmos_packet.
         

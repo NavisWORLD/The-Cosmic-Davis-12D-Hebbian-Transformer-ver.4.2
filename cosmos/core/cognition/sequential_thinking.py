@@ -7,7 +7,7 @@ A tool for the agent to break down complex problems into a sequence of steps,
 verifying each one before moving forward.
 """
 
-from typing import List, Dict, Any
+
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -20,7 +20,7 @@ class ThoughtStep:
 
 class SequentialThinking:
     def __init__(self):
-        self.current_chain: List[ThoughtStep] = []
+        self.current_chain: list[ThoughtStep] = []
 
     def start_new_chain(self):
         self.current_chain = []

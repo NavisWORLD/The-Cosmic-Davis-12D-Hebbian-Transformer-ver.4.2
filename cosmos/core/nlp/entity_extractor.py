@@ -6,7 +6,7 @@ Extracts structured entities (files, URLs, amounts, etc.) from text.
 
 import re
 import logging
-from typing import Dict, List, Any, Optional
+from typing import   Optional
 from dataclasses import dataclass, field
 from urllib.parse import urlparse
 
@@ -16,15 +16,15 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ExtractedEntities:
     """Extracted entities from text."""
-    urls: List[str] = field(default_factory=list)
-    file_paths: List[str] = field(default_factory=list)
-    amounts: List[Dict[str, Any]] = field(default_factory=list)  # {value, currency}
-    tokens: List[str] = field(default_factory=list)
-    chains: List[str] = field(default_factory=list)
-    emails: List[str] = field(default_factory=list)
-    mentions: List[str] = field(default_factory=list)  # @mentions
-    dates: List[str] = field(default_factory=list)
-    numbers: List[float] = field(default_factory=list)
+    urls: list[str] = field(default_factory=list)
+    file_paths: list[str] = field(default_factory=list)
+    amounts: list[dict] = field(default_factory=list)  # {value, currency}
+    tokens: list[str] = field(default_factory=list)
+    chains: list[str] = field(default_factory=list)
+    emails: list[str] = field(default_factory=list)
+    mentions: list[str] = field(default_factory=list)  # @mentions
+    dates: list[str] = field(default_factory=list)
+    numbers: list[float] = field(default_factory=list)
     raw_text: str = ""
 
 
@@ -112,7 +112,7 @@ class EntityExtractor:
 
         return entities
 
-    def _extract_urls(self, text: str) -> List[str]:
+    def _extract_urls(self, text: str) -> list[str]:
         """Extract and validate URLs."""
         urls = []
         for match in self.URL_PATTERN.finditer(text):
@@ -128,7 +128,7 @@ class EntityExtractor:
                 pass
         return urls
 
-    def _extract_file_paths(self, text: str) -> List[str]:
+    def _extract_file_paths(self, text: str) -> list[str]:
         """Extract file paths."""
         paths = []
         for match in self.FILE_PATH_PATTERN.finditer(text):
@@ -138,7 +138,7 @@ class EntityExtractor:
                 paths.append(path)
         return paths
 
-    def _extract_amounts(self, text: str) -> List[Dict[str, Any]]:
+    def _extract_amounts(self, text: str) -> list[dict]:
         """Extract monetary amounts with currency."""
         amounts = []
 
@@ -172,7 +172,7 @@ class EntityExtractor:
 
         return tokens, chains
 
-    def _extract_numbers(self, text: str) -> List[float]:
+    def _extract_numbers(self, text: str) -> list[float]:
         """Extract standalone numbers."""
         numbers = []
         # Find numbers not part of amounts
@@ -196,7 +196,7 @@ class EntityExtractor:
             return entities.chains[0].lower()
         return None
 
-    def get_primary_amount(self, entities: ExtractedEntities) -> Optional[Dict]:
+    def get_primary_amount(self, entities: ExtractedEntities) -> Optional[dict]:
         """Get the primary amount from entities."""
         if entities.amounts:
             return entities.amounts[0]

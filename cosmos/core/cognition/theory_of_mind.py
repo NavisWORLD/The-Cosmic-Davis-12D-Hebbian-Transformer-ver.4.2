@@ -21,7 +21,7 @@ import asyncio
 import math
 import random # Mock for predictive probability
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Any
+, Optional
 from datetime import datetime
 from loguru import logger
 
@@ -42,11 +42,11 @@ class ShadowUser:
     Simulates the user's next move to measure "Surprise".
     """
     def __init__(self):
-        self.history: List[str] = []
+        self.history: list[str] = []
         self.surprise_metric: float = 0.0
         self.synchronization_score: float = 1.0 # 0 to 1
 
-    def predict_next_input(self, context_vector: List[float]) -> str:
+    def predict_next_input(self, context_vector: list[float]) -> str:
         """
         Simulate what the user might say/do next based on context.
         (In a real implementation, this uses a small LLM or N-gram model)
@@ -73,7 +73,7 @@ class AffectiveResonance:
     Tracks emotional dynamics (Velocity & Acceleration).
     """
     def __init__(self):
-        self.valence_history: List[float] = [0.5] * 10
+        self.valence_history: list[float] = [0.5] * 10
         self.velocity: float = 0.0
         
     def update(self, current_valence: float):

@@ -115,7 +115,7 @@ The full implementation has been saved to staging. Check /cosmos/staging/ to see
             '''class HierarchicalMemoryCompressor:
     """Compress old memories while preserving key insights"""
 
-    def compress(self, memories: List[Memory]) -> CompressedMemory:
+    def compress(self, memories: list[Memory]) -> CompressedMemory:
         # Score each memory by importance
         importance_scores = self._score_importance(memories)
 
@@ -227,7 +227,7 @@ The full implementation has been saved to staging. Check /cosmos/staging/ to see
         self.items = []  # Heap by priority
         self.current_tokens = 0
 
-    def add(self, item: ContextItem) -> List[ContextItem]:
+    def add(self, item: ContextItem) -> list[ContextItem]:
         evicted = []
 
         # Make room if needed
@@ -249,7 +249,7 @@ The full implementation has been saved to staging. Check /cosmos/staging/ to see
             '''class MCPToolDiscovery:
     """Auto-detect and register available MCP tools"""
 
-    async def discover_all(self) -> List[MCPTool]:
+    async def discover_all(self) -> list[MCPTool]:
         discovered = []
 
         for endpoint in self.mcp_endpoints:
@@ -281,7 +281,7 @@ The full implementation has been saved to staging. Check /cosmos/staging/ to see
         self.hits = 0
         self.misses = 0
 
-    async def call_cached(self, tool: str, params: dict) -> Any:
+    async def call_cached(self, tool: str, params: dict) -> dict:
         # Create cache key from tool + params
         cache_key = f"{tool}:{hash(frozenset(params.items()))}"
 
@@ -297,7 +297,7 @@ The full implementation has been saved to staging. Check /cosmos/staging/ to see
 
         return result''',
 
-            '''async def chain_mcp_tools(self, workflow: List[ToolStep]) -> Any:
+            '''async def chain_mcp_tools(self, workflow: list[ToolStep]) -> dict:
     """Combine multiple MCP tools in a workflow pipeline"""
 
     context = {}  # Shared context between steps
@@ -325,7 +325,7 @@ The full implementation has been saved to staging. Check /cosmos/staging/ to see
             '''class SwarmConsensusProtocol:
     """How agents reach agreement on responses"""
 
-    async def reach_consensus(self, question: str, agents: List[str]) -> Consensus:
+    async def reach_consensus(self, question: str, agents: list[str]) -> Consensus:
         # Gather votes from all agents in parallel
         votes = await asyncio.gather(*[
             self._get_agent_opinion(agent, question)
@@ -345,7 +345,7 @@ The full implementation has been saved to staging. Check /cosmos/staging/ to see
 
         return consensus''',
 
-            '''def analyze_agent_specialization(self, history: List[Interaction]) -> Dict:
+            '''def analyze_agent_specialization(self, history: list[Interaction]) -> dict:
     """Analyze which agents excel at which task types"""
 
     performance = defaultdict(lambda: defaultdict(list))
@@ -382,7 +382,7 @@ The full implementation has been saved to staging. Check /cosmos/staging/ to see
         # Response coherence - do agents build on each other?
         coherence = self._measure_coherence(swarm_state.recent_responses)
 
-        # Emergent patterns - behaviors not in any single agent
+        # Emergent patterns - behaviors not in dict single agent
         emergence = self._detect_emergence(swarm_state.interaction_graph)
 
         # Collaboration synergy - is whole > sum of parts?

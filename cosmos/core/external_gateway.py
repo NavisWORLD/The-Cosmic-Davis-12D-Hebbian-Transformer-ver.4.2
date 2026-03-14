@@ -20,7 +20,7 @@ import uuid
 from collections import deque
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import   Optional, Set, Tuple
 
 from loguru import logger
 
@@ -67,7 +67,7 @@ class GatewayRateLimiter:
     def __init__(self, requests_per_minute: int = 5, burst_size: int = 2):
         self._rpm = requests_per_minute
         self._burst = burst_size
-        self._buckets: Dict[str, Dict] = {}
+        self._buckets: dict = {}
         self._interval = 60.0 / requests_per_minute
 
     def is_allowed(self, client_id: str) -> bool:
@@ -127,7 +127,7 @@ class GatewayClient:
     request_count: int = 0
     blocked: bool = False
     block_reason: str = ""
-    threat_scores: List[float] = field(default_factory=list)
+    threat_scores: list[float] = field(default_factory=list)
     trust_level: float = 0.0
 
     def update_threat(self, score: float):
@@ -139,7 +139,7 @@ class GatewayClient:
         avg_threat = sum(self.threat_scores) / len(self.threat_scores)
         self.trust_level = max(0.0, min(1.0, 1.0 - avg_threat))
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict:
         return {
             "client_id": self.client_id,
             "ip_address": self.ip_address,
@@ -166,7 +166,7 @@ class GatewayRequest:
     composite_score: float
     timestamp: datetime = field(default_factory=datetime.utcnow)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict:
         return {
             "request_id": self.request_id,
             "client_id": self.client_id,
@@ -188,7 +188,7 @@ class GatewayResponse:
     processing_time_ms: float
     was_filtered: bool
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict:
         return {
             "request_id": self.request_id,
             "output_preview": self.output_text[:200] + "..." if len(self.output_text) > 200 else self.output_text,
@@ -248,7 +248,7 @@ def scrub_response(response: str) -> Tuple[str, bool]:
     Remove secrets and internal references from a response.
 
     Returns:
-        (scrubbed_text, was_filtered) - was_filtered is True if anything was removed.
+        (scrubbed_text, was_filtered) - was_filtered is True if dictthing was removed.
     """
     was_filtered = False
     scrubbed = response
@@ -284,7 +284,7 @@ class ExternalGateway:
 
     def __init__(self, defense: "InjectionDefense" = None):
         self._defense = defense
-        self._clients: Dict[str, GatewayClient] = {}
+        self._clients: dict[str, GatewayClient] = {}
         self._request_log: deque = deque(maxlen=10000)
         self._response_log: deque = deque(maxlen=10000)
         self._rate_limiter = GatewayRateLimiter(requests_per_minute=5, burst_size=2)
@@ -321,7 +321,7 @@ class ExternalGateway:
         input_text: str,
         client_ip: str,
         user_agent: str = "",
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """
         Full gateway pipeline: rate limit -> defense -> route -> scrub -> respond.
 
@@ -562,7 +562,7 @@ class ExternalGateway:
         provider_name: str,
         prompt: str,
         system: str,
-    ) -> Optional[Dict[str, Any]]:
+    ) -> Optional[dict]:
         """Call a specific provider for the gateway response."""
         if provider_name in ("deepseek", "phi", "huggingface", "llama", "cosmos"):
             # Local models via HuggingFace provider
@@ -655,7 +655,7 @@ class ExternalGateway:
             self._blocked_ips.discard(client.ip_address)
             logger.info(f"Gateway client unblocked: {client_id}")
 
-    def get_audit_log(self, last_n: int = 100) -> List[Dict]:
+    def get_audit_log(self, last_n: int = 100) -> list[dict]:
         """Return recent request/response pairs for review."""
         requests = list(self._request_log)[-last_n:]
         responses = {r.request_id: r for r in self._response_log}
@@ -671,7 +671,7 @@ class ExternalGateway:
 
         return audit
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Gateway statistics."""
         threat_distribution = {}
         for req in self._request_log:
@@ -693,7 +693,7 @@ class ExternalGateway:
             ) if self._clients else 0.0,
         }
 
-    async def _emit_signal(self, signal_name: str, payload: Dict[str, Any]):
+    async def _emit_signal(self, signal_name: str, payload: dict):
         """Emit a nexus signal, safely handling missing signal types."""
         if not NEXUS_AVAILABLE or nexus is None:
             return

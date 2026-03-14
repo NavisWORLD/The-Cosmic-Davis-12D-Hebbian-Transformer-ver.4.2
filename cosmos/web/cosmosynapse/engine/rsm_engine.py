@@ -19,7 +19,7 @@ import shutil
 import logging
 import py_compile
 from pathlib import Path
-from typing import Optional, Dict, List, Tuple
+from typing import Optional, Tuple
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 import sys
@@ -109,7 +109,7 @@ class RSMEngine:
         self.backup_dir.mkdir(exist_ok=True)
         
         self.audit_log_path = self.engine_dir / "rsm_audit.jsonl"
-        self.pending_proposals: List[RSMProposal] = []
+        self.pending_proposals: list[RSMProposal] = []
         self.applied_count = 0
         self.reverted_count = 0
         
@@ -150,8 +150,8 @@ class RSMEngine:
     # READ OPERATIONS
     # ============================================
 
-    def list_modules(self) -> List[Dict[str, str]]:
-        """List all modifiable .py modules in scope."""
+    def list_modules(self) -> list[dict[str, str]]:
+        """list all modifiable .py modules in scope."""
         modules = []
         for f in sorted(self.engine_dir.glob("*.py")):
             if f.name.startswith("__"):
@@ -436,7 +436,7 @@ class RSMEngine:
     # PARSE RSM EDITS FROM LLM OUTPUT
     # ============================================
 
-    def parse_rsm_tags(self, llm_output: str) -> List[RSMProposal]:
+    def parse_rsm_tags(self, llm_output: str) -> list[RSMProposal]:
         """
         Parse <rsm_edit> tags from LLM output.
         
@@ -451,7 +451,7 @@ class RSMEngine:
         </rsm_edit>
         
         Returns:
-            List of RSMProposal objects.
+            list of RSMProposal objects.
         """
         proposals = []
         
@@ -497,9 +497,9 @@ class RSMEngine:
         
         return proposals
 
-    def process_llm_output(self, llm_output: str, lyapunov_drift: float = 0.0) -> Tuple[str, List[Dict]]:
+    def process_llm_output(self, llm_output: str, lyapunov_drift: float = 0.0) -> Tuple[str, list]:
         """
-        Process LLM output, extracting and applying any RSM edits.
+        Process LLM output, extracting and applying RSM edits.
         
         Args:
             llm_output: Raw LLM response text
@@ -528,7 +528,7 @@ class RSMEngine:
             flags=re.DOTALL
         ).strip()
         
-        # Append modification summary if any edits were made
+        # Append modification summary if edits were made
         if results:
             summary_parts = []
             for r in results:
@@ -542,7 +542,7 @@ class RSMEngine:
     # AUDIT LOG
     # ============================================
 
-    def _audit_log(self, action: str, proposal: RSMProposal, extra: Optional[Dict] = None):
+    def _audit_log(self, action: str, proposal: RSMProposal, extra: Optional[dict] = None):
         """Append an entry to the RSM audit log."""
         entry = {
             "timestamp": datetime.now().isoformat(),
@@ -563,7 +563,7 @@ class RSMEngine:
         except Exception as e:
             logger.error(f"RSM: Could not write audit log: {e}")
 
-    def get_audit_log(self, last_n: int = 20) -> List[Dict]:
+    def get_audit_log(self, last_n: int = 20) -> list[dict]:
         """Read the last N audit log entries."""
         entries = []
         try:
@@ -578,7 +578,7 @@ class RSMEngine:
         return entries[-last_n:]
 
     # ============================================
-    # HERMES AGENT — INTELLIGENT SELF-MODIFICATION
+    # HermesAgent — INTELLIGENT SELF-MODIFICATION
     # ============================================
 
     def hermes_propose_edit(
@@ -586,9 +586,9 @@ class RSMEngine:
         filename: str,
         goal: str = "Improve code quality, performance, and integration",
         lyapunov_drift: float = 0.0,
-    ) -> Tuple[List[RSMProposal], str]:
+    ) -> Tuple[list[RSMProposal], str]:
         """
-        Ask Hermes Agent to analyze a module and propose RSM edits.
+        Ask HermesAgent to analyze a module and propose RSM edits.
 
         The proposals flow through the full RSM safety pipeline:
         Lyapunov gate → backup → apply → syntax check → revert on failure.
@@ -610,16 +610,16 @@ class RSMEngine:
         if content is None:
             return [], f"Cannot read '{filename}' — out of scope or not found."
 
-        # Ask Hermes Agent to analyze and suggest edits
+        # Ask HermesAgent to analyze and suggest edits
         try:
             from Cosmos.integration.hermes_bridge import get_hermes_bridge
             bridge = get_hermes_bridge()
             if not bridge.runtime.available:
-                return [], "Hermes Agent runtime not available."
+                return [], "HermesAgent runtime not available."
 
             agent = bridge.runtime.create_agent()
             if not agent:
-                return [], "Could not create Hermes Agent instance."
+                return [], "Could not create HermesAgent instance."
 
             analysis_prompt = f"""Analyze this Python module from the Cosmos AI swarm framework and propose improvements.
 
@@ -660,7 +660,7 @@ RULES:
                 result = agent.run(analysis_prompt, max_iterations=5)
 
             if not result:
-                return [], "Hermes Agent returned no analysis."
+                return [], "HermesAgent returned no analysis."
 
             result_text = str(result)
 
@@ -675,7 +675,7 @@ RULES:
 
             # Feed back to Hermes RL
             try:
-                coherence = 0.8 if any("SUCCESS" in r for r in results) else 0.3
+                coherence = 0.8 if any(res in results for res in results) else 0.3
                 bridge.rl.record_experience(
                     speaker="RSMEngine",
                     response=f"[RSM] Hermes proposed {len(proposals)} edits for {filename}: {'; '.join(results)}",
@@ -697,7 +697,7 @@ RULES:
 
     def hermes_analyze_module(self, filename: str) -> Optional[str]:
         """
-        Ask Hermes Agent to analyze a module and return insights (no edits).
+        Ask HermesAgent to analyze a module and return insights (no edits).
 
         Returns a text analysis of the module's quality, patterns, and suggestions.
         """
@@ -709,11 +709,11 @@ RULES:
             from Cosmos.integration.hermes_bridge import get_hermes_bridge
             bridge = get_hermes_bridge()
             if not bridge.runtime.available:
-                return "Hermes Agent not available for analysis."
+                return "HermesAgent not available for analysis."
 
             agent = bridge.runtime.create_agent()
             if not agent:
-                return "Could not create Hermes Agent."
+                return "Could not create HermesAgent."
 
             prompt = f"""Analyze this module from the Cosmos AI framework. Do NOT propose edits.
 
@@ -738,7 +738,7 @@ Provide:
     # STATUS
     # ============================================
 
-    def get_status(self) -> Dict:
+    def get_status(self) -> dict:
         """Get RSM Engine status."""
         # Check Hermes availability
         hermes_available = False

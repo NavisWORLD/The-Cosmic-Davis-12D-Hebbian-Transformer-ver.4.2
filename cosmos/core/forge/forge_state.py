@@ -17,7 +17,7 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import   Optional
 from dataclasses import dataclass, field, asdict
 
 
@@ -26,18 +26,18 @@ class ForgeTask:
     """A single executable task within a plan."""
     id: str
     name: str
-    files: List[str]
+    files: list[str]
     action: str
     verify: str
     done_criteria: str
     task_type: str = "auto"  # auto, checkpoint, review
     status: str = "pending"  # pending, running, passed, failed, skipped
     wave: int = 1
-    depends_on: List[str] = field(default_factory=list)
+    depends_on: list[str] = field(default_factory=list)
     assigned_model: Optional[str] = None
     cost_tokens: int = 0
     execution_time_ms: int = 0
-    deviation_log: List[str] = field(default_factory=list)
+    deviation_log: list[str] = field(default_factory=list)
     commit_hash: Optional[str] = None
 
 
@@ -48,15 +48,15 @@ class ForgePlan:
     phase: str
     plan_number: int
     objective: str
-    tasks: List[ForgeTask]
+    tasks: list[ForgeTask]
     wave: int = 1
     status: str = "pending"  # pending, executing, verified, failed
-    must_haves: List[str] = field(default_factory=list)
-    research_refs: List[str] = field(default_factory=list)
-    context_refs: List[str] = field(default_factory=list)
+    must_haves: list[str] = field(default_factory=list)
+    research_refs: list[str] = field(default_factory=list)
+    context_refs: list[str] = field(default_factory=list)
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
     consensus_score: float = 0.0  # swarm agreement on this plan
-    critiques: List[Dict] = field(default_factory=list)
+    critiques: list[dict] = field(default_factory=list)
 
 
 @dataclass
@@ -65,13 +65,13 @@ class ForgePhase:
     id: str
     name: str
     description: str
-    goals: List[str]
-    success_criteria: List[str]
-    plans: List[ForgePlan] = field(default_factory=list)
+    goals: list[str]
+    success_criteria: list[str]
+    plans: list[ForgePlan] = field(default_factory=list)
     status: str = "pending"  # pending, planning, executing, verifying, complete
-    decisions: Dict[str, str] = field(default_factory=dict)
-    deferred: List[str] = field(default_factory=list)
-    verification_result: Optional[Dict] = None
+    decisions: dict[str, str] = field(default_factory=dict)
+    deferred: list[str] = field(default_factory=list)
+    verification_result: Optional[dict] = None
 
 
 @dataclass
@@ -79,14 +79,14 @@ class ForgeProject:
     """Top-level project state."""
     name: str
     description: str
-    phases: List[ForgePhase] = field(default_factory=list)
+    phases: list[ForgePhase] = field(default_factory=list)
     current_phase: int = 0
     milestone: str = "v1.0"
     total_cost_tokens: int = 0
     total_tasks_completed: int = 0
     total_tasks_failed: int = 0
-    decisions: List[Dict] = field(default_factory=list)
-    blockers: List[Dict] = field(default_factory=list)
+    decisions: list[dict] = field(default_factory=list)
+    blockers: list[dict] = field(default_factory=list)
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
     last_session: str = field(default_factory=lambda: datetime.now().isoformat())
 
@@ -196,8 +196,8 @@ class ForgeStateManager:
     # PHASE MANAGEMENT
     # =========================================================================
 
-    def add_phase(self, name: str, description: str, goals: List[str],
-                  success_criteria: List[str]) -> ForgePhase:
+    def add_phase(self, name: str, description: str, goals: list[str],
+                  success_criteria: list[str]) -> ForgePhase:
         """Add a new phase to the project."""
         phase_id = f"phase_{len(self.project.phases) + 1}"
         phase = ForgePhase(
@@ -232,10 +232,10 @@ class ForgeStateManager:
     # PLAN MANAGEMENT
     # =========================================================================
 
-    def add_plan(self, phase_id: str, objective: str, tasks: List[Dict],
-                 wave: int = 1, must_haves: List[str] = None,
+    def add_plan(self, phase_id: str, objective: str, tasks: list[dict],
+                 wave: int = 1, must_haves: list[str] = None,
                  consensus_score: float = 0.0,
-                 critiques: List[Dict] = None) -> ForgePlan:
+                 critiques: list[dict] = None) -> ForgePlan:
         """Add a plan to a phase."""
         phase = self._find_phase(phase_id)
         if not phase:
@@ -371,7 +371,7 @@ class ForgeStateManager:
     # ROLLBACK
     # =========================================================================
 
-    def get_rollback_points(self) -> List[Dict]:
+    def get_rollback_points(self) -> list[dict]:
         """Get all commit hashes from completed tasks for rollback."""
         points = []
         for phase in self.project.phases:
@@ -390,7 +390,7 @@ class ForgeStateManager:
     # COST TRACKING
     # =========================================================================
 
-    def get_cost_report(self) -> Dict:
+    def get_cost_report(self) -> dict:
         """Get detailed cost breakdown."""
         phase_costs = {}
         model_costs = {}
@@ -416,7 +416,7 @@ class ForgeStateManager:
     # PROGRESS
     # =========================================================================
 
-    def get_progress(self) -> Dict:
+    def get_progress(self) -> dict:
         """Get project progress summary."""
         total_tasks = 0
         completed_tasks = 0
@@ -466,7 +466,7 @@ class ForgeStateManager:
                             return task
         return None
 
-    def _deserialize_project(self, data: Dict) -> ForgeProject:
+    def _deserialize_project(self, data: dict) -> ForgeProject:
         """Deserialize project from JSON dict."""
         phases = []
         for pd in data.get("phases", []):

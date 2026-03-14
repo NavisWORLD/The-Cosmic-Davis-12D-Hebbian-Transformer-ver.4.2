@@ -3,7 +3,7 @@ import threading
 import time
 import random
 import logging
-from typing import Dict, List, Any
+
 from dataclasses import dataclass, field
 
 # Internal Imports
@@ -54,13 +54,13 @@ class SwarmDaemon(threading.Thread):
                 logger.error(f"{self.name} Error: {e}")
                 time.sleep(5)
 
-    def dream(self, physics: Dict) -> ConversationPattern:
+    def dream(self, physics: dict) -> ConversationPattern:
         """Override in subclasses."""
         return None
 
 class DeepSeekDaemon(SwarmDaemon):
     """The Logic Engine. Analyzes structure and facts."""
-    def dream(self, physics: Dict) -> ConversationPattern:
+    def dream(self, physics: dict) -> ConversationPattern:
         # Simulate logic generation based on user state
         # In a real implementation, this would call a small local model or rule-engine
         # For now, we simulate the "Intent" based on physics
@@ -87,7 +87,7 @@ class DeepSeekDaemon(SwarmDaemon):
 
 class ClaudeDaemon(SwarmDaemon):
     """The Empathy Engine. Monitors emotional safety."""
-    def dream(self, physics: Dict) -> ConversationPattern:
+    def dream(self, physics: dict) -> ConversationPattern:
         # Simulate empathy
         dark_matter = physics.get("dark_matter", {}).get("w", 0.0)
         
@@ -109,7 +109,7 @@ class ClaudeDaemon(SwarmDaemon):
 
 class GeminiDaemon(SwarmDaemon):
     """The Creativity Engine. Dreams of new connections."""
-    def dream(self, physics: Dict) -> ConversationPattern:
+    def dream(self, physics: dict) -> ConversationPattern:
         # Simulate creative divergence
         # Requires high entropy/chaos to fire strongly
         if random.random() > 0.7:

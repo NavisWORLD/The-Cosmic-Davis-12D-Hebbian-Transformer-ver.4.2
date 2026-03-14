@@ -465,7 +465,7 @@ async def pro_chat_api(request: Request):
                 from Cosmos.core.agent_spawner import get_agent_spawner
                 spawner = get_agent_spawner()
                 result = await spawner.call_agent(model, prompt)
-                if result and isinstance(result, dict):
+                if result and isinstance(result):
                     response_text = result.get("response", result.get("text", str(result)))
                 elif result:
                     response_text = str(result)
@@ -525,7 +525,7 @@ async def pro_chat_stream(request: Request):
                         from Cosmos.core.agent_spawner import get_agent_spawner
                         spawner = get_agent_spawner()
                         result = await spawner.call_agent(model, message)
-                        if result and isinstance(result, dict):
+                        if result and isinstance(result):
                             response_text = result.get("response", result.get("text", str(result)))
                         elif result:
                             response_text = str(result)
@@ -628,7 +628,7 @@ async def wallet_analyze(request: Request):
             prompt = f"Analyze this Solana wallet address: {address}. Provide a brief portfolio assessment, risk factors, and recommendations. Be concise and crypto-savvy."
             result = await spawner.call_agent("grok", prompt)
             if result:
-                analysis = result.get("response", str(result)) if isinstance(result, dict) else str(result)
+                analysis = result.get("response", str(result)) if isinstance(result) else str(result)
         except Exception:
             analysis = f"Wallet {address[:8]}...{address[-4:]} analysis pending. The swarm is gathering on-chain data."
 
@@ -718,7 +718,7 @@ async def arena_start(request: Request):
 
                     result = await spawner.call_agent(agent_name.lower(), prompt)
                     text = ""
-                    if result and isinstance(result, dict):
+                    if result and isinstance(result):
                         text = result.get("response", result.get("text", ""))
                     elif result:
                         text = str(result)
@@ -874,7 +874,7 @@ async def polymarket_markets(request: Request):
             markets = await api.get_markets(active=True, limit=limit, order="volume")
 
         return JSONResponse({
-            "markets": [m.to_dict() for m in markets],
+            "markets": [m.to_any() for m in markets],
             "count": len(markets),
             "timestamp": datetime.utcnow().isoformat(),
         })
@@ -900,7 +900,7 @@ async def polymarket_closing_soon(request: Request):
         markets = await api.get_closing_soon(hours=hours, limit=limit)
 
         return JSONResponse({
-            "markets": [m.to_dict() for m in markets],
+            "markets": [m.to_any() for m in markets],
             "count": len(markets),
             "timestamp": datetime.utcnow().isoformat(),
         })
@@ -927,7 +927,7 @@ async def polymarket_ai_predictions(request: Request):
         stats = predictor.get_stats()
 
         return JSONResponse({
-            "predictions": [p.to_dict() for p in predictions],
+            "predictions": [p.to_any() for p in predictions],
             "stats": {
                 "total_predictions": stats.total_predictions,
                 "correct": stats.correct,

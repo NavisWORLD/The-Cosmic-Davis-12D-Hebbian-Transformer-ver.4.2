@@ -12,7 +12,7 @@ enabling the collective to deliberate using real AI models.
 
 import asyncio
 import os
-from typing import Optional, Tuple, Dict, Callable, Awaitable, List
+from typing import Optional, Tuple, Callable, Awaitable
 from loguru import logger
 
 
@@ -30,7 +30,7 @@ class AgentRegistry:
 
     def __init__(self):
         self._initialized = False
-        self._agent_funcs: Dict[str, AgentQueryFunc] = {}
+        self._agent_funcs: dict[str, AgentQueryFunc] = {}
 
     async def initialize(self):
         """Initialize and register all available agents."""
@@ -51,6 +51,7 @@ class AgentRegistry:
         await self._register_llama_local()
         await self._register_perplexity()
         await self._register_deepseek_api()
+        await self._register_hermes()
 
         # AGI v1.8: Register shadow agents (tmux persistent agents)
         await self._register_shadow_agents()
@@ -302,7 +303,7 @@ class AgentRegistry:
                 coding_keywords = ["code", "implement", "function", "class", "debug", "fix",
                                    "refactor", "build", "program", "script", "plan", "architect",
                                    "design", "algorithm", "optimize", "deploy"]
-                is_coding = any(kw in prompt.lower() for kw in coding_keywords)
+                is_coding = any(kw in coding_keywords)
                 model = "claude-opus-4-6" if is_coding else "claude-sonnet-4-5-20250929"
 
                 async with httpx.AsyncClient() as client:
@@ -498,6 +499,50 @@ class AgentRegistry:
             return None
 
         self._agent_funcs["DeepSeekAPI"] = query_deepseek_api
+
+    async def _register_hermes(self):
+        """Register Hermes (Nous Research Direct) agent."""
+        async def query_hermes(prompt: str, max_tokens: int) -> Optional[Tuple[str, str]]:
+            try:
+                import httpx
+                api_key = os.environ.get("HERMES_API_KEY")
+                base_url = os.environ.get("HERMES_BASE_URL", "https://inference-api.nousresearch.com/v1")
+                model_id = os.environ.get("HERMES_MODEL_ID", "Hermes-4-70B")
+                
+                if not api_key:
+                    # Fallback to OpenRouter if HERMES_API_KEY is not set
+                    api_key = os.environ.get("OPENROUTER_API_KEY")
+                    if not api_key:
+                        return None
+                    base_url = "https://openrouter.ai/api/v1"
+                    if "model_id" not in locals() or model_id == "Hermes-4-70B":
+                        model_id = "nousresearch/hermes-3-llama-3.1-405b"
+                    
+                async with httpx.AsyncClient() as client:
+                    resp = await client.post(
+                        f"{base_url}/chat/completions",
+                        headers={
+                            "Authorization": f"Bearer {api_key}",
+                            "Content-Type": "application/json",
+                            "X-Title": "CosmoSynapse Swarm"
+                        },
+                        json={
+                            "model": model_id,
+                            "messages": [{"role": "user", "content": prompt}],
+                            "max_tokens": max_tokens,
+                            "temperature": 0.8
+                        },
+                        timeout=60.0
+                    )
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        if data.get("choices") and data["choices"][0].get("message", {}).get("content"):
+                            return ("Hermes", data["choices"][0]["message"]["content"].strip())
+            except Exception as e:
+                logger.debug(f"Hermes query failed: {e}")
+            return None
+
+        self._agent_funcs["Hermes"] = query_hermes
 
     def get_available_agents(self) -> list:
         """Get list of registered agent IDs."""

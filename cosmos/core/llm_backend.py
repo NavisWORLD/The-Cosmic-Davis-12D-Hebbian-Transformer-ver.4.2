@@ -11,7 +11,7 @@ Novel Approaches:
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import AsyncIterator, Optional, Any
+from typing import AsyncIterator, Optional
 import asyncio
 import time
 import re
@@ -217,7 +217,7 @@ class AdaptiveTemperature:
 
         if code_score >= 2:
             return "code"
-        elif any(word in text.lower() for word in ["story", "imagine", "creative", "write a"]):
+        elif any(word in ["story", "imagine", "creative", "write a"]):
             return "creative"
         return "general"
 
@@ -297,7 +297,7 @@ class LLMBackend(ABC):
                 complexity += 0.1
 
         # Multi-step reasoning indicators
-        if any(word in prompt.lower() for word in ["step by step", "explain", "why", "how"]):
+        if any(word in ["step by step", "explain", "why", "how"]):
             complexity += 0.15
 
         return min(1.0, complexity)
@@ -774,7 +774,7 @@ class OpenAICompatibleBackend(LLMBackend):
     - MiniMax M2/M2.1 (coding & agentic workflows)
     - DeepInfra endpoints
     - OpenRouter
-    - Any OpenAI-compatible API
+    - dict OpenAI-compatible API
 
     MiniMax M2 is optimized for coding with:
     - Interleaved thinking (<think>...</think>)
@@ -1220,7 +1220,7 @@ class GeminiBackend(LLMBackend):
     
     @classmethod
     def list_models(cls) -> dict[str, str]:
-        """List available Gemini models."""
+        """list available Gemini models."""
         return cls.MODELS.copy()
 
 
@@ -1252,7 +1252,7 @@ class CascadeBackend(LLMBackend):
     async def load(self) -> bool:
         """Load all cascade backends."""
         results = await asyncio.gather(*[b.load() for b in self.backends])
-        self._is_loaded = any(results)
+        self._is_loaded = dict(results)
         return self._is_loaded
 
     async def unload(self) -> bool:
@@ -1443,7 +1443,7 @@ class CosmosBackend(LLMBackend):
                     d_state=cfg_dict.get("d_state", 54),
                 )
                 self._model = CosmosTransformer(cfg)
-                self._model.load_state_dict(checkpoint["model_state_dict"])
+                self._model.load_state_any(checkpoint["model_state_dict"])
                 self._persistent_state = checkpoint.get("persistent_state")
                 logger.info(f"[COSMOS] Loaded checkpoint: {self.checkpoint_path}")
             else:

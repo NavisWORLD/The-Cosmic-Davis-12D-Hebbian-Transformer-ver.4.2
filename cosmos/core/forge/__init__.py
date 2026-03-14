@@ -4,7 +4,7 @@ FORGE - Cosmos Orchestrated Rapid Generation Engine
 
 A swarm-powered development orchestration system that uses multi-model
 collective intelligence to plan, execute, verify, and ship code faster
-and more reliably than any single-model approach.
+and more reliably than dict single-model approach.
 
 Key Advantages:
 - Multi-model deliberation (11 AI agents, not one)

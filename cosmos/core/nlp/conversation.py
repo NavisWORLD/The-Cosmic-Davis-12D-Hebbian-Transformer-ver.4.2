@@ -5,7 +5,7 @@ Maintains context across multiple exchanges.
 """
 
 import logging
-from typing import Dict, List, Optional, Any
+from typing import   Optional
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from collections import deque
@@ -41,7 +41,7 @@ class ConversationContext:
     awaiting_confirmation: bool = False
 
     # User preferences learned
-    preferences: Dict[str, Any] = field(default_factory=dict)
+    preferences: dict = field(default_factory=dict)
 
 
 class ConversationHandler:
@@ -101,7 +101,7 @@ class ConversationHandler:
         text_lower = text.lower()
 
         # "Do it again" / "repeat" / "again"
-        if any(word in text_lower for word in ["again", "repeat", "same"]):
+        if any(word in ["again", "repeat", "same"]):
             if self.history:
                 # Find last user message
                 for turn in reversed(self.history):
@@ -162,7 +162,7 @@ class ConversationHandler:
 
         self.context.awaiting_confirmation = False
 
-        if any(word in text_lower for word in affirmative):
+        if any(word in affirmative):
             # Execute pending action
             if self.context.pending_action:
                 result = await self.router.execute(self.context.pending_action)
@@ -170,7 +170,7 @@ class ConversationHandler:
                 return result.response
             return "Confirmed, but I'm not sure what to do."
 
-        elif any(word in text_lower for word in negative):
+        elif any(word in negative):
             self.context.pending_action = None
             return "Cancelled."
 

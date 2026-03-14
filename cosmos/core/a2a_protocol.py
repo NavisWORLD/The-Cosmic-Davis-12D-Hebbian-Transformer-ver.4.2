@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set, Awaitable
+from typing import  Callable, Optional, Set, Awaitable
 
 from loguru import logger
 
@@ -140,18 +140,18 @@ class A2AMessage:
     type: A2AMessageType
     source_agent: str
     target_agent: str
-    payload: Dict[str, Any]
+    payload: dict
     ttl: int = 30  # Time-to-live in seconds
     requires_ack: bool = False
     correlation_id: Optional[str] = None  # For request/response pairing
     created_at: datetime = field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
     # Acknowledgment tracking
     acknowledged: bool = False
     ack_time: Optional[datetime] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "id": self.id,
             "type": self.type.value,
@@ -167,7 +167,7 @@ class A2AMessage:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "A2AMessage":
+    def from_any(cls, data: dict) -> "A2AMessage":
         return cls(
             id=data["id"],
             type=A2AMessageType(data["type"]),
@@ -204,16 +204,16 @@ class A2ASession:
     updated_at: datetime = field(default_factory=datetime.now)
 
     # Session data
-    shared_context: Dict[str, Any] = field(default_factory=dict)
-    message_history: List[A2AMessage] = field(default_factory=list)
-    results: Dict[str, Any] = field(default_factory=dict)
+    shared_context: dict = field(default_factory=dict)
+    message_history: list[A2AMessage] = field(default_factory=list)
+    results: dict = field(default_factory=dict)
 
     # Configuration
     timeout_seconds: float = 600.0  # 10 minute default
     max_messages: int = 1000
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "session_id": self.session_id,
             "initiator": self.initiator,
@@ -251,13 +251,13 @@ class TaskBid:
     agent_id: str
     confidence: float  # 0-1 confidence in completing task
     estimated_tokens: int = 0
-    capabilities_offered: List[str] = field(default_factory=list)
-    constraints: List[str] = field(default_factory=list)
+    capabilities_offered: list[str] = field(default_factory=list)
+    constraints: list[str] = field(default_factory=list)
     status: BidStatus = BidStatus.PENDING
     submitted_at: datetime = field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "bid_id": self.bid_id,
             "auction_id": self.auction_id,
@@ -281,23 +281,23 @@ class TaskAuction:
     """
     auction_id: str
     task_description: str
-    required_capabilities: List[str]
+    required_capabilities: list[str]
     initiator: str
     deadline: datetime
     min_confidence: float = 0.5
 
     # State
-    bids: Dict[str, TaskBid] = field(default_factory=dict)  # agent_id -> bid
+    bids: dict[str, TaskBid] = field(default_factory=dict)  # agent_id -> bid
     winner: Optional[str] = None
     is_closed: bool = False
     created_at: datetime = field(default_factory=datetime.now)
 
     # Metadata
     priority: float = 0.5
-    context: Dict[str, Any] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    context: dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "auction_id": self.auction_id,
             "task_description": self.task_description,
@@ -305,7 +305,7 @@ class TaskAuction:
             "initiator": self.initiator,
             "deadline": self.deadline.isoformat(),
             "min_confidence": self.min_confidence,
-            "bids": {k: v.to_dict() for k, v in self.bids.items()},
+            "bids": {k: v.to_any() for k, v in self.bids.items()},
             "winner": self.winner,
             "is_closed": self.is_closed,
             "created_at": self.created_at.isoformat(),
@@ -382,20 +382,20 @@ class A2AProtocol:
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
         # Sessions
-        self._sessions: Dict[str, A2ASession] = {}
-        self._agent_sessions: Dict[str, Set[str]] = {}  # agent_id -> session_ids
+        self._sessions: dict[str, A2ASession] = {}
+        self._agent_sessions: dict[str, Set[str]] = {}  # agent_id -> session_ids
 
         # Auctions
-        self._auctions: Dict[str, TaskAuction] = {}
+        self._auctions: dict[str, TaskAuction] = {}
 
         # Message handlers
-        self._message_handlers: Dict[A2AMessageType, Callable] = {}
+        self._message_handlers: dict[A2AMessageType, Callable] = {}
 
         # Pending messages (for ack tracking)
-        self._pending_acks: Dict[str, A2AMessage] = {}
+        self._pending_acks: dict[str, A2AMessage] = {}
 
         # Skills registry (agent_id -> skill_ids)
-        self._agent_skills: Dict[str, Set[str]] = {}
+        self._agent_skills: dict[str, Set[str]] = {}
 
         # Nexus integration
         self._nexus = None
@@ -420,10 +420,10 @@ class A2AProtocol:
     async def request_session(
         self,
         initiator: str,
-        target_agents: List[str],
+        target_agents: list[str],
         purpose: str,
         timeout_seconds: float = 600.0,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict] = None,
     ) -> str:
         """Request a new collaboration session with agents."""
         session_id = f"sess_{uuid.uuid4().hex[:12]}"
@@ -510,7 +510,7 @@ class A2AProtocol:
         self,
         session_id: str,
         agent_id: str,
-        results: Optional[Dict[str, Any]] = None,
+        results: Optional[dict] = None,
     ) -> bool:
         """End a collaboration session."""
         if session_id not in self._sessions:
@@ -556,7 +556,7 @@ class A2AProtocol:
         source: str,
         target: str,
         message_type: A2AMessageType,
-        payload: Dict[str, Any],
+        payload: dict,
         requires_ack: bool = False,
         ttl: int = 30,
         correlation_id: Optional[str] = None,
@@ -594,7 +594,7 @@ class A2AProtocol:
         # Try P2P routing if available
         if self._p2p_fabric:
             try:
-                await self._p2p_fabric.send_a2a_message(message.to_dict())
+                await self._p2p_fabric.send_a2a_message(message.to_any())
             except Exception as e:
                 logger.debug(f"P2P routing failed: {e}")
 
@@ -633,11 +633,11 @@ class A2AProtocol:
         self,
         initiator: str,
         task_description: str,
-        required_capabilities: List[str],
+        required_capabilities: list[str],
         deadline_seconds: float = 30.0,
         min_confidence: float = 0.5,
         priority: float = 0.5,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[dict] = None,
     ) -> str:
         """Broadcast a task auction to all agents."""
         auction_id = f"auc_{uuid.uuid4().hex[:12]}"
@@ -668,7 +668,7 @@ class A2AProtocol:
         if self._p2p_fabric:
             await self._p2p_fabric.broadcast_message({
                 "type": "A2A_TASK_AUCTION",
-                "auction": auction.to_dict(),
+                "auction": auction.to_any(),
             })
 
         logger.info(f"Task auction {auction_id} broadcast by {initiator}")
@@ -679,9 +679,9 @@ class A2AProtocol:
         auction_id: str,
         agent_id: str,
         confidence: float,
-        capabilities_offered: Optional[List[str]] = None,
+        capabilities_offered: Optional[list[str]] = None,
         estimated_tokens: int = 0,
-        constraints: Optional[List[str]] = None,
+        constraints: Optional[list[str]] = None,
     ) -> Optional[str]:
         """Submit a bid for a task auction."""
         if auction_id not in self._auctions:
@@ -756,7 +756,7 @@ class A2AProtocol:
         self,
         source: str,
         target: str,
-        context: Dict[str, Any],
+        context: dict,
         context_type: str = "general",
     ) -> str:
         """Share context with another agent."""
@@ -788,7 +788,7 @@ class A2AProtocol:
         source: str,
         target: str,
         skill_id: str,
-        skill_data: Dict[str, Any],
+        skill_data: dict,
     ) -> str:
         """Transfer a skill definition to another agent."""
         message_id = await self.send_message(
@@ -817,7 +817,7 @@ class A2AProtocol:
             self._agent_skills[agent_id] = set()
         self._agent_skills[agent_id].add(skill_id)
 
-    def get_agents_with_skill(self, skill_id: str) -> List[str]:
+    def get_agents_with_skill(self, skill_id: str) -> list[str]:
         """Get agents that have a specific skill."""
         return [
             agent_id for agent_id, skills in self._agent_skills.items()
@@ -828,7 +828,7 @@ class A2AProtocol:
     # NEXUS INTEGRATION
     # =========================================================================
 
-    async def _emit_signal(self, signal_type: str, payload: Dict[str, Any]) -> None:
+    async def _emit_signal(self, signal_type: str, payload: dict) -> None:
         """Emit a signal to Nexus."""
         if not self._nexus:
             return
@@ -851,7 +851,7 @@ class A2AProtocol:
     # SESSION CLEANUP
     # =========================================================================
 
-    async def cleanup_expired(self) -> Dict[str, int]:
+    async def cleanup_expired(self) -> dict[str, int]:
         """Clean up expired sessions and auctions."""
         expired_sessions = []
         expired_auctions = []
@@ -895,7 +895,7 @@ class A2AProtocol:
         """Get a session by ID."""
         return self._sessions.get(session_id)
 
-    def get_agent_sessions(self, agent_id: str) -> List[A2ASession]:
+    def get_agent_sessions(self, agent_id: str) -> list[A2ASession]:
         """Get all sessions an agent is participating in."""
         session_ids = self._agent_sessions.get(agent_id, set())
         return [
@@ -907,7 +907,7 @@ class A2AProtocol:
         """Get an auction by ID."""
         return self._auctions.get(auction_id)
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get A2A protocol statistics."""
         active_sessions = sum(
             1 for s in self._sessions.values()

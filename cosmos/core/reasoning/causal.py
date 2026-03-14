@@ -13,7 +13,7 @@ Features:
 """
 
 import asyncio
-from typing import Dict, List, Set, Optional, Tuple
+from typing import   Set, Optional, Tuple
 from dataclasses import dataclass, field
 from loguru import logger
 import networkx as nx
@@ -37,13 +37,13 @@ class CausalGraph:
         """Register that A causes B."""
         self.graph.add_edge(cause, effect, weight=strength, lag=lag)
 
-    def get_causes(self, effect: str) -> List[str]:
+    def get_causes(self, effect: str) -> list[str]:
         """Backward tracing (Diagnosis)."""
         if effect not in self.graph:
             return []
         return list(self.graph.predecessors(effect))
 
-    def get_effects(self, cause: str) -> List[str]:
+    def get_effects(self, cause: str) -> list[str]:
         """Forward tracing (Prediction)."""
         if cause not in self.graph:
             return []
@@ -84,7 +84,7 @@ class CausalEngine:
             logger.info(f"Causal Inference: Hypothesizing link {action} -> {error}")
             # self.causal_graph.add_causality(action, error, strength=0.5)
 
-    def simulate_intervention(self, intervention_node: str) -> Dict[str, float]:
+    def simulate_intervention(self, intervention_node: str) -> dict[str, float]:
         """
         Simulate Do(X).
         Returns the probability changes in downstream nodes.

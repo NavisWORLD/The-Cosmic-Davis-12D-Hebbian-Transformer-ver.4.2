@@ -11,7 +11,7 @@ Supports collapsible panels, real-time updates, and interactive content.
 import asyncio
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Optional, Any, Callable
+from typing import   Optional, Callable
 from enum import Enum
 from loguru import logger
 
@@ -33,9 +33,9 @@ class UISection:
     state: SectionState = SectionState.COLLAPSED
     priority: int = 5  # 1-10, higher = more important
     updated_at: datetime = field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_dict(self) -> dict:
+    def to_any(self) -> dict:
         return {
             "id": self.section_id,
             "title": self.title,
@@ -52,7 +52,7 @@ class InteractivePanel:
     """A panel containing multiple sections."""
     panel_id: str
     title: str
-    sections: Dict[str, UISection] = field(default_factory=dict)
+    sections: dict[str, UISection] = field(default_factory=dict)
     layout: str = "vertical"  # vertical, horizontal, grid
     created_at: datetime = field(default_factory=datetime.now)
 
@@ -72,12 +72,12 @@ class InteractivePanel:
         """Get a section by ID."""
         return self.sections.get(section_id)
 
-    def to_dict(self) -> dict:
+    def to_any(self) -> dict:
         return {
             "id": self.panel_id,
             "title": self.title,
             "layout": self.layout,
-            "sections": [s.to_dict() for s in self.sections.values()],
+            "sections": [s.to_any() for s in self.sections.values()],
             "created_at": self.created_at.isoformat()
         }
 
@@ -94,8 +94,8 @@ class DynamicUIManager:
     """
 
     def __init__(self):
-        self.panels: Dict[str, InteractivePanel] = {}
-        self._update_callbacks: List[Callable] = []
+        self.panels: dict[str, InteractivePanel] = {}
+        self._update_callbacks: list[Callable] = []
         self._lock = asyncio.Lock()
 
         # Initialize default panels
@@ -271,9 +271,9 @@ class DynamicUIManager:
         """Get a panel by ID."""
         return self.panels.get(panel_id)
 
-    def get_all_panels(self) -> List[dict]:
+    def get_all_panels(self) -> list[dict]:
         """Get all panels as dictionaries."""
-        return [panel.to_dict() for panel in self.panels.values()]
+        return [panel.to_any() for panel in self.panels.values()]
 
     def render_html(self, panel_id: str) -> str:
         """Render a panel as HTML."""

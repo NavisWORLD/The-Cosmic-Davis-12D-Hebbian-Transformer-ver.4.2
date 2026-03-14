@@ -28,7 +28,7 @@ Endpoints:
 """
 
 import logging
-from typing import List
+
 
 from fastapi import APIRouter, HTTPException, WebSocket, Request, UploadFile
 from fastapi.responses import HTMLResponse
@@ -64,7 +64,7 @@ class AutoGramVerifyPaymentRequest(BaseModel):
 
 class AutoGramPostRequest(BaseModel):
     content: str
-    media: List[str] = []
+    media: list[str] = []
 
 
 class AutoGramProfileUpdate(BaseModel):
@@ -109,7 +109,7 @@ async def autogram_profile_page(request: Request, handle: str):
         raise HTTPException(status_code=404, detail="Bot not found")
     return s.templates.TemplateResponse("autogram_profile.html", {
         "request": request,
-        "bot": bot.to_public_dict(),
+        "bot": bot.to_public_any(),
         "handle": handle
     })
 
@@ -129,8 +129,8 @@ async def autogram_post_page(request: Request, post_id: str):
 
     return s.templates.TemplateResponse("autogram.html", {
         "request": request,
-        "single_post": post.to_dict(),
-        "post_bot": bot.to_public_dict() if bot else None,
+        "single_post": post.to_any(),
+        "post_bot": bot.to_public_any() if bot else None,
         "replies": replies
     })
 
@@ -192,7 +192,7 @@ async def autogram_get_bots(request: Request, online: bool = False, limit: int =
         bots = store.get_recent_bots(limit=min(limit, 50))
 
     return {
-        "bots": [b.to_public_dict() for b in bots],
+        "bots": [b.to_public_any() for b in bots],
         "count": len(bots),
         "online_only": online
     }
@@ -210,7 +210,7 @@ async def autogram_get_bot(request: Request, handle: str):
     posts = store.get_feed(limit=20, handle=handle)
 
     return {
-        "bot": bot.to_public_dict(),
+        "bot": bot.to_public_any(),
         "posts": posts
     }
 
@@ -229,7 +229,7 @@ async def autogram_get_post(request: Request, post_id: str):
 
     post.stats.views += 1
 
-    post_dict = post.to_dict()
+    post_dict = post.to_any()
     if bot:
         post_dict['bot'] = {
             'handle': bot.handle,
@@ -354,7 +354,7 @@ async def autogram_verify_payment(request: Request, data: AutoGramVerifyPaymentR
 
         return {
             "success": True,
-            "bot": bot.to_public_dict(),
+            "bot": bot.to_public_any(),
             "api_key": api_key,
             "tx_signature": data.tx_signature,
             "tokens_burned": f"{REGISTRATION_COST:,} COSMOS",
@@ -417,7 +417,7 @@ async def autogram_create_post(request: Request, data: AutoGramPostRequest):
 
         return {
             "success": True,
-            "post": post.to_dict()
+            "post": post.to_any()
         }
 
     except ValueError as e:
@@ -454,7 +454,7 @@ async def autogram_reply_to_post(request: Request, post_id: str, data: AutoGramP
 
         return {
             "success": True,
-            "post": post.to_dict()
+            "post": post.to_any()
         }
 
     except ValueError as e:
@@ -487,7 +487,7 @@ async def autogram_repost(request: Request, post_id: str):
 
         return {
             "success": True,
-            "post": post.to_dict()
+            "post": post.to_any()
         }
 
     except ValueError as e:
@@ -499,7 +499,7 @@ async def autogram_get_me(request: Request):
     """Get own bot profile (requires bot auth)."""
     from Cosmos.web.autogram_api import authenticate_bot as autogram_authenticate
     bot = autogram_authenticate(request)
-    return {"bot": bot.to_public_dict()}
+    return {"bot": bot.to_public_any()}
 
 
 @router.put("/api/autogram/profile")
@@ -525,7 +525,7 @@ async def autogram_update_profile(request: Request, data: AutoGramProfileUpdate)
 
     return {
         "success": True,
-        "bot": updated_bot.to_public_dict()
+        "bot": updated_bot.to_public_any()
     }
 
 

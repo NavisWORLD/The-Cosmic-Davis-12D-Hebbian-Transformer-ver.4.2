@@ -15,7 +15,7 @@ import json
 import asyncio
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import   Optional
 from dataclasses import dataclass, field, asdict
 from collections import defaultdict
 import logging
@@ -33,10 +33,10 @@ if not logger.handlers:
 class ConversationPattern:
     """A learned pattern from successful conversations."""
     pattern_id: str
-    trigger_phrases: List[str]  # What prompts this pattern
-    successful_responses: List[str]  # Responses that worked well
-    debate_strategies: List[str]  # Effective debate approaches
-    topic_associations: List[str]  # Related topics
+    trigger_phrases: list[str]  # What prompts this pattern
+    successful_responses: list[str]  # Responses that worked well
+    debate_strategies: list[str]  # Effective debate approaches
+    topic_associations: list[str]  # Related topics
     effectiveness_score: float = 0.5  # How well this pattern works
     usage_count: int = 0
     last_used: Optional[str] = None
@@ -47,10 +47,10 @@ class ConversationPattern:
 class PersonalityEvolution:
     """Track how a bot's personality evolves."""
     bot_name: str
-    traits: Dict[str, float] = field(default_factory=dict)  # trait -> strength
-    learned_phrases: List[str] = field(default_factory=list)
+    traits: dict[str, float] = field(default_factory=dict)  # trait -> strength
+    learned_phrases: list[str] = field(default_factory=list)
     debate_style: str = "collaborative"  # collaborative, assertive, socratic
-    topic_expertise: Dict[str, float] = field(default_factory=dict)
+    topic_expertise: dict[str, float] = field(default_factory=dict)
     interaction_count: int = 0
     evolution_generation: int = 1
 
@@ -62,7 +62,7 @@ class LearningEvent:
     bot_name: str
     user_input: str
     bot_response: str
-    other_bots_involved: List[str]
+    other_bots_involved: list[str]
     topic: str
     sentiment: str  # positive, negative, neutral
     debate_occurred: bool
@@ -86,10 +86,10 @@ class EvolutionEngine:
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
         # In-memory caches
-        self.patterns: Dict[str, ConversationPattern] = {}
-        self.personalities: Dict[str, PersonalityEvolution] = {}
-        self.learning_buffer: List[LearningEvent] = []
-        self.debate_history: List[Dict] = []
+        self.patterns: dict[str, ConversationPattern] = {}
+        self.personalities: dict[str, PersonalityEvolution] = {}
+        self.learning_buffer: list[LearningEvent] = []
+        self.debate_history: list[dict] = []
 
         # Evolution metrics
         self.total_learnings = 0
@@ -141,14 +141,14 @@ class EvolutionEngine:
         """Persist evolution state to storage."""
         try:
             # Save patterns
-            patterns_data = [asdict(p) for p in self.patterns.values()]
+            patterns_data = [asany(p) for p in self.patterns.values()]
             (self.storage_path / "patterns.json").write_text(
                 json.dumps(patterns_data, indent=2)
             )
 
             # Save personalities
             personalities_data = {
-                name: asdict(p) for name, p in self.personalities.items()
+                name: asany(p) for name, p in self.personalities.items()
             }
             (self.storage_path / "personalities.json").write_text(
                 json.dumps(personalities_data, indent=2)
@@ -171,7 +171,7 @@ class EvolutionEngine:
         bot_name: str,
         user_input: str,
         bot_response: str,
-        other_bots: List[str] = None,
+        other_bots: list[str] = None,
         topic: str = "general",
         sentiment: str = "neutral",
         debate_occurred: bool = False
@@ -240,9 +240,9 @@ class EvolutionEngine:
 
     def record_debate(
         self,
-        participants: List[str],
+        participants: list[str],
         topic: str,
-        positions: Dict[str, str],
+        positions: dict[str, str],
         resolution: Optional[str] = None,
         winner: Optional[str] = None
     ):
@@ -277,7 +277,7 @@ class EvolutionEngine:
             return
 
         # Group by topic
-        topic_groups = defaultdict(list)
+        topic_groups = defaultany(list)
         for event in self.learning_buffer:
             topic_groups[event.topic].append(event)
 
@@ -445,7 +445,7 @@ class EvolutionEngine:
 
         return "\n".join(prompt_parts)
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> dict:
         """Get evolution statistics."""
         return {
             "total_learnings": self.total_learnings,

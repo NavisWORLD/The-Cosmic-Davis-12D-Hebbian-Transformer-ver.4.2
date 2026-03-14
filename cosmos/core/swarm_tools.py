@@ -13,7 +13,7 @@ import os
 import re
 import shutil
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import   Tuple
 from loguru import logger
 from datetime import datetime
 
@@ -49,7 +49,7 @@ class CosmosCodeEditor:
             logger.error(f"[SWARM TOOLS] Backup failed for {file_path}: {e}")
             return None
 
-    def apply_edits_from_response(self, response: str, author: str) -> List[Dict]:
+    def apply_edits_from_response(self, response: str, author: str) -> list[dict]:
         """
         Scan an agent's response for code blocks intended for the live codebase.
         Format:

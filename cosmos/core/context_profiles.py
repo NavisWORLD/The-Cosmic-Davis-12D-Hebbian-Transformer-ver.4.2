@@ -15,7 +15,7 @@ import json
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import Optional
 import hashlib
 
 from loguru import logger
@@ -44,8 +44,8 @@ class ContextProfile:
     preferred_model: str = ""  # Empty = use default
 
     # Context hints
-    domain_keywords: List[str] = field(default_factory=list)
-    excluded_topics: List[str] = field(default_factory=list)
+    domain_keywords: list[str] = field(default_factory=list)
+    excluded_topics: list[str] = field(default_factory=list)
 
     # Metadata
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
@@ -65,7 +65,7 @@ class ContextProfileManager:
         self.data_dir = Path(data_dir) / "profiles"
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
-        self.profiles: Dict[str, ContextProfile] = {}
+        self.profiles: dict[str, ContextProfile] = {}
         self.active_profile_id: Optional[str] = None
         self._load()
 
@@ -248,11 +248,11 @@ class ContextProfileManager:
             return True
         return False
 
-    def list_profiles(self) -> List[ContextProfile]:
+    def list_profiles(self) -> list[ContextProfile]:
         """Get all profiles."""
         return sorted(self.profiles.values(), key=lambda p: -p.usage_count)
 
-    def get_profile_settings(self) -> Dict[str, Any]:
+    def get_profile_settings(self) -> dict:
         """Get settings for the active profile (for API/LLM configuration)."""
         profile = self.get_active_profile()
         if not profile:
@@ -271,7 +271,7 @@ class ContextProfileManager:
     def export_profile(self, profile_id: str) -> Optional[str]:
         """Export a profile as JSON."""
         if profile_id in self.profiles:
-            return json.dumps(asdict(self.profiles[profile_id]), indent=2)
+            return json.dumps(asany(self.profiles[profile_id]), indent=2)
         return None
 
     def import_profile(self, json_data: str) -> Optional[ContextProfile]:
@@ -290,7 +290,7 @@ class ContextProfileManager:
             logger.error(f"Failed to import profile: {e}")
             return None
 
-    def stats(self) -> Dict[str, Any]:
+    def stats(self) -> dict:
         """Get profile usage statistics."""
         return {
             "total_profiles": len(self.profiles),

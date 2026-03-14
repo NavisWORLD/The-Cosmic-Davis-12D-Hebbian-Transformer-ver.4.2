@@ -1,6 +1,6 @@
 
 import logging
-from typing import Dict, Any
+
 
 logger = logging.getLogger("BRAIN_SURGEON")
 
@@ -14,7 +14,7 @@ class BrainSurgeon:
         self.knowledge_base_status = "STATIC_2023" # Assumption for Llama 3/Mistral
         self.lobotomy_active = False
 
-    def diagnose(self) -> Dict[str, Any]:
+    def diagnose(self) -> dict:
         """
         Check the cortex health.
         If we are running on a fallback model (Ollama), we need to inject time.

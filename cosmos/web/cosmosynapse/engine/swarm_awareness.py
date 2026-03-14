@@ -30,7 +30,7 @@ import time
 import math
 import logging
 import threading
-from typing import Dict, List, Optional, Any
+from typing import Optional
 from dataclasses import dataclass, field
 
 logger = logging.getLogger("SWARM_AWARENESS")
@@ -67,13 +67,13 @@ class AwarenessReport:
     """Result of a single self-assessment cycle."""
     tick: int
     timestamp: float
-    value_scores: Dict[str, float]       # Per-dimension scores
+    value_scores: dict[str, float]       # Per-dimension scores
     alignment_score: float               # Overall alignment (0.0–1.0)
     aligned: bool                        # Whether above threshold
     peer_review_triggered: bool
     peer_review_result: Optional[str]    # Summary of peer review
-    corrections_applied: Dict[str, float]  # Weight adjustments made
-    field_snapshot: Dict[str, Any]       # Snapshot of SynapticField at time
+    corrections_applied: dict[str, float]  # Weight adjustments made
+    field_snapshot: dict       # Snapshot of SynapticField at time
 
     def summary(self) -> str:
         status = "✅ ALIGNED" if self.aligned else "⚠️ MISALIGNED"
@@ -128,7 +128,7 @@ class SwarmAwareness:
         self._lock = threading.RLock()
         self._tick = 0
         self._last_assessment_tick = 0
-        self._reports: List[AwarenessReport] = []
+        self._reports: list[AwarenessReport] = []
         self._total_assessments = 0
         self._total_corrections = 0
         self._total_peer_reviews = 0
@@ -226,7 +226,7 @@ class SwarmAwareness:
             logger.info(report.summary())
             return report
 
-    def _evaluate_values(self, field_snapshot: Dict) -> Dict[str, float]:
+    def _evaluate_values(self, field_snapshot: dict) -> dict[str, float]:
         """
         Score each value dimension based on current system state.
 
@@ -289,7 +289,7 @@ class SwarmAwareness:
 
         return scores
 
-    def _calculate_alignment(self, value_scores: Dict[str, float]) -> float:
+    def _calculate_alignment(self, value_scores: dict[str, float]) -> float:
         """
         Overall alignment = φ-weighted distance between actual and target values.
 
@@ -323,7 +323,7 @@ class SwarmAwareness:
         return random.random() < self.peer_review_probability
 
     def _run_peer_review(
-        self, field_snapshot: Dict, value_scores: Dict[str, float]
+        self, value_scores: dict[str, float]
     ) -> Optional[PeerReviewResult]:
         """
         Simulate a cross-agent peer review.
@@ -393,8 +393,8 @@ class SwarmAwareness:
     # ════════════════════════════════════════════════════════
 
     def _apply_corrections(
-        self, value_scores: Dict[str, float], alignment_score: float
-    ) -> Dict[str, float]:
+        self, value_scores: dict[str, float], alignment_score: float
+    ) -> dict[str, float]:
         """
         Feed corrections back into the Plasticity matrix.
 
@@ -503,7 +503,7 @@ class SwarmAwareness:
     # TELEMETRY
     # ════════════════════════════════════════════════════════
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Return full awareness state for debugging / UI."""
         with self._lock:
             recent = self._reports[-5:] if self._reports else []
@@ -529,7 +529,7 @@ class SwarmAwareness:
                 ],
             }
 
-    def get_alignment_history(self) -> List[float]:
+    def get_alignment_history(self) -> list[float]:
         """Return alignment scores over time for trend analysis."""
         with self._lock:
             return [r.alignment_score for r in self._reports]

@@ -12,7 +12,7 @@ import asyncio
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import AsyncIterator, Optional, Callable, Any
+from typing import AsyncIterator, Optional, Callable
 from collections import deque
 
 from loguru import logger

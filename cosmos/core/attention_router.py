@@ -15,7 +15,7 @@ WHO SHOULD RESPOND TO WHAT:
 
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import List, Dict, Optional, Set, Tuple
+, Optional, Set, Tuple
 from collections import Counter, defaultdict
 from loguru import logger
 
@@ -33,8 +33,8 @@ class Topic:
 class SpeakerExpertise:
     """Track speaker expertise in various topics."""
     name: str
-    topic_scores: Dict[str, float] = field(default_factory=dict)
-    participation_history: List[str] = field(default_factory=list)
+    topic_scores: dict[str, float] = field(default_factory=dict)
+    participation_history: list[str] = field(default_factory=list)
     success_rate: float = 0.5
 
 
@@ -136,14 +136,14 @@ class AttentionRouter:
         }
 
         # Conversation context
-        self.recent_topics: List[Tuple[str, float]] = []  # (topic, timestamp)
-        self.conversation_chain: List[str] = []  # Last N speakers
-        self.topic_transitions: Dict[str, Counter] = defaultdict(Counter)  # topic -> next topics
+        self.recent_topics: list[Tuple[str, float]] = []  # (topic, timestamp)
+        self.conversation_chain: list[str] = []  # Last N speakers
+        self.topic_transitions: dict[str, Counter] = defaultdict(Counter)  # topic -> next topics
 
         # Statistics
-        self.routing_history: List[Dict] = []
+        self.routing_history: list[dict] = []
 
-    def detect_topics(self, message: str, context: Optional[str] = None) -> List[Tuple[str, float]]:
+    def detect_topics(self, message: str, context: Optional[str] = None) -> list[Tuple[str, float]]:
         """
         Detect topics in message.
 
@@ -176,7 +176,7 @@ class AttentionRouter:
 
         return detected
 
-    def get_active_topics(self) -> List[str]:
+    def get_active_topics(self) -> list[str]:
         """Get currently active topics from recent conversation."""
         if not self.recent_topics:
             return []
@@ -189,7 +189,7 @@ class AttentionRouter:
         self,
         message: str,
         last_speaker: Optional[str] = None,
-        available_speakers: List[str] = None,
+        available_speakers: list[str] = None,
         context: Optional[str] = None
     ) -> Optional[str]:
         """
@@ -261,7 +261,7 @@ class AttentionRouter:
         logger.debug(f"Routed to {best_speaker[0]} (score: {best_speaker[1]:.2f}, topics: {detected_topics[:2]})")
         return best_speaker[0]
 
-    def _balanced_selection(self, available: List[str], exclude: Optional[str]) -> Optional[str]:
+    def _balanced_selection(self, available: list[str], exclude: Optional[str]) -> Optional[str]:
         """Fallback: balanced selection when no clear routing."""
         candidates = [s for s in available if s != exclude]
         if not candidates:
@@ -284,8 +284,8 @@ class AttentionRouter:
         self,
         message: str,
         initiator: str,
-        available: List[str]
-    ) -> List[str]:
+        available: list[str]
+    ) -> list[str]:
         """
         Suggest multi-hop routing (A asks B, B might ask C).
 
@@ -322,7 +322,7 @@ class AttentionRouter:
 
         return chain
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> dict:
         """Get routing statistics."""
         # Recent routing decisions
         recent = self.routing_history[-10:]
@@ -359,7 +359,7 @@ def get_attention_router() -> AttentionRouter:
 def route_to_best_speaker(
     message: str,
     last_speaker: Optional[str],
-    available: List[str],
+    available: list[str],
     context: Optional[str] = None
 ) -> Optional[str]:
     """Route message to best speaker."""
@@ -367,13 +367,13 @@ def route_to_best_speaker(
     return router.route_message(message, last_speaker, available, context)
 
 
-def detect_message_topics(message: str) -> List[Tuple[str, float]]:
+def detect_message_topics(message: str) -> list[Tuple[str, float]]:
     """Detect topics in message."""
     router = get_attention_router()
     return router.detect_topics(message)
 
 
-def get_routing_stats() -> Dict:
+def get_routing_stats() -> dict:
     """Get routing statistics."""
     router = get_attention_router()
     return router.get_stats()

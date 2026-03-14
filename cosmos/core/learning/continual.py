@@ -13,7 +13,7 @@ Features:
 
 import random
 import asyncio
-from typing import List, Dict, Any, Optional
+, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from loguru import logger
@@ -24,7 +24,7 @@ from Cosmos.core.nexus import nexus, Signal, SignalType
 class Experience:
     """A unit of experience to be preserved."""
     id: str
-    context_vector: List[float]
+    context_vector: list[float]
     action: str
     outcome: str
     importance: float  # computed based on reward/novelty
@@ -37,7 +37,7 @@ class ExperienceReplayBuffer:
     """
     def __init__(self, capacity: int = 1000):
         self.capacity = capacity
-        self.buffer: List[Experience] = []
+        self.buffer: list[Experience] = []
 
     def add(self, exp: Experience):
         if len(self.buffer) >= self.capacity:
@@ -46,7 +46,7 @@ class ExperienceReplayBuffer:
             self.buffer.pop(0)
         self.buffer.append(exp)
 
-    def sample(self, batch_size: int) -> List[Experience]:
+    def sample(self, batch_size: int) -> list[Experience]:
         if not self.buffer:
             return []
         return random.sample(self.buffer, min(len(self.buffer), batch_size))
@@ -85,7 +85,7 @@ class ContinualLearner:
             # Trigger a massive rehearsal sleep cycle if buffer is getting full?
             # For now, we just store it.
 
-    def _calculate_importance(self, data: Dict) -> float:
+    def _calculate_importance(self, data: dict) -> float:
         # Heuristic: Failures that were recovered are high importance
         # Successes on novel tasks are high importance
         if data.get("was_recovery", False):
@@ -94,7 +94,7 @@ class ContinualLearner:
             return 0.8
         return 0.5
 
-    async def validate_new_skill(self, skill_func: Any) -> bool:
+    async def validate_new_skill(self, skill_func: dict) -> bool:
         """
         Before adopting a new skill/tool/prompt, test it against the Replay Buffer
         to ensure it doesn't cause regression (Catastrophic Forgetting check).

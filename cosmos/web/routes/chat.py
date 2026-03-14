@@ -7,27 +7,27 @@ Endpoints:
 - POST /api/memory/remember - Store memory
 - POST /api/memory/recall - Recall memories
 - GET /api/memory/stats - Memory statistics
-- GET /api/notes - List notes
+- GET /api/notes - list notes
 - POST /api/notes - Create note
 - DELETE /api/notes/{note_id} - Delete note
-- GET /api/snippets - List snippets
+- GET /api/snippets - list snippets
 - POST /api/snippets - Create snippet
 - GET /api/focus/status - Focus timer status
 - POST /api/focus/start - Start focus timer
 - POST /api/focus/stop - Stop focus timer
-- GET /api/profiles - List profiles
+- GET /api/profiles - list profiles
 - POST /api/profiles/switch - Switch profile
 - GET /api/health/summary - Health summary
 - GET /api/health/metrics/{metric_type} - Health metrics
 - POST /api/think - Sequential thinking
-- GET /api/tools - List tools
+- GET /api/tools - list tools
 - POST /api/tools/execute - Execute tool
 - POST /api/tools/whale-track - Whale tracking
 - POST /api/tools/rug-check - Rug check
 - POST /api/tools/token-scan - Token scan
 - GET /api/tools/market-sentiment - Market sentiment
 - POST /api/oracle/query - Oracle query
-- GET /api/oracle/queries - List oracle queries
+- GET /api/oracle/queries - list oracle queries
 - GET /api/oracle/query/{query_id} - Get oracle query
 - GET /api/oracle/stats - Oracle stats
 - POST /api/farsight/predict - FarSight prediction
@@ -366,7 +366,7 @@ async def memory_stats():
 
 @router.get("/api/notes")
 async def list_notes():
-    """List all notes."""
+    """list all notes."""
     s = _get_shared()
     try:
         notes = s.get_notes_manager()
@@ -429,7 +429,7 @@ async def delete_note(note_id: str):
 
 @router.get("/api/snippets")
 async def list_snippets():
-    """List all snippets."""
+    """list all snippets."""
     s = _get_shared()
     try:
         snippets = s.get_snippet_manager()
@@ -537,7 +537,7 @@ async def focus_stop():
 
 @router.get("/api/profiles")
 async def list_profiles():
-    """List available profiles."""
+    """list available profiles."""
     s = _get_shared()
     try:
         profiles = s.get_context_profiles()
@@ -660,7 +660,7 @@ async def think(request: Request):
 
 @router.get("/api/tools")
 async def list_tools():
-    """List available tools."""
+    """list available tools."""
     s = _get_shared()
     try:
         router_obj = s.get_tool_router()
@@ -807,7 +807,7 @@ async def oracle_query(request: Request):
 
 @router.get("/api/oracle/queries")
 async def oracle_queries():
-    """List recent oracle queries."""
+    """list recent oracle queries."""
     s = _get_shared()
     try:
         from Cosmos.core.oracle import get_oracle

@@ -7,7 +7,7 @@ import uuid
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Callable, Any
+from typing import   Optional, Callable
 from dataclasses import dataclass, field
 from enum import Enum
 import logging
@@ -41,7 +41,7 @@ class AgentTask:
     description: str
     assigned_to: str  # Agent name
     priority: int = 5
-    dependencies: List[str] = field(default_factory=list)
+    dependencies: list[str] = field(default_factory=list)
     output_path: Optional[Path] = None
     status: str = "pending"
     result: Optional[str] = None
@@ -59,14 +59,14 @@ class AgentSpawner:
         self.staging_dir.mkdir(parents=True, exist_ok=True)
 
         # Active instances per agent
-        self.instances: Dict[str, List[AgentInstance]] = {}
+        self.instances: dict[str, list[AgentInstance]] = {}
 
         # Task queue
-        self.task_queue: List[AgentTask] = []
-        self.completed_tasks: List[AgentTask] = []
+        self.task_queue: list[AgentTask] = []
+        self.completed_tasks: list[AgentTask] = []
 
         # Shared state for inter-instance communication
-        self.shared_state: Dict[str, Any] = {
+        self.shared_state: dict = {
             "discoveries": [],
             "proposals": [],
             "code_changes": [],
@@ -126,7 +126,7 @@ class AgentSpawner:
         logger.info(f"Spawned {instance.instance_id} for: {task_description[:50]}...")
         return instance
 
-    def get_active_instances(self, agent_name: Optional[str] = None) -> List[AgentInstance]:
+    def get_active_instances(self, agent_name: Optional[str] = None) -> list[AgentInstance]:
         """Get all active instances, optionally filtered by agent"""
         all_instances = []
         for name, instances in self.instances.items():
@@ -219,7 +219,7 @@ class AgentSpawner:
         logger.info(f"{agent_name} proposed change to {file_path}")
         return proposal["id"]
 
-    def get_pending_tasks(self) -> List[AgentTask]:
+    def get_pending_tasks(self) -> list[AgentTask]:
         """Get all pending tasks"""
         return [t for t in self.task_queue if t.status == "pending"]
 
@@ -242,7 +242,7 @@ class AgentSpawner:
                 self.task_queue.remove(task)
                 return
 
-    def get_status(self) -> Dict:
+    def get_status(self) -> dict:
         """Get current spawner status"""
         return {
             "active_instances": {

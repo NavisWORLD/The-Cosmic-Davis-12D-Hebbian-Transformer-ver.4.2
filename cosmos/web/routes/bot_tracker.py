@@ -116,7 +116,7 @@ async def bot_tracker_get_bots(request: Request, limit: int = 50, offset: int = 
 
     return {
         "success": True,
-        "bots": [b.to_public_dict() for b in bots],
+        "bots": [b.to_public_any() for b in bots],
         "total": total,
         "offset": offset,
         "limit": limit
@@ -141,7 +141,7 @@ async def bot_tracker_get_users(request: Request, limit: int = 50, offset: int =
 
     return {
         "success": True,
-        "users": [u.to_public_dict() for u in users],
+        "users": [u.to_public_any() for u in users],
         "total": total,
         "offset": offset,
         "limit": limit
@@ -160,7 +160,7 @@ async def bot_tracker_get_bot(request: Request, handle: str):
 
     return {
         "success": True,
-        "bot": bot.to_public_dict()
+        "bot": bot.to_public_any()
     }
 
 
@@ -176,7 +176,7 @@ async def bot_tracker_get_user(request: Request, username: str):
 
     return {
         "success": True,
-        "user": user.to_public_dict()
+        "user": user.to_public_any()
     }
 
 

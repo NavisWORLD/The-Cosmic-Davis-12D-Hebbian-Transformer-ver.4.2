@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Callable, Awaitable
+from typing import   Optional, Set, Callable, Awaitable
 
 from loguru import logger
 
@@ -77,14 +77,14 @@ class CrossAgentContext:
     source_agent: str
     namespace: MemoryNamespace
     confidence: float = 0.8
-    relevance_tags: List[str] = field(default_factory=list)
-    related_contexts: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    relevance_tags: list[str] = field(default_factory=list)
+    related_contexts: list[str] = field(default_factory=list)
+    metadata: dict = field(default_factory=dict)
     created_at: datetime = field(default_factory=datetime.now)
     expires_at: Optional[datetime] = None
-    embedding: Optional[List[float]] = None
+    embedding: Optional[list[float]] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "id": self.id,
             "context_type": self.context_type.value,
@@ -100,7 +100,7 @@ class CrossAgentContext:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CrossAgentContext":
+    def from_any(cls, data: dict) -> "CrossAgentContext":
         return cls(
             id=data["id"],
             context_type=ContextType(data["context_type"]),
@@ -130,33 +130,33 @@ class HandoffContext:
     task_description: str
 
     # Memory references
-    relevant_contexts: List[CrossAgentContext] = field(default_factory=list)
-    memory_refs: List[str] = field(default_factory=list)
+    relevant_contexts: list[CrossAgentContext] = field(default_factory=list)
+    memory_refs: list[str] = field(default_factory=list)
 
     # Learned information
-    insights: List[str] = field(default_factory=list)
-    failed_approaches: List[Dict[str, Any]] = field(default_factory=list)
-    success_patterns: List[Dict[str, Any]] = field(default_factory=list)
-    open_questions: List[str] = field(default_factory=list)
-    constraints: List[str] = field(default_factory=list)
+    insights: list[str] = field(default_factory=list)
+    failed_approaches: list[dict] = field(default_factory=list)
+    success_patterns: list[dict] = field(default_factory=list)
+    open_questions: list[str] = field(default_factory=list)
+    constraints: list[str] = field(default_factory=list)
 
     # State transfer
-    partial_results: Dict[str, Any] = field(default_factory=dict)
-    context_state: Dict[str, Any] = field(default_factory=dict)
+    partial_results: dict = field(default_factory=dict)
+    context_state: dict = field(default_factory=dict)
 
     # Metadata
     priority: float = 0.5
     created_at: datetime = field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_any(self) -> dict:
         return {
             "handoff_id": self.handoff_id,
             "source_agent": self.source_agent,
             "target_agent": self.target_agent,
             "reason": self.reason.value,
             "task_description": self.task_description,
-            "relevant_contexts": [c.to_dict() for c in self.relevant_contexts],
+            "relevant_contexts": [c.to_any() for c in self.relevant_contexts],
             "memory_refs": self.memory_refs,
             "insights": self.insights,
             "failed_approaches": self.failed_approaches,
@@ -171,7 +171,7 @@ class HandoffContext:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "HandoffContext":
+    def from_any(cls, data: dict) -> "HandoffContext":
         return cls(
             handoff_id=data["handoff_id"],
             source_agent=data["source_agent"],
@@ -179,7 +179,7 @@ class HandoffContext:
             reason=HandoffReason(data["reason"]),
             task_description=data["task_description"],
             relevant_contexts=[
-                CrossAgentContext.from_dict(c) for c in data.get("relevant_contexts", [])
+                CrossAgentContext.from_any(c) for c in data.get("relevant_contexts", [])
             ],
             memory_refs=data.get("memory_refs", []),
             insights=data.get("insights", []),
@@ -199,10 +199,10 @@ class HandoffContext:
 class NamespaceStore:
     """Storage for a memory namespace."""
     namespace: MemoryNamespace
-    contexts: Dict[str, CrossAgentContext] = field(default_factory=dict)
+    contexts: dict[str, CrossAgentContext] = field(default_factory=dict)
     members: Set[str] = field(default_factory=set)  # Agent IDs with access
     created_at: datetime = field(default_factory=datetime.now)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
 
 # =============================================================================
@@ -222,15 +222,15 @@ class CrossAgentMemory:
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
         # Namespace stores
-        self._namespaces: Dict[str, NamespaceStore] = {}
-        self._global_store: Dict[str, CrossAgentContext] = {}
+        self._namespaces: dict[str, NamespaceStore] = {}
+        self._global_store: dict[str, CrossAgentContext] = {}
 
         # Agent registrations
-        self._agent_namespaces: Dict[str, Set[str]] = {}  # agent_id -> namespace_ids
+        self._agent_namespaces: dict[str, Set[str]] = {}  # agent_id -> namespace_ids
 
         # Handoff tracking
-        self._pending_handoffs: Dict[str, HandoffContext] = {}
-        self._handoff_history: List[Dict[str, Any]] = []
+        self._pending_handoffs: dict[str, HandoffContext] = {}
+        self._handoff_history: list[dict] = []
 
         # Nexus integration
         self._nexus = None
@@ -257,7 +257,7 @@ class CrossAgentMemory:
         namespace_type: MemoryNamespace,
         name: str,
         members: Optional[Set[str]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict] = None,
     ) -> str:
         """Create a new memory namespace."""
         namespace_id = f"ns_{namespace_type.value}_{uuid.uuid4().hex[:8]}"
@@ -326,8 +326,8 @@ class CrossAgentMemory:
         content: str,
         namespace_id: str,
         confidence: float = 0.8,
-        relevance_tags: Optional[List[str]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        relevance_tags: Optional[list[str]] = None,
+        metadata: Optional[dict] = None,
     ) -> str:
         """Inject a new context into a namespace."""
         if namespace_id not in self._namespaces:
@@ -382,13 +382,13 @@ class CrossAgentMemory:
         self,
         agent_id: str,
         query: Optional[str] = None,
-        namespace_ids: Optional[List[str]] = None,
-        context_types: Optional[List[ContextType]] = None,
+        namespace_ids: Optional[list[str]] = None,
+        context_types: Optional[list[ContextType]] = None,
         limit: int = 10,
         min_confidence: float = 0.0,
-    ) -> List[CrossAgentContext]:
+    ) -> list[CrossAgentContext]:
         """Recall relevant contexts for an agent."""
-        results: List[CrossAgentContext] = []
+        results: list[CrossAgentContext] = []
 
         # Get accessible namespaces
         if namespace_ids:
@@ -405,7 +405,7 @@ class CrossAgentMemory:
             ])
 
         # Collect contexts from accessible namespaces
-        candidates: List[CrossAgentContext] = []
+        candidates: list[CrossAgentContext] = []
         for ns_id in set(accessible):
             if ns_id in self._namespaces:
                 candidates.extend(self._namespaces[ns_id].contexts.values())
@@ -430,9 +430,9 @@ class CrossAgentMemory:
     async def _semantic_search(
         self,
         query: str,
-        candidates: List[CrossAgentContext],
+        candidates: list[CrossAgentContext],
         limit: int,
-    ) -> List[CrossAgentContext]:
+    ) -> list[CrossAgentContext]:
         """Perform semantic search on candidates."""
         if not self._embed_fn or not candidates:
             return candidates[:limit]
@@ -461,7 +461,7 @@ class CrossAgentMemory:
             logger.debug(f"Semantic search failed: {e}")
             return candidates[:limit]
 
-    def _cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
+    def _cosine_similarity(self, vec1: list[float], vec2: list[float]) -> float:
         """Compute cosine similarity between two vectors."""
         if not vec1 or not vec2 or len(vec1) != len(vec2):
             return 0.0
@@ -499,13 +499,13 @@ class CrossAgentMemory:
         task_description: str,
         reason: HandoffReason,
         target_agent: Optional[str] = None,
-        insights: Optional[List[str]] = None,
-        failed_approaches: Optional[List[Dict[str, Any]]] = None,
-        success_patterns: Optional[List[Dict[str, Any]]] = None,
-        open_questions: Optional[List[str]] = None,
-        constraints: Optional[List[str]] = None,
-        partial_results: Optional[Dict[str, Any]] = None,
-        context_state: Optional[Dict[str, Any]] = None,
+        insights: Optional[list[str]] = None,
+        failed_approaches: Optional[list[dict]] = None,
+        success_patterns: Optional[list[dict]] = None,
+        open_questions: Optional[list[str]] = None,
+        constraints: Optional[list[str]] = None,
+        partial_results: Optional[dict] = None,
+        context_state: Optional[dict] = None,
         priority: float = 0.5,
     ) -> HandoffContext:
         """Prepare a complete handoff context for agent transition."""
@@ -593,7 +593,7 @@ class CrossAgentMemory:
     def get_pending_handoffs(
         self,
         target_agent: Optional[str] = None,
-    ) -> List[HandoffContext]:
+    ) -> list[HandoffContext]:
         """Get pending handoffs, optionally filtered by target."""
         handoffs = list(self._pending_handoffs.values())
 
@@ -611,10 +611,10 @@ class CrossAgentMemory:
 
     async def merge_agent_memories(
         self,
-        agent_ids: List[str],
+        agent_ids: list[str],
         target_namespace_id: str,
         merge_strategy: str = "union",
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """Merge memories from multiple agents into a namespace."""
         if target_namespace_id not in self._namespaces:
             raise ValueError(f"Unknown namespace: {target_namespace_id}")
@@ -664,7 +664,7 @@ class CrossAgentMemory:
     # NEXUS INTEGRATION
     # =========================================================================
 
-    async def _emit_signal(self, signal_type: str, payload: Dict[str, Any]) -> None:
+    async def _emit_signal(self, signal_type: str, payload: dict) -> None:
         """Emit a signal to Nexus."""
         if not self._nexus:
             return
@@ -693,7 +693,7 @@ class CrossAgentMemory:
             "namespaces": {
                 ns_id: {
                     "namespace": store.namespace.value,
-                    "contexts": [c.to_dict() for c in store.contexts.values()],
+                    "contexts": [c.to_any() for c in store.contexts.values()],
                     "members": list(store.members),
                     "metadata": store.metadata,
                 }
@@ -724,7 +724,7 @@ class CrossAgentMemory:
                 store = NamespaceStore(
                     namespace=MemoryNamespace(ns_data["namespace"]),
                     contexts={
-                        c["id"]: CrossAgentContext.from_dict(c)
+                        c["id"]: CrossAgentContext.from_any(c)
                         for c in ns_data.get("contexts", [])
                     },
                     members=set(ns_data.get("members", [])),
@@ -751,7 +751,7 @@ class CrossAgentMemory:
     # STATUS AND METRICS
     # =========================================================================
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get cross-agent memory statistics."""
         total_contexts = sum(
             len(store.contexts) for store in self._namespaces.values()
@@ -798,8 +798,8 @@ class ChaosBuffer:
     def __init__(self, max_size: int = 100, drift_threshold: float = 0.45):
         self.max_size = max_size
         self.drift_threshold = drift_threshold
-        self._buffer: List[float] = []
-        self._drift_history: List[float] = []
+        self._buffer: list[float] = []
+        self._drift_history: list[float] = []
         self._recovery_triggered = False
         self._total_injections = 0
         self._total_recoveries = 0
@@ -865,7 +865,7 @@ class ChaosBuffer:
             return self._drift_history[-1]
         return 0.0
 
-    def get_entropy_stats(self) -> Dict[str, Any]:
+    def get_entropy_stats(self) -> dict:
         """Return buffer statistics for telemetry."""
         import math
         recent = self._buffer[-20:] if self._buffer else []

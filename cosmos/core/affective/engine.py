@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict, Optional
+, Optional
 from datetime import datetime
 from .models import AffectiveState, EmotionCategory, SystemAction, SystemPriority
 
@@ -10,10 +10,10 @@ class AffectiveEngine:
     Emotion-to-Action Engine.
     Maps affective states to system priorities and actions.
     """
-    def __init__(self, config: Optional[Dict] = None):
+    def __init__(self, config: Optional[dict] = None):
         self.config = config or {}
         self.current_state = AffectiveState()
-        self.action_history: List[SystemAction] = []
+        self.action_history: list[SystemAction] = []
         
         # Default policy mapping
         # This could be loaded from a JSON/YAML file in the future
@@ -25,7 +25,7 @@ class AffectiveEngine:
             EmotionCategory.ANXIETY: self._handle_anxiety
         }
 
-    def update_state(self, new_state: AffectiveState) -> List[SystemAction]:
+    def update_state(self, new_state: AffectiveState) -> list[SystemAction]:
         """
         Ingests a new affective state and returns a list of recommended system actions.
         """
@@ -36,13 +36,13 @@ class AffectiveEngine:
         self.action_history.extend(actions)
         return actions
 
-    def _evaluate_policy(self, state: AffectiveState) -> List[SystemAction]:
+    def _evaluate_policy(self, state: AffectiveState) -> list[SystemAction]:
         handler = self.policy_map.get(state.primary_emotion)
         if handler:
             return handler(state)
         return []
 
-    def _handle_frustration(self, state: AffectiveState) -> List[SystemAction]:
+    def _handle_frustration(self, state: AffectiveState) -> list[SystemAction]:
         """
         User is frustrated. System should simplify, slow down, or ask for clarification.
         """
@@ -63,7 +63,7 @@ class AffectiveEngine:
         ))
         return actions
 
-    def _handle_exhaustion(self, state: AffectiveState) -> List[SystemAction]:
+    def _handle_exhaustion(self, state: AffectiveState) -> list[SystemAction]:
         """
         User is exhausted. System should summarize and defer non-critical items.
         """
@@ -82,7 +82,7 @@ class AffectiveEngine:
             )
         ]
 
-    def _handle_flow(self, state: AffectiveState) -> List[SystemAction]:
+    def _handle_flow(self, state: AffectiveState) -> list[SystemAction]:
         """
         User is in flow state. DO NOT DISTURB.
         """
@@ -101,7 +101,7 @@ class AffectiveEngine:
             )
         ]
 
-    def _handle_focus(self, state: AffectiveState) -> List[SystemAction]:
+    def _handle_focus(self, state: AffectiveState) -> list[SystemAction]:
          return [
             SystemAction(
                 action_id="mute_notifications",
@@ -111,7 +111,7 @@ class AffectiveEngine:
             )
         ]
 
-    def _handle_anxiety(self, state: AffectiveState) -> List[SystemAction]:
+    def _handle_anxiety(self, state: AffectiveState) -> list[SystemAction]:
         """
         User is anxious. Provide reassurance and break down tasks.
         """

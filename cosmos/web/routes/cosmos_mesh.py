@@ -150,7 +150,7 @@ async def latent_route_test(prompt: str = "What is the capital of France?"):
     if not node or not node._latent_router:
         return JSONResponse({"error": "Latent router not available"}, status_code=503)
 
-    decision = node._latent_router.route(prompt, list(node.get_all_bots().keys()))
+    decision = node._latent_router.route(prompt(node.get_all_bots().keys()))
     return JSONResponse({
         "prompt": prompt,
         "selected_bot": decision.selected_bot,

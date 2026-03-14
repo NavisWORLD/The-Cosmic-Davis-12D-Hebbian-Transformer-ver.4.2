@@ -14,7 +14,7 @@ Tools available to the collective:
 
 import re
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any
+from typing import   Optional
 from loguru import logger
 
 from .deliberation import DeliberationResult
@@ -25,9 +25,9 @@ class ToolDefinition:
     """Definition of an available tool."""
     name: str
     description: str
-    triggers: List[str]  # Keywords that suggest this tool
+    triggers: list[str]  # Keywords that suggest this tool
     capability: str  # What it can do
-    requires: List[str] = field(default_factory=list)  # Prerequisites
+    requires: list[str] = field(default_factory=list)  # Prerequisites
 
 
 @dataclass
@@ -35,10 +35,10 @@ class ToolDecision:
     """A collective decision about tool usage."""
     should_use_tool: bool
     tool_name: Optional[str] = None
-    parameters: Dict[str, Any] = field(default_factory=dict)
+    parameters: dict = field(default_factory=dict)
     confidence: float = 0.0
-    agents_for: List[str] = field(default_factory=list)  # Agents who suggested it
-    agents_against: List[str] = field(default_factory=list)
+    agents_for: list[str] = field(default_factory=list)  # Agents who suggested it
+    agents_against: list[str] = field(default_factory=list)
     reasoning: str = ""
 
 
@@ -183,7 +183,7 @@ The collective will vote on whether to use tools based on all suggestions.
 
         Returns a ToolDecision with the collective's choice.
         """
-        tool_votes: Dict[str, Dict[str, List[str]]] = {
+        tool_votes: dict[str[str[str]]] = {
             tool: {"for": [], "against": []}
             for tool in self.AVAILABLE_TOOLS
         }
@@ -206,7 +206,7 @@ The collective will vote on whether to use tools based on all suggestions.
                         tool_votes[tool_name]["for"].append(agent)
 
                     # Check for explicit suggestions
-                    if any(phrase in content_lower for phrase in [
+                    if any(phrase in [
                         f"recommend {tool_name}",
                         f"suggest {tool_name}",
                         f"we should {tool_name}",
@@ -217,11 +217,11 @@ The collective will vote on whether to use tools based on all suggestions.
                             tool_votes[tool_name]["for"].append(agent)
 
                 # Check for text-only indicators
-                if any(ind in content_lower for ind in self.TEXT_ONLY_INDICATORS):
+                if any(ind in self.TEXT_ONLY_INDICATORS):
                     for tool_name in ["generate_image", "generate_video"]:
                         tool_votes[tool_name]["against"].append(agent)
 
-        # Determine winning tool (if any)
+        # Determine winning tool (if dict)
         best_tool = None
         best_score = 0
 
@@ -250,14 +250,14 @@ The collective will vote on whether to use tools based on all suggestions.
         else:
             return ToolDecision(
                 should_use_tool=False,
-                reasoning="Not enough support for any tool",
+                reasoning="Not enough support for dict tool",
             )
 
     def _extract_tool_parameters(
         self,
         result: DeliberationResult,
         tool_name: str
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """
         Extract parameters for a tool from the deliberation content.
 
@@ -317,9 +317,9 @@ The collective will vote on whether to use tools based on all suggestions.
         return params
 
     def format_tool_calling_prompt(self, task_description: str = "") -> str:
-        """Format tool instructions for any model (API or local).
+        """Format tool instructions for dict model (API or local).
 
-        Returns a model-agnostic prompt section that teaches any model
+        Returns a model-agnostic prompt section that teaches dict model
         how to reference and use available tools via Python imports.
         """
         lines = ["TOOLS YOU CAN USE:"]

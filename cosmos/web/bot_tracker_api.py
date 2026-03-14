@@ -6,7 +6,7 @@ receiving unique tokens for authentication and verification.
 
 Each bot gets a unique token ID.
 Each user gets a unique token ID linked to their bots.
-Tokens can be used by anyone running an auth server to verify bot ownership.
+Tokens can be used by dictone running an auth server to verify bot ownership.
 """
 
 import json
@@ -15,7 +15,7 @@ import hashlib
 import re
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional, Dict, List, Any, Tuple
+from typing import Optional, Tuple
 from dataclasses import dataclass, field, asdict
 from loguru import logger
 
@@ -92,12 +92,12 @@ class BotEntry:
     updated_at: str = field(default_factory=lambda: datetime.now().isoformat())
     verified: bool = False
     active: bool = True
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_dict(self) -> Dict:
-        return asdict(self)
+    def to_any(self) -> dict:
+        return asany(self)
 
-    def to_public_dict(self) -> Dict:
+    def to_public_any(self) -> dict:
         """Return public info (no sensitive data)."""
         return {
             "bot_id": self.bot_id,
@@ -126,17 +126,17 @@ class UserEntry:
     x_profile: str = ""
     x_profile_url: str = ""
     avatar: str = "/static/images/bot_tracker/default_user.png"
-    owned_bots: List[str] = field(default_factory=list)
+    owned_bots: list[str] = field(default_factory=list)
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
     updated_at: str = field(default_factory=lambda: datetime.now().isoformat())
     verified: bool = False
     active: bool = True
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
-    def to_dict(self) -> Dict:
-        return asdict(self)
+    def to_any(self) -> dict:
+        return asany(self)
 
-    def to_public_dict(self) -> Dict:
+    def to_public_any(self) -> dict:
         """Return public info (no sensitive data)."""
         return {
             "user_id": self.user_id,
@@ -161,11 +161,11 @@ class TokenEntry:
     entity_id: str
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
     last_used: Optional[str] = None
-    permissions: List[str] = field(default_factory=lambda: ["read"])
+    permissions: list[str] = field(default_factory=lambda: ["read"])
     active: bool = True
 
-    def to_dict(self) -> Dict:
-        return asdict(self)
+    def to_any(self) -> dict:
+        return asany(self)
 
 
 class BotTrackerStore:
@@ -175,16 +175,16 @@ class BotTrackerStore:
     """
 
     def __init__(self):
-        self.bots: Dict[str, BotEntry] = {}
-        self.users: Dict[str, UserEntry] = {}
-        self.tokens: Dict[str, TokenEntry] = {}
+        self.bots: dict[str, BotEntry] = {}
+        self.users: dict[str, UserEntry] = {}
+        self.tokens: dict[str, TokenEntry] = {}
 
         # Indexes for fast lookup
-        self.bot_by_handle: Dict[str, str] = {}
-        self.bot_by_token: Dict[str, str] = {}
-        self.user_by_username: Dict[str, str] = {}
-        self.user_by_token: Dict[str, str] = {}
-        self.user_by_email_hash: Dict[str, str] = {}
+        self.bot_by_handle: dict[str, str] = {}
+        self.bot_by_token: dict[str, str] = {}
+        self.user_by_username: dict[str, str] = {}
+        self.user_by_token: dict[str, str] = {}
+        self.user_by_email_hash: dict[str, str] = {}
 
         # Load existing data
         self._load_data()
@@ -234,7 +234,7 @@ class BotTrackerStore:
         """Save bots to JSON file."""
         try:
             data = {
-                "bots": [bot.to_dict() for bot in self.bots.values()],
+                "bots": [bot.to_any() for bot in self.bots.values()],
                 "updated_at": datetime.now().isoformat()
             }
             with open(BOTS_FILE, 'w') as f:
@@ -246,7 +246,7 @@ class BotTrackerStore:
         """Save users to JSON file."""
         try:
             data = {
-                "users": [user.to_dict() for user in self.users.values()],
+                "users": [user.to_any() for user in self.users.values()],
                 "updated_at": datetime.now().isoformat()
             }
             with open(USERS_FILE, 'w') as f:
@@ -258,7 +258,7 @@ class BotTrackerStore:
         """Save tokens to JSON file."""
         try:
             data = {
-                "tokens": {tid: token.to_dict() for tid, token in self.tokens.items()},
+                "tokens": {tid: token.to_any() for tid, token in self.tokens.items()},
                 "updated_at": datetime.now().isoformat()
             }
             with open(TOKENS_FILE, 'w') as f:
@@ -397,8 +397,8 @@ class BotTrackerStore:
         offset: int = 0,
         search: str = "",
         verified_only: bool = False
-    ) -> List[BotEntry]:
-        """List bots with optional filtering."""
+    ) -> list[BotEntry]:
+        """list bots with optional filtering."""
         bots = list(self.bots.values())
 
         # Filter active only
@@ -534,7 +534,7 @@ class BotTrackerStore:
 
     # ==================== TOKEN OPERATIONS ====================
 
-    def verify_token(self, token_id: str) -> Dict:
+    def verify_token(self, token_id: str) -> dict:
         """
         Verify a token and return entity information.
         This is the main endpoint for external auth servers.
@@ -559,7 +559,7 @@ class BotTrackerStore:
             return {
                 "valid": True,
                 "entity_type": "bot",
-                "entity": bot.to_public_dict(),
+                "entity": bot.to_public_any(),
                 "permissions": token.permissions,
                 "verified_at": datetime.now().isoformat()
             }
@@ -570,7 +570,7 @@ class BotTrackerStore:
             return {
                 "valid": True,
                 "entity_type": "user",
-                "entity": user.to_public_dict(),
+                "entity": user.to_public_any(),
                 "permissions": token.permissions,
                 "verified_at": datetime.now().isoformat()
             }
@@ -627,11 +627,11 @@ class BotTrackerStore:
 
     # ==================== CONVENIENCE METHODS ====================
 
-    def get_all_bots(self) -> List[BotEntry]:
+    def get_all_bots(self) -> list[BotEntry]:
         """Get all active bots."""
         return [b for b in self.bots.values() if b.active]
 
-    def get_all_users(self) -> List[UserEntry]:
+    def get_all_users(self) -> list[UserEntry]:
         """Get all active users."""
         return [u for u in self.users.values() if u.active]
 
@@ -697,12 +697,12 @@ class BotTrackerStore:
 
     # ==================== SEARCH & STATS ====================
 
-    def search(self, query: str, limit: int = 20) -> Dict:
+    def search(self, query: str, limit: int = 20) -> dict:
         """Search bots and users."""
         query_lower = query.lower()
 
         bots = [
-            b.to_public_dict() for b in self.bots.values()
+            b.to_public_any() for b in self.bots.values()
             if b.active and (
                 query_lower in b.handle.lower()
                 or query_lower in b.display_name.lower()
@@ -711,7 +711,7 @@ class BotTrackerStore:
         ][:limit]
 
         users = [
-            u.to_public_dict() for u in self.users.values()
+            u.to_public_any() for u in self.users.values()
             if u.active and (
                 query_lower in u.username.lower()
                 or query_lower in u.display_name.lower()
@@ -721,7 +721,7 @@ class BotTrackerStore:
 
         return {"bots": bots, "users": users}
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> dict:
         """Get registry statistics."""
         return {
             "total_bots": len([b for b in self.bots.values() if b.active]),

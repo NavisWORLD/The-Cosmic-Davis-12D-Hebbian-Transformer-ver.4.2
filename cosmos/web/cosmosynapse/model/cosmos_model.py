@@ -399,7 +399,7 @@ class Cosmos54DBlock(nn.Module):
             nn.Dropout(config.dropout),
         )
 
-    def forward(self, x: torch.Tensor, mask: Optional[torch.Tensor] = None) -> Tuple[torch.Tensor, dict]:
+    def forward(self, x: torch.Tensor, mask: Optional[torch.Tensor] = None) -> Tuple[torch.Tensor]:
         """
         Forward pass through one 54D block.
 

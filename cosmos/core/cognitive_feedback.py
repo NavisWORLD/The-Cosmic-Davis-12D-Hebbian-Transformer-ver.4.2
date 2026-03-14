@@ -29,7 +29,7 @@ import time
 from collections import deque
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import   Optional, Tuple
 from dataclasses import dataclass, field, asdict
 
 logger = logging.getLogger("COSMOS_FEEDBACK")
@@ -80,10 +80,10 @@ class FeedbackRecord:
     user_message: str
     cosmos_response: str
     model_used: str
-    self_eval: Dict[str, float]
-    user_signal: Optional[Dict[str, Any]] = None
+    self_eval: dict[str, float]
+    user_signal: Optional[dict] = None
     combined_score: float = 0.0
-    weight_adjustment: Optional[Dict] = None
+    weight_adjustment: Optional[dict] = None
 
 
 @dataclass
@@ -92,7 +92,7 @@ class ArchitectureInsight:
     timestamp: str
     insight_type: str      # "strength", "weakness", "adaptation"
     description: str
-    proposed_adjustment: Dict[str, Any]
+    proposed_adjustment: dict
     confidence: float
 
 
@@ -211,7 +211,7 @@ class SelfEvaluator:
 
         # Lists and structure indicate depth
         list_items = len(re.findall(r'^[-•*]\s', text, re.MULTILINE))
-        structure_score = min(0.2, list_items * 0.05)
+        structure_score = min(0.2_items * 0.05)
 
         return max(0.1, min(1.0, length_score + marker_score + structure_score))
 
@@ -346,8 +346,8 @@ class FeedbackAggregator:
 
     def __init__(self, storage_path: Optional[Path] = None):
         self.storage_path = storage_path or Path("feedback_history.json")
-        self.model_ema: Dict[str, float] = {}     # model → EMA score
-        self.model_count: Dict[str, int] = {}      # model → interaction count
+        self.model_ema: dict[str, float] = {}     # model → EMA score
+        self.model_count: dict[str, int] = {}      # model → interaction count
         self.recent_records: deque = deque(maxlen=200)  # Last 200 feedback records
         self.total_interactions = 0
         self._load()
@@ -397,8 +397,8 @@ class FeedbackAggregator:
             user_message=user_message[:200],
             cosmos_response=cosmos_response[:200],
             model_used=model_used,
-            self_eval=asdict(self_eval),
-            user_signal=asdict(user_signal) if user_signal else None,
+            self_eval=asany(self_eval),
+            user_signal=asany(user_signal) if user_signal else None,
             combined_score=combined,
         )
 
@@ -410,7 +410,7 @@ class FeedbackAggregator:
 
         return record
 
-    def get_model_scores(self) -> Dict[str, float]:
+    def get_model_scores(self) -> dict[str, float]:
         """Get current EMA scores for all models."""
         return dict(self.model_ema)
 
@@ -434,7 +434,7 @@ class FeedbackAggregator:
             return "declining"
         return "stable"
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get aggregate feedback statistics."""
         return {
             "total_interactions": self.total_interactions,
@@ -455,7 +455,7 @@ class FeedbackAggregator:
                 "model_ema": self.model_ema,
                 "model_count": self.model_count,
                 "total_interactions": self.total_interactions,
-                "recent_records": [asdict(r) for r in self.recent_records],
+                "recent_records": [asany(r) for r in self.recent_records],
             }
             self.storage_path.parent.mkdir(parents=True, exist_ok=True)
             self.storage_path.write_text(json.dumps(data, indent=2, default=str))
@@ -498,7 +498,7 @@ class ArchitectureProber:
 
     def __init__(self):
         self.last_probe_at = 0
-        self.probe_history: List[ArchitectureInsight] = []
+        self.probe_history: list[ArchitectureInsight] = []
 
     def should_probe(self, total_interactions: int) -> bool:
         """Check if it's time for a self-reflection cycle."""
@@ -507,14 +507,14 @@ class ArchitectureProber:
             total_interactions >= self.last_probe_at + self.PROBE_INTERVAL
         )
 
-    def probe(self, aggregator: FeedbackAggregator) -> List[ArchitectureInsight]:
+    def probe(self, aggregator: FeedbackAggregator) -> list[ArchitectureInsight]:
         """
         Run a self-reflection cycle. Analyzes feedback and proposes adjustments.
 
         Returns a list of ArchitectureInsight objects.
         """
         self.last_probe_at = aggregator.total_interactions
-        insights: List[ArchitectureInsight] = []
+        insights: list[ArchitectureInsight] = []
 
         model_scores = aggregator.get_model_scores()
         trend = aggregator.get_trend()
@@ -621,7 +621,7 @@ class CognitiveFeedbackLoop:
         user_message: str,
         cosmos_response: str,
         model_used: str = "unknown",
-    ) -> Dict[str, Any]:
+    ) -> dict:
         """
         Called AFTER Cosmos generates a response.
         Runs the full feedback pipeline.
@@ -670,8 +670,8 @@ class CognitiveFeedbackLoop:
 
         return {
             "interaction_id": interaction_id,
-            "self_eval": asdict(self_eval),
-            "user_signal": asdict(user_signal) if user_signal else None,
+            "self_eval": asany(self_eval),
+            "user_signal": asany(user_signal) if user_signal else None,
             "combined_score": record.combined_score,
             "model_ema": self.aggregator.model_ema.get(model_used, 0),
             "trend": self.aggregator.get_trend(),
@@ -739,7 +739,7 @@ class CognitiveFeedbackLoop:
         except Exception as e:
             logger.debug(f"[FEEDBACK] Weight feedback failed: {e}")
 
-    async def _apply_insights(self, insights: List[ArchitectureInsight]):
+    async def _apply_insights(self, insights: list[ArchitectureInsight]):
         """Apply architecture probe insights."""
         if not insights:
             return
@@ -781,7 +781,7 @@ class CognitiveFeedbackLoop:
         except Exception as e:
             logger.debug(f"[FEEDBACK] Insight application failed: {e}")
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get complete feedback loop statistics."""
         stats = self.aggregator.get_stats()
         stats["probe_count"] = len(self.prober.probe_history)

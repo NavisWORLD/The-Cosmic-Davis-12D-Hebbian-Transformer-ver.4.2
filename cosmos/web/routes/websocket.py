@@ -4,7 +4,7 @@ WebSocket & Live Dashboard Routes
 Endpoints:
 - WS /ws/live - Real-time event WebSocket
 - GET /live - Live dashboard page
-- GET /api/sessions - List active sessions
+- GET /api/sessions - list active sessions
 - GET /api/sessions/{session_id}/graph - Session action graph
 - GET /health - Health check
 """

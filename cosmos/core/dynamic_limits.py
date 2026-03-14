@@ -25,7 +25,7 @@ import json
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 from pathlib import Path
-from typing import Dict, Optional, Any
+from typing import  Optional
 from loguru import logger
 
 
@@ -88,8 +88,8 @@ class SessionLimits:
 @dataclass
 class DynamicLimitsConfig:
     """Complete dynamic limits configuration."""
-    models: Dict[str, ModelLimits] = field(default_factory=dict)
-    sessions: Dict[str, SessionLimits] = field(default_factory=dict)
+    models: dict[str, ModelLimits] = field(default_factory=dict)
+    sessions: dict[str, SessionLimits] = field(default_factory=dict)
 
     # Global defaults
     global_default_max_tokens: int = 2000
@@ -106,7 +106,7 @@ class DynamicLimitsConfig:
 # DEFAULT MODEL CONFIGURATIONS
 # =============================================================================
 
-DEFAULT_MODEL_LIMITS: Dict[str, ModelLimits] = {
+DEFAULT_MODEL_LIMITS: dict[str, ModelLimits] = {
     # Premium API Models
     "grok": ModelLimits(
         model_id="grok-3",
@@ -265,7 +265,7 @@ DEFAULT_MODEL_LIMITS: Dict[str, ModelLimits] = {
 # DEFAULT SESSION CONFIGURATIONS
 # =============================================================================
 
-DEFAULT_SESSION_LIMITS: Dict[str, SessionLimits] = {
+DEFAULT_SESSION_LIMITS: dict[str, SessionLimits] = {
     "website_chat": SessionLimits(
         session_type="website_chat",
         max_tokens=8000,              # Increased from 5000
@@ -500,12 +500,12 @@ def get_max_tokens(model_id: str, task_type: str = "chat") -> int:
     return get_limits(model_id).get_max_tokens(task_type)
 
 
-def get_deliberation_limits() -> Dict[str, Optional[int]]:
+def get_deliberation_limits() -> dict[str, Optional[int]]:
     """
     Get deliberation-specific character limits.
 
     Returns:
-        Dict with "critique", "refine", "propose" limits (None = no limit)
+        dict with "critique", "refine", "propose" limits (None = no limit)
     """
     config = _get_config()
     return {
@@ -515,12 +515,12 @@ def get_deliberation_limits() -> Dict[str, Optional[int]]:
     }
 
 
-def get_truncation_limits() -> Dict[str, int]:
+def get_truncation_limits() -> dict[str, int]:
     """
     Get truncation limits for memory and context.
 
     Returns:
-        Dict with "context" and "history" truncation lengths
+        dict with "context" and "history" truncation lengths
     """
     config = _get_config()
     return {
@@ -615,7 +615,7 @@ def update_deliberation_limits(
     return True
 
 
-def get_all_limits() -> Dict[str, Any]:
+def get_all_limits() -> dict:
     """
     Get all current limits configuration.
 
@@ -659,7 +659,7 @@ def get_all_limits() -> Dict[str, Any]:
     }
 
 
-def get_budget_for_tier(tier: str) -> Dict[str, int]:
+def get_budget_for_tier(tier: str) -> dict[str, int]:
     """
     Get token budget allocation by tier for orchestrator integration.
 
@@ -667,7 +667,7 @@ def get_budget_for_tier(tier: str) -> Dict[str, int]:
         tier: One of "local", "economy", "standard", "premium"
 
     Returns:
-        Dict with default_max_tokens, context_window, and count of models in tier.
+        dict with default_max_tokens, context_window, and count of models in tier.
     """
     config = _get_config()
     tier_models = {

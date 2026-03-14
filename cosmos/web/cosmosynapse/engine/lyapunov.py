@@ -36,12 +36,12 @@ def calculate_text_phase(text: str) -> float:
         
     # Analytical words -> Push towards Low Phase
     analytical_words = ['analysis', 'logic', 'data', 'verify', 'incorrect']
-    if any(w in text.lower() for w in analytical_words):
+    if any(keyword in text.lower() for keyword in analytical_words):
         phase -= 0.2
         
     # Emotional words -> Push towards High Phase
     emotional_words = ['feel', 'love', 'hate', 'scared', 'amazing', 'wow']
-    if any(w in text.lower() for w in emotional_words):
+    if any(keyword in text.lower() for keyword in emotional_words):
         phase += 0.2
         
     # Clamp to valid range [0, π/2]

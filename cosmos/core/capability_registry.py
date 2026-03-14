@@ -13,7 +13,7 @@ import json
 import asyncio
 from datetime import datetime
 from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional, Callable
+from typing import   Optional, Callable
 from pathlib import Path
 from loguru import logger
 
@@ -27,8 +27,8 @@ class Capability:
 
     # How to use
     usage_example: str = ""
-    required_params: List[str] = field(default_factory=list)
-    optional_params: List[str] = field(default_factory=list)
+    required_params: list[str] = field(default_factory=list)
+    optional_params: list[str] = field(default_factory=list)
 
     # Dependencies
     requires_api_key: Optional[str] = None  # e.g., "GEMINI_API_KEY"
@@ -45,7 +45,7 @@ class Capability:
     handler_module: str = ""
     handler_function: str = ""
 
-    def to_dict(self) -> dict:
+    def to_any(self) -> dict:
         return {
             "name": self.name,
             "category": self.category,
@@ -69,9 +69,9 @@ class CapabilityRegistry:
     """
 
     def __init__(self):
-        self.capabilities: Dict[str, Capability] = {}
+        self.capabilities: dict[str, Capability] = {}
         self._initialized = False
-        self._discovery_callbacks: List[Callable] = []
+        self._discovery_callbacks: list[Callable] = []
 
     async def initialize(self):
         """Initialize registry with all known capabilities"""
@@ -348,18 +348,18 @@ class CapabilityRegistry:
             cap.is_available = is_available
             cap.last_checked = datetime.now()
 
-    def get_available(self, category: str = None) -> List[Capability]:
+    def get_available(self, category: str = None) -> list[Capability]:
         """Get all available capabilities, optionally filtered by category"""
         caps = [c for c in self.capabilities.values() if c.is_available]
         if category:
             caps = [c for c in caps if c.category == category]
         return caps
 
-    def get_by_category(self, category: str) -> List[Capability]:
+    def get_by_category(self, category: str) -> list[Capability]:
         """Get all capabilities in a category"""
         return [c for c in self.capabilities.values() if c.category == category]
 
-    def search(self, query: str) -> List[Capability]:
+    def search(self, query: str) -> list[Capability]:
         """Search capabilities by name or description"""
         query = query.lower()
         results = []
@@ -408,7 +408,7 @@ class CapabilityRegistry:
             )
 
             # Also store detailed JSON
-            detailed = {name: cap.to_dict() for name, cap in self.capabilities.items()}
+            detailed = {name: cap.to_any() for name, cap in self.capabilities.items()}
             await memory.remember(
                 content=f"[CAPABILITY_REGISTRY]\n{json.dumps(detailed, indent=2)}",
                 tags=["capabilities", "registry"],

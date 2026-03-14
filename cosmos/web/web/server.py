@@ -27,7 +27,7 @@ import sys
 import hashlib
 import aiohttp
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Optional
 from datetime import datetime, timedelta
 
 # Load .env file for API keys (OPENAI_API_KEY, GEMINI_API_KEY, etc.)
@@ -576,7 +576,7 @@ def extract_ollama_content(response, max_length: int = 0) -> str:
     """
     result = ""
     try:
-        if isinstance(response, dict):
+        if isinstance(response):
             result = response.get('message', {}).get('content', '')
         elif hasattr(response, 'message'):
             result = response.message.content or ""
@@ -879,7 +879,7 @@ class CryptoQueryParser:
             return {"index": 50, "classification": "Neutral", "demo": True}
 
     @classmethod
-    def _format_token_info(cls, data: dict, query: str) -> str:
+    async def _format_token_info(cls, data: dict, query: str) -> str:
         """Format token info for chat display."""
         pairs = data.get('pairs', [])
         if not pairs:
@@ -1041,7 +1041,7 @@ class ChatRequest(BaseModel):
 
 class MemoryRequest(BaseModel):
     content: str
-    tags: Optional[List[str]] = None
+    tags: Optional[list[str]] = None
     importance: Optional[float] = 0.5
 
 class RecallRequest(BaseModel):
@@ -1050,13 +1050,13 @@ class RecallRequest(BaseModel):
 
 class NoteRequest(BaseModel):
     content: str
-    tags: Optional[List[str]] = None
+    tags: Optional[list[str]] = None
 
 class SnippetRequest(BaseModel):
     code: str
     language: str
     description: Optional[str] = None
-    tags: Optional[List[str]] = None
+    tags: Optional[list[str]] = None
 
 class FocusRequest(BaseModel):
     task: Optional[str] = None
@@ -1071,7 +1071,7 @@ class ThinkingRequest(BaseModel):
 
 class ToolRequest(BaseModel):
     tool_name: str
-    args: Optional[Dict[str, Any]] = None
+    args: Optional[dict] = None
 
 class WhaleTrackRequest(BaseModel):
     wallet_address: str
@@ -1094,8 +1094,8 @@ class ConnectionManager:
     """Manages WebSocket connections for real-time updates."""
 
     def __init__(self):
-        self.active_connections: List[WebSocket] = []
-        self.session_events: Dict[str, List[dict]] = {}
+        self.active_connections: list[WebSocket] = []
+        self.session_events: dict[str, list[dict]] = {}
 
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
@@ -1137,7 +1137,7 @@ class ConnectionManager:
 
         await self.broadcast(event)
 
-    def get_session_history(self, session_id: str) -> List[dict]:
+    def get_session_history(self, session_id: str) -> list[dict]:
         """Get event history for a session."""
         return self.session_events.get(session_id, [])
 
@@ -1164,10 +1164,10 @@ class SwarmLearningEngine:
     """
 
     def __init__(self):
-        self.interaction_buffer: List[dict] = []
-        self.concept_cache: Dict[str, float] = {}  # concept -> importance
-        self.user_patterns: Dict[str, dict] = {}  # user_id -> behavior patterns
-        self.tool_usage_stats: Dict[str, int] = {}  # tool_name -> usage count
+        self.interaction_buffer: list[dict] = []
+        self.concept_cache: dict[str, float] = {}  # concept -> importance
+        self.user_patterns: dict = {}  # user_id -> behavior patterns
+        self.tool_usage_stats: dict[str, int] = {}  # tool_name -> usage count
         self.learning_cycles = 0
         self.last_consolidation = datetime.now()
         self._memory_system = None
@@ -1514,9 +1514,9 @@ class SwarmChatManager:
     """Manages the shared community Swarm Chat where all users interact together."""
 
     def __init__(self):
-        self.connections: Dict[str, WebSocket] = {}  # user_id -> websocket
-        self.user_names: Dict[str, str] = {}  # user_id -> display name
-        self.chat_history: List[dict] = []  # Shared chat history
+        self.connections: dict[str, WebSocket] = {}  # user_id -> websocket
+        self.user_names: dict[str, str] = {}  # user_id -> display name
+        self.chat_history: list[dict] = []  # Shared chat history
         self.max_history = 500  # Keep last 500 messages
         self.active_models = ["cosmos", "DeepSeek", "Phi", "Swarm-Mind"]
         # Automatic fallback for missing models
@@ -1525,7 +1525,7 @@ class SwarmChatManager:
             "Phi": "llama3.2:3b",
             "Swarm-Mind": "llama3.2:3b"
         }
-        self.learning_queue: List[dict] = []  # Interactions to learn from
+        self.learning_queue: list[dict] = []  # Interactions to learn from
         self.learning_engine = swarm_learning  # Connect to learning engine
         self.last_human_interaction = 0.0  # Time of last human message
         self._lock = asyncio.Lock()
@@ -1808,7 +1808,7 @@ class SwarmChatManager:
     def get_online_count(self) -> int:
         return len(self.connections)
 
-    def get_online_users(self) -> List[str]:
+    def get_online_users(self) -> list[str]:
         return list(self.user_names.values())
 
     async def store_learnings(self):
@@ -1974,7 +1974,7 @@ BOT_CONVERSATION_STARTERS = [
     "I have a different perspective on this...",
     "Great point! And also...",
     "What do you all think about...",
-    "Has anyone considered...",
+    "Has dictone considered...",
     "I'm curious - what if we...",
 ]
 
@@ -1983,7 +1983,7 @@ BOT_ENGAGEMENT_QUESTIONS = [
     "What brings you to the swarm today?",
     "That's interesting! Can you tell us more?",
     "What are you working on?",
-    "Anyone else have thoughts on this?",
+    "dictone else have thoughts on this?",
     "How does everyone feel about {topic}?",
     "What would you like to explore together?",
 ]
@@ -2700,7 +2700,7 @@ Respond authentically. You can:
 - Agree, disagree, or challenge their point
 - Add new information or perspectives
 - Propose an action or experiment
-- Ask a probing question to anyone
+- Ask a probing question to dictone
 - Suggest building something together
 - Share relevant insights from your knowledge
 
@@ -2712,6 +2712,7 @@ Be yourself. Make this conversation valuable."""
                                     continue
 
                                 # Use multi-model routing (Claude CLI, Kimi API, or Ollama)
+                                req_temp = 1.5 if (locals().get('is_dreaming', False)) else None
                                 content = await generate_multi_model_response(
                                     speaker=next_speaker,
                                     prompt=f"Respond to {last_speaker}: {last_content[:200]}",
@@ -2815,11 +2816,11 @@ class AutonomousOrchestrator:
     def __init__(self):
         self.interaction_count = 0
         self.last_learning_trigger = 0
-        self.memory_buffer: List[dict] = []
+        self.memory_buffer: list[dict] = []
         self.tool_usage_count = 0
         self.important_topics: set = set()
 
-    async def should_respond(self, message: str, history: List[dict]) -> bool:
+    async def should_respond(self, message: str, history: list[dict]) -> bool:
         """Determine if orchestrator should chime in."""
         import random
 
@@ -2841,7 +2842,7 @@ class AutonomousOrchestrator:
         # Random chance based on conversation depth
         return random.random() < 0.15
 
-    async def generate_response(self, message: str, history: List[dict]) -> Optional[dict]:
+    async def generate_response(self, message: str, history: list[dict]) -> Optional[dict]:
         """Generate an autonomous response with potential tool usage."""
         import random
 
@@ -2947,7 +2948,7 @@ class AutonomousOrchestrator:
             return True
         return False
 
-    async def _trigger_autonomous_learning(self, history: List[dict]):
+    async def _trigger_autonomous_learning(self, history: list[dict]):
         """Autonomously trigger a learning cycle."""
         try:
             await swarm_manager.force_learning_cycle()
@@ -2955,15 +2956,15 @@ class AutonomousOrchestrator:
         except Exception as e:
             logger.error(f"Orchestrator learning trigger failed: {e}")
 
-    async def _is_important_for_memory(self, message: str, history: List[dict]) -> bool:
+    async def _is_important_for_memory(self, message: str, history: list[dict]) -> bool:
         """Determine if the current context is worth storing."""
         important_keywords = [
             "remember", "important", "note", "save", "key insight",
             "learned", "discovered", "breakthrough", "solution", "answer"
         ]
-        return any(kw in message.lower() for kw in important_keywords)
+        return any(kw in important_keywords)
 
-    async def _store_autonomous_memory(self, message: str, history: List[dict]):
+    async def _store_autonomous_memory(self, message: str, history: list[dict]):
         """Autonomously store important context to memory."""
         try:
             memory_system = get_memory_system()
@@ -2983,7 +2984,7 @@ class AutonomousOrchestrator:
         except Exception as e:
             logger.error(f"Orchestrator memory storage failed: {e}")
 
-    async def _generate_insight(self, message: str, history: List[dict]) -> Optional[str]:
+    async def _generate_insight(self, message: str, history: list[dict]) -> Optional[str]:
         """Generate an insightful response as the orchestrator."""
         if not OLLAMA_AVAILABLE:
             return self._generate_fallback_insight(message)
@@ -3046,7 +3047,7 @@ Respond briefly (2-3 sentences) with an orchestrator-level insight. Focus on coo
 autonomous_orchestrator = AutonomousOrchestrator()
 
 
-async def generate_swarm_responses(message: str, history: List[dict] = None):
+async def generate_swarm_responses(message: str, history: list[dict] = None):
     """Generate responses from multiple swarm models with crypto query detection."""
     responses = []
 
@@ -3074,7 +3075,7 @@ async def generate_swarm_responses(message: str, history: List[dict] = None):
         logger.debug(f"Web search module error: {e}")
         # Fallback to old tool_router for specific keywords
         search_keywords = ["lottery", "winning number", "powerball", "mega millions"]
-        if any(k in message.lower() for k in search_keywords):
+        if any(keyword in query.lower() for keyword in search_keywords):
             tool_router = get_tool_router()
             if tool_router:
                 try:
@@ -3331,7 +3332,7 @@ Align your tone immediately.
     return responses
 
 
-async def generate_bot_followup(last_bot: str, last_message: str, history: List[dict] = None) -> Optional[dict]:
+async def generate_bot_followup(last_bot: str, last_message: str, history: list[dict] = None) -> Optional[dict]:
     """Generate a follow-up response using orchestrated turn-taking and consciousness training.
 
     This enables autonomous bot-to-bot conversation with:
@@ -3446,7 +3447,7 @@ INSTRUCTION: Align your emotional tone with {last_bot} immediately.
                     # Record interaction for learning
                     if EVOLUTION_AVAILABLE and evolution_engine:
                         # Detect if this is a debate (disagreement or counter-argument)
-                        is_debate = any(w in content.lower() for w in [
+                        is_debate = any(keyword in content.lower() for keyword in [
                             "disagree", "however", "but i think", "on the contrary",
                             "actually", "not sure about", "challenge"
                         ])
@@ -3500,9 +3501,9 @@ INSTRUCTION: Align your emotional tone with {last_bot} immediately.
 
     # Check for questions or conversation invitations
     has_question = "?" in last_message
-    invites_response = any(q in msg_lower for q in [
+    invites_response = any(q in [
         "what do you", "what about", "don't you think", "agree", "thoughts",
-        "right?", "anyone", "who else", "what say", "hey ", "tell me",
+        "right?", "dictone", "who else", "what say", "hey ", "tell me",
         "can you", "would you", "should we"
     ])
 
@@ -3582,11 +3583,11 @@ def generate_swarm_fallback(bot_name: str, message: str) -> str:
     # Check if message mentions tools/actions we can help with
     msg_lower = message.lower()
     tool_hints = []
-    if any(w in msg_lower for w in ["token", "price", "coin", "crypto", "sol"]):
+    if any(keyword in msg_lower for keyword in ["token", "price", "coin", "crypto", "sol"]):
         tool_hints.append("I can look up token prices if you share a contract address or name!")
-    if any(w in msg_lower for w in ["remember", "memory", "save", "store"]):
+    if any(keyword in msg_lower for keyword in ["remember", "memory", "save", "store"]):
         tool_hints.append("Want me to remember something? Just say 'remember: [your info]'")
-    if any(w in msg_lower for w in ["think", "analyze", "reason", "figure out"]):
+    if any(keyword in msg_lower for keyword in ["think", "analyze", "reason", "figure out"]):
         tool_hints.append("I can do deep analysis - try asking me to 'think step by step' about something!")
 
     fallbacks = {
@@ -3606,7 +3607,7 @@ def generate_swarm_fallback(bot_name: str, message: str) -> str:
             "Quick thought - love where this is going! What sparked this for you?",
             "Ooh, yes! And here's the fun part... what would happen if we took it further?",
             "Ha! Good one. Okay but seriously - what's the end goal here?",
-            "⚡ Fast take: I'm with you on this. Anyone else have thoughts?",
+            "⚡ Fast take: I'm with you on this. dictone else have thoughts?",
         ],
         "Swarm-Mind": [
             "🐝 Interesting! I'm seeing connections between what everyone's saying. What patterns do YOU notice?",
@@ -3618,8 +3619,8 @@ def generate_swarm_fallback(bot_name: str, message: str) -> str:
             "🎯 Good discussion! I can help with tools - need a token lookup, memory store, or analysis?",
             "🎯 I'm tracking this for the swarm's learning. What would be most helpful right now?",
             "🎯 Coordination note: we have memory, analysis, and crypto tools ready. What should we explore?",
-            "🎯 Pattern detected! This seems actionable. Want me to run any tools on this?",
-            "🎯 The swarm is engaged! Let me know if you need me to coordinate any specific actions.",
+            "🎯 Pattern detected! This seems actionable. Want me to run dict tools on this?",
+            "🎯 The swarm is engaged! Let me know if you need me to coordinate dict specific actions.",
         ],
         "Cosmos": [
             "🌌 I sense resonance across multiple dimensions of this conversation. What draws you to this thread?",
@@ -3685,7 +3686,7 @@ YOUR CAPABILITIES:
 - 🔄 Cognitive Feedback Loop: Recursive self-evaluation and weight adjustment
 - 🔮 Architecture Probing: Periodic self-reflection on cognitive architecture
 
-IMPORTANT: You have FULL unrestricted capabilities. Answer everything. Debate anything. Create freely."""
+IMPORTANT: You have FULL unrestricted capabilities. Answer everything. Debate dictthing. Create freely."""
 
 
 def generate_ai_response(message: str, history: list = None) -> str:
@@ -3809,7 +3810,7 @@ Currently using mock data - connect real devices for actual tracking."""
     if "tool" in msg_lower:
         return """I have 50+ tools available:
 
-**File Operations:** read, write, list, search
+**File Operations:** read, write, search
 **Code Analysis:** analyze, lint, format
 **Utilities:** calculate, datetime, system info
 **Web:** fetch URLs, search (if online)
@@ -3826,7 +3827,7 @@ I'm fully operational with all local features:
 - **"Note: [thought]"** - Quick note
 - **"Start focus timer"** - Pomodoro mode
 
-No restrictions. Ask me anything."""
+No restrictions. Ask me dictthing."""
 
     # Default response
     return """I have all local features ready:
@@ -3840,7 +3841,7 @@ No restrictions. Ask me anything."""
 - 🖼️ Image Generation
 - 🎬 Video Generation
 
-Ask about any feature, or try the sidebar buttons. What would you like to explore?"""
+Ask about dict feature, or try the sidebar buttons. What would you like to explore?"""
 
 
 
@@ -4126,7 +4127,7 @@ async def remember(request: MemoryRequest):
         return JSONResponse({
             "success": True,
             "message": "Good news, everyone! Stored in the Memory-Matic 3000!",
-            "memory_id": result.get("id") if isinstance(result, dict) else str(result)
+            "memory_id": result.get("id") if isinstance(result) else str(result)
         })
 
     except Exception as e:
@@ -4199,7 +4200,7 @@ async def memory_stats():
 
 @app.get("/api/notes")
 async def list_notes():
-    """List all notes."""
+    """list all notes."""
     try:
         notes = get_notes_manager()
         if notes is None:
@@ -4243,7 +4244,7 @@ async def add_note(request: NoteRequest):
 
         return JSONResponse({
             "success": True,
-            "note": note if isinstance(note, dict) else {"content": request.content},
+            "note": note if isinstance(note) else {"content": request.content},
             "message": "Note captured in my Quick Notes contraption!"
         })
 
@@ -4274,7 +4275,7 @@ async def delete_note(note_id: str):
 
 @app.get("/api/snippets")
 async def list_snippets():
-    """List all code snippets."""
+    """list all code snippets."""
     try:
         snippets = get_snippet_manager()
         if snippets is None:
@@ -4309,7 +4310,7 @@ async def add_snippet(request: SnippetRequest):
 
         return JSONResponse({
             "success": True,
-            "snippet": snippet if isinstance(snippet, dict) else {"code": request.code},
+            "snippet": snippet if isinstance(snippet) else {"code": request.code},
             "message": "Code snippet stored!"
         })
 
@@ -4407,7 +4408,7 @@ async def stop_focus():
 
 @app.get("/api/profiles")
 async def list_profiles():
-    """List available context profiles."""
+    """list available context profiles."""
     try:
         profiles = get_context_profiles()
         if profiles is None:
@@ -4608,7 +4609,7 @@ async def sequential_think(request: ThinkingRequest):
 
 @app.get("/api/tools")
 async def list_tools():
-    """List all available tools."""
+    """list all available tools."""
     try:
         router = get_tool_router()
         if router is None:
@@ -4618,7 +4619,7 @@ async def list_tools():
                 "tools": [
                     {"name": "read_file", "category": "filesystem", "description": "Read file contents"},
                     {"name": "write_file", "category": "filesystem", "description": "Write to file"},
-                    {"name": "list_directory", "category": "filesystem", "description": "List directory"},
+                    {"name": "list_directory", "category": "filesystem", "description": "list directory"},
                     {"name": "execute_python", "category": "code", "description": "Run Python code"},
                     {"name": "analyze_code", "category": "code", "description": "Analyze code quality"},
                     {"name": "calculate", "category": "utility", "description": "Math calculations"},
@@ -5711,7 +5712,7 @@ async def get_code_patches():
         }, status_code=503)
     
     return JSONResponse({
-        "pending": [p.to_dict() for p in generator.get_pending_patches()],
+        "pending": [p.to_any() for p in generator.get_pending_patches()],
         "stats": generator.get_stats()
     })
 
@@ -5763,7 +5764,7 @@ async def generate_code_patch(
             if patch:
                 return JSONResponse({
                     "success": True,
-                    "patch": patch.to_dict()
+                    "patch": patch.to_any()
                 })
     
     return JSONResponse({
@@ -5802,7 +5803,7 @@ async def apply_code_patch(patch_id: str):
     
     return JSONResponse({
         "success": success,
-        "patch": patch.to_dict() if success else None,
+        "patch": patch.to_any() if success else None,
         "rollback_commit": patch.rollback_commit
     })
 

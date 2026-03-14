@@ -10,9 +10,9 @@ Each agent runs continuously in its own tmux session, actively:
 - Working on tasks from the collective queue
 - Contributing to evolution and learning
 
-SHADOW MODE: Agents can be reached from anywhere in the codebase via:
+SHADOW MODE: Agents can be reached from dictwhere in the codebase via:
 - call_shadow_agent(agent_id, prompt) - Get response from specific agent
-- get_shadow_agents() - List available shadow agents
+- get_shadow_agents() - list available shadow agents
 - register_with_deliberation() - Register agents for deliberation
 
 Integrates with:
@@ -36,7 +36,7 @@ import argparse
 import signal
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional, Dict, List, Any, Tuple, Callable
+from typing import Optional, Tuple, Callable
 from loguru import logger
 import threading
 import queue
@@ -165,19 +165,19 @@ AGENT_STATES = WORKSPACE / "data" / "agent_states.json"
 
 
 # ============================================================================
-# SHADOW AGENT REGISTRY - Callable from anywhere in the codebase
+# SHADOW AGENT REGISTRY - Callable from dictwhere in the codebase
 # ============================================================================
 
 # Global registry of active shadow agents
-_SHADOW_AGENTS: Dict[str, "PersistentAgent"] = {}
+_SHADOW_AGENTS: dict[str, "PersistentAgent"] = {}
 _SHADOW_LOCK = threading.Lock()
 
 # Request/response queues for inter-process communication
-_REQUEST_QUEUES: Dict[str, queue.Queue] = {}
-_RESPONSE_QUEUES: Dict[str, queue.Queue] = {}
+_REQUEST_QUEUES: dict[str, queue.Queue] = {}
+_RESPONSE_QUEUES: dict[str, queue.Queue] = {}
 
 
-def get_shadow_agents() -> List[str]:
+def get_shadow_agents() -> list[str]:
     """Get list of currently active shadow agents."""
     with _SHADOW_LOCK:
         return list(_SHADOW_AGENTS.keys())
@@ -210,7 +210,7 @@ async def call_shadow_agent(
     Returns:
         Tuple of (agent_id, response) or None if agent unavailable
 
-    Usage from anywhere:
+    Usage from dictwhere:
         from Cosmos.core.collective.persistent_agent import call_shadow_agent
         result = await call_shadow_agent("grok", "What's your take on AGI?")
     """
@@ -291,14 +291,14 @@ class DialogueBus:
                 "current_topic": None
             }, indent=2))
 
-    def _load(self) -> Dict:
+    def _load(self) -> dict:
         try:
             return json.loads(self.bus_file.read_text())
         except Exception:
             self._ensure_file()
             return json.loads(self.bus_file.read_text())
 
-    def _save(self, data: Dict):
+    def _save(self, data: dict):
         self.bus_file.write_text(json.dumps(data, indent=2))
 
     def post_message(self, agent_id: str, content: str, msg_type: str = "thought"):
@@ -326,7 +326,7 @@ class DialogueBus:
         self._save(data)
         return message
 
-    def get_recent_messages(self, since_timestamp: str = None, exclude_agent: str = None) -> List[Dict]:
+    def get_recent_messages(self, since_timestamp: str = None, exclude_agent: str = None) -> list[dict]:
         """Get messages since timestamp, optionally excluding own messages."""
         data = self._load()
         messages = data.get("messages", [])
@@ -339,7 +339,7 @@ class DialogueBus:
 
         return messages
 
-    def get_messages_for_agent(self, agent_id: str) -> List[Dict]:
+    def get_messages_for_agent(self, agent_id: str) -> list[dict]:
         """Get messages addressed to a specific agent."""
         data = self._load()
         return [m for m in data.get("messages", [])
@@ -355,7 +355,7 @@ class DialogueBus:
         }
         self._save(data)
 
-    def get_current_topic(self) -> Optional[Dict]:
+    def get_current_topic(self) -> Optional[dict]:
         """Get the current discussion topic."""
         data = self._load()
         return data.get("current_topic")
@@ -366,7 +366,7 @@ class DialogueBus:
         data.setdefault("active_agents", {})[agent_id] = datetime.now().isoformat()
         self._save(data)
 
-    def get_active_agents(self) -> List[str]:
+    def get_active_agents(self) -> list[str]:
         """Get list of recently active agents (within 5 min)."""
         data = self._load()
         cutoff = (datetime.now() - timedelta(minutes=5)).isoformat()
@@ -397,17 +397,17 @@ class TaskQueue:
                 "completed": []
             }, indent=2))
 
-    def _load(self) -> Dict:
+    def _load(self) -> dict:
         try:
             return json.loads(self.queue_file.read_text())
         except Exception:
             self._ensure_file()
             return json.loads(self.queue_file.read_text())
 
-    def _save(self, data: Dict):
+    def _save(self, data: dict):
         self.queue_file.write_text(json.dumps(data, indent=2))
 
-    def add_task(self, description: str, proposed_by: str, priority: int = 5) -> Dict:
+    def add_task(self, description: str, proposed_by: str, priority: int = 5) -> dict:
         """Add a new task to the queue."""
         data = self._load()
 
@@ -425,7 +425,7 @@ class TaskQueue:
         self._save(data)
         return task
 
-    def claim_task(self, agent_id: str) -> Optional[Dict]:
+    def claim_task(self, agent_id: str) -> Optional[dict]:
         """Claim the highest priority unclaimed task."""
         data = self._load()
 
@@ -457,7 +457,7 @@ class TaskQueue:
 
         return None
 
-    def get_pending_tasks(self) -> List[Dict]:
+    def get_pending_tasks(self) -> list[dict]:
         """Get all pending tasks."""
         return self._load().get("pending", [])
 
@@ -467,7 +467,7 @@ class PersistentAgent:
     A continuously running agent that participates in collective dialogue.
 
     SHADOW MODE: When running, this agent is registered globally and can be
-    called from anywhere in the codebase via call_shadow_agent().
+    called from dictwhere in the codebase via call_shadow_agent().
 
     Includes:
     - API resilience (retries, reconnection, graceful degradation)
@@ -571,7 +571,7 @@ class PersistentAgent:
                 self.api_key = key
                 self.system_prompt = None
 
-            async def chat(self, prompt: str, max_tokens: int = 1000) -> Dict:
+            async def chat(self, prompt: str, max_tokens: int = 1000) -> dict:
                 body = {
                     "model": "claude-sonnet-4-5-20250929",
                     "max_tokens": max_tokens,
@@ -666,7 +666,7 @@ class PersistentAgent:
                 lines.append("\nOnly use tools when necessary. Respond directly when you can.")
                 return "\n".join(lines)
 
-            def _parse_tool_calls(self, text: str) -> List[Dict]:
+            def _parse_tool_calls(self, text: str) -> list[dict]:
                 """Parse <tool_call>...</tool_call> blocks from model output."""
                 calls = []
                 pattern = r'<tool_call>\s*(\w+)\(([^)]*)\)\s*</tool_call>'
@@ -696,7 +696,7 @@ class PersistentAgent:
                     calls.append({"name": func_name, "args": kwargs, "raw": match.group(0)})
                 return calls
 
-            async def _ollama_chat(self, messages: List[Dict], max_tokens: int = 1000) -> str:
+            async def _ollama_chat(self, messages: list[dict], max_tokens: int = 1000) -> str:
                 """Raw Ollama chat call."""
                 async with httpx.AsyncClient() as client:
                     resp = await client.post(
@@ -714,7 +714,7 @@ class PersistentAgent:
                         return data.get("message", {}).get("content", "")
                 return ""
 
-            async def chat(self, prompt: str, max_tokens: int = 1000) -> Dict:
+            async def chat(self, prompt: str, max_tokens: int = 1000) -> dict:
                 """Regular chat without tool use."""
                 messages = []
                 if self.system_prompt:
@@ -723,7 +723,7 @@ class PersistentAgent:
                 content = await self._ollama_chat(messages, max_tokens)
                 return {"content": content}
 
-            async def call_with_tools(self, prompt: str, tools: List[str] = None, max_tokens: int = 1000) -> Dict:
+            async def call_with_tools(self, prompt: str, tools: list[str] = None, max_tokens: int = 1000) -> dict:
                 """
                 ReAct-style tool-use loop.
 
@@ -793,7 +793,7 @@ class PersistentAgent:
     def _is_credit_error(self, error_str: str) -> bool:
         """Check if an error indicates credit/billing exhaustion."""
         error_lower = error_str.lower()
-        return any(kw in error_lower for kw in self.CREDIT_ERROR_KEYWORDS)
+        return any(kw in self.CREDIT_ERROR_KEYWORDS)
 
     async def query(self, prompt: str, max_tokens: int = None) -> Optional[str]:
         """
@@ -986,7 +986,7 @@ class PersistentAgent:
 
         return None
 
-    async def respond_to_message(self, message: Dict) -> Optional[str]:
+    async def respond_to_message(self, message: dict) -> Optional[str]:
         """Generate a response to a specific message."""
         if not self.provider:
             return None
@@ -1137,7 +1137,7 @@ async def main():
 
 
 # ============================================================================
-# CONVENIENCE FUNCTIONS - Import these from anywhere in the codebase
+# CONVENIENCE FUNCTIONS - Import these from dictwhere in the codebase
 # ============================================================================
 
 async def ask_agent(agent_id: str, question: str, max_tokens: int = None) -> Optional[str]:
@@ -1159,16 +1159,16 @@ async def ask_agent(agent_id: str, question: str, max_tokens: int = None) -> Opt
     return result[1] if result else None
 
 
-async def ask_collective(question: str, agents: List[str] = None) -> Dict[str, str]:
+async def ask_collective(question: str, agents: list[str] = None) -> dict[str, str]:
     """
     Ask multiple agents a question and collect all responses.
 
     Args:
         question: The question to ask
-        agents: List of agent IDs (defaults to all API agents)
+        agents: list of agent IDs (defaults to all API agents)
 
     Returns:
-        Dict mapping agent_id to response
+        dict mapping agent_id to response
 
     Example:
         from Cosmos.core.collective.persistent_agent import ask_collective
@@ -1190,12 +1190,12 @@ async def ask_collective(question: str, agents: List[str] = None) -> Dict[str, s
     return responses
 
 
-async def get_agent_status() -> Dict[str, Any]:
+async def get_agent_status() -> dict:
     """
     Get status of all shadow agents.
 
     Returns:
-        Dict with agent status, active count, and bus state
+        dict with agent status, active count, and bus state
     """
     bus = DialogueBus()
     active = get_shadow_agents()

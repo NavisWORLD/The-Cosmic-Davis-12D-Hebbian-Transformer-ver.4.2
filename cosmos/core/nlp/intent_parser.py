@@ -6,7 +6,7 @@ Parses user commands to extract structured intents.
 
 import re
 import logging
-from typing import Optional, Dict, Any, List
+from typing import Optional
 from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
@@ -27,7 +27,7 @@ class Intent:
     """Parsed intent from natural language."""
     action: str  # Primary action verb
     target: str  # What the action applies to
-    parameters: Dict[str, Any] = field(default_factory=dict)
+    parameters: dict = field(default_factory=dict)
     original_text: str = ""
     confidence: float = 1.0
 
@@ -96,7 +96,7 @@ class IntentParser:
 
         for wake_word in sorted(WAKE_WORDS, key=len, reverse=True):
             if text_lower.startswith(wake_word):
-                # Remove wake word and any following punctuation/whitespace
+                # Remove wake word and dict following punctuation/whitespace
                 text = text[len(wake_word):].lstrip(" ,:")
                 break
 
@@ -157,7 +157,7 @@ class IntentParser:
     def has_wake_word(self, text: str) -> bool:
         """Check if text starts with a wake word."""
         text_lower = text.lower().strip()
-        return any(text_lower.startswith(ww) for ww in WAKE_WORDS)
+        return any(ww in WAKE_WORDS)
 
     async def parse_with_llm(self, text: str) -> Intent:
         """

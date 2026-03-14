@@ -20,7 +20,7 @@ import json
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import  Optional
 from dataclasses import dataclass, field, asdict
 from loguru import logger
 
@@ -40,8 +40,8 @@ class CodePatch:
     applied: bool = False
     rollback_commit: Optional[str] = None
     
-    def to_dict(self) -> Dict[str, Any]:
-        return asdict(self)
+    def to_any(self) -> dict:
+        return asany(self)
 
 
 class CodePatchGenerator:
@@ -54,7 +54,7 @@ class CodePatchGenerator:
     
     def __init__(self, project_root: Path = None):
         self.project_root = project_root or Path(__file__).parent.parent.parent
-        self.patches: List[CodePatch] = []
+        self.patches: list[CodePatch] = []
         self.patch_history_file = self.project_root / "data" / "evolution" / "code_patches.json"
         self._load_history()
     
@@ -71,7 +71,7 @@ class CodePatchGenerator:
         """Save patch history to file."""
         try:
             self.patch_history_file.parent.mkdir(parents=True, exist_ok=True)
-            data = {"patches": [p.to_dict() for p in self.patches]}
+            data = {"patches": [p.to_any() for p in self.patches]}
             self.patch_history_file.write_text(json.dumps(data, indent=2))
         except Exception as e:
             logger.error(f"Could not save patch history: {e}")
@@ -85,7 +85,7 @@ class CodePatchGenerator:
     def generate_prompt_upgrade(
         self,
         bot_name: str,
-        learned_patterns: List[str],
+        learned_patterns: list[str],
         current_prompt: str,
         effectiveness_score: float
     ) -> Optional[CodePatch]:
@@ -138,7 +138,7 @@ class CodePatchGenerator:
     def generate_response_template(
         self,
         bot_name: str,
-        successful_responses: List[str]
+        successful_responses: list[str]
     ) -> Optional[CodePatch]:
         """
         Generate improved fallback response templates.
@@ -340,11 +340,11 @@ class CodePatchGenerator:
             self.rollback_to_checkpoint(checkpoint)
             return False
     
-    def get_pending_patches(self) -> List[CodePatch]:
+    def get_pending_patches(self) -> list[CodePatch]:
         """Get patches that haven't been applied yet."""
         return [p for p in self.patches if not p.applied]
     
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict:
         """Get patch generation statistics."""
         return {
             "total_patches": len(self.patches),

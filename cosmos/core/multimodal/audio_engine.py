@@ -9,7 +9,7 @@ import numpy as np
 import librosa
 import faiss
 from dataclasses import dataclass
-from typing import List, Tuple, Optional
+from typing import Tuple, Optional
 import hashlib
 import uuid
 from datetime import datetime
@@ -45,7 +45,7 @@ def extract_fundamental_frequency(audio, sample_rate):
     """Extract f0 using YIN"""
     try:
         f0 = librosa.yin(audio, fmin=80, fmax=800, sr=sample_rate)
-        return np.median(f0[f0 > 0]) if np.any(f0 > 0) else None
+        return np.median(f0[f0 > 0]) if any(f0 > 0) else None
     except:
         return None
 

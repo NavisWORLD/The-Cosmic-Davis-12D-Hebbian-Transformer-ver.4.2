@@ -17,7 +17,7 @@ from collections import deque
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, date
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import   Optional
 
 from loguru import logger
 
@@ -54,7 +54,7 @@ class AgentTier(Enum):
     API_PREMIUM = "api_premium"    # Grok, Gemini, Claude, Kimi, ClaudeOpus
 
 
-AGENT_TIER_MAP: Dict[str, AgentTier] = {
+AGENT_TIER_MAP: dict[str, AgentTier] = {
     "deepseek": AgentTier.LOCAL,
     "phi": AgentTier.LOCAL,
     "huggingface": AgentTier.LOCAL,
@@ -111,7 +111,7 @@ class AllocationResult:
 class OrchestratorSnapshot:
     timestamp: datetime
     total_budget_remaining: int
-    agent_budgets: Dict[str, Dict]  # serialized AgentBudget dicts
+    agent_budgets: dict  # serialized AgentBudget dicts
     active_tandem_sessions: int
     efficiency_rating: float
     top_performer: str
@@ -131,8 +131,8 @@ class TokenOrchestrator:
     ):
         self._daily_budget = daily_api_budget
         self._rebalance_interval = rebalance_interval_seconds
-        self._agent_budgets: Dict[str, AgentBudget] = {}
-        self._tandem_sessions: Dict[str, TandemSession] = {}
+        self._agent_budgets: dict[str, AgentBudget] = {}
+        self._tandem_sessions: dict[str, TandemSession] = {}
         self._snapshots: deque = deque(maxlen=288)  # 24h of 5-min snapshots
         self._running = False
         self._budget_reset_date: Optional[date] = None
@@ -470,8 +470,8 @@ class TokenOrchestrator:
             return
 
         # Find under-utilised (<25% used) and over-utilised (>90% used) agents
-        under_used: List[AgentBudget] = []
-        over_used: List[AgentBudget] = []
+        under_used: list[AgentBudget] = []
+        over_used: list[AgentBudget] = []
 
         for b in api_budgets:
             if b.allocated_tokens <= 0:
@@ -552,7 +552,7 @@ class TokenOrchestrator:
     # Dashboard / status
     # ------------------------------------------------------------------
 
-    def get_dashboard(self) -> Dict:
+    def get_dashboard(self) -> dict:
         """Return current orchestrator state for the web UI."""
         api_used = sum(
             b.used_tokens
@@ -654,7 +654,7 @@ class TokenOrchestrator:
     # Internal helpers
     # ------------------------------------------------------------------
 
-    async def _try_emit_signal(self, signal_name: str, payload: Dict):
+    async def _try_emit_signal(self, signal_name: str, payload: dict):
         """Emit a nexus signal if the bus and signal type are available."""
         if nexus is None or SignalType is None:
             return
