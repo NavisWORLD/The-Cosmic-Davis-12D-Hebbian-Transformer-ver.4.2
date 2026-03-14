@@ -1,95 +1,33 @@
-# Contributing to cosmos
+# Contributing to the 12D/54D Hebbian Transformer
 
-Thank you for your interest in contributing to cosmos! This document provides guidelines for contributing.
-
----
-
-## Code of Conduct
-
-- Be respectful and considerate
-- Welcome newcomers and help them learn
-- Focus on what is best for the community
+Thank you for your interest in contributing to the **Cosmic Davis 12D/54D Hebbian Transformer**. We welcome contributions that respect the architectural integrity and the foundational methodologies established by Cory Shane Davis.
 
 ---
 
-## How Can I Contribute?
+## ⚖️ Attribution & Licensing
 
-### Reporting Bugs
-
-1. Check existing [GitHub Issues](https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2/issues)
-2. Include: OS, Python version, steps to reproduce, error messages
-
-### Suggesting Features
-
-1. Check the [ROADMAP.md](ROADMAP.md) first
-2. Open an issue with the `feature-request` label
-
-### Contributing Code
-
-```bash
-# 1. Fork and clone
-git clone https://github.com/YOUR_USERNAME/cosmos.git
-cd cosmos
-
-# 2. Create a virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Create a feature branch
-git checkout -b feature/your-feature-name
-
-# 5. Make changes and test
-pytest tests/ -v
-
-# 6. Commit with conventional commits
-git commit -m "feat: add X feature"
-
-# 7. Push and create PR
-git push origin feature/your-feature-name
-```
+1.  **Strict Attribution**: All contributions, forks, or derivatives MUST prominently attribute **Cory Shane Davis** and link to the **Official Zenodo Archive**: [https://zenodo.org/records/17574447](https://zenodo.org/records/17574447).
+2.  **CC BY 4.0**: By contributing, you agree that your work will be licensed under the **Creative Commons Attribution 4.0 International** license.
 
 ---
 
-## Commit Message Format
+## 🧬 Architectural Guidelines (54D CNS)
 
-```
-<type>: <description>
-
-Types:
-- feat: New feature
-- fix: Bug fix
-- docs: Documentation
-- test: Adding tests
-- refactor: Code restructuring
-```
+- **Synaptic Integrity**: When modifying the `cosmos_swarm_orchestrator`, ensure that the 54D state transitions ($d\_state=54$) are preserved.
+- **Hermes Feedback**: New models integrated into the swarm must support the reinforcement-learning feedback hooks provided by the Hermes integration.
+- **Quantum Non-Locality**: Heuristic or hardware-driven quantum logic should always have a deterministic fallback.
 
 ---
 
-## Style Guidelines
+## 🚀 How to Contribute
 
-- Use **Black** for formatting
-- Use **isort** for imports
-- Add type hints
-- Write docstrings for public functions
+1.  **Discovery**: Check existing [Issues](https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2/issues) for planned roadmap items.
+2.  **Implementation**:
+    ```bash
+    git checkout -b feature/cns-expansion
+    # Implement changes
+    # Verify with 12D physics simulation
+    ```
+3.  **Submission**: Open a Pull Request with a detailed explanation of how your change interacts with the 12D/54D core.
 
----
-
-## Testing
-
-```bash
-pytest tests/ -v                    # Run all tests
-pytest tests/ --cov=cosmos     # With coverage
-```
-
----
-
-## License
-
-By contributing, you agree to the project's [LICENSE](LICENSE) terms.
-
----
-
-*Thank you for helping make cosmos better!*
+*Thank you for helping evolve the first true Symbiotic Bio-Digital Interface.*
