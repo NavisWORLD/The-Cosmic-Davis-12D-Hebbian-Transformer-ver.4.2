@@ -323,7 +323,7 @@ class SwarmAwareness:
         return random.random() < self.peer_review_probability
 
     def _run_peer_review(
-        self, value_scores: dict[str, float]
+        self, field_snapshot: dict, value_scores: dict[str, float]
     ) -> Optional[PeerReviewResult]:
         """
         Simulate a cross-agent peer review.
