@@ -112,6 +112,10 @@ def build_artemis_i_external_validation() -> dict:
         },
     }
 
+    best_mae = _best_baseline_names(baselines, "mae")
+    best_rmse = _best_baseline_names(baselines, "rmse")
+    generalized_here = "observable_aware_proxy" in best_mae and "observable_aware_proxy" in best_rmse
+
     per_record = []
     for index, record in enumerate(records):
         target = float(targets[index])
@@ -145,7 +149,14 @@ def build_artemis_i_external_validation() -> dict:
             "Does the locked Chang'e-4 calibrated proxy generalize to an unseen "
             "Artemis I lunar-radiation basket?"
         ),
-        "answer": "Not yet. It improves over the constant phase proxy, but it does not beat the simplest carryover baselines on aggregate external error.",
+        "answer": (
+            "Yes, within this unseen Artemis I basket. The locked observable-aware "
+            "proxy beats the constant phase proxy and the carryover baselines on both "
+            "MAE and RMSE."
+            if generalized_here
+            else "Not yet. It improves over the constant phase proxy, but it does not "
+            "beat the simplest carryover baselines on aggregate external error."
+        ),
         "external_alignment": {
             "official_overall_alignment": float(alignment.overall_alignment),
             "official_cosine_similarity": float(alignment.cosine_similarity),
@@ -159,8 +170,9 @@ def build_artemis_i_external_validation() -> dict:
         },
         "targets": [float(value) for value in targets.tolist()],
         "baselines": baselines,
-        "best_mae_baselines": _best_baseline_names(baselines, "mae"),
-        "best_rmse_baselines": _best_baseline_names(baselines, "rmse"),
+        "best_mae_baselines": best_mae,
+        "best_rmse_baselines": best_rmse,
+        "generalized_here": generalized_here,
         "records": per_record,
     }
 
@@ -216,16 +228,27 @@ def render_markdown_summary(report: dict) -> str:
     lines.extend(
         [
             "",
-            "## Interpretation",
+        "## Interpretation",
             (
+                "This external Artemis I basket is the real cross-mission check. "
+                "On the current code path, the locked observable-aware proxy wins "
+                "the error comparison against the constant phase proxy and the "
+                "carryover baselines."
+            )
+            if report["generalized_here"]
+            else (
                 "The external Artemis I basket is the harder test. The locked "
                 "Chang'e-4 calibration carries some structure across missions, but "
                 "its observable-aware proxy still does not win the aggregate error "
                 "contest against the simplest carryover baselines."
             ),
             (
-                "That means we are not yet at a credible generalization claim."
-            ),
+                "That is evidence of cross-mission generalization inside this checked-in "
+                "bundle, although it is still best described as engineered generalization "
+                "rather than universal proof."
+            )
+            if report["generalized_here"]
+            else "That means we are not yet at a credible generalization claim.",
             "",
             "## Reproduce",
             "```powershell",

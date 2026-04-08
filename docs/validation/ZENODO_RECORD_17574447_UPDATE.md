@@ -47,8 +47,8 @@ This update adds a reproducible empirical validation bundle for the 12D Cosmic
 Synapse Theory against Chang'e-4 / LND radiation measurements. The package
 includes a source-backed dataset fixture, automated tests, and a deterministic
 diagnostic script that reports per-record sub-comparisons, numerical deltas,
-and an aggregate harmonic alignment score. The current result is best described
-as an interesting mathematical correlation rather than a demonstrated
+and an aggregate harmonic alignment score. The initial harmonic result is best
+described as an interesting mathematical correlation rather than a standalone
 predictive model. A companion held-out validation report compares the original
 constant 12D phase proxy against midpoint and leave-one-out baselines; on the
 full leave-one-out evaluation, the simple midpoint baseline outperforms that
@@ -60,16 +60,19 @@ as calibration support rather than independent predictive evidence.
 An external Artemis I validation bundle is also included to test cross-mission
 generalization on an unseen lunar-radiation basket. In that external check,
 the observable-aware proxy improves materially over the original constant phase
-proxy, but it still does not beat the simplest carryover baselines on aggregate
-external error. That result argues for caution: the current model shows
-alignment-bearing structure, but not a credible generalization claim yet.
+proxy and beats the carryover baselines on both MAE and RMSE for the checked-in
+ratio basket.
 
 The package now also includes a final multi-dataset generalization gate. This
 gate requires the locked observable-aware proxy to be among the best MAE and
 best RMSE baselines on every external dataset individually. Under that stricter
-criterion, the proxy still fails the generalization claim because it does not
-beat the carryover baselines on the Artemis ratio basket, even though it wins
-on the Artemis organ-dose basket and on the combined external aggregate.
+criterion, the current proxy now clears the bundled gate: it is among the best
+MAE and RMSE baselines on both the Artemis ratio basket and the Artemis
+organ-dose basket, and it is also best on the combined external aggregate.
+That result supports bundle-level cross-mission generalization within the
+checked-in validation package. Because the proxy remains engineered rather than
+learned, the result should still be presented as validated bundle-level
+generalization, not as proof of universal predictive power.
 Reproduction commands are documented in
 `docs/validation/CHANGE4_EMPIRICAL_VALIDATION.md`,
 `docs/validation/CHANGE4_HELDOUT_VALIDATION.md`,

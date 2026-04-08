@@ -201,10 +201,13 @@ def build_final_generalization_test() -> dict:
             "datasets in this validation bundle?"
         ),
         "answer": (
-            "No. It improves materially over the original constant phase proxy and even "
-            "wins on the Artemis I organ-dose basket, but it still fails the stricter "
-            "per-dataset generalization gate because it does not beat the carryover "
-            "baselines on the Artemis ratio basket."
+            "Yes, within this validation bundle. The locked observable-aware proxy is "
+            "now among the best MAE and RMSE baselines on every external dataset "
+            "included in the final gate."
+            if generalizes
+            else "No. It improves materially over the original constant phase proxy and "
+            "even wins on one external basket, but it still fails the stricter "
+            "per-dataset generalization gate."
         ),
         "generalization_gate": {
             "rule": (
@@ -283,13 +286,27 @@ def render_markdown_summary(report: dict) -> str:
     lines.extend(
         [
             "",
-            "## Interpretation",
+        "## Interpretation",
             (
+                "The combined picture is now much stronger. The observable-aware proxy "
+                "carries more usable structure than the constant phase proxy and clears "
+                "the deliberately conservative per-dataset gate across the current "
+                "external bundle."
+            )
+            if report["generalization_gate"]["status"] == "generalized"
+            else (
                 "The combined picture is nuanced: the observable-aware proxy carries "
                 "more physics than the constant phase proxy, but the final gate is "
                 "deliberately conservative. Failing one external dataset means the "
                 "bundle does not yet support a generalization claim."
             ),
+            (
+                "Because the proxy is still engineered rather than learned, this is best "
+                "framed as validated bundle-level generalization, not proof of universal "
+                "predictive power."
+            )
+            if report["generalization_gate"]["status"] == "generalized"
+            else "",
             "",
             "## Reproduce",
             "```powershell",

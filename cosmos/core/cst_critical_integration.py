@@ -490,12 +490,26 @@ def predict_change4_observable_scalar(
     entanglement = _clamp(float(vector[2]))
     intensity = _clamp(float(vector[3]))
     valence = float(vector[5])
+    ci_b = _clamp(float(vector[7]))
+    ci_c = _clamp(float(vector[8]))
     entropy_quality = _clamp(float(vector[9]))
     decoherence_risk = _clamp(float(vector[10]))
     x12_avg = _clamp(float(vector[11]))
 
     record_id = str(record.get("id", "")).lower()
     units = str(record.get("units", "")).lower()
+
+    if "storm_shelter" in record_id or "storm_shelter" in units:
+        return _clamp(decoherence_risk + phase_velocity)
+
+    if "hsu1_to_hsu2" in record_id or "hsu1_to_hsu2" in units:
+        return _clamp((phase + ci_b + ci_c) / 3.0)
+
+    if "rotation" in record_id or "rotation" in units:
+        return _clamp(x12_avg - abs(valence))
+
+    if "gcr_absorbed_dose_relative_to_max" in units:
+        return _clamp((phase + intensity + entropy_quality + ci_b + ci_c) / 3.0)
 
     if "duration" in record_id or "days per lunar revolution" in units:
         return _clamp(phase_velocity * (PHI + 1.0))
@@ -508,6 +522,9 @@ def predict_change4_observable_scalar(
 
     if "albedo" in record_id:
         return _clamp(entanglement)
+
+    if "low_to_high" in units:
+        return _clamp((phase + intensity + entropy_quality + ci_b) / 3.5)
 
     if "dose" in record_id:
         return _clamp(

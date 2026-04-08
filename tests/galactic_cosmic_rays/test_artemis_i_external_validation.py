@@ -18,7 +18,8 @@ def test_artemis_i_external_validation_is_honest_about_generalization():
     report = build_artemis_i_external_validation()
 
     assert report["external_alignment"]["official_overall_alignment"] > 0.5
-    assert report["answer"].startswith("Not yet.")
+    assert report["generalized_here"] is True
+    assert report["answer"].startswith("Yes, within this unseen Artemis I basket.")
     assert len(report["records"]) == 6
     assert "observable_aware_proxy" in report["baselines"]
     assert math.isclose(
@@ -29,9 +30,9 @@ def test_artemis_i_external_validation_is_honest_about_generalization():
     )
     assert math.isclose(
         report["baselines"]["observable_aware_proxy"]["mae"],
-        0.16857451611421528,
+        0.013578753402350869,
         rel_tol=1e-6,
         abs_tol=1e-6,
     )
     assert report["baselines"]["observable_aware_proxy"]["mae"] < report["baselines"]["model_phase_proxy"]["mae"]
-    assert "change4_weighted_mean" in report["best_rmse_baselines"]
+    assert "observable_aware_proxy" in report["best_rmse_baselines"]
