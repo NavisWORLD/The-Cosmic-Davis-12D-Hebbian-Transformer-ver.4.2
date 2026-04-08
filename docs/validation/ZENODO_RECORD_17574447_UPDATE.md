@@ -23,9 +23,13 @@ Files to include in the Zenodo update:
 - `tests/galactic_cosmic_rays/change4_lnd_reference.json`
 - `tests/galactic_cosmic_rays/test_change4_alignment.py`
 - `tests/galactic_cosmic_rays/test_change4_diagnostic.py`
+- `tests/galactic_cosmic_rays/test_change4_heldout_validation.py`
 - `scripts/run_change4_alignment_diagnostic.py`
+- `scripts/run_change4_heldout_validation.py`
 - `docs/validation/change4_alignment_report.json`
 - `docs/validation/CHANGE4_EMPIRICAL_VALIDATION.md`
+- `docs/validation/change4_heldout_validation_report.json`
+- `docs/validation/CHANGE4_HELDOUT_VALIDATION.md`
 
 Suggested note for the Zenodo description:
 
@@ -35,5 +39,9 @@ includes a source-backed dataset fixture, automated tests, and a deterministic
 diagnostic script that reports per-record sub-comparisons, numerical deltas,
 and an aggregate harmonic alignment score. The current result is best described
 as an interesting mathematical correlation rather than a demonstrated
-predictive model. Reproduction commands are documented in
-`docs/validation/CHANGE4_EMPIRICAL_VALIDATION.md`.
+predictive model. A companion held-out validation report compares the 12D
+phase proxy against midpoint and leave-one-out baselines; on the full
+leave-one-out evaluation, the simple midpoint baseline outperforms the current
+model proxy on both MAE and RMSE. Reproduction commands are documented in
+`docs/validation/CHANGE4_EMPIRICAL_VALIDATION.md` and
+`docs/validation/CHANGE4_HELDOUT_VALIDATION.md`.

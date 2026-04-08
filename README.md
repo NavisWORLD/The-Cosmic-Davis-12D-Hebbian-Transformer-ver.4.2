@@ -13,7 +13,7 @@
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![Zenodo](https://img.shields.io/badge/Zenodo-Archive-123456.svg)](https://zenodo.org/records/17574447)
 
-[**Documentation**](docs/USER_GUIDE.md) • [**Chang'e-4 Validation**](docs/validation/CHANGE4_EMPIRICAL_VALIDATION.md) • [**Zenodo Paper**](https://zenodo.org/records/17574447) • [**Setup Wizard**](cosmos/core/setup_wizard.py)
+[**Documentation**](docs/USER_GUIDE.md) • [**Chang'e-4 Validation**](docs/validation/CHANGE4_EMPIRICAL_VALIDATION.md) • [**Held-Out Check**](docs/validation/CHANGE4_HELDOUT_VALIDATION.md) • [**Zenodo Paper**](https://zenodo.org/records/17574447) • [**Setup Wizard**](cosmos/core/setup_wizard.py)
 
 </div>
 

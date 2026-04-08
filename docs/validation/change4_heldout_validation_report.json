@@ -1,0 +1,156 @@
+{
+  "chronological_holdout_2026": {
+    "baselines": {
+      "midpoint_0_5": {
+        "mae": 0.3161361327463596,
+        "max_abs_error": 0.43227226549271924,
+        "predictions": [
+          0.5,
+          0.5
+        ],
+        "rmse": 0.3367931943449926
+      },
+      "model_phase_proxy": {
+        "mae": 0.3161361327463596,
+        "max_abs_error": 0.38926732866586095,
+        "predictions": [
+          0.310732671334139,
+          0.310732671334139
+        ],
+        "rmse": 0.32448455470860305
+      },
+      "train_mean": {
+        "mae": 0.3161361327463596,
+        "max_abs_error": 0.5093042021579497,
+        "predictions": [
+          0.5770319366652304,
+          0.5770319366652304
+        ],
+        "rmse": 0.3704807113305965,
+        "train_scalar": 0.5770319366652304
+      },
+      "train_weighted_mean": {
+        "mae": 0.3161361327463596,
+        "max_abs_error": 0.5269251460704425,
+        "predictions": [
+          0.5946528805777233,
+          0.5946528805777233
+        ],
+        "rmse": 0.3799658702646388,
+        "train_scalar": 0.5946528805777233
+      }
+    },
+    "best_mae_baseline": "model_phase_proxy",
+    "best_rmse_baseline": "model_phase_proxy",
+    "test_records": [
+      {
+        "id": "change4_lnd_2026_cavity_duration",
+        "normalized_target": 0.06772773450728073,
+        "published_date": "2026-03-25"
+      },
+      {
+        "id": "change4_lnd_2026_cavity_low_energy_reduction",
+        "normalized_target": 0.7,
+        "published_date": "2026-03-25"
+      }
+    ],
+    "train_records": [
+      {
+        "id": "change4_lnd_2021_neutral_fraction",
+        "normalized_target": 0.21090047393364927,
+        "published_date": "2021-05-01"
+      },
+      {
+        "id": "change4_lnd_2022_albedo_primary_ratio",
+        "normalized_target": 0.64,
+        "published_date": "2022-09-13"
+      },
+      {
+        "id": "change4_lnd_2024_charged_fraction",
+        "normalized_target": 0.7727272727272727,
+        "published_date": "2024-03-11"
+      },
+      {
+        "id": "change4_lnd_2024_dose_equivalent",
+        "normalized_target": 0.6845,
+        "published_date": "2024-03-11"
+      }
+    ]
+  },
+  "leave_one_out": {
+    "baselines": {
+      "leave_one_out_mean": {
+        "mae": 0.2986627807793883,
+        "max_abs_error": 0.5338978148249036,
+        "predictions": [
+          0.4751710962336405,
+          0.6016255493321844,
+          0.4782710962336406,
+          0.460625641688186,
+          0.5729910014469107,
+          0.4871710962336405
+        ],
+        "rmse": 0.3240367585708916
+      },
+      "leave_one_out_weighted_mean": {
+        "mae": 0.280711392837874,
+        "max_abs_error": 0.5511428746732646,
+        "predictions": [
+          0.5090275443412763,
+          0.6188706091805454,
+          0.5150210314481741,
+          0.5042686569484015,
+          0.6019720571189652,
+          0.5268561408207573
+        ],
+        "rmse": 0.31800435330766913
+      },
+      "midpoint_0_5": {
+        "mae": 0.25309984404772373,
+        "max_abs_error": 0.43227226549271924,
+        "predictions": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "rmse": 0.2703264269900536
+      },
+      "model_phase_proxy": {
+        "mae": 0.31618895360301075,
+        "max_abs_error": 0.4619946013931337,
+        "predictions": [
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139
+        ],
+        "rmse": 0.3371708077389109
+      }
+    },
+    "best_mae_baseline": "midpoint_0_5",
+    "best_rmse_baseline": "midpoint_0_5",
+    "targets": [
+      0.7,
+      0.06772773450728073,
+      0.6845,
+      0.7727272727272727,
+      0.21090047393364927,
+      0.64
+    ]
+  },
+  "reproducibility": {
+    "alignment_report_dependency": "docs/validation/change4_alignment_report.json",
+    "command": "python scripts/run_change4_heldout_validation.py --output-dir docs/validation",
+    "python_version": "3.12.6"
+  },
+  "source_alignment": {
+    "fixture_sha256": "77e313d2901c8578eb3be6e223c0771169403043ef29800751c6fade918da798",
+    "heuristic_band": "interesting_correlation",
+    "official_overall_alignment": 0.6411443634675607
+  }
+}
