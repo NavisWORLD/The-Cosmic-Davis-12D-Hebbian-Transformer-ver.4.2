@@ -1,0 +1,369 @@
+{
+  "answer": "No. It improves materially over the original constant phase proxy and even wins on the Artemis I organ-dose basket, but it still fails the stricter per-dataset generalization gate because it does not beat the carryover baselines on the Artemis ratio basket.",
+  "combined_external_baselines": {
+    "baselines": {
+      "change4_reference_mean": {
+        "mae": 0.3103449186084917,
+        "max_abs_error": 0.48735741980529956,
+        "predictions": [
+          0.5126425801947004,
+          0.5126425801947004,
+          0.5126425801947004,
+          0.5126425801947004,
+          0.5126425801947004,
+          0.5126425801947004,
+          0.5126425801947004,
+          0.5126425801947004,
+          0.5126425801947004,
+          0.5126425801947004,
+          0.5126425801947004,
+          0.5126425801947004,
+          0.5126425801947004
+        ],
+        "rmse": 0.3463409557708484
+      },
+      "change4_weighted_mean": {
+        "mae": 0.29172521192016526,
+        "max_abs_error": 0.45277796452697905,
+        "predictions": [
+          0.547222035473021,
+          0.547222035473021,
+          0.547222035473021,
+          0.547222035473021,
+          0.547222035473021,
+          0.547222035473021,
+          0.547222035473021,
+          0.547222035473021,
+          0.547222035473021,
+          0.547222035473021,
+          0.547222035473021,
+          0.547222035473021,
+          0.547222035473021
+        ],
+        "rmse": 0.32125118208744763
+      },
+      "midpoint_0_5": {
+        "mae": 0.31715246179025347,
+        "max_abs_error": 0.5,
+        "predictions": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "rmse": 0.35591140732932763
+      },
+      "model_phase_proxy": {
+        "mae": 0.4722092713850332,
+        "max_abs_error": 0.689267328665861,
+        "predictions": [
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139,
+          0.310732671334139
+        ],
+        "rmse": 0.5152703537832188
+      },
+      "observable_aware_proxy": {
+        "mae": 0.22474220537999712,
+        "max_abs_error": 0.43458188153310107,
+        "predictions": [
+          0.675,
+          0.675,
+          0.7075,
+          0.7005000000000001,
+          0.7005000000000001,
+          0.7005000000000001,
+          0.675,
+          0.675,
+          0.675,
+          0.675,
+          0.675,
+          0.675,
+          0.675
+        ],
+        "rmse": 0.24962758875999772
+      }
+    },
+    "best_mae_baselines": [
+      "observable_aware_proxy"
+    ],
+    "best_rmse_baselines": [
+      "observable_aware_proxy"
+    ]
+  },
+  "datasets": {
+    "artemis_i_external_ratios": {
+      "alignment": {
+        "official_cosine_similarity": 0.47892551681025564,
+        "official_overall_alignment": 0.5451100314262227,
+        "official_phase_distance": 0.25633642472587576
+      },
+      "baselines": {
+        "change4_reference_mean": {
+          "mae": 0.1646300716697708,
+          "max_abs_error": 0.27222446172780146,
+          "predictions": [
+            0.5126425801947004,
+            0.5126425801947004,
+            0.5126425801947004,
+            0.5126425801947004,
+            0.5126425801947004,
+            0.5126425801947004
+          ],
+          "rmse": 0.1944474233783897
+        },
+        "change4_weighted_mean": {
+          "mae": 0.1646300716697708,
+          "max_abs_error": 0.306803917006122,
+          "predictions": [
+            0.547222035473021,
+            0.547222035473021,
+            0.547222035473021,
+            0.547222035473021,
+            0.547222035473021,
+            0.547222035473021
+          ],
+          "rmse": 0.18772709086117864
+        },
+        "midpoint_0_5": {
+          "mae": 0.1646300716697708,
+          "max_abs_error": 0.27419354838709675,
+          "predictions": [
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "rmse": 0.19835780417106078
+        },
+        "model_phase_proxy": {
+          "mae": 0.2797746090149557,
+          "max_abs_error": 0.46346087705295774,
+          "predictions": [
+            0.310732671334139,
+            0.310732671334139,
+            0.310732671334139,
+            0.310732671334139,
+            0.310732671334139,
+            0.310732671334139
+          ],
+          "rmse": 0.31710553049497886
+        },
+        "observable_aware_proxy": {
+          "mae": 0.16857451611421528,
+          "max_abs_error": 0.43458188153310107,
+          "predictions": [
+            0.675,
+            0.675,
+            0.7075,
+            0.7005000000000001,
+            0.7005000000000001,
+            0.7005000000000001
+          ],
+          "rmse": 0.2169306736922221
+        }
+      },
+      "best_mae_baselines": [
+        "midpoint_0_5",
+        "change4_reference_mean",
+        "change4_weighted_mean"
+      ],
+      "best_rmse_baselines": [
+        "change4_weighted_mean"
+      ],
+      "record_count": 6,
+      "targets": [
+        0.24041811846689895,
+        0.46689895470383275,
+        0.6666666666666666,
+        0.7741935483870968,
+        0.7542372881355932,
+        0.5
+      ]
+    },
+    "artemis_i_m42_gcr_organs": {
+      "alignment": {
+        "official_cosine_similarity": 0.6092008321944763,
+        "official_overall_alignment": 0.5476123072202965,
+        "official_phase_distance": 0.6371532677022425
+      },
+      "baselines": {
+        "change4_reference_mean": {
+          "mae": 0.4352433588416811,
+          "max_abs_error": 0.48735741980529956,
+          "predictions": [
+            0.5126425801947004,
+            0.5126425801947004,
+            0.5126425801947004,
+            0.5126425801947004,
+            0.5126425801947004,
+            0.5126425801947004,
+            0.5126425801947004
+          ],
+          "rmse": 0.4363023110878959
+        },
+        "change4_weighted_mean": {
+          "mae": 0.4006639035633605,
+          "max_abs_error": 0.45277796452697905,
+          "predictions": [
+            0.547222035473021,
+            0.547222035473021,
+            0.547222035473021,
+            0.547222035473021,
+            0.547222035473021,
+            0.547222035473021,
+            0.547222035473021
+          ],
+          "rmse": 0.40181399784412763
+        },
+        "midpoint_0_5": {
+          "mae": 0.4478859390363815,
+          "max_abs_error": 0.5,
+          "predictions": [
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "rmse": 0.44891506950797716
+        },
+        "model_phase_proxy": {
+          "mae": 0.6371532677022425,
+          "max_abs_error": 0.689267328665861,
+          "predictions": [
+            0.310732671334139,
+            0.310732671334139,
+            0.310732671334139,
+            0.310732671334139,
+            0.310732671334139,
+            0.310732671334139,
+            0.310732671334139
+          ],
+          "rmse": 0.6378771133913619
+        },
+        "observable_aware_proxy": {
+          "mae": 0.2728859390363815,
+          "max_abs_error": 0.32499999999999996,
+          "predictions": [
+            0.675,
+            0.675,
+            0.675,
+            0.675,
+            0.675,
+            0.675,
+            0.675
+          ],
+          "rmse": 0.27457177744374683
+        }
+      },
+      "best_mae_baselines": [
+        "observable_aware_proxy"
+      ],
+      "best_rmse_baselines": [
+        "observable_aware_proxy"
+      ],
+      "record_count": 7,
+      "records": [
+        {
+          "id": "artemis_i_m42_gcr_skin_front",
+          "normalized_target": 0.9223205506391348,
+          "observable_aware_prediction": 0.675,
+          "phase_proxy_prediction": 0.310732671334139,
+          "published_date": "2024-10-03"
+        },
+        {
+          "id": "artemis_i_m42_gcr_left_lung",
+          "normalized_target": 0.9282202556538839,
+          "observable_aware_prediction": 0.675,
+          "phase_proxy_prediction": 0.310732671334139,
+          "published_date": "2024-10-03"
+        },
+        {
+          "id": "artemis_i_m42_gcr_right_lung",
+          "normalized_target": 0.9282202556538839,
+          "observable_aware_prediction": 0.675,
+          "phase_proxy_prediction": 0.310732671334139,
+          "published_date": "2024-10-03"
+        },
+        {
+          "id": "artemis_i_m42_gcr_stomach",
+          "normalized_target": 0.9262536873156342,
+          "observable_aware_prediction": 0.675,
+          "phase_proxy_prediction": 0.310732671334139,
+          "published_date": "2024-10-03"
+        },
+        {
+          "id": "artemis_i_m42_gcr_uterus",
+          "normalized_target": 0.9901671583087512,
+          "observable_aware_prediction": 0.675,
+          "phase_proxy_prediction": 0.310732671334139,
+          "published_date": "2024-10-03"
+        },
+        {
+          "id": "artemis_i_m42_gcr_spine",
+          "normalized_target": 0.9400196656833826,
+          "observable_aware_prediction": 0.675,
+          "phase_proxy_prediction": 0.310732671334139,
+          "published_date": "2024-10-03"
+        },
+        {
+          "id": "artemis_i_m42_gcr_skin_back",
+          "normalized_target": 1.0,
+          "observable_aware_prediction": 0.675,
+          "phase_proxy_prediction": 0.310732671334139,
+          "published_date": "2024-10-03"
+        }
+      ],
+      "targets": [
+        0.9223205506391348,
+        0.9282202556538839,
+        0.9282202556538839,
+        0.9262536873156342,
+        0.9901671583087512,
+        0.9400196656833826,
+        1.0
+      ]
+    }
+  },
+  "generalization_gate": {
+    "rule": "The observable-aware proxy must be among the best MAE and best RMSE baselines on every external dataset individually.",
+    "status": "not_generalized"
+  },
+  "locked_change4_context": {
+    "change4_alignment": 0.6411443634675607,
+    "change4_reference_mean": 0.5126425801947004,
+    "change4_weighted_mean": 0.547222035473021,
+    "phase_proxy_clamped": 0.310732671334139
+  },
+  "question": "Does the locked observable-aware proxy generalize across all external lunar datasets in this validation bundle?",
+  "reproducibility": {
+    "command": "python scripts/run_final_generalization_test.py --output-dir docs/validation",
+    "m42_fixture_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_m42_gcr_reference.json",
+    "m42_fixture_sha256": "52cf7c80e66a557e3fb1a3ec811f5b17153c49f3f28a4fe44cf238bf9d2ad465",
+    "python_version": "3.12.6"
+  }
+}

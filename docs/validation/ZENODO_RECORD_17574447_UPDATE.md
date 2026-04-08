@@ -25,16 +25,21 @@ Files to include in the Zenodo update:
 - `tests/galactic_cosmic_rays/test_change4_diagnostic.py`
 - `tests/galactic_cosmic_rays/test_change4_heldout_validation.py`
 - `tests/galactic_cosmic_rays/artemis_i_unseen_reference.json`
+- `tests/galactic_cosmic_rays/artemis_i_m42_gcr_reference.json`
 - `tests/galactic_cosmic_rays/test_artemis_i_external_validation.py`
+- `tests/galactic_cosmic_rays/test_final_generalization_test.py`
 - `scripts/run_change4_alignment_diagnostic.py`
 - `scripts/run_change4_heldout_validation.py`
 - `scripts/run_artemis_i_external_validation.py`
+- `scripts/run_final_generalization_test.py`
 - `docs/validation/change4_alignment_report.json`
 - `docs/validation/CHANGE4_EMPIRICAL_VALIDATION.md`
 - `docs/validation/change4_heldout_validation_report.json`
 - `docs/validation/CHANGE4_HELDOUT_VALIDATION.md`
 - `docs/validation/artemis_i_external_validation_report.json`
 - `docs/validation/ARTEMIS_I_EXTERNAL_VALIDATION.md`
+- `docs/validation/final_generalization_test_report.json`
+- `docs/validation/FINAL_GENERALIZATION_TEST.md`
 
 Suggested note for the Zenodo description:
 
@@ -58,8 +63,16 @@ the observable-aware proxy improves materially over the original constant phase
 proxy, but it still does not beat the simplest carryover baselines on aggregate
 external error. That result argues for caution: the current model shows
 alignment-bearing structure, but not a credible generalization claim yet.
+
+The package now also includes a final multi-dataset generalization gate. This
+gate requires the locked observable-aware proxy to be among the best MAE and
+best RMSE baselines on every external dataset individually. Under that stricter
+criterion, the proxy still fails the generalization claim because it does not
+beat the carryover baselines on the Artemis ratio basket, even though it wins
+on the Artemis organ-dose basket and on the combined external aggregate.
 Reproduction commands are documented in
 `docs/validation/CHANGE4_EMPIRICAL_VALIDATION.md`,
 `docs/validation/CHANGE4_HELDOUT_VALIDATION.md`,
-`docs/validation/ARTEMIS_I_EXTERNAL_VALIDATION.md`, and the associated JSON
+`docs/validation/ARTEMIS_I_EXTERNAL_VALIDATION.md`,
+`docs/validation/FINAL_GENERALIZATION_TEST.md`, and the associated JSON
 reports.

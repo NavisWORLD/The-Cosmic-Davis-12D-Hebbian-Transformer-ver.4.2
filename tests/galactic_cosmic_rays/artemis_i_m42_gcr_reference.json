@@ -1,0 +1,79 @@
+[
+  {
+    "id": "artemis_i_m42_gcr_skin_front",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "numerator": 9.38,
+    "denominator": 10.17,
+    "weight": 1.0,
+    "units": "gcr_absorbed_dose_relative_to_max",
+    "notes": "M-42 skin-front GCR absorbed dose normalized to the maximum value reported in Table 1."
+  },
+  {
+    "id": "artemis_i_m42_gcr_left_lung",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "numerator": 9.44,
+    "denominator": 10.17,
+    "weight": 1.0,
+    "units": "gcr_absorbed_dose_relative_to_max",
+    "notes": "M-42 left-lung GCR absorbed dose normalized to the maximum value reported in Table 1."
+  },
+  {
+    "id": "artemis_i_m42_gcr_right_lung",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "numerator": 9.44,
+    "denominator": 10.17,
+    "weight": 1.0,
+    "units": "gcr_absorbed_dose_relative_to_max",
+    "notes": "M-42 right-lung GCR absorbed dose normalized to the maximum value reported in Table 1."
+  },
+  {
+    "id": "artemis_i_m42_gcr_stomach",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "numerator": 9.42,
+    "denominator": 10.17,
+    "weight": 1.0,
+    "units": "gcr_absorbed_dose_relative_to_max",
+    "notes": "M-42 stomach GCR absorbed dose normalized to the maximum value reported in Table 1."
+  },
+  {
+    "id": "artemis_i_m42_gcr_uterus",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "numerator": 10.07,
+    "denominator": 10.17,
+    "weight": 1.0,
+    "units": "gcr_absorbed_dose_relative_to_max",
+    "notes": "M-42 uterus GCR absorbed dose normalized to the maximum value reported in Table 1."
+  },
+  {
+    "id": "artemis_i_m42_gcr_spine",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "numerator": 9.56,
+    "denominator": 10.17,
+    "weight": 1.0,
+    "units": "gcr_absorbed_dose_relative_to_max",
+    "notes": "M-42 spine GCR absorbed dose normalized to the maximum value reported in Table 1."
+  },
+  {
+    "id": "artemis_i_m42_gcr_skin_back",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "numerator": 10.17,
+    "denominator": 10.17,
+    "weight": 1.0,
+    "units": "gcr_absorbed_dose_relative_to_max",
+    "notes": "M-42 skin-back GCR absorbed dose normalized to the maximum value reported in Table 1."
+  }
+]
