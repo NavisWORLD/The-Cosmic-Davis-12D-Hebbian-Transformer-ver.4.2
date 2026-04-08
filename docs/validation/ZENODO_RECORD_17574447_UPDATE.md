@@ -39,9 +39,14 @@ includes a source-backed dataset fixture, automated tests, and a deterministic
 diagnostic script that reports per-record sub-comparisons, numerical deltas,
 and an aggregate harmonic alignment score. The current result is best described
 as an interesting mathematical correlation rather than a demonstrated
-predictive model. A companion held-out validation report compares the 12D
-phase proxy against midpoint and leave-one-out baselines; on the full
-leave-one-out evaluation, the simple midpoint baseline outperforms the current
-model proxy on both MAE and RMSE. Reproduction commands are documented in
-`docs/validation/CHANGE4_EMPIRICAL_VALIDATION.md` and
-`docs/validation/CHANGE4_HELDOUT_VALIDATION.md`.
+predictive model. A companion held-out validation report compares the original
+constant 12D phase proxy against midpoint and leave-one-out baselines; on the
+full leave-one-out evaluation, the simple midpoint baseline outperforms that
+constant proxy on both MAE and RMSE. The update also includes an
+observable-aware heuristic calibration layer that reduces error sharply, but
+because it is hand-authored around observable families it should be presented
+as calibration support rather than independent predictive evidence.
+Reproduction commands are documented in
+`docs/validation/CHANGE4_EMPIRICAL_VALIDATION.md`,
+`docs/validation/CHANGE4_HELDOUT_VALIDATION.md`, and the associated JSON
+reports.

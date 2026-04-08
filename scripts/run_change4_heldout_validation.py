@@ -57,6 +57,10 @@ def build_change4_heldout_validation() -> dict:
         [record["model_scalar_prediction"] for record in records],
         dtype=float,
     )
+    observable_aware_predictions = np.array(
+        [record["observable_aware_scalar_prediction"] for record in records],
+        dtype=float,
+    )
     midpoint_predictions = np.full_like(targets, 0.5)
 
     loo_mean_predictions = []
@@ -76,6 +80,10 @@ def build_change4_heldout_validation() -> dict:
         [record["model_scalar_prediction"] for record in sorted_records],
         dtype=float,
     )
+    sorted_observable_aware_predictions = np.array(
+        [record["observable_aware_scalar_prediction"] for record in sorted_records],
+        dtype=float,
+    )
     test_mask = np.array(
         [record["published_date"] >= "2026-01-01" for record in sorted_records],
         dtype=bool,
@@ -86,6 +94,7 @@ def build_change4_heldout_validation() -> dict:
 
     chronological_targets = sorted_targets[test_mask]
     chronological_model_predictions = sorted_model_predictions[test_mask]
+    chronological_observable_aware_predictions = sorted_observable_aware_predictions[test_mask]
     train_mean = float(np.mean(sorted_targets[train_mask]))
     train_weighted_mean = float(
         np.average(sorted_targets[train_mask], weights=sorted_weights[train_mask])
@@ -100,6 +109,10 @@ def build_change4_heldout_validation() -> dict:
             "model_phase_proxy": {
                 "predictions": _round_floats(model_predictions.tolist()),
                 **_error_metrics(model_predictions, targets),
+            },
+            "observable_aware_proxy": {
+                "predictions": _round_floats(observable_aware_predictions.tolist()),
+                **_error_metrics(observable_aware_predictions, targets),
             },
             "midpoint_0_5": {
                 "predictions": _round_floats(midpoint_predictions.tolist()),
@@ -139,6 +152,10 @@ def build_change4_heldout_validation() -> dict:
             "model_phase_proxy": {
                 "predictions": _round_floats(chronological_model_predictions.tolist()),
                 **_error_metrics(chronological_model_predictions, chronological_targets),
+            },
+            "observable_aware_proxy": {
+                "predictions": _round_floats(chronological_observable_aware_predictions.tolist()),
+                **_error_metrics(chronological_observable_aware_predictions, chronological_targets),
             },
             "midpoint_0_5": {
                 "predictions": _round_floats(chronological_midpoint.tolist()),
@@ -199,9 +216,10 @@ def render_markdown_summary(report: dict) -> str:
             "prediction beat simple baselines on held-out normalized Chang'e-4/LND targets?"
         ),
         (
-            "Answer: not yet. The alignment result is still interesting, but the "
-            "current model proxy does not beat the simplest baselines on the full "
-            "leave-one-out evaluation."
+            "Answer: the original constant phase proxy does not. A second "
+            "observable-aware heuristic can reduce error sharply, but because it is "
+            "a hand-authored, record-conditioned calibration, it should not be "
+            "treated as independent predictive validation."
         ),
         "",
         "## Leave-One-Out Baselines",
@@ -248,13 +266,14 @@ def render_markdown_summary(report: dict) -> str:
             "## Interpretation",
             (
                 "This is the key distinction between correlation and prediction. "
-                "The 12D probe still yields a nontrivial harmonic alignment score, "
-                "but under held-out error metrics it does not clearly outperform "
-                "simple baselines across the full dataset."
+                "The 12D probe still yields a nontrivial harmonic alignment score. "
+                "The original constant phase proxy does not outperform simple "
+                "baselines across the full dataset."
             ),
             (
-                "That means the model is currently better described as alignment-bearing "
-                "than predictive."
+                "The observable-aware proxy is useful as an engineering calibration "
+                "layer, but because it is hand-shaped around observable families, it "
+                "is still calibration rather than proof of prediction."
             ),
             "",
             "## Reproduce",

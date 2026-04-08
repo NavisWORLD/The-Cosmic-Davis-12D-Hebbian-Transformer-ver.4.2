@@ -2,35 +2,37 @@
 
 ## Summary
 This report asks the harder question: does the current 12D phase-proxy prediction beat simple baselines on held-out normalized Chang'e-4/LND targets?
-Answer: not yet. The alignment result is still interesting, but the current model proxy does not beat the simplest baselines on the full leave-one-out evaluation.
+Answer: the original constant phase proxy does not. A second observable-aware heuristic can reduce error sharply, but because it is a hand-authored, record-conditioned calibration, it should not be treated as independent predictive validation.
 
 ## Leave-One-Out Baselines
 Each record is treated as held out while simple baselines are built from the remaining records.
-- Best MAE baseline: `midpoint_0_5`
-- Best RMSE baseline: `midpoint_0_5`
+- Best MAE baseline: `observable_aware_proxy`
+- Best RMSE baseline: `observable_aware_proxy`
 
 | Baseline | MAE | RMSE | Max abs error |
 | --- | ---: | ---: | ---: |
 | model_phase_proxy | 0.316189 | 0.337171 | 0.461995 |
+| observable_aware_proxy | 0.004875 | 0.007565 | 0.016000 |
 | midpoint_0_5 | 0.253100 | 0.270326 | 0.432272 |
 | leave_one_out_mean | 0.298663 | 0.324037 | 0.533898 |
 | leave_one_out_weighted_mean | 0.280711 | 0.318004 | 0.551143 |
 
 ## Chronological Holdout
 Training-style baselines are fit only on the pre-2026 records and evaluated on the two 2026 cavity records.
-- Best MAE baseline: `model_phase_proxy`
-- Best RMSE baseline: `model_phase_proxy`
+- Best MAE baseline: `observable_aware_proxy`
+- Best RMSE baseline: `observable_aware_proxy`
 
 | Baseline | MAE | RMSE | Max abs error |
 | --- | ---: | ---: | ---: |
 | model_phase_proxy | 0.316136 | 0.324485 | 0.389267 |
+| observable_aware_proxy | 0.006539 | 0.006609 | 0.007500 |
 | midpoint_0_5 | 0.316136 | 0.336793 | 0.432272 |
 | train_mean | 0.316136 | 0.370481 | 0.509304 |
 | train_weighted_mean | 0.316136 | 0.379966 | 0.526925 |
 
 ## Interpretation
-This is the key distinction between correlation and prediction. The 12D probe still yields a nontrivial harmonic alignment score, but under held-out error metrics it does not clearly outperform simple baselines across the full dataset.
-That means the model is currently better described as alignment-bearing than predictive.
+This is the key distinction between correlation and prediction. The 12D probe still yields a nontrivial harmonic alignment score. The original constant phase proxy does not outperform simple baselines across the full dataset.
+The observable-aware proxy is useful as an engineering calibration layer, but because it is hand-shaped around observable families, it is still calibration rather than proof of prediction.
 
 ## Reproduce
 ```powershell

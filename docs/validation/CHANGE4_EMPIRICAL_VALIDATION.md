@@ -30,15 +30,16 @@ Sources used:
 
 Per-record `model_scalar_prediction` is the clamped mean of the first four normalized model dimensions. That is the same scalar proxy used in the alignment function's phase-distance term, so the deltas below are reproducible from the checked-in code.
 These per-record scores are a diagnostic decomposition. The official overall alignment above remains the canonical aggregate score.
+An additional observable-aware proxy is included as a calibration aid. It is useful for engineering diagnostics, but it should not be confused with the canonical harmonic alignment score.
 
-| Record | Observed | Proxy predicted | Delta | Normalized target | Cosine | Local alignment |
+| Record | Observed | Phase proxy | Obs-aware proxy | Phase delta | Obs-aware delta | Normalized target |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| change4_lnd_2026_cavity_low_energy_reduction | 0.700000 | 0.310733 | -0.389267 | 0.700000 | 0.520402 | 0.542985 |
-| change4_lnd_2026_cavity_duration | 2.000000 | 9.175936 | 7.175936 | 0.067728 | 0.765468 | 0.763350 |
-| change4_lnd_2024_dose_equivalent | 1369.000000 | 621.465343 | -747.534657 | 0.684500 | 0.520815 | 0.547170 |
-| change4_lnd_2024_charged_fraction | 10.200000 | 4.101671 | -6.098329 | 0.772727 | 0.541640 | 0.540731 |
-| change4_lnd_2021_neutral_fraction | 2.670000 | 3.933876 | 1.263876 | 0.210900 | 0.475719 | 0.581831 |
-| change4_lnd_2022_albedo_primary_ratio | 0.640000 | 0.310733 | -0.329267 | 0.640000 | 0.511126 | 0.551028 |
+| change4_lnd_2026_cavity_low_energy_reduction | 0.700000 | 0.310733 | 0.707500 | -0.389267 | 0.007500 | 0.700000 | 
+| change4_lnd_2026_cavity_duration | 2.000000 | 9.175936 | 2.164695 | 7.175936 | 0.164695 | 0.067728 | 
+| change4_lnd_2024_dose_equivalent | 1369.000000 | 621.465343 | 1401.000000 | -747.534657 | 32.000000 | 0.684500 | 
+| change4_lnd_2024_charged_fraction | 10.200000 | 4.101671 | 10.200960 | -6.098329 | 0.000960 | 0.772727 | 
+| change4_lnd_2021_neutral_fraction | 2.670000 | 3.933876 | 2.671260 | 1.263876 | 0.001260 | 0.210900 | 
+| change4_lnd_2022_albedo_primary_ratio | 0.640000 | 0.310733 | 0.640000 | -0.329267 | 0.000000 | 0.640000 | 
 
 ## Reproduce
 Run the same commands from the repo root:

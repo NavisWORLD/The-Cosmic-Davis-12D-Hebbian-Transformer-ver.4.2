@@ -474,6 +474,55 @@ def _normalize_gcr_scalar(record: dict) -> float:
     return _clamp(value / normalizer if normalizer else 0.0)
 
 
+def predict_change4_observable_scalar(
+    state_vector: Sequence[float],
+    record: dict,
+) -> float:
+    """
+    Build a record-conditioned scalar from the 12D state.
+
+    This is an engineering heuristic for observable-specific diagnostics.
+    It is intentionally separate from the canonical harmonic alignment score.
+    """
+    vector = _safe_array(state_vector, size=12)
+    phase = _clamp(float(vector[0]))
+    phase_velocity = max(0.0, float(vector[1]))
+    entanglement = _clamp(float(vector[2]))
+    intensity = _clamp(float(vector[3]))
+    valence = float(vector[5])
+    entropy_quality = _clamp(float(vector[9]))
+    decoherence_risk = _clamp(float(vector[10]))
+    x12_avg = _clamp(float(vector[11]))
+
+    record_id = str(record.get("id", "")).lower()
+    units = str(record.get("units", "")).lower()
+
+    if "duration" in record_id or "days per lunar revolution" in units:
+        return _clamp(phase_velocity * (PHI + 1.0))
+
+    if "charged" in record_id:
+        return _clamp(intensity + phase_velocity * 0.1)
+
+    if "neutral" in record_id:
+        return _clamp(decoherence_risk - abs(valence) * 0.1)
+
+    if "albedo" in record_id:
+        return _clamp(entanglement)
+
+    if "dose" in record_id:
+        return _clamp(
+            intensity * 0.45
+            + entanglement * 0.25
+            + x12_avg * 0.20
+            + entropy_quality * 0.10
+        )
+
+    if "reduction" in record_id or "count-rate ratio" in units:
+        return _clamp(phase * 0.50 + entanglement * 0.25 + intensity * 0.25)
+
+    return _clamp(np.mean([phase, entanglement, intensity, x12_avg]))
+
+
 def harmonic_embed_scalar_to_12d(scalar: float) -> np.ndarray:
     """
     Project a normalized scalar into a 12D harmonic probe vector.

@@ -26,3 +26,4 @@ def test_change4_diagnostic_is_reproducible_and_detailed():
     assert records[0]["id"] == "change4_lnd_2026_cavity_low_energy_reduction"
     assert records[0]["normalized_target"] == 0.7
     assert records[0]["record_alignment_score"] > 0.5
+    assert "observable_aware_scalar_prediction" in records[0]

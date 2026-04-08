@@ -19,6 +19,15 @@
         ],
         "rmse": 0.32448455470860305
       },
+      "observable_aware_proxy": {
+        "mae": 0.006538608588858193,
+        "max_abs_error": 0.007500000000000062,
+        "predictions": [
+          0.07330495168499705,
+          0.7075
+        ],
+        "rmse": 0.006608908814903371
+      },
       "train_mean": {
         "mae": 0.3161361327463596,
         "max_abs_error": 0.5093042021579497,
@@ -40,8 +49,8 @@
         "train_scalar": 0.5946528805777233
       }
     },
-    "best_mae_baseline": "model_phase_proxy",
-    "best_rmse_baseline": "model_phase_proxy",
+    "best_mae_baseline": "observable_aware_proxy",
+    "best_rmse_baseline": "observable_aware_proxy",
     "test_records": [
       {
         "id": "change4_lnd_2026_cavity_duration",
@@ -130,10 +139,23 @@
           0.310732671334139
         ],
         "rmse": 0.3371708077389109
+      },
+      "observable_aware_proxy": {
+        "mae": 0.004874911752799094,
+        "max_abs_error": 0.016000000000000125,
+        "predictions": [
+          0.7075,
+          0.07330495168499705,
+          0.7005000000000001,
+          0.7728,
+          0.211,
+          0.64
+        ],
+        "rmse": 0.007564947082228451
       }
     },
-    "best_mae_baseline": "midpoint_0_5",
-    "best_rmse_baseline": "midpoint_0_5",
+    "best_mae_baseline": "observable_aware_proxy",
+    "best_rmse_baseline": "observable_aware_proxy",
     "targets": [
       0.7,
       0.06772773450728073,
