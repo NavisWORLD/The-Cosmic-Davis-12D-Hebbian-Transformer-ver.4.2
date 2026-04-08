@@ -1,24 +1,24 @@
 """
-Hermes Bridge — Integrating Hermes Agent's Autonomous Capabilities into Cosmos.
+Hermes Bridge — Integrating HermesAgent's Autonomous Capabilities into Cosmos.
 
-Hermes Agent by Nous Research is a self-improving, open-source AI agent with
+HermesAgent by Nous Research is a self-improving, open-source AI agent with
 persistent Skill Documents, communication gateway, and model-agnostic design.
 
-This module bridges Hermes Agent's three core systems into the Cosmos swarm:
+This module bridges HermesAgent's three core systems into the Cosmos swarm:
 
 1. **HeartbeatIntegration** — Proactive background task scheduling
-   Extends Cosmos's autonomous conversation loop with Hermes Agent's heartbeat
+   Extends Cosmos's autonomous conversation loop with HermesAgent's heartbeat
    system for proactive actions (research, memory consolidation, self-reflection).
 
 2. **SkillsAdapter** — Plugin bridge for tool routing
-   Maps Hermes Agent skills (Skill Documents) into Cosmos's existing tool_router,
+   Maps HermesAgent skills (Skill Documents) into Cosmos's existing tool_router,
    enabling the swarm to use the Hermes skill ecosystem.
 
 3. **RLFeedbackLoop** — Reinforcement learning from conversations
    Feeds Cosmos's Hebbian plasticity weights and swarm coherence scores
    into Hermes-RL for continuous personality optimization.
 
-Hermes Agent is optional — all features degrade gracefully if not installed.
+HermesAgent is optional — all features degrade gracefully if not installed.
 """
 
 import asyncio
@@ -26,6 +26,9 @@ import logging
 import time
 import json
 import os
+import sys
+import builtins
+import threading
 from typing import Optional, Dict, List, Any, Callable
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -38,7 +41,7 @@ logger = logging.getLogger("HERMES_BRIDGE")
 
 @dataclass
 class HermesConfig:
-    """Configuration for Hermes Agent integration."""
+    """Configuration for HermesAgent integration."""
     enabled: bool = True
     heartbeat_interval_s: float = 60.0    # How often the heartbeat fires
     rl_batch_size: int = 16               # RL training batch size
@@ -165,8 +168,25 @@ class RLFeedbackLoop:
         """Record a conversation experience for RL training."""
         emotion_alignment = 0.5
         if emotional_state:
-            # Simple alignment: higher valence = better alignment
-            emotion_alignment = emotional_state.get("valence", 0.5)
+            # Accept both normalized live packets and older raw packet shapes.
+            packet = emotional_state.get("cosmos_packet", emotional_state)
+            derived = packet.get("derived_state", {}) if isinstance(packet, dict) else {}
+            pad_vector = derived.get("pad_vector", {}) if isinstance(derived, dict) else {}
+
+            if isinstance(pad_vector, dict):
+                pad_valence = pad_vector.get("pleasure")
+            elif isinstance(pad_vector, (list, tuple)) and pad_vector:
+                pad_valence = pad_vector[0]
+            else:
+                pad_valence = None
+
+            emotion_alignment = emotional_state.get("valence", pad_valence)
+            if emotion_alignment is None:
+                emotion_alignment = derived.get("pleasure", 0.5)
+            try:
+                emotion_alignment = float(emotion_alignment)
+            except (TypeError, ValueError):
+                emotion_alignment = 0.5
 
         # Extract simple topic keywords
         words = response.lower().split()
@@ -417,7 +437,7 @@ class HeartbeatIntegration:
 
 class SkillsAdapter:
     """
-    Bridges Hermes Agent Skill Documents into Cosmos's tool_router.
+    Bridges HermesAgent Skill Documents into Cosmos's tool_router.
 
     Hermes skills are modular plugins with a standard interface
     (Skill Documents by Nous Research). This adapter wraps them
@@ -499,12 +519,12 @@ class SkillsAdapter:
 
 
 # ===========================================================================
-#  Hermes Runtime — Real Hermes Agent (Nous Research) Integration
+#  Hermes Runtime — Real HermesAgent (Nous Research) Integration
 # ===========================================================================
 
 class HermesRuntime:
     """
-    Wraps the actual Hermes Agent package (NousResearch/hermes-agent).
+    Wraps the actual HermesAgent package (NousResearch/hermes-agent).
 
     Provides access to:
     - AIAgent: The core agent with tool calling and conversation loop
@@ -524,9 +544,11 @@ class HermesRuntime:
         self._try_import()
 
     def _try_import(self):
-        """Attempt to import real Hermes Agent modules."""
+        """Attempt to import real HermesAgent modules."""
         try:
-            import sys
+            import sys, os as _os
+            # Enable interactive mode so cronjob/terminal tools are available
+            _os.environ.setdefault("HERMES_INTERACTIVE", "1")
             # Add hermes-agent dir to path so its internal packages resolve
             hermes_dir = str(Path(__file__).resolve().parent.parent.parent / "hermes-agent")
             if hermes_dir not in sys.path:
@@ -544,19 +566,19 @@ class HermesRuntime:
             self._constants = hermes_constants
             self._model_tools = model_tools
             self._available = True
-            logger.info("[HERMES RUNTIME] ✅ Real Hermes Agent loaded (Nous Research)")
+            logger.info("[HERMES RUNTIME] ✅ Real HermesAgent loaded (Nous Research)")
         except ImportError as e:
             self._available = False
             self._init_error = str(e)
-            logger.warning(f"[HERMES RUNTIME] Hermes Agent not installed: {e}")
+            logger.warning(f"[HERMES RUNTIME] HermesAgent not installed: {e}")
         except Exception as e:
             self._available = False
             self._init_error = str(e)
-            logger.warning(f"[HERMES RUNTIME] Failed to import Hermes Agent: {e}")
+            logger.warning(f"[HERMES RUNTIME] Failed to import HermesAgent: {e}")
 
     @property
     def available(self) -> bool:
-        """Whether the real Hermes Agent runtime is available."""
+        """Whether the real HermesAgent runtime is available."""
         return self._available
 
     def create_agent(self, **kwargs) -> Any:
@@ -616,9 +638,68 @@ class HermesRuntime:
             return []
         return db.search_messages(query, limit=limit)
 
+    def get_cascade_backend(self) -> Any:
+        """
+        Get or create a HermesCascadeBackend for the agent's intelligence.
+        
+        This instantiates a hybrid local/cloud cascade, allowing the Hermes
+        agent to run simple tasks locally and escalate complex reasoning/coding 
+        to the Hermes-36B cloud endpoint.
+        """
+        if not hasattr(self, "_cascade_backend"):
+            try:
+                from Cosmos.core.llm_backend import (
+                    OllamaBackend, 
+                    OpenAICompatibleBackend, 
+                    HermesCascadeBackend
+                )
+                
+                # Fast local companion
+                local = OllamaBackend(model_name="qwen3:8b")
+                
+                # Cloud escalation — prefer Nous Research direct API, fall back to OpenRouter
+                hermes_key = os.environ.get("HERMES_API_KEY")
+                openrouter_key = os.environ.get("OPENROUTER_API_KEY")
+
+                if hermes_key:
+                    # Use Nous Research direct endpoint with Hermes 4
+                    cloud_model = os.environ.get("HERMES_MODEL_ID", "Hermes-4-70B")
+                    cloud_url = os.environ.get("HERMES_BASE_URL", "https://inference-api.nousresearch.com/v1")
+                    api_key = hermes_key
+                    logger.info(f"[HERMES RUNTIME] Using Nous Research direct API ({cloud_model})")
+                elif openrouter_key:
+                    # Fall back to OpenRouter
+                    cloud_model = "nousresearch/hermes-3-llama-3.1-405b"
+                    cloud_url = "https://openrouter.ai/api/v1"
+                    api_key = openrouter_key
+                    logger.info("[HERMES RUNTIME] Using OpenRouter for cloud escalation")
+                else:
+                    logger.warning("[HERMES RUNTIME] No HERMES_API_KEY or OPENROUTER_API_KEY set — cloud escalation disabled")
+                    self._cascade_backend = None
+                    return None
+
+                cloud = OpenAICompatibleBackend(
+                    model_name=cloud_model,
+                    api_key=api_key,
+                    base_url=cloud_url,
+                )
+                
+                self._cascade_backend = HermesCascadeBackend(
+                    local_backend=local,
+                    cloud_backend=cloud,
+                    escalation_threshold=0.65
+                )
+                logger.info("[HERMES RUNTIME] Initialized HermesCascadeBackend (hybrid local/cloud)")
+            except Exception as e:
+                logger.error(f"[HERMES RUNTIME] Failed to init cascade backend: {e}")
+                return None
+                
+        return self._cascade_backend
+
     def get_status(self) -> Dict:
         """Get Hermes runtime status."""
         status = {
+            "available": self._available,
             "installed": self._available,
             "package": "NousResearch/hermes-agent",
         }
@@ -644,13 +725,13 @@ class HermesRuntime:
 
 class HermesBridge:
     """
-    Main bridge between Cosmos and Hermes Agent (Nous Research).
+    Main bridge between Cosmos and HermesAgent (Nous Research).
 
     Provides:
     - Heartbeat system for proactive task scheduling
     - Skills adapter for tool integration
     - RL feedback loop for personality optimization
-    - HermesRuntime: Direct access to the real Hermes Agent package
+    - HermesRuntime: Direct access to the real HermesAgent package
 
     All systems are additive — nothing is removed from existing Cosmos.
     """
@@ -664,7 +745,7 @@ class HermesBridge:
         self.initialized = True
         logger.info("[HERMES] Bridge initialized — Heartbeat + Skills + RL active")
         if self.runtime.available:
-            logger.info("[HERMES] 🚀 Real Hermes Agent runtime connected")
+            logger.info("[HERMES] 🚀 Real HermesAgent runtime connected")
 
     async def on_conversation_turn(
         self,
@@ -716,6 +797,9 @@ class HermesBridge:
 
     def get_status(self) -> Dict:
         """Get complete Hermes bridge status."""
+        last_experience_time = None
+        if self.rl.reward_signal.history:
+            last_experience_time = self.rl.reward_signal.history[-1].get("time")
         return {
             "initialized": self.initialized,
             "runtime": self.runtime.get_status(),
@@ -725,6 +809,9 @@ class HermesBridge:
                 "total_updates": self.rl.total_updates,
                 "running_reward": round(self.rl.running_reward, 4),
                 "buffer_size": len(self.rl.replay_buffer),
+                "experience_count": len(self.rl.reward_signal.history),
+                "last_experience_time": last_experience_time,
+                "insight_count": sum(len(v) for v in self.rl.insights.values()),
                 "policy_params": {k: round(v, 3) for k, v in self.rl.policy_params.items()},
             },
         }
@@ -735,14 +822,25 @@ class HermesBridge:
 # ===========================================================================
 
 _bridge_instance: Optional[HermesBridge] = None
+_GLOBAL_HERMES_BRIDGE_KEY = "_COSMOS_HERMES_BRIDGE_SINGLETON"
+_bridge_lock = threading.Lock()
 
 def get_hermes_bridge() -> HermesBridge:
     """Get or create the singleton Hermes bridge."""
     global _bridge_instance
-    if _bridge_instance is None:
-        _bridge_instance = HermesBridge()
+    bridge = getattr(builtins, _GLOBAL_HERMES_BRIDGE_KEY, None)
+    if bridge is None:
+        with _bridge_lock:
+            bridge = getattr(builtins, _GLOBAL_HERMES_BRIDGE_KEY, None)
+            if bridge is None:
+                bridge = HermesBridge()
+                setattr(builtins, _GLOBAL_HERMES_BRIDGE_KEY, bridge)
+    _bridge_instance = bridge
     return _bridge_instance
 
 def hermes_available() -> bool:
     """Check if Hermes bridge is available."""
     return True  # Always available — it's built into Cosmos now
+
+sys.modules["Cosmos.integration.hermes_bridge"] = sys.modules[__name__]
+sys.modules["cosmos.integration.hermes_bridge"] = sys.modules[__name__]

@@ -21,7 +21,7 @@ import asyncio
 import math
 import random # Mock for predictive probability
 from dataclasses import dataclass, field
-, Optional
+from typing import Optional
 from datetime import datetime
 from loguru import logger
 

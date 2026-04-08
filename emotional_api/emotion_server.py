@@ -25,6 +25,15 @@ import math
 from datetime import datetime
 from pathlib import Path
 
+# Make Windows console output tolerant of emoji/unicode status lines.
+for _stream_name in ("stdout", "stderr"):
+    _stream = getattr(sys, _stream_name, None)
+    try:
+        if _stream and hasattr(_stream, "reconfigure"):
+            _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 # Add paths
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -38,7 +47,7 @@ try:
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False
-    print("❌ FastAPI not installed. Run: pip install fastapi uvicorn")
+    print("[ERROR] FastAPI not installed. Run: pip install fastapi uvicorn")
 
 # Import 12D CST Emotional API
 from emotional_state_api import (
@@ -150,7 +159,7 @@ if FASTAPI_AVAILABLE:
         await websocket.accept()
         connected_clients.append(websocket)
         
-        print(f"✅ Client connected. Total: {len(connected_clients)}")
+        print(f"[OK] Client connected. Total: {len(connected_clients)}")
         
         # Send welcome with CST info
         await websocket.send_json({
@@ -189,7 +198,7 @@ if FASTAPI_AVAILABLE:
                 
         except WebSocketDisconnect:
             connected_clients.remove(websocket)
-            print(f"❌ Client disconnected. Total: {len(connected_clients)}")
+            print(f"[DISCONNECT] Client disconnected. Total: {len(connected_clients)}")
         except Exception as e:
             print(f"WebSocket error: {e}")
             if websocket in connected_clients:
@@ -199,11 +208,11 @@ if FASTAPI_AVAILABLE:
 def run_server(host: str = "0.0.0.0", port: int = 8765):
     """Run the 12D CST emotional token server."""
     if not FASTAPI_AVAILABLE:
-        print("❌ Cannot start server: FastAPI not installed")
+        print("[ERROR] Cannot start server: FastAPI not installed")
         return
     
     print("\n" + "=" * 70)
-    print("  🎭 cosmos 12D CST TOKEN SERVER")
+    print("  [CST] cosmos 12D CST TOKEN SERVER")
     print("  Full Architecture - Physics-to-LLM Bridge")
     print("=" * 70)
     print(f"\n  Version: {emotion_api.version}")
@@ -216,10 +225,10 @@ def run_server(host: str = "0.0.0.0", port: int = 8765):
     print(f"    WS   ws://localhost:{port}/ws              - WebSocket tokens")
     print(f"    GET  http://localhost:{port}/system_prompt - LLM prompt")
     print(f"\n  CST Phase Mapping:")
-    print(f"    SYNCHRONY:  ΦG ≈ {math.degrees(PHASE_SYNCHRONY):.0f}° → RESONANCE")
-    print(f"    MASKING:    ΦG < {math.degrees(PHASE_MASKING_THRESHOLD):.0f}° → VERIFICATION")
-    print(f"    LEAKAGE:    ΦG > {math.degrees(PHASE_LEAKAGE_THRESHOLD):.0f}° → DE-ESCALATION")
-    print(f"    JITTER:     High dΦ/dt → GROUNDING")
+    print(f"    SYNCHRONY:  PhiG ~ {math.degrees(PHASE_SYNCHRONY):.0f} deg -> RESONANCE")
+    print(f"    MASKING:    PhiG < {math.degrees(PHASE_MASKING_THRESHOLD):.0f} deg -> VERIFICATION")
+    print(f"    LEAKAGE:    PhiG > {math.degrees(PHASE_LEAKAGE_THRESHOLD):.0f} deg -> DE-ESCALATION")
+    print(f"    JITTER:     High dPhi/dt -> GROUNDING")
     print("\n" + "=" * 70 + "\n")
     
     uvicorn.run(app, host=host, port=port, log_level="info")

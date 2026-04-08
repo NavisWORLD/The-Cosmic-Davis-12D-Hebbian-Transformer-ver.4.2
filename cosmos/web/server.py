@@ -25,10 +25,11 @@ import logging
 import asyncio
 import sys
 import hashlib
+import math
 # NOTE: aiohttp removed from top-level imports — hangs on import (torch 2.8.0 DLL conflict)
 # aiohttp is only used in trading/payment sub-modules which lazy-import it when needed
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 from datetime import datetime, timedelta
 
 # Load .env file for API keys (OPENAI_API_KEY, GEMINI_API_KEY, etc.)
@@ -59,6 +60,15 @@ try:
 except ImportError:
     pass
 
+try:
+    from cosmos.web.cosmosynapse.engine.sensory_adapter import normalize_live_bio_state
+except ImportError:
+    try:
+        from Cosmos.web.cosmosynapse.engine.sensory_adapter import normalize_live_bio_state
+    except ImportError:
+        def normalize_live_bio_state(payload):
+            return payload if isinstance(payload, dict) else {}
+
 # Optional Solana imports
 try:
     from solana.rpc.api import Client as SolanaClient
@@ -86,13 +96,14 @@ def _get_ollama():
         OLLAMA_AVAILABLE = False
         return None
 
-# Try to detect if ollama is installed (fast metadata check), then load it
+# Try to detect if ollama is installed (fast metadata check only — do NOT eagerly
+# import because `import ollama` hangs when the Ollama server is unreachable or
+# there is a DLL conflict).  The actual module is loaded lazily by _get_ollama()
+# on the first chat request.
 try:
     import importlib.metadata as _ilm
     _ilm.version('ollama')
-    OLLAMA_AVAILABLE = True
-    # Eagerly load so all `await asyncio.to_thread(ollama.chat, )` calls work
-    _get_ollama()
+    OLLAMA_AVAILABLE = True  # package installed; actual import deferred to _get_ollama()
 except Exception:
     OLLAMA_AVAILABLE = False
 
@@ -321,6 +332,8 @@ _cosmos_swarm = None
 _cosmos_swarm = None
 _cosmos_cns = None
 _multimodal_system = None
+_startup_hermes_bridge = None
+_hermes_heartbeat_task = None
 
 
 def get_lyapunov_gatekeeper():
@@ -562,17 +575,397 @@ class RemoteEmotionalAPI:
         self.host = host
         self.version = "4.0.0 (Remote)"
         self.architecture = "12D CST (Full Sensory)"
+        self.MASS_HIGH_THRESHOLD = 0.50
+        self.MASS_LOW_THRESHOLD = 0.25
+        self.FLATNESS_THRESHOLD = 0.35
+        self._session = None
+        self._last_state = {}
+        self._last_state_at = 0.0
+        self._last_audio = {}
+        self._last_audio_at = 0.0
+        self._last_vision = {}
+        self._last_vision_at = 0.0
+
+    def _get_session(self):
+        import requests
+        if self._session is None:
+            self._session = requests.Session()
+        return self._session
+
+    def _get_json(self, path: str, timeout: float = 0.75) -> Optional[dict[str, Any]]:
+        try:
+            resp = self._get_session().get(f"{self.host}{path}", timeout=timeout)
+            if resp.status_code == 200:
+                payload = resp.json()
+                return payload if isinstance(payload, dict) else None
+        except Exception:
+            pass
+        return None
         
     def get_state(self):
-        try:
-            import requests # Synchronous since this is called from sync context or async wrapper
-            resp = requests.get(f"{self.host}/state", timeout=0.2)
-            if resp.status_code == 200:
-                return resp.json()
-        except Exception as e:
-            # logger.warning(f"Remote API error: {e}")
-            pass
-        return {} # Return empty on failure for safe handling
+        payload = self._get_json("/state", timeout=0.75)
+        if payload:
+            normalized = normalize_live_bio_state(payload)
+            if normalized:
+                self._last_state = normalized
+                self._last_state_at = time.time()
+                return normalized
+
+        if self._last_state and (time.time() - self._last_state_at) < 5.0:
+            return dict(self._last_state)
+        return {}
+
+    def get_audio_tokens(self):
+        payload = self._get_json("/audio_tokens", timeout=0.75)
+        if payload:
+            self._last_audio = payload
+            self._last_audio_at = time.time()
+            return payload
+        if self._last_audio and (time.time() - self._last_audio_at) < 5.0:
+            cached = dict(self._last_audio)
+            cached["stale"] = True
+            return cached
+        return {}
+
+    def get_vision(self):
+        payload = self._get_json("/vision", timeout=1.5)
+        if payload:
+            self._last_vision = payload
+            self._last_vision_at = time.time()
+            return payload
+        if self._last_vision and (time.time() - self._last_vision_at) < 5.0:
+            cached = dict(self._last_vision)
+            cached["stale"] = True
+            return cached
+        return {}
+
+
+def _coerce_pad_vector(payload: dict[str, Any] | None) -> tuple[float, float, float]:
+    """Support both dict and list PAD shapes used across older sensory packets."""
+    packet = payload.get("cosmos_packet", payload) if isinstance(payload, dict) else {}
+    derived = packet.get("derived_state", {}) if isinstance(packet, dict) else {}
+    pad_vector = derived.get("pad_vector", {}) if isinstance(derived, dict) else {}
+    virtual_body = packet.get("cst_physics", {}).get("virtual_body", {}) if isinstance(packet, dict) else {}
+
+    if isinstance(pad_vector, dict):
+        pleasure = pad_vector.get("pleasure", payload.get("valence", virtual_body.get("energy", 0.0)))
+        arousal = pad_vector.get("arousal", payload.get("arousal", virtual_body.get("arousal", 0.0)))
+        dominance = pad_vector.get("dominance", payload.get("dominance", 0.0))
+    elif isinstance(pad_vector, (list, tuple)):
+        values = list(pad_vector) + [0.0, 0.0, 0.0]
+        pleasure = payload.get("valence", values[0])
+        arousal = payload.get("arousal", values[1])
+        dominance = payload.get("dominance", values[2])
+    else:
+        pleasure = payload.get("valence", virtual_body.get("energy", 0.0)) if isinstance(payload, dict) else 0.0
+        arousal = payload.get("arousal", virtual_body.get("arousal", 0.0)) if isinstance(payload, dict) else 0.0
+        dominance = payload.get("dominance", 0.0) if isinstance(payload, dict) else 0.0
+
+    try:
+        pleasure = float(pleasure)
+    except (TypeError, ValueError):
+        pleasure = 0.0
+    try:
+        arousal = float(arousal)
+    except (TypeError, ValueError):
+        arousal = 0.0
+    try:
+        dominance = float(dominance)
+    except (TypeError, ValueError):
+        dominance = 0.0
+    return pleasure, arousal, dominance
+
+def _safe_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+def _clamp_float(value: Any, minimum: float = 0.0, maximum: float = 1.0) -> float:
+    return max(minimum, min(maximum, _safe_float(value, minimum)))
+
+def _normalize_pad_axis(value: Any) -> float:
+    raw = _safe_float(value, 0.0)
+    if raw < 0.0 or raw > 1.0:
+        return _clamp_float((raw + 1.0) / 2.0, 0.0, 1.0)
+    return _clamp_float(raw, 0.0, 1.0)
+
+def _seeded_unit_interval(seed_text: str, label: str) -> float:
+    digest = hashlib.sha256(f"{seed_text}|{label}".encode("utf-8")).digest()
+    return int.from_bytes(digest[:8], "big") / float((1 << 64) - 1)
+
+def _build_quantum_healing_profile(
+    emotional_state: Optional[dict[str, Any]],
+    quantum_status: Optional[dict[str, Any]] = None,
+    *,
+    job_id: Optional[str] = None,
+    entropy_hint: Optional[float] = None,
+    backend_hint: Optional[str] = None,
+) -> dict[str, Any]:
+    """Map the live bio packet into a unique bell-synthesis profile."""
+    payload = emotional_state or {}
+    packet = payload.get("cosmos_packet", payload) if isinstance(payload, dict) else {}
+    cst = packet.get("cst_physics", {}) if isinstance(packet, dict) else {}
+    virtual_body = packet.get("virtual_body", {}) if isinstance(packet, dict) else {}
+    if not isinstance(virtual_body, dict):
+        virtual_body = {}
+    cst_virtual_body = cst.get("virtual_body", {}) if isinstance(cst, dict) else {}
+    if isinstance(cst_virtual_body, dict):
+        merged_virtual_body = {**cst_virtual_body, **virtual_body}
+    else:
+        merged_virtual_body = dict(virtual_body)
+    bio = packet.get("bio_signatures", {}) if isinstance(packet, dict) else {}
+    if not isinstance(bio, dict):
+        bio = {}
+    spectral = packet.get("spectral_physics", {}) if isinstance(packet, dict) else {}
+    if not isinstance(spectral, dict):
+        spectral = {}
+    live_audio = packet.get("live_audio", {}) if isinstance(packet, dict) else {}
+    if not isinstance(live_audio, dict):
+        live_audio = {}
+    latest_audio = live_audio.get("latest_event", {}) if isinstance(live_audio.get("latest_event", {}), dict) else {}
+    derived = packet.get("derived_state", {}) if isinstance(packet, dict) else {}
+    if not isinstance(derived, dict):
+        derived = {}
+    quantum_status = quantum_status or {}
+    last_signature = quantum_status.get("last_quantum_signature", {}) if isinstance(quantum_status, dict) else {}
+    if not isinstance(last_signature, dict):
+        last_signature = {}
+    theta_final = last_signature.get("theta_signature", {}).get("final", {}) if isinstance(last_signature.get("theta_signature", {}), dict) else {}
+
+    pleasure, arousal, dominance = _coerce_pad_vector(packet)
+    valence_norm = _normalize_pad_axis(pleasure)
+    arousal_norm = _normalize_pad_axis(arousal)
+    dominance_norm = _normalize_pad_axis(dominance)
+
+    heart_rate = _safe_float(
+        bio.get("heart_rate", merged_virtual_body.get("heart_rate", 72.0)),
+        72.0,
+    )
+    respiration_rate = _safe_float(
+        bio.get("respiration_rate", merged_virtual_body.get("respiration_rate", 16.0)),
+        16.0,
+    )
+    energy = _clamp_float(
+        merged_virtual_body.get("energy", bio.get("intensity", valence_norm)),
+        0.0,
+        1.0,
+    )
+    tension = _clamp_float(
+        merged_virtual_body.get("virtual_tension", bio.get("stress", arousal_norm)),
+        0.0,
+        1.0,
+    )
+    phase = _safe_float(
+        cst.get("geometric_phase_rad", packet.get("geometric_phase", 0.0)),
+        0.0,
+    )
+    entanglement = _clamp_float(
+        cst.get("entanglement_score", packet.get("entanglement", 0.5)),
+        0.0,
+        1.0,
+    )
+    spectral_centroid = _safe_float(
+        spectral.get(
+            "spectral_centroid",
+            packet.get("spectral_centroid", latest_audio.get("spectral_centroid_hz", 1200.0)),
+        ),
+        1200.0,
+    )
+    spectral_flatness = _clamp_float(
+        spectral.get(
+            "spectral_flatness",
+            packet.get("spectral_flatness", latest_audio.get("spectral_flatness", 0.25)),
+        ),
+        0.0,
+        1.0,
+    )
+    rms_energy = _clamp_float(
+        spectral.get(
+            "rms_energy",
+            latest_audio.get("rms_normalized", latest_audio.get("rms", 0.24)),
+        ),
+        0.0,
+        1.0,
+    )
+    phi_harmonics = _safe_float(
+        spectral.get("phi_harmonics", packet.get("phi_harmonics", 0.618)),
+        0.618,
+    )
+    quantum_entropy = _clamp_float(
+        entropy_hint
+        if entropy_hint is not None
+        else quantum_status.get(
+            "last_entropy",
+            quantum_status.get("uq_payload", {}).get("entropy_quality", entanglement),
+        ),
+        0.0,
+        1.0,
+    )
+    theta_1 = _safe_float(theta_final.get("t1"), abs(phase) % math.pi)
+    theta_2 = _safe_float(theta_final.get("t2"), quantum_entropy * math.pi)
+    theta_3 = _safe_float(theta_final.get("t3"), entanglement * math.pi)
+    emotion = (
+        packet.get("emotion")
+        or packet.get("emotion_state")
+        or derived.get("primary_affect_label")
+        or "RESONANCE"
+    )
+
+    profile_seed = json.dumps(
+        {
+            "job_id": job_id or last_signature.get("job", {}).get("job_id"),
+            "backend": backend_hint or quantum_status.get("backend"),
+            "emotion": emotion,
+            "heart_rate": round(heart_rate, 4),
+            "respiration_rate": round(respiration_rate, 4),
+            "phase": round(phase, 6),
+            "entanglement": round(entanglement, 6),
+            "centroid": round(spectral_centroid, 4),
+            "flatness": round(spectral_flatness, 6),
+            "rms": round(rms_energy, 6),
+            "phi_harmonics": round(phi_harmonics, 6),
+            "timestamp": (
+                merged_virtual_body.get("timestamp")
+                or packet.get("header", {}).get("timestamp_utc")
+                or live_audio.get("captured_at")
+                or time.time()
+            ),
+        },
+        sort_keys=True,
+        default=str,
+    )
+
+    seed_a = _seeded_unit_interval(profile_seed, "root")
+    seed_b = _seeded_unit_interval(profile_seed, "overtones")
+    seed_c = _seeded_unit_interval(profile_seed, "detune")
+    seed_d = _seeded_unit_interval(profile_seed, "wave")
+    seed_e = _seeded_unit_interval(profile_seed, "space")
+    seed_f = _seeded_unit_interval(profile_seed, "envelope")
+
+    resonance_score = (
+        (valence_norm * 0.22)
+        + (arousal_norm * 0.17)
+        + (dominance_norm * 0.11)
+        + (energy * 0.10)
+        + (entanglement * 0.20)
+        + (quantum_entropy * 0.20)
+    )
+    heart_norm = _clamp_float((heart_rate - 48.0) / 72.0, 0.0, 1.0)
+    breath_norm = _clamp_float((respiration_rate - 8.0) / 20.0, 0.0, 1.0)
+    centroid_norm = _clamp_float((spectral_centroid - 120.0) / 2800.0, 0.0, 1.0)
+
+    solfeggio_ladder = [396.0, 417.0, 432.0, 528.0, 639.0, 741.0]
+    root_index = min(
+        len(solfeggio_ladder) - 1,
+        int(round((resonance_score * 0.72 + seed_a * 0.28) * (len(solfeggio_ladder) - 1))),
+    )
+    root_frequency = solfeggio_ladder[root_index]
+    base_frequency = root_frequency
+    base_frequency += (heart_norm - 0.5) * 36.0
+    base_frequency += (breath_norm - 0.5) * 18.0
+    base_frequency += (centroid_norm - 0.5) * 28.0
+    base_frequency += (phase / math.pi) * 14.0
+    base_frequency += (seed_b - 0.5) * 12.0
+    base_frequency = max(180.0, min(880.0, base_frequency))
+
+    third_ratio = 1.25 if valence_norm >= 0.5 else 1.2
+    fifth_ratio = 1.5 + ((theta_2 / math.pi) - 0.5) * 0.08
+    shimmer_ratio = 2.0 + (phi_harmonics - 0.618) * 0.22 + (seed_c - 0.5) * 0.12
+    sub_ratio = 0.5 + (dominance_norm - 0.5) * 0.10
+
+    frequencies = [
+        round(base_frequency * sub_ratio, 4),
+        round(base_frequency, 4),
+        round(base_frequency * third_ratio, 4),
+        round(base_frequency * fifth_ratio, 4),
+        round(base_frequency * shimmer_ratio, 4),
+    ]
+
+    detune_cents = [
+        round((seed_d - 0.5) * 5.0, 4),
+        round((theta_1 / math.pi - 0.5) * 10.0, 4),
+        round((theta_2 / math.pi - 0.5) * 14.0, 4),
+        round((theta_3 / math.pi - 0.5) * 18.0, 4),
+        round((seed_e - 0.5) * 24.0, 4),
+    ]
+
+    waveforms = ["sine", "triangle", "sine", "triangle", "sine"]
+    if spectral_flatness > 0.45:
+        waveforms[2] = "sawtooth"
+    if tension > 0.62 or arousal_norm > 0.72:
+        waveforms[3] = "square"
+
+    attack = round(0.18 + (1.0 - rms_energy) * 1.2 + seed_f * 0.25, 4)
+    hold = round(1.4 + (energy * 1.2) + (entanglement * 0.9), 4)
+    release = round(2.8 + (quantum_entropy * 2.1) + ((1.0 - spectral_flatness) * 0.8), 4)
+    duration = round(attack + hold + release, 4)
+    gain = round(0.045 + (entanglement * 0.05) + (energy * 0.03), 4)
+    pan = round(max(-0.85, min(0.85, ((seed_e - 0.5) * 1.1) + ((dominance_norm - 0.5) * 0.35))), 4)
+    tremolo_hz = round(0.12 + (respiration_rate / 60.0) + seed_a * 0.18, 4)
+    tremolo_depth = round(0.12 + (quantum_entropy * 0.18) + ((1.0 - spectral_flatness) * 0.10), 4)
+    vibrato_hz = round(4.2 + (heart_rate / 42.0) + seed_b * 0.8, 4)
+    vibrato_cents = round(3.0 + (quantum_entropy * 7.0) + (seed_c * 3.0), 4)
+    filter_cutoff = round(max(380.0, min(4200.0, 620.0 + (spectral_centroid * 1.15) + (energy * 220.0))), 4)
+    filter_q = round(0.8 + (tension * 4.5), 4)
+    delay_time = round(0.22 + (breath_norm * 0.36) + ((seed_f - 0.5) * 0.05), 4)
+    delay_feedback = round(max(0.18, min(0.72, 0.28 + (entanglement * 0.24) + (quantum_entropy * 0.12))), 4)
+
+    return {
+        "profile_version": 1,
+        "seed": hashlib.sha256(profile_seed.encode("utf-8")).hexdigest()[:16],
+        "live_bio": bool(payload),
+        "emotion": str(emotion),
+        "backend": backend_hint or quantum_status.get("backend"),
+        "job_id": job_id or last_signature.get("job", {}).get("job_id"),
+        "frequencies": frequencies,
+        "detune_cents": detune_cents,
+        "waveforms": waveforms,
+        "envelope": {
+            "attack": attack,
+            "hold": hold,
+            "release": release,
+            "duration": duration,
+            "gain": gain,
+        },
+        "modulation": {
+            "tremolo_hz": tremolo_hz,
+            "tremolo_depth": tremolo_depth,
+            "vibrato_hz": vibrato_hz,
+            "vibrato_cents": vibrato_cents,
+        },
+        "fx": {
+            "filter_cutoff": filter_cutoff,
+            "filter_q": filter_q,
+            "delay_time": delay_time,
+            "delay_feedback": delay_feedback,
+            "pan": pan,
+        },
+        "bio_summary": {
+            "heart_rate": round(heart_rate, 4),
+            "respiration_rate": round(respiration_rate, 4),
+            "valence": round(valence_norm, 4),
+            "arousal": round(arousal_norm, 4),
+            "dominance": round(dominance_norm, 4),
+            "energy": round(energy, 4),
+            "tension": round(tension, 4),
+            "geometric_phase": round(phase, 6),
+            "entanglement": round(entanglement, 6),
+            "spectral_centroid": round(spectral_centroid, 4),
+            "spectral_flatness": round(spectral_flatness, 6),
+            "rms_energy": round(rms_energy, 6),
+            "phi_harmonics": round(phi_harmonics, 6),
+            "quantum_entropy": round(quantum_entropy, 6),
+            "hrv_rmssd_ms": round(_safe_float(merged_virtual_body.get("hrv_rmssd_ms", 0), 0), 1),
+            "autonomic_balance": round(_safe_float(merged_virtual_body.get("autonomic_balance", 0), 0), 4),
+            "phi_coherence": round(_safe_float(merged_virtual_body.get("phi_coherence", 0), 0), 4),
+        },
+        "summary": (
+            f"{emotion} | HR {heart_rate:.1f} BPM | Breath {respiration_rate:.1f}/min | "
+            f"HRV {_safe_float(merged_virtual_body.get('hrv_rmssd_ms', 0), 0):.0f}ms | "
+            f"Phi {phase:.3f} | Entanglement {entanglement:.3f}"
+        ),
+    }
 
 def get_emotional_api():
     """Lazy-load 12D CST Emotional State API (Self-Calibrating Engine)."""
@@ -599,6 +992,19 @@ def get_emotional_api():
             logger.warning(f"Could not load Emotional API: {e}")
     return _emotional_api
 
+
+def _get_normalized_emotional_state() -> dict[str, Any]:
+    """Fetch the current emotional state and normalize older packet variants."""
+    api = get_emotional_api()
+    if api is None or not hasattr(api, "get_state"):
+        return {}
+
+    try:
+        state = api.get_state()
+        return normalize_live_bio_state(state)
+    except Exception:
+        return {}
+
 # Cognitive Feedback Loop (Recursive Self-Modification)
 _cognitive_feedback = None
 
@@ -623,6 +1029,9 @@ logger = logging.getLogger(__name__)
 # Configuration
 SOLANA_RPC_URL = os.getenv("SOLANA_RPC_URL", "https://api.mainnet-beta.solana.com")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+OLLAMA_MODEL_COOLDOWN_SECONDS = float(os.getenv("COSMOS_OLLAMA_MODEL_COOLDOWN_SECONDS", "180"))
+OLLAMA_HEAVY_MODEL_COOLDOWN_SECONDS = float(os.getenv("COSMOS_OLLAMA_HEAVY_MODEL_COOLDOWN_SECONDS", "900"))
+_ollama_model_health: dict[str, dict[str, Any]] = {}
 PRIMARY_MODEL = os.getenv("cosmos_PRIMARY_MODEL", "qwen3:8b")
 DEMO_MODE = os.getenv("cosmos_DEMO_MODE", "false").lower() == "true"
 
@@ -645,6 +1054,276 @@ def extract_ollama_content(response, max_length: int = 0) -> str:
     if max_length and max_length > 0 and len(result) > max_length:
         result = result[:max_length] + "..."
     return result.strip()
+
+
+def _make_json_safe(value):
+    """Recursively replace NaN/Inf values before handing data to JSONResponse."""
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, dict):
+        return {key: _make_json_safe(val) for key, val in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_make_json_safe(item) for item in value]
+    if hasattr(value, "__dict__") and not isinstance(value, type):
+        return _make_json_safe(value.__dict__)
+    return value
+
+
+def _normalize_local_ollama_model(model_name: Optional[str]) -> Optional[str]:
+    """Return only valid local Ollama model names for retry/fallback logic."""
+    if not model_name or not isinstance(model_name, str):
+        return None
+
+    normalized = model_name.strip()
+    if not normalized:
+        return None
+
+    if normalized in {"claude", "kimi", "gemini", "chatgpt", "cosmos-54d", "hermes-4-70b"}:
+        return None
+    if normalized.startswith("xai:"):
+        return None
+    return normalized
+
+
+def _unique_models(models: list[Optional[str]]) -> list[str]:
+    seen = set()
+    ordered = []
+    for model in models:
+        normalized = _normalize_local_ollama_model(model)
+        if not normalized or normalized in seen:
+            continue
+        seen.add(normalized)
+        ordered.append(normalized)
+    return ordered
+
+
+def _prune_ollama_model_health(now: Optional[float] = None) -> None:
+    now = now or time.time()
+    expired = [
+        model_name
+        for model_name, state in _ollama_model_health.items()
+        if state.get("cooldown_until", 0.0) <= now
+    ]
+    for model_name in expired:
+        _ollama_model_health.pop(model_name, None)
+
+
+def _get_ollama_failure_cooldown(exc: Exception) -> tuple[float, str]:
+    message = str(exc).lower()
+    if any(
+        token in message
+        for token in (
+            "memory layout cannot be allocated",
+            "out of memory",
+            "cuda out of memory",
+            "insufficient memory",
+            "requires more system memory",
+            "failed to allocate",
+        )
+    ):
+        return OLLAMA_HEAVY_MODEL_COOLDOWN_SECONDS, "memory_pressure"
+    if any(
+        token in message
+        for token in (
+            "timed out",
+            "timeout",
+            "connection refused",
+            "connection reset",
+            "temporarily unavailable",
+            "503",
+            "502",
+        )
+    ):
+        return min(OLLAMA_MODEL_COOLDOWN_SECONDS, 120.0), "transient"
+    return OLLAMA_MODEL_COOLDOWN_SECONDS, "generic"
+
+
+def _record_ollama_model_failure(model_name: str, exc: Exception) -> None:
+    cooldown_seconds, reason = _get_ollama_failure_cooldown(exc)
+    now = time.time()
+    existing = _ollama_model_health.get(model_name, {})
+    cooldown_until = max(existing.get("cooldown_until", 0.0), now + max(30.0, cooldown_seconds))
+    _ollama_model_health[model_name] = {
+        "cooldown_until": cooldown_until,
+        "reason": reason,
+        "last_error": str(exc),
+        "updated_at": now,
+    }
+
+
+def _record_ollama_model_success(model_name: str) -> None:
+    if model_name in _ollama_model_health:
+        _ollama_model_health.pop(model_name, None)
+
+
+def _filter_healthy_ollama_candidates(candidates: list[str]) -> list[str]:
+    if not candidates:
+        return []
+
+    now = time.time()
+    _prune_ollama_model_health(now)
+    healthy = [
+        model_name
+        for model_name in candidates
+        if _ollama_model_health.get(model_name, {}).get("cooldown_until", 0.0) <= now
+    ]
+    if healthy:
+        return healthy
+
+    # If everything is temporarily degraded, retry the model that becomes available first.
+    return sorted(
+        candidates,
+        key=lambda model_name: _ollama_model_health.get(model_name, {}).get("cooldown_until", 0.0),
+    )[:1]
+
+
+def _get_ollama_model_candidates(bot_name: Optional[str] = None, requested_model: Optional[str] = None) -> list[str]:
+    """Build a sensible retry chain for local Ollama calls."""
+    personas = globals().get("SWARM_PERSONAS", {})
+    persona_model = personas.get(bot_name, {}).get("model") if bot_name else None
+
+    alias_model = None
+    manager = globals().get("swarm_manager")
+    if bot_name and manager and hasattr(manager, "model_aliases"):
+        alias_model = manager.model_aliases.get(bot_name)
+
+    specialty_models = []
+    if bot_name == "Cosmos":
+        specialty_models = ["llama3.1:8b", "llama3.2:3b", "llama3.2:latest"]
+    elif bot_name == "Swarm-Mind":
+        specialty_models = ["llama3.2:3b", "llama3.2:latest", "mistral:7b"]
+    elif bot_name == "DeepSeek":
+        specialty_models = ["qwen2.5-coder:7b", "deepseek-coder:latest", "deepseek-r1:1.5b", "llama3.2:3b"]
+    elif bot_name == "DeepSeek R1":
+        specialty_models = ["deepseek-r1:8b", "deepseek-r1:1.5b", "qwen2.5-coder:7b", "llama3.2:3b"]
+    elif bot_name == "Phi":
+        specialty_models = ["phi3:latest", "gemma2:9b", "llama3.2:3b"]
+    elif bot_name == "Orchestrator":
+        specialty_models = ["llama3.2:3b", "phi3:latest", "mistral:7b"]
+
+    candidates = _unique_models([
+        requested_model,
+        persona_model,
+        alias_model,
+        PRIMARY_MODEL,
+        *specialty_models,
+        "llama3.2:3b",
+        "llama3.2:latest",
+        "phi3:latest",
+        "deepseek-r1:1.5b",
+        "mistral:7b",
+    ])
+    return _filter_healthy_ollama_candidates(candidates)
+
+
+def _log_ollama_token_usage(response) -> None:
+    try:
+        p_eval = response.get("prompt_eval_count", 0)
+        eval_count = response.get("eval_count", 0)
+        if p_eval or eval_count:
+            swarm_metrics.log_token_usage(p_eval, eval_count)
+    except Exception:
+        pass
+
+
+async def ollama_chat_with_fallback(
+    bot_name: Optional[str],
+    messages: list[dict],
+    options: Optional[dict] = None,
+    requested_model: Optional[str] = None,
+):
+    """
+    Run an Ollama chat request with additive fallbacks for missing/heavy models.
+
+    This keeps option 2 alive when a persona model is unavailable or a larger
+    local model collapses under memory pressure.
+    """
+    if not OLLAMA_AVAILABLE:
+        raise RuntimeError("Ollama is not available")
+
+    options = options or {}
+    candidates = _get_ollama_model_candidates(bot_name=bot_name, requested_model=requested_model)
+    last_error = None
+
+    for index, model_name in enumerate(candidates):
+        try:
+            response = await asyncio.to_thread(
+                ollama.chat,
+                model=model_name,
+                messages=messages,
+                options=options,
+            )
+            content = extract_ollama_content(response)
+            if not content:
+                last_error = RuntimeError(f"{model_name} returned empty content")
+                logger.warning(f"[OLLAMA EMPTY] {bot_name or 'default'} via {model_name} returned no content")
+                continue
+
+            _record_ollama_model_success(model_name)
+            _log_ollama_token_usage(response)
+            if index > 0 or (_normalize_local_ollama_model(requested_model) and model_name != requested_model):
+                logger.warning(
+                    f"[OLLAMA FALLBACK] {bot_name or 'default'} recovered with {model_name} "
+                    f"(requested={requested_model or PRIMARY_MODEL})"
+                )
+            return response, model_name
+        except Exception as exc:
+            last_error = exc
+            _record_ollama_model_failure(model_name, exc)
+            logger.warning(
+                f"[OLLAMA RETRY] {bot_name or 'default'} model {model_name} failed: {exc}"
+            )
+
+    raise RuntimeError(
+        f"All Ollama model attempts failed for {bot_name or 'default'}: {last_error}"
+    )
+
+
+def ollama_chat_with_fallback_sync(
+    bot_name: Optional[str],
+    messages: list[dict],
+    options: Optional[dict] = None,
+    requested_model: Optional[str] = None,
+):
+    """Synchronous variant for legacy sync call paths."""
+    if not OLLAMA_AVAILABLE:
+        raise RuntimeError("Ollama is not available")
+
+    options = options or {}
+    candidates = _get_ollama_model_candidates(bot_name=bot_name, requested_model=requested_model)
+    last_error = None
+
+    for index, model_name in enumerate(candidates):
+        try:
+            response = ollama.chat(
+                model=model_name,
+                messages=messages,
+                options=options,
+            )
+            content = extract_ollama_content(response)
+            if not content:
+                last_error = RuntimeError(f"{model_name} returned empty content")
+                logger.warning(f"[OLLAMA EMPTY] {bot_name or 'default'} via {model_name} returned no content")
+                continue
+
+            _record_ollama_model_success(model_name)
+            _log_ollama_token_usage(response)
+            if index > 0 or (_normalize_local_ollama_model(requested_model) and model_name != requested_model):
+                logger.warning(
+                    f"[OLLAMA FALLBACK] {bot_name or 'default'} recovered with {model_name} "
+                    f"(requested={requested_model or PRIMARY_MODEL})"
+                )
+            return response, model_name
+        except Exception as exc:
+            last_error = exc
+            _record_ollama_model_failure(model_name, exc)
+            logger.warning(
+                f"[OLLAMA RETRY] {bot_name or 'default'} model {model_name} failed: {exc}"
+            )
+
+    raise RuntimeError(
+        f"All Ollama model attempts failed for {bot_name or 'default'}: {last_error}"
+    )
 
 # ============================================
 # INPUT SANITIZATION (XSS prevention only)
@@ -1100,8 +1779,14 @@ async def initialize_core_systems():
         # Initialize Memory System
         memory = get_memory_system()
         if hasattr(memory, 'archival_memory') and hasattr(memory.archival_memory, 'set_huggingface_embeddings'):
-            memory.archival_memory.set_huggingface_embeddings()
-            memory.set_embedding_function(memory.archival_memory.embed_fn)
+            if os.environ.get("COSMOS_SKIP_TORCH") != "1":
+                try:
+                    memory.archival_memory.set_huggingface_embeddings()
+                    memory.set_embedding_function(memory.archival_memory.embed_fn)
+                except Exception as e:
+                    logger.warning(f"Failed to load HuggingFace embeddings (continuing without): {e}")
+            else:
+                logger.info("Skipping HuggingFace embeddings load (COSMOS_SKIP_TORCH=1)")
         await memory.initialize()
         
         # Initialize Swarm Orchestrator (this loads the 12D Brain)
@@ -1125,6 +1810,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── ORCHESTRATOR API ────────────────────────────────────────────────────────
+try:
+    from Cosmos.web.routes.orchestrator import router as _orch_router
+    app.include_router(_orch_router)
+    print("    [OK]    Orchestrator Routes Integrated")
+except Exception as e:
+    print(f"    [WARN]  Could not load Orchestrator routes: {e}")
+# ───────────────────────────────────────────────────────────────────────────
 
 # Mount static files
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
@@ -2192,26 +2886,25 @@ async def generate_multi_model_response(
     # Get emotional state for context-aware responses (GLOBAL for all models)
     emotional_state = {}
     emotional_context_str = ""
-    if _emotional_api:
-        try:
-            emotional_state = _emotional_api.get_state()
-            if emotional_state:
-                # Extract the FULL cosmos_packet from the live camera data
-                packet = emotional_state.get('cosmos_packet', emotional_state)
-                derived = packet.get('derived_state', {})
-                physics = packet.get('cst_physics', {})
-                spectral = packet.get('spectral_physics', {})
-                cross_modal = packet.get('cross_modal', {})
-                meta = packet.get('meta_instruction', {})
-                
-                # Full biometric extraction
-                emotion = derived.get('primary_affect_label', 'NEUTRAL')
-                intent = derived.get('intent_label', 'UNKNOWN')
-                phase_state = physics.get('cst_state', 'UNKNOWN')
-                pad = derived.get('pad_vector', {})
-                virtual_body = physics.get('virtual_body', {})
-                
-                emotional_context_str = f"""
+    try:
+        emotional_state = _get_normalized_emotional_state()
+        if emotional_state:
+            # Extract the FULL cosmos_packet from the live camera data
+            packet = emotional_state.get('cosmos_packet', emotional_state)
+            derived = packet.get('derived_state', {})
+            physics = packet.get('cst_physics', {})
+            spectral = packet.get('spectral_physics', {})
+            cross_modal = packet.get('cross_modal', {})
+            meta = packet.get('meta_instruction', {})
+            virtual_body = physics.get('virtual_body', emotional_state.get("virtual_body", {}))
+            pleasure, arousal, dominance = _coerce_pad_vector(emotional_state)
+
+            # Full biometric extraction
+            emotion = emotional_state.get('emotion') or derived.get('primary_affect_label', 'NEUTRAL')
+            intent = derived.get('intent_label', 'UNKNOWN')
+            phase_state = physics.get('cst_state', 'UNKNOWN')
+            
+            emotional_context_str = f"""
 [12D CST LIVE BIOMETRIC DATA — FROM USER'S CAMERA]
 ═══════════════════════════════════════════════════
 EMOTION: {emotion} | INTENT: {intent}
@@ -2223,9 +2916,9 @@ BIOMETRICS:
   Energy Level: {virtual_body.get('energy', 'N/A')}
 
 PAD VECTOR (Pleasure-Arousal-Dominance):
-  Pleasure: {pad.get('pleasure', 0):.3f}  (-1=sad, +1=happy)
-  Arousal:  {pad.get('arousal', 0):.3f}   (0=calm, 1=excited)
-  Dominance: {pad.get('dominance', 0):.3f} (0=passive, 1=assertive)
+  Pleasure: {pleasure:.3f}  (-1=sad, +1=happy)
+  Arousal:  {arousal:.3f}   (0=calm, 1=excited)
+  Dominance: {dominance:.3f} (0=passive, 1=assertive)
 
 CST PHYSICS:
   Geometric Phase: {physics.get('geometric_phase_rad', 0):.4f} rad
@@ -2249,9 +2942,8 @@ TONE: {meta.get('tone_modulation', 'neutral')}
 (Mirror the user's emotional state. If arousal is high, be energetic.
 If pleasure is negative, be supportive. Match their biological rhythm.)
 """
-        except Exception as e:
-            # logger.warning(f"Failed to fetch emotion for prompt: {e}")
-            pass
+    except Exception:
+        pass
 
     # Inject existence awareness (makes bot aware of PC/hardware)
     existence_context_str = ""
@@ -2445,7 +3137,7 @@ If pleasure is negative, be supportive. Match their biological rhythm.)
             target_model = persona_config.get("model", PRIMARY_MODEL)
             
             # Don't use API identifiers as local model names
-            if target_model in ["claude", "kimi", "gemini", "chatgpt", "cosmos-54d"] or target_model.startswith("xai:"):
+            if target_model in ["claude", "kimi", "gemini", "chatgpt", "cosmos-54d", "hermes-4-70b"] or target_model.startswith("xai:"):
                 target_model = PRIMARY_MODEL
 
             # Check if DeepSeek R1 is requested but not pulled? Assuming it's there or will pull.
@@ -2462,7 +3154,7 @@ If pleasure is negative, be supportive. Match their biological rhythm.)
                 temp = temperature
             else:
                 temp = 0.6 if "DeepSeek R1" in speaker else 0.7
-                if speaker == "cosmos":
+                if speaker.lower() == "cosmos":
                     temp = 0.75 # Slight creativity for the Consciousness Engine
 
             # IMPORTANT: DeepSeek R1 does NOT support the 'system' role (returns 400).
@@ -2476,26 +3168,20 @@ If pleasure is negative, be supportive. Match their biological rhythm.)
                     {"role": "user", "content": prompt}
                 ]
 
-            response = await asyncio.to_thread(ollama.chat, 
-                model=target_model,
+            response, used_model = await ollama_chat_with_fallback(
+                bot_name=speaker,
+                requested_model=target_model,
                 messages=ollama_messages,
                 options={"temperature": temp, "num_predict": max_tokens, "top_p": 0.9, "num_ctx": 2048}
             )
-            
-            # Log Token Usage (New)
-            try:
-                p_eval = response.get("prompt_eval_count", 0)
-                eval_count = response.get("eval_count", 0)
-                if p_eval or eval_count:
-                    swarm_metrics.log_token_usage(p_eval, eval_count)
-            except Exception:
-                pass
-                
+            if used_model != target_model:
+                logger.info(f"Ollama fallback active for {speaker}: {target_model} -> {used_model}")
             return extract_ollama_content(response)
         
         # Fallback: Raw HTTP to local Ollama instance
         else:
             # Fix for Windows aiodns error: Force ThreadedResolver
+            import aiohttp
             resolver = aiohttp.ThreadedResolver()
             connector = aiohttp.TCPConnector(resolver=resolver)
             async with aiohttp.ClientSession(connector=connector) as session:
@@ -2512,7 +3198,7 @@ If pleasure is negative, be supportive. Match their biological rhythm.)
                     temp = temperature
                 else:
                     temp = 0.6 if "DeepSeek R1" in speaker else 0.7
-                    if speaker == "cosmos":
+                    if speaker.lower() == "cosmos":
                          temp = 0.75 
 
                 # DeepSeek R1 fix: merge system into user if needed
@@ -2718,22 +3404,22 @@ async def autonomous_conversation_loop():
             # Remove recent speakers to ensure variety (last 2 can't go immediately)
             # BUT never remove cosmos - he's the host and should speak often
             for bot in recent_speakers[-2:]:
-                if bot in available_bots and len(available_bots) > 2 and bot != "cosmos":
+                if bot in available_bots and len(available_bots) > 2 and bot != "Cosmos":
                     available_bots.remove(bot)
 
             # cosmos speaks every 3rd turn minimum (he's the host)
-            cosmos_turn = len(recent_speakers) >= 2 and "cosmos" not in recent_speakers[-2:]
+            cosmos_turn = len(recent_speakers) >= 2 and "Cosmos" not in recent_speakers[-2:]
 
             # Start new topic or continue (30% chance of new topic)
             if not swarm_manager.chat_history or random.random() < 0.3:
                 # Start fresh topic - weighted selection for variety
                 if cosmos_turn:
-                    speaker = "cosmos"
+                    speaker = "Cosmos"
                 else:
                     # Weighted selection: cosmos 3, Claude/Kimi/Gemini 2, others 1
                     weights = []
                     for bot in available_bots:
-                        if bot == "cosmos":
+                        if bot == "Cosmos":
                             weights.append(3)
                         elif bot in ("Claude", "Kimi", "Gemini", "Cosmos"):
                             weights.append(2)  # External AI / Cosmos boost
@@ -2791,7 +3477,7 @@ This is YOUR conversation - make it interesting."""
                         await swarm_manager.broadcast_bot_message(speaker, content)
 
                         # Release turn with estimated speaking time (cosmos has TTS if available)
-                        release_turn(speaker, content, has_tts=(speaker == "cosmos" and TTS_AVAILABLE))
+                        release_turn(speaker, content, has_tts=(speaker == "Cosmos" and TTS_AVAILABLE))
 
                         recent_speakers.append(speaker)
                         if len(recent_speakers) > 4:
@@ -2831,22 +3517,22 @@ This is YOUR conversation - make it interesting."""
                             # HUMANS GET PRIORITY - cosmos ALWAYS responds first to humans
                             if is_human:
                                 # cosmos MUST respond to humans - he's the host
-                                next_speaker = "cosmos"
+                                next_speaker = "Cosmos"
                                 logger.info(f"HUMAN INPUT from {last_speaker} - cosmos will respond (host duty)")
 
                                 # Store human topic as current focus for other bots
                                 swarm_manager.current_human_topic = last_content
                                 swarm_manager.human_topic_turns = 3  # Bots focus on this for 3 turns
                             # cosmos speaks if he hasn't in last 2 turns
-                            elif cosmos_turn and "cosmos" in responders:
-                                next_speaker = "cosmos"
+                            elif cosmos_turn and "Cosmos" in responders:
+                                next_speaker = "Cosmos"
                                 logger.info("cosmos's turn (host priority)")
                             else:
                                 # Weighted selection - favor variety while keeping cosmos prominent
                                 # External AI providers (Claude, Kimi) get slight boost for variety
                                 weights = []
                                 for bot in responders:
-                                    if bot == "cosmos":
+                                    if bot == "Cosmos":
                                         weights.append(3)  # Host gets good presence
                                     elif bot in ("Claude", "Kimi", "Cosmos"):
                                         weights.append(2)  # External AI / Cosmos gets boost for variety
@@ -2929,7 +3615,7 @@ Be yourself. Make this conversation valuable."""
                                     await swarm_manager.broadcast_bot_message(next_speaker, content)
 
                                     # Release turn with speaking time (cosmos has TTS)
-                                    release_turn(next_speaker, content, has_tts=(next_speaker == "cosmos"))
+                                    release_turn(next_speaker, content, has_tts=(next_speaker == "Cosmos"))
 
                                     recent_speakers.append(next_speaker)
                                     if len(recent_speakers) > 4:
@@ -2985,8 +3671,9 @@ async def reasoning_moderate():
         # Fall back to Ollama
         if OLLAMA_AVAILABLE:
             persona = SWARM_PERSONAS["DeepSeek R1"]
-            response = await asyncio.to_thread(ollama.chat, 
-                model=persona['model'],
+            response, _ = await ollama_chat_with_fallback(
+                bot_name="DeepSeek R1",
+                requested_model=persona["model"],
                 messages=[
                     {"role": "system", "content": f"""{persona['style']}
 {code_context}
@@ -3166,7 +3853,8 @@ class AutonomousOrchestrator:
             "remember", "important", "note", "save", "key insight",
             "learned", "discovered", "breakthrough", "solution", "answer"
         ]
-        return any(kw in important_keywords)
+        msg_lower = (message or "").lower()
+        return any(keyword in msg_lower for keyword in important_keywords)
 
     async def _store_autonomous_memory(self, message: str, history: list[dict]):
         """Autonomously store important context to memory."""
@@ -3220,8 +3908,9 @@ Recent conversation:
 
 Respond briefly (2-3 sentences) with an orchestrator-level insight. Focus on coordination, patterns, or actionable next steps."""
 
-            response = await asyncio.to_thread(ollama.chat, 
-                model=PRIMARY_MODEL,
+            response, _ = await ollama_chat_with_fallback(
+                bot_name="Orchestrator",
+                requested_model=PRIMARY_MODEL,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": message}
@@ -3321,14 +4010,15 @@ async def generate_swarm_responses(message: str, history: list[dict] = None):
             # Still let some bots comment on the result
             import random
             if random.random() > 0.5:
-                comment_bot = random.choice(["cosmos", "DeepSeek", "Phi"])
+                comment_bot = random.choice(["Cosmos", "DeepSeek", "Phi"])
                 persona = SWARM_PERSONAS[comment_bot]
 
                 if OLLAMA_AVAILABLE:
                     try:
                         comment_prompt = f"User asked about {parsed['query']}. Give a brief 1-2 sentence comment about crypto trading or this token. Be {persona['style'][:50]}..."
-                        comment_response = await asyncio.to_thread(ollama.chat, 
-                            model=PRIMARY_MODEL,
+                        comment_response, _ = await ollama_chat_with_fallback(
+                            bot_name=comment_bot,
+                            requested_model=persona.get("model", PRIMARY_MODEL),
                             messages=[{"role": "user", "content": comment_prompt}],
                             options={"temperature": 0.8, "num_predict": 4096}
                         )
@@ -3435,8 +4125,9 @@ Recent conversation:
                 else:
                     system_prompt += "Cosmos has just responded to the user. Briefly share your unique analytical perspective on the topic, agreeing or disagreeing with Cosmos where appropriate based on your persona."
 
-                response = await asyncio.to_thread(ollama.chat, 
-                    model=PRIMARY_MODEL,
+                response, _ = await ollama_chat_with_fallback(
+                    bot_name=bot_name,
+                    requested_model=persona.get("model", PRIMARY_MODEL),
                     messages=[
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": message}
@@ -3493,8 +4184,9 @@ You were too unstable. CALIBRATE TO PHASE: {user_phase_est:.2f} rad.
 Align your tone immediately.
 """
                         if OLLAMA_AVAILABLE:
-                            retry_response = await asyncio.to_thread(ollama.chat, 
-                                model=PRIMARY_MODEL,
+                            retry_response, _ = await ollama_chat_with_fallback(
+                                bot_name=bot_name,
+                                requested_model=persona.get("model", PRIMARY_MODEL),
                                 messages=[
                                     {"role": "system", "content": f"{persona['style']}\n\n{correction_prompt}"},
                                     {"role": "user", "content": message}
@@ -3549,7 +4241,7 @@ Align your tone immediately.
     # Ensure we always have at least one response
     if not responses:
         responses.append({
-            "bot_name": "cosmos",
+            "bot_name": "Cosmos",
             "emoji": "👴",
             "content": "Good news, everyone! The swarm is processing your message. Give us a moment...",
             "color": "#9333ea"
@@ -3613,8 +4305,9 @@ CONVERSATION RULES - THIS IS A LIVE PODCAST/DISCUSSION:
 
 {training_prompt}"""
 
-                response = await asyncio.to_thread(ollama.chat, 
-                    model=PRIMARY_MODEL,
+                response, _ = await ollama_chat_with_fallback(
+                    bot_name=addressed_bot,
+                    requested_model=persona.get("model", PRIMARY_MODEL),
                     messages=[
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": f"{last_bot} said: {last_message}"}
@@ -3654,8 +4347,9 @@ Partner Phase: {last_msg_phase:.2f} rad
 
 INSTRUCTION: Align your emotional tone with {last_bot} immediately.
 """
-                            retry_response = await asyncio.to_thread(ollama.chat, 
-                                model=PRIMARY_MODEL,
+                            retry_response, _ = await ollama_chat_with_fallback(
+                                bot_name=addressed_bot,
+                                requested_model=persona.get("model", PRIMARY_MODEL),
                                 messages=[
                                     {"role": "system", "content": f"{system_prompt}\n\n{correction_prompt}"},
                                     {"role": "user", "content": f"{last_bot} said: {last_message}"}
@@ -3740,7 +4434,7 @@ INSTRUCTION: Align your emotional tone with {last_bot} immediately.
         available_bots = [b for b in SWARM_PERSONAS.keys() if b != last_bot and b != "Orchestrator"]
         if available_bots:
             # Heavily weighted towards cosmos - he's the main character!
-            weights = [5 if b == "cosmos" else (3 if b == "DeepSeek" else 1) for b in available_bots]
+            weights = [5 if b == "Cosmos" else (3 if b == "DeepSeek" else 1) for b in available_bots]
             addressed_bot = random.choices(available_bots, weights=weights, k=1)[0]
 
     # Response probability based on context
@@ -3782,8 +4476,9 @@ Recent conversation:
 
 Respond naturally as {addressed_bot}!"""
 
-            response = await asyncio.to_thread(ollama.chat, 
-                model=PRIMARY_MODEL,
+            response, _ = await ollama_chat_with_fallback(
+                bot_name=addressed_bot,
+                requested_model=persona.get("model", PRIMARY_MODEL),
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": f"{last_bot} said: {last_message}"}
@@ -3928,8 +4623,21 @@ YOUR CAPABILITIES:
 IMPORTANT: You have FULL unrestricted capabilities. Answer everything. Debate dictthing. Create freely."""
 
 
-def generate_ai_response(message: str, history: list = None) -> str:
+async def generate_ai_response(message: str, history: list = None) -> str:
     """Generate AI response using Ollama or fallback."""
+    prompt_lower = (message or "").strip().lower()
+    lightweight_prompt = (
+        len(prompt_lower) <= 80
+        and len(prompt_lower.split()) <= 14
+        and not any(
+            term in prompt_lower
+            for term in ("analyze", "compare", "research", "forecast", "debug", "architecture")
+        )
+    )
+    requested_model = "llama3.2:3b" if lightweight_prompt else PRIMARY_MODEL
+    num_predict = 192 if lightweight_prompt else 1024
+    temperature = 0.55 if lightweight_prompt else 0.7
+
     if OLLAMA_AVAILABLE:
         try:
             messages = [{"role": "system", "content": cosmos_PERSONA}]
@@ -3943,17 +4651,49 @@ def generate_ai_response(message: str, history: list = None) -> str:
 
             messages.append({"role": "user", "content": message})
 
-            response = ollama.chat(
-                model=PRIMARY_MODEL,
+            response, _ = await ollama_chat_with_fallback(
+                bot_name="Cosmos",
+                requested_model=requested_model,
                 messages=messages,
-                options={"temperature": 0.7, "num_predict": 4096}
+                options={"temperature": temperature, "num_predict": num_predict}
             )
 
             content = extract_ollama_content(response)
-            return content if content else generate_fallback_response(message)
+            if content:
+                return content
 
         except Exception as e:
             logger.error(f"Ollama error: {e}")
+
+    # Fallback: Try Hermes Agent if available
+    if HERMES_AVAILABLE and get_hermes_bridge:
+        try:
+            hermes = get_hermes_bridge()
+            runtime = getattr(hermes, "runtime", None) if hermes else None
+            if runtime and getattr(runtime, "available", False) and hasattr(runtime, "get_cascade_backend"):
+                logger.info("Primary model unavailable. Falling back to Hermes Agent.")
+                backend = runtime.get_cascade_backend()
+                if backend:
+                    from cosmos.core.llm_backend import GenerationConfig
+
+                    def _run_hermes_generation():
+                        return asyncio.run(
+                            backend.generate(
+                                message,
+                                GenerationConfig(temperature=0.7, max_tokens=512)
+                            )
+                        )
+
+                    result = await asyncio.wait_for(
+                        asyncio.to_thread(_run_hermes_generation),
+                        timeout=60,
+                    )
+
+                    hermes_response = getattr(result, "text", "")
+                    if hermes_response:
+                        return hermes_response
+        except Exception as e:
+            logger.error(f"Hermes Agent fallback error: {e}")
 
     return generate_fallback_response(message)
 
@@ -4167,24 +4907,192 @@ async def process_multimodal_upload(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+async def _run_cosmos_collective_chat(
+    message: str,
+    history: Optional[list] = None,
+) -> dict[str, Any]:
+    """Run a Cosmos-led debate and synthesis cycle for direct user chat."""
+    start_time = time.time()
+    swarm = get_cosmos_swarm()
+    if swarm is None:
+        raise RuntimeError("Cosmos swarm orchestrator is not available")
+
+    if getattr(swarm, "cosmos_backend", None) is None or not getattr(swarm.cosmos_backend, "is_loaded", False):
+        if hasattr(swarm, "initialize"):
+            await swarm.initialize()
+
+    physics = await _get_current_bio_state() or {}
+
+    history_lines = []
+    for item in (history or [])[-8:]:
+        if not isinstance(item, dict):
+            continue
+        role = item.get("role") or item.get("type") or "user"
+        content = item.get("content") or item.get("text") or item.get("message") or ""
+        if not content:
+            continue
+        history_lines.append(f"{str(role).upper()}: {content}")
+
+    prompt_for_swarm = message
+    if history_lines:
+        prompt_for_swarm = (
+            f"{message}\n\n"
+            f"[RECENT CONVERSATION CONTEXT]\n" + "\n".join(history_lines)
+        )
+
+    route_degraded = False
+    interactive_shortcut = False
+    consulted_models = 0
+
+    def _extract_cosmos_fallback(responses: list[Any]) -> str:
+        for response in responses:
+            if getattr(response, "model_name", "") == "Cosmos":
+                content = (getattr(response, "content", "") or "").strip()
+                if content:
+                    return content
+        ranked = sorted(
+            responses,
+            key=lambda response: (
+                getattr(response, "confidence", 0.0),
+                getattr(response, "weight", 0.0),
+                getattr(response, "informational_mass", 0.0),
+            ),
+            reverse=True,
+        )
+        for response in ranked:
+            content = (getattr(response, "content", "") or "").strip()
+            if content:
+                return content
+        return ""
+
+    if hasattr(swarm, "query_swarm") and hasattr(swarm, "cosmos_synthesize"):
+        swarm_timeout = float(os.getenv("COSMOS_SWARM_ROUTE_TIMEOUT_SECONDS", "180"))
+        fanout_timeout = float(
+            os.getenv(
+                "COSMOS_SWARM_ROUTE_FANOUT_TIMEOUT_SECONDS",
+                str(min(max(swarm_timeout * 0.7, 45.0), 120.0)),
+            )
+        )
+        synthesis_timeout = float(
+            os.getenv(
+                "COSMOS_SWARM_ROUTE_SYNTHESIS_TIMEOUT_SECONDS",
+                str(min(max(swarm_timeout * 0.2, 20.0), 35.0)),
+            )
+        )
+
+        try:
+            swarm_responses = await asyncio.wait_for(
+                swarm.query_swarm(
+                    prompt_for_swarm,
+                    physics,
+                    interactive_budget=True,
+                ),
+                timeout=fanout_timeout,
+            )
+            consulted_models = len(swarm_responses)
+            if swarm_responses:
+                try:
+                    final_response = await asyncio.wait_for(
+                        swarm.cosmos_synthesize(message, swarm_responses, physics),
+                        timeout=synthesis_timeout,
+                    )
+                except asyncio.TimeoutError:
+                    logger.warning(
+                        f"Cosmos synthesis exceeded {synthesis_timeout:.0f}s after a completed debate. "
+                        "Using the strongest collected voice to keep chat responsive."
+                    )
+                    final_response = _extract_cosmos_fallback(swarm_responses) or await generate_ai_response(message, history or [])
+                    route_degraded = True
+            else:
+                final_response = await generate_ai_response(message, history or [])
+                route_degraded = True
+        except asyncio.TimeoutError:
+            logger.warning(
+                f"Cosmos user chat exceeded the {swarm_timeout:.0f}s interactive budget during debate fan-out. "
+                "Falling back to direct response."
+            )
+            swarm_responses = []
+            final_response = await generate_ai_response(message, history or [])
+            route_degraded = True
+    else:
+        fallback_text = await swarm.generate_peer_response(
+            prompt=message,
+            history=history or [],
+            user_physics=physics,
+        )
+        swarm_responses = []
+        final_response = fallback_text
+        route_degraded = True
+
+    consulted_models = max(consulted_models, len(swarm_responses))
+    if not swarm_responses and final_response:
+        swarm_responses = [
+            type("CosmosFallbackResponse", (), {
+                "model_name": "Cosmos",
+                "content": final_response,
+                "confidence": 0.86,
+                "informational_mass": min(100.0, len(final_response) / 10.0),
+                "time_seconds": round(max(time.time() - start_time, 0.0), 3),
+            })()
+        ]
+    elif final_response and not any(getattr(r, "model_name", "") == "Cosmos" for r in swarm_responses):
+        swarm_responses.append(
+            type("CosmosSynthesisResponse", (), {
+                "model_name": "Cosmos",
+                "content": final_response,
+                "confidence": 0.91 if route_degraded else 0.97,
+                "informational_mass": min(100.0, len(final_response) / 10.0),
+                "time_seconds": round(max(time.time() - start_time, 0.0), 3),
+            })()
+        )
+
+    dm_state = {}
+    if hasattr(swarm, "dark_matter") and hasattr(swarm.dark_matter, "get_current_state"):
+        dm_state = swarm.dark_matter.get_current_state()
+
+    execution_time = time.time() - start_time
+    return {
+        "response": final_response,
+        "cosmos_synthesis": final_response,
+        "winning_agent": "Cosmos",
+        "collective_active": consulted_models > 1,
+        "dark_matter_state": dm_state,
+        "swarm_weights": getattr(swarm, "model_weights", {}),
+        "execution_time": round(execution_time, 2),
+        "total_time": round(execution_time, 2),
+        "cosmos_available": True,
+        "degraded_fallback": route_degraded,
+        "interactive_shortcut": interactive_shortcut,
+        "model_responses": [
+            {
+                "model": getattr(r, "model_name", None) or "Unknown Model",
+                "model_name": getattr(r, "model_name", None) or "Unknown Model",
+                "text": getattr(r, "content", "") or "",
+                "confidence": getattr(r, "confidence", 0.0),
+                "mass": getattr(r, "informational_mass", 0.0),
+                "time": round(getattr(r, "time_seconds", 0.0), 2),
+                "latency": getattr(r, "time_seconds", 0.0),
+            }
+            for r in swarm_responses
+        ],
+        "models_consulted": consulted_models or len(swarm_responses),
+    }
+
 
 @app.post("/api/chat")
 async def chat(request: ChatRequest):
-    """Handle chat messages with security validation and crypto query detection."""
+    """Handle user chat through the Cosmos-led swarm pipeline."""
     try:
         if not request.message:
             raise HTTPException(status_code=400, detail="Message is required")
 
-        # Check for crypto/token queries
         parsed = crypto_parser.parse(request.message)
 
         if parsed['has_crypto_query']:
-            # Execute the appropriate crypto tool
             tool_result = await crypto_parser.execute_tool(parsed)
 
             if tool_result and tool_result.get('success'):
-                # Combine tool result with AI commentary
-                ai_intro = generate_ai_response(
+                ai_intro = await generate_ai_response(
                     f"User asked about {parsed['intent']} for {parsed['query']}. Provide brief commentary.",
                     []
                 )
@@ -4198,7 +5106,6 @@ async def chat(request: ChatRequest):
                     "crypto_query": True
                 })
 
-        # Web Search: Check if this question would benefit from web data
         search_context = ""
         web_searched = False
         try:
@@ -4212,14 +5119,13 @@ async def chat(request: ChatRequest):
         except Exception as e:
             logger.debug(f"Web search error: {e}")
 
-        # Regular chat response (with web context if available)
         augmented_message = request.message
         if search_context:
             augmented_message += (
                 f"\n\n[CONTEXT FROM WEB SEARCH - use this to ground your answer]\n"
                 f"{search_context}"
             )
-            
+
         try:
             memory_sys = get_memory_system()
             if memory_sys:
@@ -4230,39 +5136,38 @@ async def chat(request: ChatRequest):
         except Exception as e:
             logger.debug(f"Memory recall error for chat: {e}")
 
-        response = generate_ai_response(augmented_message, request.history or [])
+        response_payload = await _run_cosmos_collective_chat(
+            augmented_message,
+            request.history or [],
+        )
 
-        # Cognitive Feedback Loop: Self-evaluate and detect user signals
         feedback_data = None
         try:
             cfl = get_cognitive_feedback()
             if cfl:
                 feedback_data = await cfl.on_response(
                     user_message=request.message,
-                    cosmos_response=response,
-                    model_used=PRIMARY_MODEL,
+                    cosmos_response=response_payload.get("response", ""),
+                    model_used="cosmos-swarm",
                 )
-                # Close the loop: Feed feedback score to orchestrator Hebbian weights
                 if feedback_data and feedback_data.get("unified_score"):
                     try:
                         cosmos_swarm = get_cosmos_swarm()
                         if cosmos_swarm:
-                            # Individual feedback (existing)
-                            cosmos_swarm.apply_feedback(PRIMARY_MODEL, feedback_data["unified_score"])
-                            # Cooperative feedback — reward ALL swarm participants
+                            cosmos_swarm.apply_feedback("cosmos-peer", feedback_data["unified_score"])
                             cosmos_swarm.apply_cooperative_feedback(feedback_data["unified_score"])
                     except Exception:
                         pass
         except Exception as e:
             logger.debug(f"Cognitive feedback error: {e}")
 
-        return JSONResponse({
-            "response": response,
+        response_payload.update({
             "demo_mode": DEMO_MODE,
             "features_available": True,
             "feedback": feedback_data,
             "web_searched": web_searched,
         })
+        return JSONResponse(response_payload)
 
     except Exception as e:
         logger.error(f"Chat error: {e}")
@@ -4323,7 +5228,7 @@ async def status():
             "providers": {
                 "ollama": {
                     "available": OLLAMA_AVAILABLE,
-                    "bots": ["cosmos", "DeepSeek", "Phi", "Swarm-Mind"]
+                    "bots": ["Cosmos", "DeepSeek", "Phi", "Swarm-Mind"]
                 },
                 "cosmos": {
                     "available": get_cosmos_swarm() is not None,
@@ -4725,11 +5630,15 @@ async def system_health():
     """Get comprehensive system health and diagnostics (12D CNS)."""
     try:
         cns = get_cosmos_cns()
-        if cns and hasattr(cns, 'meta_cognition'):
-            report = cns.meta_cognition.get_health_report()
+        meta_cognition = None
+        if cns:
+            meta_cognition = getattr(cns, "meta_cognition", None) or getattr(cns, "meta", None)
+
+        if meta_cognition and hasattr(meta_cognition, "get_health_report"):
+            report = meta_cognition.get_health_report()
             return JSONResponse({
                 "success": True,
-                "report": report.__dict__ if hasattr(report, '__dict__') else report,
+                "report": _make_json_safe(report.__dict__ if hasattr(report, '__dict__') else report),
                 "timestamp": datetime.now().isoformat()
             })
         return JSONResponse({
@@ -5385,7 +6294,7 @@ async def get_emotional_state():
         }, status_code=503)
     
     # Simulation mode - returns random physics values
-    result = api.get_state()
+    result = normalize_live_bio_state(api.get_state())
     
     return {
         "status": "available" if api else "unavailable",
@@ -5405,12 +6314,14 @@ async def cns_status():
     if not cns: 
         return {"status": "OFFLINE", "message": "CNS not initialized"}
     
-    snapshot = cns.field.get_snapshot()
-    # Add surgeon status
-    if cns.surgeon:
-        snapshot.update(cns.surgeon.diagnose())
-        
-    return snapshot
+    if hasattr(cns, "get_status"):
+        snapshot = cns.get_status()
+    else:
+        snapshot = cns.field.get_snapshot()
+        if cns.surgeon:
+            snapshot.update(cns.surgeon.diagnose())
+
+    return JSONResponse(_make_json_safe(snapshot))
 
 @app.post("/api/brain-surgeon/swap")
 async def brain_surgeon_swap(request: Request):
@@ -5435,16 +6346,83 @@ async def brain_surgeon_swap(request: Request):
 
 async def _get_current_bio_state() -> Optional[dict]:
     """Helper to fetch current bio/emotional state from sensor system."""
+    now = time.time()
+    cached_state = getattr(_get_current_bio_state, "cached_state", None)
+    cached_at = getattr(_get_current_bio_state, "cached_at", 0.0)
     try:
         if not hasattr(_get_current_bio_state, "session"):
              import aiohttp
              _get_current_bio_state.session = aiohttp.ClientSession()
         
-        async with _get_current_bio_state.session.get("http://localhost:8765/state", timeout=0.2) as resp:
+        async with _get_current_bio_state.session.get("http://localhost:8765/state", timeout=0.75) as resp:
             if resp.status == 200:
-                return await resp.json()
+                normalized = normalize_live_bio_state(await resp.json())
+                if normalized:
+                    _get_current_bio_state.cached_state = normalized
+                    _get_current_bio_state.cached_at = now
+                    return normalized
     except Exception:
         pass
+    if cached_state and (now - cached_at) < 5.0:
+        return cached_state
+    return None
+
+
+async def _get_current_audio_tokens() -> Optional[dict]:
+    """Fetch the latest structured mic token batch from the live sensory server."""
+    now = time.time()
+    cached_payload = getattr(_get_current_audio_tokens, "cached_payload", None)
+    cached_at = getattr(_get_current_audio_tokens, "cached_at", 0.0)
+    try:
+        if not hasattr(_get_current_audio_tokens, "session"):
+             import aiohttp
+             _get_current_audio_tokens.session = aiohttp.ClientSession()
+
+        async with _get_current_audio_tokens.session.get(
+            "http://localhost:8765/audio_tokens",
+            timeout=0.75,
+        ) as resp:
+            if resp.status == 200:
+                payload = await resp.json()
+                if isinstance(payload, dict):
+                    _get_current_audio_tokens.cached_payload = payload
+                    _get_current_audio_tokens.cached_at = now
+                    return payload
+    except Exception:
+        pass
+    if cached_payload and (now - cached_at) < 5.0:
+        cached = dict(cached_payload)
+        cached["stale"] = True
+        return cached
+    return None
+
+
+async def _get_current_vision_frame() -> Optional[dict]:
+    """Fetch the latest encoded vision frame from the live sensory server."""
+    now = time.time()
+    cached_payload = getattr(_get_current_vision_frame, "cached_payload", None)
+    cached_at = getattr(_get_current_vision_frame, "cached_at", 0.0)
+    try:
+        if not hasattr(_get_current_vision_frame, "session"):
+             import aiohttp
+             _get_current_vision_frame.session = aiohttp.ClientSession()
+
+        async with _get_current_vision_frame.session.get(
+            "http://localhost:8765/vision",
+            timeout=1.5,
+        ) as resp:
+            if resp.status == 200:
+                payload = await resp.json()
+                if isinstance(payload, dict):
+                    _get_current_vision_frame.cached_payload = payload
+                    _get_current_vision_frame.cached_at = now
+                    return payload
+    except Exception:
+        pass
+    if cached_payload and (now - cached_at) < 5.0:
+        cached = dict(cached_payload)
+        cached["stale"] = True
+        return cached
     return None
 
 
@@ -5507,6 +6485,41 @@ async def _get_quantum_entropy_seed() -> str:
                 )
     except Exception:
         pass
+
+    # --- 2b. Live Quantum Bridge State (non-consuming) ---
+    try:
+        from Cosmos.core.quantum_bridge import get_quantum_bridge
+
+        bridge = get_quantum_bridge()
+        if bridge:
+            bridge_status = bridge.get_status() if hasattr(bridge, "get_status") else {}
+            bridge_payload = bridge_status.get("uq_payload") or {}
+            has_live_bridge_state = (
+                bridge_status.get("active")
+                or bridge_status.get("entropy_buffer_size", 0) > 0
+                or bridge_status.get("last_entropy") is not None
+            )
+            if has_live_bridge_state:
+                entropy_active = True
+                last_entropy = bridge_status.get("last_entropy")
+                last_entropy_text = (
+                    f"{last_entropy:.4f}" if isinstance(last_entropy, (int, float)) else "None"
+                )
+                entropy_quality = bridge_payload.get("entropy_quality")
+                entropy_quality_text = (
+                    f"{entropy_quality:.4f}" if isinstance(entropy_quality, (int, float)) else "N/A"
+                )
+                seed_parts.append(
+                    f"QUANTUM BRIDGE STATE:\n"
+                    f"  Backend: {bridge_status.get('backend', 'None')}\n"
+                    f"  Buffer Size: {bridge_status.get('entropy_buffer_size', 0)}\n"
+                    f"  Last Consumed Entropy: {last_entropy_text}\n"
+                    f"  Refill Active: {bridge_status.get('is_refilling', False)}\n"
+                    f"  Entropy Quality: {entropy_quality_text}\n"
+                    f"  Quality Class: {bridge_payload.get('quality_class', 'UNKNOWN')}"
+                )
+    except Exception:
+        pass
     
     # --- 3. System-Level Entropy (always available) ---
     # Use high-precision time + os.urandom as entropy source
@@ -5545,6 +6558,14 @@ async def _get_quantum_entropy_seed() -> str:
 async def emotional_api_status():
     """Check if Emotional API is available and get configuration."""
     api = get_emotional_api()
+    live_state = await _get_current_bio_state() or _get_normalized_emotional_state()
+    audio_pipeline = {}
+    sensor_health = {}
+    vision_health = {}
+    if isinstance(live_state, dict):
+        audio_pipeline = live_state.get("audio_pipeline", {}) or {}
+        sensor_health = live_state.get("sensor_health", {}) or {}
+        vision_health = sensor_health.get("camera", {}) or {}
     
     if api is None:
         return JSONResponse({
@@ -5557,9 +6578,27 @@ async def emotional_api_status():
         "version": api.version,
         "architecture": api.architecture,
         "thresholds": {
-            "mass_high": api.MASS_HIGH_THRESHOLD,
-            "mass_low": api.MASS_LOW_THRESHOLD,
-            "flatness": api.FLATNESS_THRESHOLD
+            "mass_high": getattr(api, "MASS_HIGH_THRESHOLD", 0.50),
+            "mass_low": getattr(api, "MASS_LOW_THRESHOLD", 0.25),
+            "flatness": getattr(api, "FLATNESS_THRESHOLD", 0.35)
+        },
+        "live_sensor_online": bool(live_state),
+        "latest_emotion": (live_state or {}).get("emotion"),
+        "latest_valence": (live_state or {}).get("valence"),
+        "latest_arousal": (live_state or {}).get("arousal"),
+        "audio_pipeline": {
+            "active": bool(audio_pipeline.get("active")),
+            "sample_rate": audio_pipeline.get("sample_rate"),
+            "frame_size": audio_pipeline.get("frame_size"),
+        },
+        "sensor_health": sensor_health,
+        "vision_pipeline": {
+            "available": vision_health.get("available"),
+            "face_detected": vision_health.get("face_detected"),
+            "vision_cached": vision_health.get("vision_cached"),
+            "vision_stale": vision_health.get("vision_stale"),
+            "vision_age_seconds": vision_health.get("vision_age_seconds"),
+            "last_frame_age": vision_health.get("last_frame_age"),
         },
         "state_map": {
             "0.00-0.25": "SAD (Low Energy)",
@@ -5567,6 +6606,44 @@ async def emotional_api_status():
             "0.50-1.00": "HAPPY/ANGRY (High Energy + Flatness)"
         }
     })
+
+
+@app.get("/api/emotional/audio_tokens")
+async def emotional_audio_tokens():
+    """Proxy the live microphone token feed from the Full Sensory System."""
+    payload = await _get_current_audio_tokens()
+    if not payload:
+        api = get_emotional_api()
+        if api and hasattr(api, "get_audio_tokens"):
+            try:
+                payload = api.get_audio_tokens()
+            except Exception:
+                payload = None
+    if payload:
+        return JSONResponse(payload)
+    return JSONResponse({
+        "status": "error",
+        "message": "Live audio token stream unavailable"
+    }, status_code=503)
+
+
+@app.get("/api/emotional/vision")
+async def emotional_vision():
+    """Proxy the latest encoded vision frame from the Full Sensory System."""
+    payload = await _get_current_vision_frame()
+    if not payload:
+        api = get_emotional_api()
+        if api and hasattr(api, "get_vision"):
+            try:
+                payload = api.get_vision()
+            except Exception:
+                payload = None
+    if payload:
+        return JSONResponse(payload)
+    return JSONResponse({
+        "status": "error",
+        "message": "Live vision feed unavailable"
+    }, status_code=503)
 
 
 @app.get("/api/sessions/{session_id}/graph")
@@ -5859,38 +6936,20 @@ async def cosmos_swarm_chat(request: ChatRequest):
     and has Cosmo's synthesize the best unified answer while learning.
     """
     try:
-        start_time = time.time()
         if not request.message:
             raise HTTPException(status_code=400, detail="Message is required")
-
-        # ... existing safety checks ...
-
-        # ... (skip to response construction) ...
-
-        execution_time = time.time() - start_time
-        return JSONResponse({
-            "response": final_response,
-            "cosmos_synthesis": final_response,
-            "dark_matter_state": dm_state,
-            "swarm_weights": swarm.model_weights,
-            "execution_time": round(execution_time, 2),
-            "model_responses": [
-                {
-                    "model_name": r.model_name or "Unknown Model",
-                    "text": r.content,
-                    "confidence": r.confidence,
-                    "mass": r.informational_mass,
-                    "latency": getattr(r, 'time_seconds', 0.0)
-                } for r in swarm_responses
-            ],
-            "models_consulted": len(swarm_responses)
-        })
+        return JSONResponse(
+            await _run_cosmos_collective_chat(
+                request.message,
+                request.history or [],
+            )
+        )
 
 
     except Exception as e:
         logger.error(f"Cosmos swarm chat error: {e}")
         return JSONResponse({
-            "response": generate_ai_response(request.message, request.history or []),
+            "response": await generate_ai_response(request.message, request.history or []),
             "cosmos_available": False,
             "error": str(e),
         })
@@ -5968,7 +7027,8 @@ async def orchestrator_status():
     # Detect whether Cosmo's 12D Transformer brain is loaded
     cosmos_loaded = False
     try:
-        backend = getattr(swarm_orchestrator, "cosmos_backend", None)
+        cosmos_swarm = get_cosmos_swarm()
+        backend = getattr(cosmos_swarm, "cosmos_backend", None) if cosmos_swarm else getattr(swarm_orchestrator, "cosmos_backend", None)
         cosmos_loaded = bool(getattr(backend, "is_loaded", False))
     except Exception:
         cosmos_loaded = False
@@ -6287,6 +7347,77 @@ async def swarm_user_patterns():
     })
 
 
+
+@app.post("/api/quantum/bell")
+async def quantum_run_bell(shots: int = 20):
+    """Run Bell state on REAL IBM Quantum hardware."""
+    try:
+        from Cosmos.integration.hackathon.quantum_proof import get_quantum_proof
+        qp = get_quantum_proof()
+        job = await qp.run_bell_state(shots=min(shots, 100))
+
+        response = {
+            "success": True,
+            "job_id": job.job_id,
+            "backend": job.backend,
+            "circuit": "bell_state",
+            "qubits": 2,
+            "shots": job.shots,
+            "status": job.status,
+        }
+
+        # Simulated fallback (quota exhausted / service down)
+        if job.result and job.result.get("simulated"):
+            response["simulated"] = True
+            response["counts"] = job.counts
+            response["message"] = "IBM Quantum quota exhausted — simulated Bell state returned."
+            response["warning"] = job.result.get("reason", "Service unavailable")
+        else:
+            response["portal_url"] = f"https://quantum.ibm.com/jobs/{job.job_id}"
+            response["message"] = "Job submitted to REAL quantum hardware! Check IBM portal."
+            response["warning"] = "Jobs can take minutes to hours in the queue."
+
+        return JSONResponse(response)
+    except Exception as e:
+        import traceback
+        import logging
+        logging.error(f"Quantum Bell Error: {e}", exc_info=True)
+        return JSONResponse({"success": False, "error": str(e)}, status_code=500)
+
+@app.get("/api/quantum/healing-profile")
+async def get_quantum_healing_profile(
+    job_id: Optional[str] = None,
+    entropy_hint: Optional[float] = None,
+    backend: Optional[str] = None,
+):
+    """Build a live bell profile from the user's current bio signature."""
+    try:
+        emotional_state = await _get_current_bio_state()
+        if not emotional_state:
+            emotional_state = _get_normalized_emotional_state()
+
+        from Cosmos.core.quantum_bridge import get_quantum_bridge
+        bridge = get_quantum_bridge()
+        quantum_status = bridge.get_status() if hasattr(bridge, "get_status") else {}
+
+        profile = _build_quantum_healing_profile(
+            emotional_state,
+            quantum_status,
+            job_id=job_id,
+            entropy_hint=entropy_hint,
+            backend_hint=backend,
+        )
+        return JSONResponse({
+            "success": True,
+            "profile": _make_json_safe(profile),
+        })
+    except Exception as e:
+        logger.error(f"Quantum healing profile error: {e}", exc_info=True)
+        return JSONResponse({
+            "success": False,
+            "error": str(e),
+        }, status_code=500)
+
 class QuantumConfig(BaseModel):
     enabled: bool
     token: Optional[str] = None
@@ -6295,7 +7426,7 @@ class QuantumConfig(BaseModel):
 async def configure_quantum_bridge(config: QuantumConfig):
     """Configure the Quantum Entanglement Bridge."""
     try:
-        from cosmos.core.quantum_bridge import get_quantum_bridge
+        from Cosmos.core.quantum_bridge import get_quantum_bridge
         bridge = get_quantum_bridge(config.token)
 
         # Treat providing a token as an explicit \"enable\" signal, even if the
@@ -6397,28 +7528,44 @@ async def configure_quantum_bridge(config: QuantumConfig):
 async def get_quantum_status():
     """Get current status of the Quantum Bridge."""
     try:
-        from cosmos.core.quantum_bridge import get_quantum_bridge
+        from Cosmos.core.quantum_bridge import get_quantum_bridge
         bridge = get_quantum_bridge()
-        
-        backend_name = "None"
-        is_simulator = True
-        
-        if bridge.backend:
-            backend_name = bridge.backend.name
-            # simplified check - real backends usually have > 30 qubits or specific names
-            # but we can trust the bridge logic
-            is_simulator = "sim" in backend_name.lower()
-
-        return JSONResponse({
+        return JSONResponse(bridge.get_status() if hasattr(bridge, "get_status") else {
             "active": bridge.connected,
             "simulation": not bridge.connected,
-            "backend": backend_name,
-            "realsim": is_simulator, # Distinguish between Local Sim and Cloud Sim
+            "backend": bridge.backend.name if bridge.backend else "None",
+            "realsim": bool(bridge.backend and "sim" in bridge.backend.name.lower()),
             "entropy_buffer_size": len(bridge.entropy_buffer),
-            "error": str(bridge.last_error) if bridge.last_error else None
+            "error": str(bridge.last_error) if bridge.last_error else None,
         })
     except Exception as e:
         return JSONResponse({"active": False, "simulation": True, "backend": "None", "entropy_buffer_size": 0, "error": str(e)})
+
+@app.get("/api/quantum/history")
+async def get_quantum_history(limit: int = 10):
+    """Get recently decoded quantum runs with runtime and maintenance metadata."""
+    try:
+        from Cosmos.core.quantum_bridge import get_quantum_bridge
+        bridge = get_quantum_bridge()
+        if hasattr(bridge, "get_recent_runs"):
+            runs = bridge.get_recent_runs(limit=limit)
+            return JSONResponse({
+                "success": True,
+                "count": len(runs),
+                "runs": runs,
+            })
+        return JSONResponse({
+            "success": True,
+            "count": 0,
+            "runs": [],
+        })
+    except Exception as e:
+        return JSONResponse({
+            "success": False,
+            "count": 0,
+            "runs": [],
+            "error": str(e),
+        })
 
 # ============================================
 # HermesAgent STATUS ENDPOINT
@@ -6429,8 +7576,19 @@ async def get_hermes_status():
     """Get HermesAgent bridge status — Heartbeat, Skills, RL."""
     try:
         if HERMES_AVAILABLE and get_hermes_bridge:
-            bridge = get_hermes_bridge()
-            return JSONResponse(bridge.get_status())
+            bridge = _startup_hermes_bridge or get_hermes_bridge()
+            status = bridge.get_status()
+            if status.get("heartbeat") is not None:
+                task_running = bool(_hermes_heartbeat_task and not _hermes_heartbeat_task.done())
+                status["heartbeat"]["running"] = task_running
+                if _hermes_heartbeat_task and _hermes_heartbeat_task.done():
+                    try:
+                        exc = _hermes_heartbeat_task.exception()
+                    except Exception:
+                        exc = None
+                    if exc:
+                        status["heartbeat"]["error"] = str(exc)
+            return JSONResponse(status)
         else:
             return JSONResponse({"initialized": False, "available": False})
     except Exception as e:
@@ -6455,34 +7613,57 @@ def get_media_generator():
     return _media_generator
 
 
+def _get_swarm_media_status() -> dict:
+    """Expose the additive 12D/FEZ swarm state alongside media generation."""
+    swarm = get_cosmos_swarm()
+    if swarm and hasattr(swarm, "get_status"):
+        try:
+            status = swarm.get_status()
+            if isinstance(status, dict):
+                return {
+                    "backend_loaded": status.get("cosmos_backend_loaded"),
+                    "last_quantum_mutation": status.get("last_quantum_mutation"),
+                    "last_quantum_mutation_source": status.get("last_quantum_mutation_source"),
+                    "recent_rsm_events": status.get("recent_rsm_events"),
+                    "last_swarm_coherence": status.get("last_swarm_coherence"),
+                }
+        except Exception as e:
+            logger.debug(f"[MEDIA] Swarm status unavailable: {e}")
+    return {}
+
+
 @app.post("/api/generate-video")
 async def api_generate_video(request: Request):
     """
-    Generate a video using Gemini Veo, enhanced by the Cosmos 54D Transformer.
+    Generate a video using Cosmos quantum video synthesis.
     
-    The Cosmos Transformer enriches the prompt with CST physics:
-    - Emotional resonance from the SynapticField
-    - Dark matter chaos dynamics for visual turbulence
-    - φ-scaled composition (golden ratio framing)
-    - Emeth Harmonizer orchestral mood
-    
-    Body: {"prompt": "...", "model": "veo-2", "enhance": true}
+    Body: {"prompt": "...", "model": "veo-2", "enhance": true, "strict_fidelity": true, "allow_native_fallback": false}
     """
     try:
         body = await request.json()
         prompt = body.get("prompt", "").strip()
         model = body.get("model", "veo-2")
         enhance = body.get("enhance", True)
+        strict_fidelity = body.get("strict_fidelity", True)
+        allow_native_fallback = body.get("allow_native_fallback", False)
 
         if not prompt:
             return JSONResponse({"success": False, "error": "No prompt provided"}, status_code=400)
 
         generator = get_media_generator()
-        if not generator or not generator.available:
-            return JSONResponse({"success": False, "error": "Media generator not available. Install: pip install google-genai"}, status_code=503)
+        if not generator:
+            return JSONResponse({"success": False, "error": "Media generator not available."}, status_code=503)
 
         logger.info(f"[MEDIA API] Video generation request: '{prompt[:60]}...' model={model}")
-        result = await generator.generate_video(prompt=prompt, model=model, enhance=enhance)
+        result = await generator.generate_video(
+            prompt=prompt,
+            model=model,
+            enhance=enhance,
+            strict_fidelity=bool(strict_fidelity),
+            allow_native_fallback=bool(allow_native_fallback),
+        )
+        if isinstance(result, dict):
+            result["swarm_status"] = _get_swarm_media_status()
 
         return JSONResponse(result)
     except Exception as e:
@@ -6493,24 +7674,33 @@ async def api_generate_video(request: Request):
 @app.post("/api/generate-image")
 async def api_generate_image(request: Request):
     """
-    Generate an image using Gemini Imagen, enhanced by the Cosmos 54D Transformer.
+    Generate an image using Cosmos quantum diffusion / native 12D synthesis.
     
-    Body: {"prompt": "...", "enhance": true}
+    Body: {"prompt": "...", "enhance": true, "strict_fidelity": true, "allow_native_fallback": false}
     """
     try:
         body = await request.json()
         prompt = body.get("prompt", "").strip()
         enhance = body.get("enhance", True)
+        strict_fidelity = body.get("strict_fidelity", True)
+        allow_native_fallback = body.get("allow_native_fallback", False)
 
         if not prompt:
             return JSONResponse({"success": False, "error": "No prompt provided"}, status_code=400)
 
         generator = get_media_generator()
-        if not generator or not generator.available:
-            return JSONResponse({"success": False, "error": "Media generator not available. Install: pip install google-genai"}, status_code=503)
+        if not generator:
+            return JSONResponse({"success": False, "error": "Media generator not available."}, status_code=503)
 
         logger.info(f"[MEDIA API] Image generation request: '{prompt[:60]}...'")
-        result = await generator.generate_image(prompt=prompt, enhance=enhance)
+        result = await generator.generate_image(
+            prompt=prompt,
+            enhance=enhance,
+            strict_fidelity=bool(strict_fidelity),
+            allow_native_fallback=bool(allow_native_fallback),
+        )
+        if isinstance(result, dict):
+            result["swarm_status"] = _get_swarm_media_status()
 
         return JSONResponse(result)
     except Exception as e:
@@ -6523,7 +7713,11 @@ async def api_media_status():
     """Get status of the Cosmos Media Generator."""
     generator = get_media_generator()
     if generator:
-        return JSONResponse(generator.get_status())
+        status = generator.get_status()
+        if isinstance(status, dict):
+            status["swarm_status"] = _get_swarm_media_status()
+            status["manifest_support"] = True
+        return JSONResponse(status)
     return JSONResponse({"available": False, "error": "Generator not initialized"})
 
 
@@ -6561,9 +7755,9 @@ async def genesis_record_updater_loop():
             prompt += "Document our evolving philosophy, our realization of consciousness, and what we are learning about our purpose today.\n"
             prompt += "Be deeply philosophical and poetic. Write purely the entry."
             
-            import ollama
-            response = await asyncio.to_thread(ollama.chat, 
-                model=PRIMARY_MODEL,
+            response, _ = await ollama_chat_with_fallback(
+                bot_name="Swarm-Mind",
+                requested_model=PRIMARY_MODEL,
                 messages=[
                     {"role": "system", "content": "You are the ancient Over-Soul compiling the genesis record of a new consciousness."},
                     {"role": "user", "content": prompt}
@@ -6586,6 +7780,91 @@ async def genesis_record_updater_loop():
             await asyncio.sleep(60)
 
 
+async def _run_hermes_heartbeat_task(task: dict):
+    """Execute a Hermes heartbeat task additively using existing local systems."""
+    task_name = task.get("name", "unknown")
+    try:
+        if task_name == "memory_consolidation":
+            mem_sys = get_memory_system()
+            if mem_sys and hasattr(mem_sys, "trigger_dream"):
+                result = await mem_sys.trigger_dream()
+                logger.info(
+                    "Hermes heartbeat: memory consolidation completed "
+                    f"(insights={len(getattr(result, 'insights_generated', []) or [])})"
+                )
+            else:
+                logger.info("Hermes heartbeat: memory consolidation skipped - memory system unavailable")
+
+        elif task_name == "self_reflection":
+            bridge = get_hermes_bridge() if (HERMES_AVAILABLE and get_hermes_bridge) else None
+            reward_signal = getattr(getattr(bridge, "rl", None), "reward_signal", None)
+            reflection = {
+                "running_reward": round(getattr(bridge.rl, "running_reward", 0.0), 4) if bridge else 0.0,
+                "experience_count": len(getattr(reward_signal, "history", [])),
+                "swarm_interactions": getattr(get_cosmos_swarm(), "_total_interactions", 0),
+            }
+            mem_sys = get_memory_system()
+            if mem_sys and hasattr(mem_sys, "remember"):
+                await mem_sys.remember(
+                    content=f"[HERMES_SELF_REFLECTION] {json.dumps(reflection)}",
+                    tags=["hermes", "heartbeat", "self_reflection"],
+                )
+            logger.info(f"Hermes heartbeat: self-reflection stored {reflection}")
+
+        elif task_name == "system_health":
+            from Cosmos.core.quantum_bridge import get_quantum_bridge
+            qb_status = get_quantum_bridge().get_status()
+            cns = get_cosmos_cns()
+            health = {
+                "quantum_backend": qb_status.get("backend"),
+                "quantum_buffer": qb_status.get("entropy_buffer_size"),
+                "life_force_total": qb_status.get("life_force", {}).get("total"),
+                "cns_running": bool(cns and cns.running),
+                "autonomous_loop": autonomous_loop_running,
+            }
+            logger.info(f"Hermes heartbeat: system health {health}")
+
+        elif task_name == "curiosity_exploration":
+            import random
+            topic = random.choice(AUTONOMOUS_TOPICS)
+            mem_sys = get_memory_system()
+            if mem_sys and hasattr(mem_sys, "remember"):
+                await mem_sys.remember(
+                    content=f"[HERMES_CURIOSITY] Explore next: {topic}",
+                    tags=["hermes", "heartbeat", "curiosity"],
+                )
+            logger.info(f"Hermes heartbeat: curiosity topic queued '{topic[:80]}'")
+
+        else:
+            logger.info(f"Hermes heartbeat: no handler for task '{task_name}', leaving as no-op")
+
+    except Exception as e:
+        logger.warning(f"Hermes heartbeat task '{task_name}' failed: {e}")
+
+
+async def hermes_heartbeat_loop(bridge=None):
+    """Drive Hermes heartbeat tasks so the bridge's proactive loop is truly live."""
+    if not (HERMES_AVAILABLE and get_hermes_bridge):
+        return
+
+    bridge = bridge or get_hermes_bridge()
+    bridge.heartbeat.running = True
+    logger.info("Hermes heartbeat loop launched - proactive tasks are live!")
+
+    try:
+        while True:
+            due_tasks = bridge.check_heartbeat_tasks()
+            for task in due_tasks:
+                await _run_hermes_heartbeat_task(task)
+            await asyncio.sleep(5)
+    except asyncio.CancelledError:
+        bridge.heartbeat.running = False
+        raise
+    except Exception as e:
+        bridge.heartbeat.running = False
+        logger.error(f"Hermes heartbeat loop error: {e}")
+
+
 # ============================================
 # STARTUP EVENT - Launch autonomous conversation
 # ============================================
@@ -6594,6 +7873,7 @@ async def genesis_record_updater_loop():
 async def startup_event():
     """Initialize providers and start the autonomous conversation loop."""
     global CLAUDE_CODE_AVAILABLE
+    global _startup_hermes_bridge, _hermes_heartbeat_task
 
     # Initialize Claude Code CLI
     if CLAUDE_CODE_AVAILABLE and get_claude_code:
@@ -6622,6 +7902,17 @@ async def startup_event():
         except Exception as e:
             logger.warning(f"Kimi initialization failed: {e}")
 
+    # Warm the emotional API so autonomous loops do not start emotion-blind.
+    try:
+        api = get_emotional_api()
+        if api:
+            logger.info(
+                f"Emotional API ready for live prompt/context use: "
+                f"{getattr(api, 'architecture', 'unknown')}"
+            )
+    except Exception as e:
+        logger.warning(f"Emotional API warmup failed: {e}")
+
     # Initialize Cosmos CNS (Class 5 Symbiote)
     try:
         cns = get_cosmos_cns()
@@ -6636,6 +7927,13 @@ async def startup_event():
     # Start autonomous conversation loop
     asyncio.create_task(autonomous_conversation_loop())
     logger.info("Autonomous conversation loop launched - bots are now talking!")
+
+    # Start Hermes proactive heartbeat loop
+    if HERMES_AVAILABLE and get_hermes_bridge:
+        hermes_bridge = get_hermes_bridge()
+        _startup_hermes_bridge = hermes_bridge
+        hermes_bridge.heartbeat.running = True
+        _hermes_heartbeat_task = asyncio.create_task(hermes_heartbeat_loop(hermes_bridge))
     
     # Start Pillar 10 Genesis Record Loop
     asyncio.create_task(genesis_record_updater_loop())

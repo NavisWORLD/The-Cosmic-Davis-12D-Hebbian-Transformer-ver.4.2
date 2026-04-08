@@ -26,7 +26,7 @@ import random
 from collections import defaultdict, deque
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timedelta
-from typing import   Optional, Callable, Tuple
+from typing import List, Dict, Any, Optional, Callable, Tuple, Union, Set
 from loguru import logger
 
 try:
@@ -76,7 +76,7 @@ class QuantumTradingSignal:
     resolved_at: Optional[datetime] = None
 
     def to_any(self) -> dict:
-        d = asany(self)
+        d = asdict(self)
         d["timestamp"] = self.timestamp.isoformat()
         if self.resolved_at:
             d["resolved_at"] = self.resolved_at.isoformat()
@@ -103,7 +103,7 @@ class QuantumCorrelation:
     strength_over_time: list[float] = field(default_factory=list)
 
     def to_any(self) -> dict:
-        d = asany(self)
+        d = asdict(self)
         d["discovered_at"] = self.discovered_at.isoformat()
         return d
 
@@ -233,7 +233,7 @@ class SignalAccuracyTracker:
         self.pending: dict[str, QuantumTradingSignal] = {}  # signal_id -> signal (awaiting resolution)
 
         # Per-source accuracy tracking
-        self.source_stats: dict[str, deque] = defaultany(lambda: deque(maxlen=200))
+        self.source_stats: dict[str, deque] = defaultdict(lambda: deque(maxlen=200))
         # source -> deque of (correct: bool, confidence: float)
 
         # Fusion weights (learned via accuracy feedback)
@@ -412,7 +412,7 @@ class QuantumTradingCortex:
         self._signal_history: deque = deque(maxlen=1000)
 
         # Price cache for resolution (token -> deque of (timestamp, price))
-        self._price_cache: dict[str, deque] = defaultany(lambda: deque(maxlen=300))
+        self._price_cache: dict[str, deque] = defaultdict(lambda: deque(maxlen=300))
 
         self._initialized = False
         self._signal_count = 0
@@ -748,7 +748,7 @@ class QuantumTradingCortex:
 
     async def _collective_deliberate(
         self, token_address: str, current_price: float,
-        ema_result:  quantum_result: dict
+        ema_result: dict, quantum_result: dict
     ) -> dict:
         """Ask shadow agents for their opinion on this token."""
         result = {"direction": "neutral", "confidence": 0.0, "agents": []}
@@ -1119,8 +1119,8 @@ class QuantumTradingCortex:
         return 0.0
 
     def _build_reasoning(
-        self, direction: str, confidence: float, ema: 
-        quantum:  collective:  weights: dict
+        self, direction: str, confidence: float,
+        ema: dict, quantum: dict, collective: dict, weights: dict
     ) -> str:
         """Build human-readable reasoning string."""
         parts = []
@@ -1151,7 +1151,7 @@ class QuantumTradingCortex:
         except Exception as e:
             logger.debug(f"QuantumCortex: Failed to emit signal: {e}")
 
-    async def _emit_nexus(self, signal_type_name: str, payload:  urgency: float = 0.6):
+    async def _emit_nexus(self, signal_type_name: str, payload: Any, urgency: float = 0.6):
         """Emit a signal through the Nexus."""
         if not self.nexus:
             return
@@ -1339,7 +1339,7 @@ class QuantumAlgoOptimizer:
             genome += format(int_val, f'0{bits_per_param}b')
         return genome
 
-    def _fitness_from_trades(self, params:  trades: list[dict]) -> float:
+    def _fitness_from_trades(self, params: dict, trades: list[dict]) -> float:
         """
         Evaluate fitness of a parameter set against historical trade data.
         Simulates: "if we had used these params, how would trades have gone?"

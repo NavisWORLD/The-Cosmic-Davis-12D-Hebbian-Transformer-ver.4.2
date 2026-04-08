@@ -506,15 +506,15 @@ class BehavioralLayer:
     def __init__(self) -> None:
         self._compiled_probes = [re.compile(p) for p in self.PROBING_PATTERNS]
         # client_id -> deque of (timestamp, input_hash) for frequency tracking
-        self._client_history: dict[str, deque] = defaultany(lambda: deque(maxlen=50))
+        self._client_history: dict[str, deque] = defaultdict(lambda: deque(maxlen=50))
         # session_id -> list of keyword sets for topic drift
-        self._session_keywords: dict[str[Set[str]]] = defaultany(list)
+        self._session_keywords: dict[str[Set[str]]] = defaultdict(list)
 
     def _shannon_entropy(self, text: str) -> float:
         """Compute Shannon entropy of text in bits per character."""
         if not text:
             return 0.0
-        freq: dict[str, int] = defaultany(int)
+        freq: dict[str, int] = defaultdict(int)
         for ch in text:
             freq[ch] += 1
         length = len(text)

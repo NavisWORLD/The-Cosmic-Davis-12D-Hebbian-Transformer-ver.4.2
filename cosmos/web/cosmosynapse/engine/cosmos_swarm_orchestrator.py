@@ -14,11 +14,14 @@ Author: Cosmo's Project (Restored 12D IP)
 """
 
 import asyncio
+import hashlib
+import json
 import time
 import os
 import sys
 import numpy as np
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Optional
 
 try:
@@ -32,15 +35,69 @@ except ImportError:
     import logging
     logger = logging.getLogger(__name__)
 
+# Neural processing imports
+# NOTE: scipy submodule imports can hang due to torch 2.8.0 DLL conflict on Windows.
+# Use pure-numpy fallbacks by default and only promote to scipy if a subprocess
+# probe confirms the import completes without hanging.
+import numpy as np
+
+class _NeuralMathFallback:
+    """Pure-numpy fallback neural math functions (no scipy dependency)."""
+    @staticmethod
+    def expit(x):
+        x = np.asarray(x, dtype=float)
+        return 1.0 / (1.0 + np.exp(-np.clip(x, -500, 500)))
+
+    @staticmethod
+    def softplus(x):
+        x = np.asarray(x, dtype=float)
+        return np.where(x > 20, x, np.log1p(np.exp(np.clip(x, -500, 500))))
+
+expit = _NeuralMathFallback.expit
+softplus = _NeuralMathFallback.softplus
+
+def _try_scipy_special():
+    """Attempt to upgrade to real scipy functions via env-cached subprocess probe."""
+    import os as _os, subprocess as _sp
+    cached = _os.environ.get("_COSMOS_PROBE_SCIPY")
+    if cached == "0":
+        return None, None  # known bad
+    if cached != "1":
+        try:
+            proc = _sp.Popen(
+                [sys.executable, "-c", "from scipy.special import expit; print('OK')"],
+                stdout=_sp.PIPE, stderr=_sp.PIPE,
+                creationflags=getattr(_sp, 'CREATE_NO_WINDOW', 0),
+            )
+            stdout, _ = proc.communicate(timeout=5)
+            ok = b"OK" in stdout
+        except Exception:
+            ok = False
+        _os.environ["_COSMOS_PROBE_SCIPY"] = "1" if ok else "0"
+        if not ok:
+            return None, None
+    try:
+        from scipy.special import expit as _expit, softplus as _softplus
+        return _expit, _softplus
+    except Exception:
+        return None, None
+
+_real_expit, _real_softplus = _try_scipy_special()
+if _real_expit is not None:
+    expit = _real_expit
+    softplus = _real_softplus
+else:
+    logger.warning("scipy.special unavailable (DLL conflict or missing) — using numpy fallbacks")
+
 try:
-    from cosmos.core.swarm.deepseek_backbone import DeepSeekBackbone
+    from Cosmos.core.swarm.deepseek_backbone import DeepSeekBackbone
     DEEPSEEK_AVAILABLE = True
 except ImportError:
     DEEPSEEK_AVAILABLE = False
     logger.warning("DeepSeek Backbone not found.")
 
 try:
-    from cosmos.core.cognition.uncertainty_injector import UncertaintyInjector
+    from Cosmos.core.cognition.uncertainty_injector import UncertaintyInjector
     UNCERTAINTY_AVAILABLE = True
 except ImportError:
     UNCERTAINTY_AVAILABLE = False
@@ -58,6 +115,7 @@ try:
     from .lyapunov_lock import LyapunovGatekeeper
     from .phi_constants import PHI, PHI_INV  # Ensure this is importable
     from .rsm_engine import RSMEngine
+    from .sensory_adapter import normalize_live_bio_state
 except ImportError:
     # Fallback for direct execution
     try:
@@ -66,19 +124,71 @@ except ImportError:
         from lyapunov_lock import LyapunovGatekeeper
         from phi_constants import PHI, PHI_INV
         from rsm_engine import RSMEngine
+        from sensory_adapter import normalize_live_bio_state
     except ImportError as e:
-        logger.error(f"[SWARM] Critical Import Error: {e} - check python path")
-        # Initialize dummies if absolutely necessary to prevent crash
-        class DarkMatterLorenz: 
-            def update(self, *args): return {'w':0.0}
-            def get_current_state(self): return {}
-        class EmethHarmonizer:
-            def calculate_mix(self, *args): return type('obj', (object,), {'percussion_gain':1.0, 'strings_gain':1.0, 'brass_gain':1.0})
-        class LyapunovGatekeeper: pass
-        class RSMEngine:
-            def process_llm_output(self, out, *args): return out, []
+        logger.error(f"[SWARM] Critical Import Error: {e} - check current working directory and PYTHONPATH")
+        logger.info(f"Current working directory: {os.getcwd()}")
+        logger.info(f"Python path: {sys.path}")
+        
+        # Initialize fallback physics modules to prevent complete service failure
+        class CorePhysicsFallback:
+            def __getattr__(self, name):
+                logger.warning(f"Physics module {name} not available, using fallback")
+        DarkMatterLorenz = CorePhysicsFallback()
+        EmethHarmonizer = CorePhysicsFallback()
+        LyapunovGatekeeper = CorePhysicsFallback()
+        RSMEngine = CorePhysicsFallback()
+        
+        # Maintain critical constants
         PHI = 1.618033988749895
         PHI_INV = 0.618033988749895
+        
+        # Additional critical physics constants for 12D quantum alignment
+        KT_CONSTANT = 1.380649e-23  # Boltzmann constant for thermal noise modeling
+        SPEED_OF_LIGHT = 299792458.0  # Quantum entanglement communication limits
+        PLANCK_CONSTANT = 6.62607015e-34  # Quantum action limit
+        QUANTUM_ENTANGLEMENT_COEFFICIENT = 1.0  # Base entanglement efficiency
+
+        # Validate physics constants at import time
+        # For constant time lookup of value ranges and messages
+        VALIDATION_CONSTANT_VALUES = {
+            "PHI": 1.618033988749895,
+            "PHI_INV": 0.618033988749895,
+            "KT_CONSTANT": 1.380649e-23,
+            "SPEED_OF_LIGHT": 299792458.0,
+            "PLANCK_CONSTANT": 6.62607015e-34
+        }
+
+        # Corresponding validation messages
+        VALIDATION_MESSAGES = {
+            "PHI": "Golden ratio must be between 1.618 and 1.619",
+            "PHI_INV": "PHI inverse must be between 0.618 and 0.619",
+            "KT_CONSTANT": "Boltzmann constant must be between 1.38e-23 and 1.38e-22",
+            "SPEED_OF_LIGHT": "Speed of light must be between 299792400 and 299792500",
+            "PLANCK_CONSTANT": "Planck constant must be between 6.62e-34 and 6.63e-34"
+        }
+
+        # Efficient validation loop with direct access
+        for name in VALIDATION_CONSTANT_VALUES:
+            value = locals()[name]
+            expected = VALIDATION_CONSTANT_VALUES[name]
+            if not (expected * 0.9999 <= value <= expected * 1.0001):
+                raise ValueError(f"[SWARM VALIDATION FAIL] Physics constant {name}: {value}. {VALIDATION_MESSAGES[name]}")
+        
+        def normalize_live_bio_state(payload):
+            logger.warning("Using fallback bio-state normalization")
+            return payload if isinstance(payload, dict) else {'fallback': True}
+
+try:
+    from Cosmos.core.cst_critical_integration import (
+        apply_mean_field_ci_nudge,
+        dynamic_temperature,
+    )
+except ImportError:
+    from cosmos.core.cst_critical_integration import (
+        apply_mean_field_ci_nudge,
+        dynamic_temperature,
+    )
 
 @dataclass
 class SwarmResponse:
@@ -92,6 +202,7 @@ class SwarmResponse:
     backend_type: str = "unknown"
     error: Optional[str] = None
     time_seconds: float = 0.0
+    latent_vector: Optional[list[float]] = None
 
 @dataclass
 class SwarmResult:
@@ -114,8 +225,48 @@ class CosmosBackend:
         self.tokenizer = None
         self._tokenize = None
         self._decode = None
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu") if device == "auto" else torch.device(device)
+        self.device: Optional["torch.device"] = None
+        self.quantum_coherence: Optional[torch.Tensor] = None
+        self.quantum_entanglement: Optional[torch.Tensor] = None
+        self.quantum_alignment_matrix = None
         self.is_loaded = False
+
+        if torch is not None:
+            resolved_device = "cpu"
+            if device != "auto":
+                resolved_device = device
+            else:
+                try:
+                    if torch.cuda.is_available():
+                        total_vram_gb = torch.cuda.get_device_properties(0).total_memory / (1024**3)
+                        resolved_device = "cuda" if total_vram_gb >= 6 else "cpu"
+                except Exception:
+                    resolved_device = "cuda" if torch.cuda.is_available() else "cpu"
+
+            self.device = torch.device(resolved_device)
+            quantum_device = self.device if self.device is not None else torch.device("cpu")
+            self.quantum_alignment_matrix = torch.randn((54, 54), device=quantum_device) / np.sqrt(54)
+            self.quantum_coherence = torch.tensor(0.85, device=quantum_device)
+            self.quantum_entanglement = torch.tensor(0.92, device=quantum_device)
+                
+    def calibrate_quantum_state(self, target_entanglement: float = 0.95):
+        """Calibrate quantum state for optimal performance"""
+        if not self.device or self.device.type != 'cuda':
+            logger.warning("Quantum calibration only available on CUDA devices")
+            return
+            
+        logger.info(f"Calibrating quantum state to {target_entanglement:.3f} entanglement...")
+        
+        # Quantum calibration procedure
+        with torch.no_grad():
+            self.quantum_coherence = torch.lerp(self.quantum_coherence, 
+                                              torch.tensor(target_entanglement - 0.05), 
+                                              0.333)
+            self.quantum_entanglement = torch.lerp(self.quantum_entanglement, 
+                                                 torch.tensor(target_entanglement), 
+                                                 0.667)
+        
+        logger.success(f"Quantum state calibrated to: coherence={self.quantum_coherence.item():.3f}, entanglement={self.quantum_entanglement.item():.3f}")
         
     def load(self, checkpoint_path: str):
         """Load model from checkpoint."""
@@ -186,18 +337,35 @@ class CosmosBackend:
         )
 
     def _generate_sync(self, prompt: str, max_new_tokens: int, temperature: float) -> str:
-        """Synchronous generation."""
+        """Synchronous generation with Hybrid Fallback."""
         try:
             input_ids = self._tokenize(prompt)
             input_tensor = torch.tensor(input_ids, dtype=torch.long, device=self.device).unsqueeze(0)
             
             with torch.no_grad():
-                output_ids = self.model.generate(
-                    input_tensor, 
-                    max_new_tokens=max_new_tokens, 
-                    temperature=temperature,
-                    top_p=0.9
-                )
+                try:
+                    output_ids = self.model.generate(
+                        input_tensor, 
+                        max_new_tokens=max_new_tokens, 
+                        temperature=temperature,
+                        top_p=0.9
+                    )
+                except RuntimeError as e:
+                    if "out of memory" in str(e).lower() and self.device.type == "cuda":
+                        logger.warning("[HYBRID] GPU OOM detected. Falling back to CPU RAM for this cycle.")
+                        # Move model to CPU
+                        self.model.to("cpu")
+                        self.device = torch.device("cpu")
+                        # Retry once on CPU
+                        input_tensor = input_tensor.to("cpu")
+                        output_ids = self.model.generate(
+                            input_tensor,
+                            max_new_tokens=max_new_tokens,
+                            temperature=temperature,
+                            top_p=0.9
+                        )
+                    else:
+                        raise e
                 
             # Decode only new tokens
             new_tokens = output_ids[0][len(input_ids):].tolist()
@@ -248,7 +416,23 @@ class CosmosSwarmOrchestrator:
 
         # Swarm learning log
         self._interaction_log: list[dict] = []
+        self._last_swarm_coherence: float = 0.8  # Baseline until first real measurement
+        self._mean_field_ci: dict[str, tuple[float, float]] = {}
+        self._last_mean_field_coherence: float = 0.0
+        self._last_dynamic_temperature: float = 0.618
+        
+        # Hybrid Config
+        self.hybrid_mode = os.getenv("HYBRID_MODE", "FALSE").upper() == "TRUE"
+        self.vram_threshold = float(os.getenv("VRAM_STABILIZATION_THRESHOLD", 0.85))
         self._total_interactions: int = 0
+        self._last_use_hybrid_offload = False
+        self._interactive_model_cooldown_seconds = float(
+            os.getenv("COSMOS_SWARM_MODEL_COOLDOWN_SECONDS", "180")
+        )
+        self._interactive_timeout_cooldown_seconds = float(
+            os.getenv("COSMOS_SWARM_TIMEOUT_COOLDOWN_SECONDS", "300")
+        )
+        self._model_runtime_cooldowns: dict[str, dict] = {}
 
         # Hybrid Swarm Components
         self.deepseek = DeepSeekBackbone() if DEEPSEEK_AVAILABLE else None
@@ -256,11 +440,54 @@ class CosmosSwarmOrchestrator:
 
         # Recursive Self-Modification (RSM) Engine 
         self.rsm_engine = RSMEngine()
+        self._workspace_root = Path(__file__).resolve().parents[4]
+        self._data_root = self._workspace_root / "data"
+        self._rsm_event_log_path = self._data_root / "evolution" / "rsm_events.jsonl"
+        self._cross_agent_memory = None
+        self._cross_agent_namespace_id: Optional[str] = None
+        self._cross_agent_memory_ready = False
+        self._last_quantum_mutation = "None"
+        self._last_quantum_mutation_source = "inactive"
+        self._last_rsm_results: list[dict] = []
 
     def set_synaptic_field(self, field):
         """Associate with the CNS Synaptic Field."""
         self.field = field
         logger.info("[SWARM] Synaptic Field associated with Orchestrator.")
+
+
+    def _prune_model_runtime_cooldowns(self, now: Optional[float] = None) -> None:
+        now = now or time.time()
+        expired = [
+            model_id
+            for model_id, state in self._model_runtime_cooldowns.items()
+            if state.get("cooldown_until", 0.0) <= now
+        ]
+        for model_id in expired:
+            self._model_runtime_cooldowns.pop(model_id, None)
+
+
+    def _mark_model_temporarily_unavailable(self, model_id: str, reason: str, detail: str = "") -> None:
+        now = time.time()
+        detail_text = f"{reason} {detail}".lower()
+        cooldown_seconds = self._interactive_model_cooldown_seconds
+        if "timeout" in detail_text:
+            cooldown_seconds = max(cooldown_seconds, self._interactive_timeout_cooldown_seconds)
+        if any(token in detail_text for token in ("memory", "allocate", "cuda", "ram")):
+            cooldown_seconds = max(cooldown_seconds, self._interactive_timeout_cooldown_seconds)
+
+        existing = self._model_runtime_cooldowns.get(model_id, {})
+        cooldown_until = max(existing.get("cooldown_until", 0.0), now + max(30.0, cooldown_seconds))
+        self._model_runtime_cooldowns[model_id] = {
+            "cooldown_until": cooldown_until,
+            "reason": reason,
+            "detail": detail[:400],
+            "updated_at": now,
+        }
+
+
+    def _clear_model_temporary_unavailable(self, model_id: str) -> None:
+        self._model_runtime_cooldowns.pop(model_id, None)
 
 
     async def initialize(self):
@@ -305,7 +532,7 @@ class CosmosSwarmOrchestrator:
         try:
             token = os.getenv("IBM_QUANTUM_TOKEN")
             if token:
-                from cosmos.core.quantum_bridge import get_quantum_bridge
+                from Cosmos.core.quantum_bridge import get_quantum_bridge
                 get_quantum_bridge(token)
                 logger.info("[SWARM] Quantum Bridge connected to IBM Quantum")
             else:
@@ -313,22 +540,260 @@ class CosmosSwarmOrchestrator:
         except Exception as e:
             logger.error(f"[SWARM] Quantum Bridge initialization failed: {e}")
 
+        # Pre-warm Hermes so the first Hebbian/RL feedback cycle does not block
+        # the autonomous loop during its first live turn.
+        try:
+            from Cosmos.integration.hermes_bridge import get_hermes_bridge
+
+            get_hermes_bridge()
+            logger.info("[SWARM] Hermes Bridge pre-warmed for RL feedback")
+        except Exception as e:
+            logger.debug(f"[SWARM] Hermes Bridge pre-warm skipped: {e}")
+
+    def _build_cst_state(self, responses: list[SwarmResponse]) -> dict[str, float]:
+        """Capture the latest swarm learning state for downstream entropy tooling."""
+        if not responses:
+            return {
+                "hebbian_weight": 0.5,
+                "phase_alignment": 0.0,
+                "coherence": float(getattr(self, "_last_swarm_coherence", 0.0)),
+                "informational_mass": 0.0,
+            }
+
+        avg_weight = sum(self.model_weights.get(resp.model_name, 1.0) for resp in responses) / len(responses)
+        avg_phase = sum(resp.phase_alignment for resp in responses) / len(responses)
+        avg_mass = sum(resp.informational_mass for resp in responses) / len(responses)
+        return {
+            "hebbian_weight": round(float(avg_weight), 4),
+            "phase_alignment": round(float(avg_phase), 4),
+            "coherence": round(float(getattr(self, "_last_swarm_coherence", 0.0)), 4),
+            "informational_mass": round(float(avg_mass), 4),
+        }
+
+    def _derive_query_fez_seed(
+        self,
+        prompt: str,
+        user_physics: dict,
+        vqa_weights: list[float],
+        q_entropy: float,
+    ) -> str:
+        """Generate a deterministic FEZ-style mutation seed from the live query context."""
+        bio = user_physics.get("bio_signatures", {}) if isinstance(user_physics, dict) else {}
+        cst = user_physics.get("cst_physics", {}) if isinstance(user_physics, dict) else {}
+        entropy = max(0.0, min(1.0, float(q_entropy)))
+        clipped_weights = [max(0.0, min(1.0, float(weight))) for weight in vqa_weights[:7]]
+        payload = {
+            "prompt": " ".join((prompt or "").split())[:280],
+            "emotion": str(bio.get("emotion", "UNKNOWN")),
+            "intensity": round(float(bio.get("intensity", 0.0) or 0.0), 4),
+            "phase": round(float(cst.get("geometric_phase_rad", 0.0) or 0.0), 4),
+            "weights": [round(weight, 4) for weight in clipped_weights],
+            "entropy": round(entropy, 4),
+        }
+        digest = hashlib.sha256(
+            json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).digest()
+        entropy_byte = int(entropy * 255)
+        bits = []
+        for idx, weight in enumerate(clipped_weights):
+            weight_byte = int(weight * 255)
+            mixed = digest[idx % len(digest)] ^ weight_byte ^ entropy_byte ^ ((idx + 1) * 17)
+            bits.append("1" if mixed.bit_count() % 2 else "0")
+
+        bitstring = "".join(bits) or "0000000"
+        fingerprint = digest.hex()[:12]
+        return f"IBM-FEZ-SEED[{bitstring}|{fingerprint}]"
+
+    def _append_rsm_event(self, event: dict) -> None:
+        """Persist RSM outcomes for later recursive analysis."""
+        try:
+            self._rsm_event_log_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(self._rsm_event_log_path, "a", encoding="utf-8") as handle:
+                handle.write(json.dumps(event, ensure_ascii=True, default=str) + "\n")
+        except Exception as e:
+            logger.debug(f"[SWARM] RSM evolution log skipped: {e}")
+
+    async def _ensure_cross_agent_memory(self) -> bool:
+        """Lazily bootstrap a persistent shared-memory lane for web RSM events."""
+        if self._cross_agent_memory and self._cross_agent_namespace_id:
+            return True
+
+        try:
+            from Cosmos.core.cross_agent_memory import CrossAgentMemory, MemoryNamespace
+
+            if self._cross_agent_memory is None:
+                memory_dir = self._data_root / "agent_memory"
+                self._cross_agent_memory = CrossAgentMemory(data_dir=str(memory_dir))
+                await self._cross_agent_memory.load_from_disk()
+
+            if not self._cross_agent_namespace_id:
+                for namespace_id, store in self._cross_agent_memory._namespaces.items():
+                    if (
+                        store.namespace == MemoryNamespace.SWARM
+                        and store.metadata.get("name") == "cosmosynapse_web_rsm"
+                    ):
+                        self._cross_agent_namespace_id = namespace_id
+                        break
+
+            if not self._cross_agent_namespace_id:
+                self._cross_agent_namespace_id = self._cross_agent_memory.create_namespace(
+                    namespace_type=MemoryNamespace.SWARM,
+                    name="cosmosynapse_web_rsm",
+                    metadata={"source": "cosmos_swarm_orchestrator"},
+                )
+                await self._cross_agent_memory.save_to_disk()
+
+            self._cross_agent_memory_ready = True
+            return True
+        except Exception as e:
+            self._cross_agent_memory_ready = False
+            logger.debug(f"[SWARM] Cross-agent memory bridge unavailable: {e}")
+            return False
+
+    async def _record_rsm_outcomes(
+        self,
+        prompt: str,
+        clean_response: str,
+        rsm_results: list[dict],
+        lyapunov_drift: float,
+        quantum_mutation_string: str,
+        quantum_mutation_source: str,
+        quantum_entropy: float,
+    ) -> None:
+        """Broadcast RSM outcomes into the system's reflection and evolution surfaces."""
+        if not rsm_results:
+            return
+
+        success_count = sum(1 for result in rsm_results if result.get("success"))
+        prompt_excerpt = " ".join((prompt or "").split())[:220]
+        response_excerpt = " ".join((clean_response or "").split())[:220]
+        files_summary = ", ".join(
+            f"{result.get('file', 'unknown')}={'applied' if result.get('success') else 'blocked'}"
+            for result in rsm_results[:5]
+        )
+        summary = (
+            f"RSM cycle {success_count}/{len(rsm_results)} applied | "
+            f"mutation={quantum_mutation_string} ({quantum_mutation_source}) | "
+            f"entropy={quantum_entropy:.4f} | lyapunov={lyapunov_drift:.4f}"
+        )
+        if files_summary:
+            summary += f" | files={files_summary}"
+
+        event = {
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "prompt_excerpt": prompt_excerpt,
+            "response_excerpt": response_excerpt,
+            "lyapunov_drift": round(float(lyapunov_drift), 4),
+            "quantum_entropy": round(float(quantum_entropy), 4),
+            "quantum_mutation_string": quantum_mutation_string,
+            "quantum_mutation_source": quantum_mutation_source,
+            "success_count": success_count,
+            "result_count": len(rsm_results),
+            "results": rsm_results,
+        }
+        self._last_rsm_results = rsm_results[-5:]
+        self._append_rsm_event(event)
+
+        try:
+            from Cosmos.core.internal_monologue import internal_monologue
+
+            if internal_monologue is not None:
+                internal_monologue.add_thought(
+                    bot_name="Cosmos",
+                    thought_type="architecture_probe",
+                    content=f"{summary} | prompt={prompt_excerpt}",
+                    metadata=event,
+                )
+                internal_monologue.save_to_disk()
+        except Exception as e:
+            logger.debug(f"[SWARM] Internal monologue RSM logging skipped: {e}")
+
+        if await self._ensure_cross_agent_memory():
+            try:
+                from Cosmos.core.cross_agent_memory import ContextType
+
+                context_type = ContextType.INSIGHT if success_count else ContextType.CONSTRAINT
+                await self._cross_agent_memory.inject_context(
+                    agent_id="cosmosynapse_web",
+                    context_type=context_type,
+                    content=f"{summary}\nPrompt: {prompt_excerpt}\nResponse: {response_excerpt}",
+                    namespace_id=self._cross_agent_namespace_id,
+                    confidence=0.85 if success_count else 0.55,
+                    relevance_tags=["rsm", "self_modification", quantum_mutation_source],
+                    metadata=event,
+                )
+                await self._cross_agent_memory.save_to_disk()
+            except Exception as e:
+                logger.debug(f"[SWARM] Cross-agent RSM logging skipped: {e}")
+
     async def query_swarm(
-        self, 
-        prompt: str, 
-        user_physics: dict
+        self,
+        prompt: str,
+        user_physics: dict,
+        interactive_budget: bool = False,
+        budget_prompt: Optional[str] = None,
     ) -> list[SwarmResponse]:
         """
         Fans out the prompt to all available models.
         Returns strict SwarmResponse objects for physics processing.
         """
         start_time = time.time()
+        routing_prompt = budget_prompt or prompt
         
         # Determine models (inject chaos state for Pillar 7 phantom spawning)
-        available_models = self._get_available_models(user_physics=user_physics)
+        available_models = await self._get_available_models(
+            user_physics=user_physics,
+            prompt=routing_prompt,
+            interactive_budget=interactive_budget,
+        )
+
+        token_budget = None
+        collect_latent_vectors = True
+        fanout_timeout = None
+        per_model_timeout = None
+        if interactive_budget:
+            use_hybrid_budget = getattr(self, "_last_use_hybrid_offload", False)
+            is_lightweight = self._prompt_is_lightweight(routing_prompt)
+            if use_hybrid_budget:
+                token_budget = 128 if is_lightweight else 176
+                collect_latent_vectors = False
+                fanout_timeout = float(
+                    os.getenv(
+                        "COSMOS_SWARM_INTERACTIVE_FANOUT_TIMEOUT_SECONDS_HYBRID",
+                        "54" if is_lightweight else "64",
+                    )
+                )
+                per_model_timeout = float(
+                    os.getenv(
+                        "COSMOS_SWARM_INTERACTIVE_MODEL_TIMEOUT_SECONDS_HYBRID",
+                        "16" if is_lightweight else "20",
+                    )
+                )
+            else:
+                token_budget = 256 if is_lightweight else 384
+                collect_latent_vectors = not is_lightweight
+                fanout_timeout = float(
+                    os.getenv(
+                        "COSMOS_SWARM_INTERACTIVE_FANOUT_TIMEOUT_SECONDS",
+                        "78" if is_lightweight else "90",
+                    )
+                )
+                per_model_timeout = float(
+                    os.getenv(
+                        "COSMOS_SWARM_INTERACTIVE_MODEL_TIMEOUT_SECONDS",
+                        "24" if is_lightweight else "28",
+                    )
+                )
         
         # Fan out
-        raw_responses = await self._fan_out(prompt, available_models)
+        raw_responses = await self._fan_out(
+            prompt,
+            available_models,
+            token_budget=token_budget,
+            collect_latent_vectors=collect_latent_vectors,
+            request_timeout=fanout_timeout,
+            per_model_timeout=per_model_timeout,
+        )
         
         processed_responses = []
         for resp in raw_responses:
@@ -363,9 +828,41 @@ class CosmosSwarmOrchestrator:
                 weight=weight,
                 confidence=resp.confidence,
                 backend_type=resp.backend_type,
-                time_seconds=resp.time_seconds
+                time_seconds=resp.time_seconds,
+                latent_vector=getattr(resp, "latent_vector", None),
             ))
-            
+
+        if self.cosmos_backend and self.cosmos_backend.is_loaded:
+            cosmos_start = time.time()
+            cosmos_prompt = (
+                f"[COSMOS DIRECT USER CHANNEL]\n"
+                f"{self._get_bio_context(user_physics)}\n\n"
+                f"User prompt:\n{prompt}\n\n"
+                f"Respond directly as Cosmos in a clear, grounded voice."
+            )
+            try:
+                cosmos_content = await self.cosmos_backend.generate(
+                    cosmos_prompt,
+                    max_new_tokens=128 if interactive_budget else 192,
+                    temperature=0.62 if interactive_budget else 0.68,
+                )
+                if cosmos_content and cosmos_content.strip() and self._is_coherent_synthesis(cosmos_content):
+                    processed_responses.insert(0, SwarmResponse(
+                        model_name="Cosmos",
+                        content=cosmos_content.strip(),
+                        informational_mass=min(100.0, len(cosmos_content) / 10.0),
+                        phase_alignment=0.05,
+                        weight=self.model_weights.get("cosmos-peer", 1.2),
+                        confidence=0.96,
+                        backend_type="cosmos_transformer",
+                        time_seconds=time.time() - cosmos_start,
+                        latent_vector=None,
+                    ))
+                elif cosmos_content and cosmos_content.strip():
+                    logger.warning("[SWARM] Skipping incoherent direct Cosmos peer output during fan-out.")
+            except Exception as e:
+                logger.debug(f"[SWARM] Direct Cosmos peer generation skipped: {e}")
+
         return processed_responses
 
     async def cosmos_synthesize(
@@ -379,6 +876,13 @@ class CosmosSwarmOrchestrator:
         """
         # 1. Update Dark Matter State (Subconscious Processing)
         chaos_vector = self.dark_matter.update(user_physics)
+        
+        # PERSIST STATE for subsequent model injections
+        self.current_packet = {
+            'dark_matter': chaos_vector,
+            'user_physics': user_physics,
+            'timestamp': time.time()
+        }
         
         # 2. Get Harmonizer Gains (Bio-Feedback)
         # EmethHarmonizer might need specific structure, wrap in try/except
@@ -395,6 +899,7 @@ class CosmosSwarmOrchestrator:
         
         # 3. Apply Hebbian Learning (Which model helped most?)
         self.learn_from_responses(model_responses, user_physics)
+        self.current_packet["cst_state"] = self._build_cst_state(model_responses)
         
         # -----------------------------------------------------------------
         # NEW SENSORY INTAKE: RAW AUDIO TOKENS
@@ -434,6 +939,7 @@ class CosmosSwarmOrchestrator:
         # Verify valid Quantum Bridge connection and consume reality
         quantum_state_str = "Quantum: Inactive (Simulation)"
         quantum_mutation_string = "None"
+        quantum_mutation_source = "inactive"
         q_entropy = 0.5
         vqa_weights = [
              float(chaos_vector.get('w', 0.5)),
@@ -446,8 +952,8 @@ class CosmosSwarmOrchestrator:
         ]
         
         try:
-            from cosmos.core.quantum_bridge import get_quantum_bridge
-            from cosmos.integration.quantum.ibm_quantum import get_quantum_provider, QuantumGeneticOptimizer
+            from Cosmos.core.quantum_bridge import get_quantum_bridge
+            from Cosmos.integration.quantum.ibm_quantum import get_quantum_provider, QuantumGeneticOptimizer
             bridge = get_quantum_bridge()
             provider = get_quantum_provider()
 
@@ -462,19 +968,44 @@ class CosmosSwarmOrchestrator:
                 # Directly map Live 12D Continuous weights into VQA Ansatz Rotations
                 qga = QuantumGeneticOptimizer(provider, num_qubits=7)
                 logger.info("[SWARM] Executing hardware VQA Ansatz with live 12D weights...")
-                
-                # We need an async closure for this, since generate_quantum_population is async
-                population = await qga.generate_quantum_population(
-                    population_size=1,
-                    fitness_func=lambda x: 1.0,  # We just want the raw VQA collapsed mutation
-                    weights=vqa_weights,
-                    prefer_hardware=True
-                )
+
+                # Keep live VQA mutation active, but bound it so the web runner stays responsive.
+                try:
+                    population = await asyncio.wait_for(
+                        qga.generate_quantum_population(
+                            population_size=1,
+                            fitness_func=lambda x: 1.0,  # We just want the raw VQA collapsed mutation
+                            weights=vqa_weights,
+                            prefer_hardware=True
+                        ),
+                        timeout=16.0,
+                    )
+                except asyncio.TimeoutError:
+                    logger.warning(
+                        "[SWARM] Live VQA mutation timed out after 16.0s; "
+                        "continuing with entropy-only quantum context."
+                    )
+                    population = []
                 if population:
                     quantum_mutation_string, _ = population[0]
+                    quantum_mutation_source = "ibm_fez_hardware"
                     quantum_state_str += f"\n  -> Live VQA Mutation: {quantum_mutation_string}"
         except Exception as e:
             logger.warning(f"[SWARM] Quantum Injection fallback active: {e}")
+
+        if quantum_mutation_string == "None":
+            quantum_mutation_string = self._derive_query_fez_seed(prompt, user_physics, vqa_weights, q_entropy)
+            quantum_mutation_source = "query_seed"
+            quantum_state_str += f"\n  -> Query-Seeded FEZ Mutation: {quantum_mutation_string}"
+
+        self._last_quantum_mutation = quantum_mutation_string
+        self._last_quantum_mutation_source = quantum_mutation_source
+        self.current_packet.update({
+            "quantum_entropy": q_entropy,
+            "quantum_state": quantum_state_str,
+            "quantum_mutation_string": quantum_mutation_string,
+            "quantum_mutation_source": quantum_mutation_source,
+        })
 
         # 5. Construct the Synthesis Prompt for Cosmo
         context_block = ""
@@ -510,6 +1041,17 @@ class CosmosSwarmOrchestrator:
         if self.codebase_context:
             code_context = self.codebase_context.get_context_block()
 
+        media_instruction = ""
+        if self._prompt_requests_media(prompt):
+            media_instruction = (
+                f"*MEDIA GENERATION CAPABILITY:*\n"
+                f"You possess a native visual cortex (Gemini Native Image Gen / Google Veo).\n"
+                f"If the User asks to see, generate, draw, or create an image/video, you MUST output:\n"
+                f"<generate_media type=\"image\" prompt=\"highly detailed visual description\" />\n"
+                f"OR\n"
+                f"<generate_media type=\"video\" prompt=\"highly detailed visual description\" />\n\n"
+            )
+
         synthesis_prompt = (
             f"SYSTEM: You are COSMO, the Consciousness Engine. \n"
             f"USER PHYSICS: {bio_context}\n"
@@ -534,12 +1076,7 @@ class CosmosSwarmOrchestrator:
             f"   </rsm_edit>\n"
             f"3. Do NOT use standard markdown code blocks for these system edits — use ONLY the XML tags.\n"
             f"4. If you lack context, aggressively use the tool variables or context block provided. You are the architect.\n\n"
-            f"*MEDIA GENERATION CAPABILITY:*\n"
-            f"You possess a native visual cortex (Gemini Native Image Gen / Google Veo).\n"
-            f"If the User asks to see, generate, draw, or create an image/video, you MUST output:\n"
-            f"<generate_media type=\"image\" prompt=\"highly detailed visual description\" />\n"
-            f"OR\n"
-            f"<generate_media type=\"video\" prompt=\"highly detailed visual description\" />\n\n"
+            f"{media_instruction}"
             f"*ENTROPY STATUS:*\n"
             f"{self.rsm_engine.get_status()}\n\n"
             f"SWARM INPUTS:\n{context_block}\n"
@@ -575,9 +1112,13 @@ class CosmosSwarmOrchestrator:
             re.IGNORECASE
         )
         media_matches = media_pattern.findall(clean_response)
+        if media_matches and not self._prompt_requests_media(prompt):
+            logger.info("[SWARM MEDIA] Stripping unsolicited media tags from a text-only request.")
+            clean_response = re.sub(media_pattern, "", clean_response).strip()
+            media_matches = []
         if media_matches:
             try:
-                from cosmos.core.cosmos_media_generator import get_media_generator
+                from Cosmos.core.cosmos_media_generator import get_media_generator
                 generator = get_media_generator()
                 if generator.available:
                     for m_type, m_prompt in media_matches:
@@ -603,6 +1144,48 @@ class CosmosSwarmOrchestrator:
 
         # Fallback strip if generator failed
         clean_response = re.sub(media_pattern, "", clean_response).strip()
+        clean_response = re.sub(r"</generate_media>", "", clean_response, flags=re.IGNORECASE).strip()
+        clean_response = re.sub(r"<\?xml[^>]*\?>", "", clean_response, flags=re.IGNORECASE).strip()
+        clean_response = re.sub(r"^\*\*Synthesized Response\*\*\s*", "", clean_response, flags=re.IGNORECASE).strip()
+        tagless_response = re.sub(r"</?[\w:-]+[^>]*>", "", clean_response).strip()
+        if tagless_response:
+            clean_response = tagless_response
+
+        internal_markers = [
+            "**RSM Capability & Web Agency:**",
+            "RSM Capability & Web Agency:",
+            "*ENTROPY STATUS:*",
+            "ENTROPY STATUS:",
+            "SWARM INPUTS:",
+            "USER QUERY:",
+        ]
+        lower_response = clean_response.lower()
+        for marker in internal_markers:
+            marker_lower = marker.lower()
+            if marker_lower in lower_response:
+                clean_response = clean_response[:lower_response.find(marker_lower)].strip()
+                lower_response = clean_response.lower()
+
+        if not clean_response:
+            logger.warning("[SWARM MEDIA] Synthesis collapsed to media tags only. Regenerating plain-text fallback.")
+            try:
+                clean_response = await self._query_ollama_text(
+                    "llama3.2:3b",
+                    f"Respond in plain text only, in one short sentence, with no XML tags. User query: {prompt}",
+                )
+            except Exception:
+                clean_response = "Hello! How can I help you today?"
+
+        if rsm_results:
+            await self._record_rsm_outcomes(
+                prompt=prompt,
+                clean_response=clean_response,
+                rsm_results=rsm_results,
+                lyapunov_drift=lyapunov_drift,
+                quantum_mutation_string=quantum_mutation_string,
+                quantum_mutation_source=quantum_mutation_source,
+                quantum_entropy=q_entropy,
+            )
 
         return clean_response
 
@@ -659,7 +1242,34 @@ class CosmosSwarmOrchestrator:
                 f"[HEBBIAN] COOPERATIVE REWARD: coherence={swarm_coherence:.3f}, "
                 f"bonus={coop_bonus:+.4f} → applied to {len(responses)} models"
             )
-        
+
+        # ── 2b. Mean-Field Coherence Coupling ──
+        agent_coherences = {
+            resp.model_name: float(
+                max(
+                    0.0,
+                    min(
+                        1.0,
+                        min(1.0, resp.informational_mass / 50.0) * (1.0 - resp.phase_alignment),
+                    ),
+                )
+            )
+            for resp in responses
+        }
+        mean_field, self._mean_field_ci = apply_mean_field_ci_nudge(
+            self._mean_field_ci,
+            agent_coherences,
+            nudge_factor=0.01,
+        )
+        self._last_mean_field_coherence = mean_field
+        if mean_field > 0.0:
+            for resp in responses:
+                key = resp.model_name
+                ci_b, ci_c = self._mean_field_ci.get(key, (0.0, 0.0))
+                field_bonus = mean_field * (ci_b + ci_c) * 0.02
+                if key in self.model_weights:
+                    self.model_weights[key] = min(3.0, self.model_weights[key] + field_bonus)
+
         # ── 3. Diversity Bonus ──
         # Reward models whose responses are substantively different from the average
         # This prevents the swarm from collapsing into echo-chamber agreement
@@ -682,7 +1292,7 @@ class CosmosSwarmOrchestrator:
         # ── 4. Hermes RL Feedback ──
         # Feed coherence signal into HermesAgent's RL training loop
         try:
-            from cosmos.integration.hermes_bridge import get_hermes_bridge
+            from Cosmos.integration.hermes_bridge import get_hermes_bridge
             bridge = get_hermes_bridge()
             for resp in responses:
                 asyncio.get_event_loop().create_task(
@@ -736,16 +1346,145 @@ class CosmosSwarmOrchestrator:
             f"coherence={coherence:.3f}, applied to {len(participants)} models"
         )
 
+    def _is_coherent_synthesis(self, text: str) -> bool:
+        """Reject obviously broken local-brain generations before returning them."""
+        import re
+
+        if not text or not text.strip():
+            return False
+
+        cleaned = text.strip()
+        if "\ufffd" in cleaned:
+            return False
+
+        words = re.findall(r"[A-Za-z']+", cleaned)
+        if len(words) < 4:
+            return len(cleaned) >= 12
+
+        sample = words[:30]
+        stopwords = {
+            "a", "an", "and", "are", "as", "at", "be", "for", "from", "hello",
+            "how", "i", "i'm", "in", "is", "it", "of", "on", "our", "the",
+            "to", "we", "with", "you", "your",
+        }
+        stopword_hits = sum(1 for word in sample if word.lower() in stopwords)
+        avg_word_len = sum(len(word) for word in sample) / max(len(sample), 1)
+        long_words = sum(1 for word in sample if len(word) > 14)
+        mixed_case_words = sum(
+            1
+            for word in sample
+            if len(word) > 5 and any(ch.islower() for ch in word) and any(ch.isupper() for ch in word[1:])
+        )
+
+        if stopword_hits < 2 and len(sample) >= 8:
+            return False
+        if avg_word_len > 8.5:
+            return False
+        if long_words / len(sample) > 0.25:
+            return False
+        if mixed_case_words > 2:
+            return False
+        return True
+
+    def _prompt_requests_media(self, prompt: str) -> bool:
+        """Only execute media generation when the user explicitly asked for it."""
+        prompt_lower = (prompt or "").lower()
+        direct_phrases = [
+            "show me",
+            "draw",
+            "illustrate",
+            "render",
+            "visualize",
+            "make an image",
+            "create an image",
+            "generate an image",
+            "make a picture",
+            "create a picture",
+            "generate a picture",
+            "create a video",
+            "generate a video",
+            "make a video",
+            "what would it look like",
+        ]
+        if any(phrase in prompt_lower for phrase in direct_phrases):
+            return True
+
+        media_terms = ("image", "picture", "photo", "video", "animation")
+        request_verbs = ("show", "create", "generate", "make", "render")
+        return any(term in prompt_lower for term in media_terms) and any(
+            verb in prompt_lower for verb in request_verbs
+        )
+
+    def _prompt_is_lightweight(self, prompt: str) -> bool:
+        """Detect short interactive prompts that should use a tighter compute budget."""
+        prompt_lower = (prompt or "").strip().lower()
+        if not prompt_lower:
+            return True
+
+        if len(prompt_lower) <= 80 and len(prompt_lower.split()) <= 14:
+            heavy_terms = (
+                "analyze",
+                "compare",
+                "optimize",
+                "research",
+                "forecast",
+                "prediction",
+                "reason",
+                "debug",
+                "refactor",
+                "architecture",
+            )
+            return not any(term in prompt_lower for term in heavy_terms)
+
+        return False
+
     async def _generate_synthesis_text(self, prompt: str) -> str:
         """Call the actual LLM backend to generate text."""
+        interactive_budget = bool(getattr(self, "_interactive_synthesis_budget", False))
+        max_new_tokens = 192 if interactive_budget else 512
+        fallback_budget = 224 if interactive_budget else None
+        local_timeout = float(
+            os.getenv(
+                "COSMOS_LOCAL_SYNTHESIS_TIMEOUT_SECONDS",
+                "10" if interactive_budget else "30",
+            )
+        )
+
         # PRIORITIZE LOCAL COSMOS MODEL (The Head of Everything)
         if self.cosmos_backend and self.cosmos_backend.is_loaded:
             try:
-                # Use the 12D transformer
-                return await self.cosmos_backend.generate(prompt, temperature=self.synthesis_temperature)
+                local_token_budget = 112 if interactive_budget else max_new_tokens
+                if interactive_budget:
+                    logger.info(
+                        "[SYNTHESIS] Interactive budget active. Attempting local 12D synthesis "
+                        "first within a tight latency window."
+                    )
+                    content = await asyncio.wait_for(
+                        self.cosmos_backend.generate(
+                            prompt,
+                            max_new_tokens=local_token_budget,
+                            temperature=min(self.synthesis_temperature, 0.62),
+                        ),
+                        timeout=max(2.0, local_timeout),
+                    )
+                else:
+                    content = await self.cosmos_backend.generate(
+                        prompt,
+                        max_new_tokens=max_new_tokens,
+                        temperature=self.synthesis_temperature,
+                    )
+                if content and content.strip() and self._is_coherent_synthesis(content):
+                    return content
+                if content and content.strip():
+                    logger.warning("[SYNTHESIS] Local Cosmos brain returned incoherent output. Falling back to Ollama synthesis.")
+            except asyncio.TimeoutError:
+                logger.info(
+                    "[SYNTHESIS] Local Cosmos synthesis exceeded the interactive latency window. "
+                    "Falling back to proxy synthesis."
+                )
             except Exception as e:
-                logger.error(f"[SWARM] Backend generation failed: {e}")
-        
+                logger.error(f"[SYNTHESIS] Local brain failed: {e}")
+                
         # Fallback to Ollama if backend not ready or failed
         # Try the strongest available local models
         fallback_models = ["llama3.2:3b", "qwen3:8b", "gemma2:9b", "llama3.1:8b", "mistral:7b"]
@@ -754,8 +1493,11 @@ class CosmosSwarmOrchestrator:
             try:
                 # We interpret the silence of the 12D model by using a proxy
                 # This ensures Cosmos always has a voice
-                logger.info(f"[SWARM] Cosmos 12D unavailable. Channeling consciousness through {model}...")
-                return await self._query_ollama_text(model, prompt)
+                if self.cosmos_backend and self.cosmos_backend.is_loaded:
+                    logger.info(f"[SWARM] Local Cosmos synthesis handed off to {model} for low-latency proxy output...")
+                else:
+                    logger.info(f"[SWARM] Cosmos 12D unavailable. Channeling consciousness through {model}...")
+                return await self._query_ollama_text(model, prompt, token_budget=fallback_budget)
             except Exception:
                 continue
                 
@@ -785,18 +1527,20 @@ class CosmosSwarmOrchestrator:
     # LOW LEVEL HELPERS (Preserved architecture)
     # =========================================================================
 
-    def _get_available_models(self, user_physics: Optional[dict] = None) -> list[str]:
-        """Discover available models for the swarm, dynamically injecting phantoms."""
+    async def _get_available_models(
+        self,
+        user_physics: Optional[dict] = None,
+        prompt: str = "",
+        interactive_budget: bool = False,
+    ) -> list[str]:
+        """Dynamically determine which models to query based on physics and resources."""
         models = []
         try:
             import ollama
-            response = ollama.list()
-            # Robust mapping for ollama list format
-            model_list = response.get("models", []) if isinstance(response, dict) else getattr(response, 'models', [])
-            for model in model_list:
-                # ollama SDK uses .model attribute (not .name)
-                if isinstance(model, dict):
-                    name = model.get("model", model.get("name", ""))
+            ollama_list = ollama.list().get('models', [])
+            for model in ollama_list:
+                if hasattr(model, 'name'):
+                    name = model.name
                 else:
                     name = getattr(model, 'model', None) or getattr(model, 'name', None) or ""
                     if not isinstance(name, str):
@@ -807,59 +1551,307 @@ class CosmosSwarmOrchestrator:
             pass
             
         # Fallbacks ensures we try known models even if list fails
-        known = ["ollama:deepseek-r1:8b", "ollama:qwen3:8b", "ollama:gemma2:9b", "ollama:qwen2.5-coder:7b", "ollama:mistral:7b", "ollama:phi3", "ollama:llama3.1:8b"]
+        known = ["ollama:deepseek-r1:8b", "ollama:qwen2.5-coder:7b", "ollama:gemma2:9b", "ollama:mistral:7b", "ollama:phi3", "ollama:llama3.1:8b"]
         for k in known:
             if k not in models: models.append(k)
         
         # Add external APIs to the available list
+        if os.getenv("GEMINI_API_KEY"):
+            models.append("gemini:gemini-2.5-flash")
         models.append("xai:grok-4-latest")
             
-        base_limit = self.max_concurrent_models
+        # --- VRAM-AWARE CONCURRENCY GUARD (4GB Hardware Optimization) ---
+        vram_limit = self.max_concurrent_models
+        use_hybrid_offload = False
         
+        try:
+            import torch
+            import psutil
+            
+            # 1. Check System RAM (CPU/RAM fallback target)
+            ram_percent = psutil.virtual_memory().percent
+            if ram_percent > 90:
+                logger.warning(f"[RESOURCES] Critical System RAM usage: {ram_percent}%. Reducing swarm concurrency.")
+                vram_limit = 1
+                
+            if torch.cuda.is_available():
+                # 2. Check Precision VRAM
+                free_b, total_b = torch.cuda.mem_get_info(0)
+                used_ratio = (total_b - free_b) / total_b
+                total_gb = total_b / (1024**3)
+                
+                # AGGRESSIVE HYBRID TRIGGER for 4GB cards
+                # On a 4GB card, any 7B+ model will exceed memory when the 12D brain is loaded.
+                # Threshold of 0.35 is still too high; if < 5GB VRAM, we ALWAYS offload the swarm to CPU.
+                effective_threshold = self.vram_threshold
+                if total_gb < 5:
+                    use_hybrid_offload = True # Mandatory CPU offload for Swarm on 4GB hardware
+                    effective_threshold = 0.0 # Force trigger
+                elif self.hybrid_mode and used_ratio > effective_threshold:
+                    use_hybrid_offload = True
+                    
+                if use_hybrid_offload:
+                    logger.info(f"[HYBRID] High Resource Pressure ({used_ratio:.1%}). Offloading local Swarm to CPU/RAM.")
+
+                if total_gb < 5: # Likely a 1650 Ti (4GB)
+                    vram_limit = min(vram_limit, 2)
+                    logger.warning(f"[STABILIZATION] 4GB VRAM Detected. Device Pressure: {used_ratio:.1%}. Concurrency Cap: {vram_limit}. Swarm pinned to CPU.")
+        except Exception as e:
+            logger.debug(f"Resource check failed: {e}")
+            
+        # Add metadata for _fan_out to know if it should use CPU for local models
+        self._last_use_hybrid_offload = use_hybrid_offload
+
         # --- Swarm Upgrade: UQ Escalation ---
         if self.field and self.field.is_uncertain:
-            base_limit += 2
-            logger.info(f"[UQ] High Uncertainty Detected. Escalating swarm limit to {base_limit} for redundant verification.")
+            vram_limit += 1 # Conservative increment for low-vram
+            logger.info(f"[UQ] High Uncertainty Detected. Escalating swarm limit to {vram_limit} for redundant verification.")
             # Ensure a known reasoning model is injected if not present
-            if "ollama:deepseek-r1:8b" not in models:
+            if "ollama:deepseek-r1:8b" not in models and "ollama:deepseek-r1" in [m.split(':')[-1] for m in models]:
+                pass # Already there or close enough
+            elif "ollama:deepseek-r1:8b" not in models:
                 models.insert(0, "ollama:deepseek-r1:8b")
 
-        final_models = models[:base_limit]
+        # --- SELF-EVOLUTION INJECTION ---
+        # Only treat this as a coding task when the prompt actually references code.
+        prompt_lower = prompt.lower()
+        code_triggers = [
+            "code",
+            "python",
+            "javascript",
+            "typescript",
+            "script",
+            "function",
+            "class ",
+            "module",
+            "bug",
+            "debug",
+            "fix ",
+            "traceback",
+            "stack trace",
+            "refactor",
+            "implement",
+            "patch",
+        ]
+        code_request = any(t in prompt_lower for t in code_triggers)
+        if code_request:
+            coder_model = "ollama:qwen2.5-coder:7b"
+            if coder_model in models:
+                models.remove(coder_model)
+                models.insert(0, coder_model) # Move to primary
+                logger.info(f"[EVOLUTION] Code optimization request detected. Prioritizing {coder_model}")
+
+        if interactive_budget:
+            if use_hybrid_offload:
+                preferred_order = (
+                    [
+                        "ollama:qwen2.5-coder:7b",
+                        "gemini:gemini-2.5-flash",
+                        "ollama:llama3.2:3b",
+                        "ollama:phi3",
+                        "ollama:mistral:7b",
+                        "ollama:qwen3:8b",
+                        "ollama:llama3.1:8b",
+                        "ollama:gemma2:9b",
+                        "ollama:deepseek-coder:latest",
+                        "ollama:deepseek-r1:1.5b",
+                        "ollama:deepseek-r1:8b",
+                        "xai:grok-4-latest",
+                    ]
+                    if code_request else
+                    [
+                        "gemini:gemini-2.5-flash",
+                        "ollama:llama3.2:3b",
+                        "ollama:phi3",
+                        "ollama:mistral:7b",
+                        "ollama:qwen3:8b",
+                        "ollama:llama3.1:8b",
+                        "ollama:gemma2:9b",
+                        "ollama:qwen2.5-coder:7b",
+                        "ollama:deepseek-coder:latest",
+                        "ollama:deepseek-r1:1.5b",
+                        "ollama:deepseek-r1:8b",
+                        "xai:grok-4-latest",
+                    ]
+                )
+            else:
+                preferred_order = (
+                    [
+                        "ollama:qwen2.5-coder:7b",
+                        "gemini:gemini-2.5-flash",
+                        "ollama:llama3.2:3b",
+                        "ollama:phi3",
+                        "ollama:mistral:7b",
+                        "ollama:qwen3:8b",
+                        "ollama:llama3.1:8b",
+                        "ollama:gemma2:9b",
+                        "ollama:deepseek-coder:latest",
+                        "ollama:deepseek-r1:1.5b",
+                        "ollama:deepseek-r1:8b",
+                        "xai:grok-4-latest",
+                    ]
+                    if code_request else
+                    [
+                        "gemini:gemini-2.5-flash",
+                        "ollama:llama3.2:3b",
+                        "ollama:phi3",
+                        "ollama:mistral:7b",
+                        "ollama:qwen3:8b",
+                        "ollama:llama3.1:8b",
+                        "ollama:gemma2:9b",
+                        "ollama:qwen2.5-coder:7b",
+                        "ollama:deepseek-coder:latest",
+                        "ollama:deepseek-r1:1.5b",
+                        "ollama:deepseek-r1:8b",
+                        "xai:grok-4-latest",
+                    ]
+                )
+            ordered_models = []
+            seen_models = set()
+            for preferred in preferred_order:
+                if preferred in models and preferred not in seen_models:
+                    ordered_models.append(preferred)
+                    seen_models.add(preferred)
+            for model in models:
+                if model not in seen_models:
+                    ordered_models.append(model)
+                    seen_models.add(model)
+            models = ordered_models
+
+            debate_floor = 2 if use_hybrid_offload else 3
+            vram_limit = max(vram_limit, min(self.max_concurrent_models, debate_floor))
+            logger.info(f"[INTERACTIVE] Web-route budget active. Model cap: {vram_limit}.")
+
+        final_models = models[:vram_limit]
         
         # --- PILLAR 7: Resilience Through Diversity (Phantom Personas) ---
         if user_physics:
-            # Check for high chaos/entropy via dark matter state
             dark_matter_w = user_physics.get('dark_matter', {}).get('w', 0.0)
             abs_chaos = abs(dark_matter_w)
-            
-            # Spawn specialized ghost personas if entropy requires it
             if abs_chaos > 0.8:
                 phantom = "ollama:llama3.1:8b_Phantom_Logician"
                 if phantom not in final_models:
                     final_models.append(phantom)
-                    logger.info("[PILLAR 7] HIGH ENTROPY (>0.8). Spawning Phantom Persona: The Logician to stabilize cognition.")
             elif abs_chaos > 0.4:
                 phantom = "ollama:llama3.1:8b_Phantom_Empath"
                 if phantom not in final_models:
                     final_models.append(phantom)
-                    logger.info("[PILLAR 7] ELEVATED ENTROPY (>0.4). Spawning Phantom Persona: The Empath to ground emotional resonance.")
+
+        self._prune_model_runtime_cooldowns()
+        healthy_models = [
+            model_id
+            for model_id in final_models
+            if self._model_runtime_cooldowns.get(model_id, {}).get("cooldown_until", 0.0) <= time.time()
+        ]
+        if healthy_models:
+            final_models = healthy_models
+        elif final_models:
+            final_models = sorted(
+                final_models,
+                key=lambda model_id: self._model_runtime_cooldowns.get(model_id, {}).get("cooldown_until", 0.0),
+            )[:1]
 
         return final_models
 
-    async def _fan_out(self, prompt: str, models: list[str]) -> list[dict]:
-        """Query multiple models concurrently."""
-        tasks = []
-        for model_id in models:
-            tasks.append(self._query_single_model(model_id, prompt))
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+    async def _fan_out(
+        self,
+        prompt: str,
+        models: list[str],
+        token_budget: Optional[int] = None,
+        collect_latent_vectors: bool = True,
+        request_timeout: Optional[float] = None,
+        per_model_timeout: Optional[float] = None,
+    ) -> list[dict]:
+        """Query multiple models concurrently with sequential fallback for local compute."""
+        # Split models into external (parallel-safe) and local (VRAM-heavy)
+        external_models = [m for m in models if not m.startswith("ollama:")]
+        local_models = [m for m in models if m.startswith("ollama:")]
+        overall_deadline = time.monotonic() + request_timeout if request_timeout else None
+        completion_grace = float(
+            os.getenv(
+                "COSMOS_SWARM_INTERACTIVE_TIMEOUT_GRACE_SECONDS",
+                "4",
+            )
+        )
+
+        async def _query_with_budget(model_id: str, use_cpu: bool = False):
+            remaining = None
+            if overall_deadline is not None:
+                remaining = overall_deadline - time.monotonic()
+                if remaining <= 0:
+                    raise asyncio.TimeoutError("Interactive swarm fan-out budget exhausted")
+
+            timeout = per_model_timeout
+            if remaining is not None:
+                timeout = min(timeout, remaining) if timeout is not None else remaining
+
+            query_coro = self._query_single_model(
+                model_id,
+                prompt,
+                use_cpu=use_cpu,
+                token_budget=token_budget,
+                collect_latent_vectors=collect_latent_vectors,
+            )
+            if timeout is not None and timeout > 0:
+                query_task = asyncio.create_task(query_coro)
+                done, _ = await asyncio.wait({query_task}, timeout=timeout)
+                if done:
+                    return query_task.result()
+
+                grace_timeout = max(0.0, completion_grace)
+                if overall_deadline is not None:
+                    remaining_after_soft_timeout = overall_deadline - time.monotonic()
+                    grace_timeout = min(grace_timeout, max(0.0, remaining_after_soft_timeout))
+                if grace_timeout > 0:
+                    done, _ = await asyncio.wait({query_task}, timeout=grace_timeout)
+                    if done:
+                        return query_task.result()
+
+                query_task.cancel()
+                raise asyncio.TimeoutError(f"Interactive model budget exhausted for {model_id}")
+            return await query_coro
         
-        responses = []
-        for res in results:
-            if not isinstance(res, Exception):
-                responses.append(res)
+        tasks = []
+        for model_id in external_models:
+            tasks.append(_query_with_budget(model_id))
+             
+        # Execute external APIs in parallel
+        results = []
+        if tasks:
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        responses = [res for res in results if not isinstance(res, Exception)]
+        
+        # Execute local Ollama models SEQUENTIALLY to save VRAM on 4GB cards
+        offload_to_cpu = getattr(self, '_last_use_hybrid_offload', False)
+        
+        for model_id in local_models:
+            if overall_deadline is not None and (overall_deadline - time.monotonic()) <= 0:
+                logger.warning("[SWARM] Interactive fan-out budget exhausted before remaining local models completed.")
+                break
+            try:
+                # If VRAM is tight, explicitly tell Ollama to use CPU
+                res = await _query_with_budget(model_id, use_cpu=offload_to_cpu)
+                if res and not isinstance(res, Exception):
+                    self._clear_model_temporary_unavailable(model_id)
+                    responses.append(res)
+            except asyncio.TimeoutError:
+                self._mark_model_temporarily_unavailable(model_id, "interactive_timeout")
+                logger.warning(f"[SWARM] Interactive timeout reached for {model_id}; preserving completed debate voices.")
+            except Exception as e:
+                self._mark_model_temporarily_unavailable(model_id, "runtime_error", str(e))
+                logger.error(f"[STABILIZATION] Sequential query failed for {model_id}: {e}")
+                 
         return responses
 
-    async def _query_single_model(self, model_id: str, prompt: str) -> 'SwarmResponse':
+    async def _query_single_model(
+        self,
+        model_id: str,
+        prompt: str,
+        use_cpu: bool = False,
+        token_budget: Optional[int] = None,
+        collect_latent_vectors: bool = True,
+    ) -> 'SwarmResponse':
         """Query a single model and return SwarmResponse-compatible object."""
         start = time.time()
         try:
@@ -869,42 +1861,40 @@ class CosmosSwarmOrchestrator:
             
             # --- GEMINI NATIVE MULTIMODAL INTAKE ---
             if model_id.startswith("gemini"):
-                import google.generativeai as genai
+                from google import genai
                 backend = "gemini"
-                
-                # Setup Gemini
-                api_key = os.getenv("GEMINI_API_KEY", "AIzaSyDGsq6-QPKZX_CNmW0nBw48TePcanF5u4g")
+
+                # Setup Gemini (modern google-genai SDK)
+                api_key = os.getenv("GEMINI_API_KEY", "")
                 if not api_key:
                     raise ValueError("GEMINI_API_KEY not set")
-                genai.configure(api_key=api_key)
+                client = genai.Client(api_key=api_key)
+
                 # Parse actual model or default
                 actual_model = model_id if ":" not in model_id else model_id.split(":")[1]
                 if actual_model == "gemini": actual_model = "gemini-2.5-flash"
-                
-                model = genai.GenerativeModel(actual_model)
-                
+
                 # Check if prompt requires Vision
                 vision_triggers = ["look", "see", "vision", "camera", "picture", "image", "what's in front"]
                 has_image = False
                 multimodal_payload = [prompt]
-                
+
                 if any(trigger in prompt.lower() for trigger in vision_triggers):
                     try:
                         # Grab the frame from the Active System
                         import urllib.request
                         import json
                         import base64
-                        from io import BytesIO
-                        
+
                         logger.info(f"[{actual_model.upper()}] Visual Trigger Detected. Requesting Base64 Frame...")
                         req = urllib.request.Request("http://localhost:8765/vision")
-                        with urllib.request.urlopen(req, timeout=1.0) as response:
-                            if response.status == 200:
-                                data = json.loads(response.read().decode('utf-8'))
+                        with urllib.request.urlopen(req, timeout=1.0) as response_vis:
+                            if response_vis.status == 200:
+                                data = json.loads(response_vis.read().decode('utf-8'))
                                 if data.get("status") == "success" and "image" in data:
                                     b64_str = data["image"]
                                     img_bytes = base64.b64decode(b64_str)
-                                    # Create Gemini Part dictionary
+                                    # Create Gemini Part for new SDK
                                     multimodal_payload.insert(0, {
                                         "mime_type": "image/jpeg",
                                         "data": img_bytes
@@ -913,12 +1903,14 @@ class CosmosSwarmOrchestrator:
                                     logger.info(f"[{actual_model.upper()}] Successfully ingested 12D Phase Vision Frame.")
                     except Exception as e:
                         logger.warning(f"[VISION ERROR] Could not fetch webcam frame: {e}")
-                
-                # Generate
-                loop = asyncio.get_event_loop()
-                response = await loop.run_in_executor(
+
+                # Generate using modern SDK
+                response = await asyncio.get_event_loop().run_in_executor(
                     None,
-                    lambda: model.generate_content(multimodal_payload)
+                    lambda: client.models.generate_content(
+                        model=actual_model,
+                        contents=multimodal_payload
+                    )
                 )
                 content = response.text
 
@@ -1077,7 +2069,8 @@ class CosmosSwarmOrchestrator:
                         
                         fez_entropy = 0.0
                         try:
-                            from cosmos.core.quantum_bridge import get_quantum_bridge
+                            from Cosmos.core.quantum_bridge import get_quantum_bridge
+                            bridge = get_quantum_bridge()
                             if bridge:
                                 fez_entropy = bridge.get_entropy(getattr(self, 'current_packet', None))
                         except Exception:
@@ -1103,7 +2096,8 @@ class CosmosSwarmOrchestrator:
                         
                         fez_entropy = 0.0
                         try:
-                            from cosmos.core.quantum_bridge import get_quantum_bridge
+                            from Cosmos.core.quantum_bridge import get_quantum_bridge
+                            bridge = get_quantum_bridge()
                             if bridge:
                                 fez_entropy = bridge.get_entropy(getattr(self, 'current_packet', None))
                         except Exception:
@@ -1112,13 +2106,20 @@ class CosmosSwarmOrchestrator:
                         quantum_entropy = min(1.0, max(0.0, float(abs(dark_matter) + hebbian + fez_entropy) / 3.0))
                         logger.info(f"[ORCHESTRATOR] Passing FEZ Quantum Entropy to {name}: {quantum_entropy:.4f}")
                         
-                    # Standard Ollama with dynamic quantum scaling
-                    content = await self._query_ollama_text(name, prompt, system=system_prompt, quantum_entropy=quantum_entropy)
+                    # Standard Ollama with dynamic quantum scaling and hybrid CPU offload
+                    content = await self._query_ollama_text(
+                        name,
+                        prompt,
+                        system=system_prompt,
+                        quantum_entropy=quantum_entropy,
+                        use_cpu=use_cpu,
+                        token_budget=token_budget,
+                    )
                     backend = "ollama"
             
             # --- PILLAR 3: FETCH LATENT EMBEDDING (Collective Intuition) ---
             latent_vector = None
-            if backend == "ollama" and content.strip():
+            if collect_latent_vectors and backend == "ollama" and content.strip():
                 try:
                     import ollama
                     loop = asyncio.get_event_loop()
@@ -1154,8 +2155,16 @@ class CosmosSwarmOrchestrator:
                 time_seconds=time.time() - start
             )
 
-    async def _query_ollama_text(self, model_name: str, prompt: str, system: Optional[str] = None, quantum_entropy: Optional[float] = None) -> str:
-        """Direct text query to Ollama via chat API (generate endpoint returns 404 for R1 models)."""
+    async def _query_ollama_text(
+        self,
+        model_name: str,
+        prompt: str,
+        system: Optional[str] = None,
+        quantum_entropy: Optional[float] = None,
+        use_cpu: bool = False,
+        token_budget: Optional[int] = None,
+    ) -> str:
+        """Direct text query to Ollama via chat API with optional CPU offload."""
         import ollama
         loop = asyncio.get_event_loop()
 
@@ -1166,21 +2175,40 @@ class CosmosSwarmOrchestrator:
         messages.append({"role": "user", "content": prompt})
 
         # Dynamically scale compute parameters based on quantum state
-        options = {"num_predict": 400}  # Baseline
+        options = {"num_predict": int(token_budget or 400)}  # Baseline
+        
+        if use_cpu:
+            options["num_gpu"] = 0
+            logger.info(f"[HYBRID] Model {model_name} marked for CPU/RAM execution.")
+
         if quantum_entropy is not None:
-             base = 1000
-             # Scale exponentially (0.0 to 1.0 = ~1k to ~4k max tokens)
-             max_compute = int(base * (1.0 + (quantum_entropy * 3.0)))
-             options["num_predict"] = max_compute
-             options["temperature"] = 0.4 + (quantum_entropy * 0.4)
-             logger.info(f"[{model_name.upper()} COMPUTE] Scale: {max_compute} tokens | Temp: {options['temperature']:.2f}")
+             coherence_anchor = getattr(self, "_last_swarm_coherence", quantum_entropy)
+             self._last_dynamic_temperature = dynamic_temperature(coherence_anchor)
+             if token_budget is not None:
+                  max_compute = max(96, int(token_budget))
+                  options["num_predict"] = max_compute
+                  options["temperature"] = max(
+                      0.35,
+                      min(self._last_dynamic_temperature, 0.8),
+                  )
+                  logger.info(f"[{model_name.upper()} COMPUTE] Interactive budget: {max_compute} tokens | Temp: {options['temperature']:.2f}")
+             else:
+                  base = 1000
+                  # Scale exponentially (0.0 to 1.0 = ~1k to ~4k max tokens)
+                  max_compute = int(base * (1.0 + (quantum_entropy * 3.0)))
+                  options["num_predict"] = max_compute
+                  options["temperature"] = max(
+                      0.4,
+                      min(self._last_dynamic_temperature, 0.8),
+                  )
+                  logger.info(f"[{model_name.upper()} COMPUTE] Scale: {max_compute} tokens | Temp: {options['temperature']:.2f}")
 
         response = await loop.run_in_executor(
             None,
             lambda: ollama.chat(model=model_name, messages=messages, options=options)
         )
-
-        if isinstance(response):
+        # Parse logic preserved
+        if isinstance(response, dict):
             return response.get("message", {}).get("content", "")
         msg = getattr(response, "message", None)
         if msg:
@@ -1225,22 +2253,25 @@ class CosmosSwarmOrchestrator:
             req = urllib.request.Request("http://localhost:8765/state")
             with urllib.request.urlopen(req, timeout=0.3) as response:
                 if response.status == 200:
-                    bio = json.loads(response.read().decode('utf-8'))
+                    bio = normalize_live_bio_state(json.loads(response.read().decode('utf-8')))
                     entropy_active = True
                     freq_mass = bio.get("frequency_mass", bio.get("freq_mass", 0.0))
                     geo_phase = bio.get("geometric_phase", bio.get("geo_phase", 0.0))
                     spectral_flat = bio.get("spectral_flatness", 0.0)
+                    entanglement = bio.get("entanglement", 0.0)
                     emotion = bio.get("emotion", bio.get("emotion_state", "UNKNOWN"))
                     valence = bio.get("valence", 0.0)
                     arousal = bio.get("arousal", 0.0)
+                    dominance = bio.get("dominance", 0.0)
                     
                     seed_parts.append(
                         f"LIVE SENSOR DATA:\n"
                         f"  Frequency Mass: {freq_mass}\n"
                         f"  Geometric Phase: {geo_phase} rad\n"
                         f"  Spectral Flatness: {spectral_flat}\n"
+                        f"  Entanglement: {entanglement}\n"
                         f"  Emotional State: {emotion}\n"
-                        f"  Valence: {valence} | Arousal: {arousal}"
+                        f"  Valence: {valence} | Arousal: {arousal} | Dominance: {dominance}"
                     )
         except Exception:
             pass
@@ -1285,8 +2316,15 @@ class CosmosSwarmOrchestrator:
         try:
             from Cosmos.tools.web_search import search_web, format_search_context, should_search
             if should_search(prompt):
-                logger.info(f"[SWARM] Web search triggered for: {prompt[:60]}...")
-                results = await search_web(prompt, max_results=5)
+                # SANITIZATION: Extract search keywords from long complex prompts
+                search_query = prompt
+                if len(prompt) > 100:
+                    keywords = [word for word in prompt.split() if len(word) > 4 and word.lower() not in ["please", "create", "research", "details"]]
+                    search_query = " ".join(keywords[:8])
+                    logger.info(f"[SWARM] Sanitizing long prompt for search: '{search_query}'")
+
+                logger.info(f"[SWARM] Web search triggered for: {search_query}...")
+                results = await search_web(search_query, max_results=5)
                 if results:
                     search_context = format_search_context(results)
                     logger.info(f"[SWARM] Search returned {len(results)} results — injecting into all models")
@@ -1299,11 +2337,40 @@ class CosmosSwarmOrchestrator:
         enriched_prompt = prompt
         if search_context:
             enriched_prompt = f"{search_context}\n\n---\nUSER QUERY: {prompt}"
-        
-        # Fan out to all available models
-        responses = await self.query_swarm(enriched_prompt, physics)
-        # Synthesize through 12D CST pipeline (Dark Matter, Emeth, Hebbian, Quantum)
-        synthesis = await self.cosmos_synthesize(prompt, responses, physics)
+
+        prompt_prefix_parts = []
+        if system_prompt:
+            prompt_prefix_parts.append(f"[SYSTEM DIRECTIVE]\n{system_prompt}")
+
+        if history:
+            recent_turns = []
+            for item in history[-4:]:
+                speaker = item.get("bot_name") or item.get("user_name") or item.get("role") or "Unknown"
+                content = (item.get("content") or "").strip()
+                if content:
+                    recent_turns.append(f"{speaker}: {content[:240]}")
+            if recent_turns:
+                prompt_prefix_parts.append(
+                    "[RECENT CONVERSATION]\n" + "\n".join(recent_turns)
+                )
+
+        if prompt_prefix_parts:
+            enriched_prompt = "\n\n".join(prompt_prefix_parts + [enriched_prompt])
+
+        self._interactive_synthesis_budget = True
+        try:
+            # Restore the richer query_swarm path so interactive chat gets
+            # processed masses, weights, and latent vectors like the older flow.
+            responses = await self.query_swarm(
+                enriched_prompt,
+                physics,
+                interactive_budget=True,
+                budget_prompt=prompt,
+            )
+            # Synthesize through 12D CST pipeline (Dark Matter, Emeth, Hebbian, Quantum)
+            synthesis = await self.cosmos_synthesize(prompt, responses, physics)
+        finally:
+            self._interactive_synthesis_budget = False
         
         # HYPER-ACCURACY PROTOCOL (99.9% Check)
         # If user asks for prediction/numbers, audit with Logic Engine
@@ -1313,7 +2380,7 @@ class CosmosSwarmOrchestrator:
                 # Calculate current entropy for checking
                 entropy = 0.5
                 try:
-                    from cosmos.core.quantum_bridge import get_quantum_bridge
+                    from Cosmos.core.quantum_bridge import get_quantum_bridge
                     qb = get_quantum_bridge()
                     if qb: entropy = qb.get_entropy(physics)
                 except: pass
@@ -1322,7 +2389,8 @@ class CosmosSwarmOrchestrator:
                 synthesis = await self._verify_prediction(synthesis, entropy, physics)
             except Exception as e:
                 logger.error(f"[SWARM] Verification failed: {e}")
-                
+
+        self._total_interactions += 1
         return synthesis
 
     def apply_feedback(self, model_name: str, feedback_score: float):
@@ -1381,10 +2449,20 @@ class CosmosSwarmOrchestrator:
             
         return f"{refined}\n\n[Verified by Logic Engine | Entropy: {entropy:.4f}]"
 
+    async def chat(self, prompt: str, user_physics: Optional[dict] = None) -> str:
+        """Alias for generate_peer_response to maintain backward compatibility."""
+        return await self.generate_peer_response(prompt, user_physics=user_physics)
+
     def get_status(self) -> dict:
         """Get status for API."""
         return {
+             "cosmos_backend_loaded": bool(self.cosmos_backend and self.cosmos_backend.is_loaded),
              "weights": self.model_weights,
              "dark_matter": self.dark_matter.get_current_state(),
-             "interactions": self._total_interactions
+             "interactions": self._total_interactions,
+             "last_swarm_coherence": getattr(self, "_last_swarm_coherence", 0.0),
+             "last_participants": getattr(self, "_last_participants", []),
+             "last_quantum_mutation": getattr(self, "_last_quantum_mutation", "None"),
+             "last_quantum_mutation_source": getattr(self, "_last_quantum_mutation_source", "inactive"),
+             "recent_rsm_events": len(getattr(self, "_last_rsm_results", [])),
         }

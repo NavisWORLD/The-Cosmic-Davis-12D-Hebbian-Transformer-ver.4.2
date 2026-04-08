@@ -55,7 +55,7 @@ class DeliberationResult:
     deliberation_id: str
     prompt: str
     participating_agents: list[str]
-    rounds: dict[str[AgentTurn]]  # round_type -> turns
+    rounds: dict[str, list[AgentTurn]]  # round_type -> turns
     final_response: str
     winning_agent: str
     vote_breakdown: dict[str, float]
@@ -167,7 +167,7 @@ class DeliberationRoom:
 
         logger.info(f"[Deliberation {deliberation_id}] Starting with {len(agents)} agents: {agents}")
 
-        rounds: dict[str[AgentTurn]] = {
+        rounds: dict[str, list[AgentTurn]] = {
             DeliberationRound.PROPOSE.value: [],
             DeliberationRound.CRITIQUE.value: [],
             DeliberationRound.REFINE.value: [],
@@ -414,7 +414,7 @@ Output ONLY your final response. Max 280 characters."""
         self,
         candidates: list[AgentTurn],
         require_consensus: bool = False
-    ) -> Tuple[AgentTurn[str, float], bool]:
+    ) -> Tuple[AgentTurn, dict[str, float], bool]:
         """
         VOTE: Score and select the best response.
 

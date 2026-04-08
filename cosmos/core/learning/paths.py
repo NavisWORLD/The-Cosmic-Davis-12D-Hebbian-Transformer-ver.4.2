@@ -13,7 +13,7 @@ Features:
 import math
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-, Optional
+from typing import Optional
 from loguru import logger
 
 @dataclass

@@ -1,0 +1,222 @@
+{
+  "basis": "v2 learned-calibrator gate plus direct and blind MSL, CRaTER, and Mars FD external validation.",
+  "blind_protocol": {
+    "prediction_script": "D:\\Cosmos\\scripts\\generate_blind_validation_predictions.py",
+    "scoring_script": "D:\\Cosmos\\scripts\\score_blind_validation_predictions.py",
+    "template_sha256": {
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\crater_lro_blind_template.json": "4c482d2438abe6a71aa8deb8c05c927add1bf16a436f714dc9cb6076537ae16b",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\mars_fd_surface_orbit_blind_template.json": "93b7c60491f0a680d616827096f4baad789c5f47a3856f0266016966cae53492",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\msl_rad_blind_template.json": "1729fe488b02f45b8430c3297d61708234c17a29c75ea02fd883461d37e5ec9e"
+    }
+  },
+  "freeze_date": "2026-04-08",
+  "freeze_label": "cst_radiation_validation_v3",
+  "model": {
+    "learned_calibrator": {
+      "alpha": 0.2,
+      "calibration_paths": [
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\change4_lnd_reference.json",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_unseen_reference.json",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_m42_gcr_reference.json"
+      ],
+      "calibration_sha256": {
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_m42_gcr_reference.json": "52cf7c80e66a557e3fb1a3ec811f5b17153c49f3f28a4fe44cf238bf9d2ad465",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_unseen_reference.json": "3b16a15c465a278fccbe09f0c2386b637cd75b970cfef84ed84c39ad95057d1c",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\change4_lnd_reference.json": "77e313d2901c8578eb3be6e223c0771169403043ef29800751c6fade918da798"
+      },
+      "feature_names": [
+        "bias",
+        "legacy_scalar",
+        "legacy_centered",
+        "legacy_squared",
+        "has_ratio",
+        "has_fraction_scale",
+        "has_value",
+        "has_current_forecast",
+        "has_log_transform",
+        "scale_hint_log",
+        "kw_ratio",
+        "kw_dose",
+        "kw_equivalent",
+        "kw_flux",
+        "kw_fluence",
+        "kw_quality",
+        "kw_charged",
+        "kw_neutral",
+        "kw_albedo",
+        "kw_primary",
+        "kw_surface",
+        "kw_cruise",
+        "kw_storm",
+        "kw_shelter",
+        "kw_shield",
+        "kw_peak",
+        "kw_rotation",
+        "kw_cavity",
+        "kw_duration",
+        "kw_reduction",
+        "kw_gcr",
+        "kw_proton",
+        "kw_organ",
+        "kw_tissue",
+        "kw_absorbed",
+        "kw_total",
+        "kw_mission",
+        "kw_flyby",
+        "kw_low",
+        "kw_high",
+        "kw_count",
+        "kw_rate",
+        "kw_current",
+        "kw_forecast"
+      ],
+      "legacy_training_mae": 0.02188709127861746,
+      "legacy_training_rmse": 0.03192815917289068,
+      "training_mae": 0.010577694882032062,
+      "training_record_count": 19,
+      "training_rmse": 0.018472538221116372,
+      "type": "residual_ridge"
+    },
+    "module_path": "D:\\Cosmos\\cosmos\\core\\cst_critical_integration.py"
+  },
+  "reports": {
+    "blind_bundle": {
+      "crater": {
+        "best_mae_baselines": [
+          "learned_calibrator_proxy"
+        ],
+        "best_rmse_baselines": [
+          "learned_calibrator_proxy"
+        ],
+        "label": "crater_v3",
+        "learned_beats_naive_baselines": true,
+        "learned_mae": 0.020491104334474403,
+        "learned_rmse": 0.022031824879407462,
+        "legacy_beats_naive_baselines": true,
+        "legacy_mae": 0.16691855902382216,
+        "legacy_rmse": 0.1790474161281152,
+        "midpoint_mae": 0.1684337105389737,
+        "midpoint_rmse": 0.22301710195105465,
+        "predictions_path": "D:\\Cosmos\\docs\\validation\\blind_predictions_crater_v3.json",
+        "predictions_sha256": "45564dd6286d3bd4cce7c26a55c37cd8d1ccf74b94d87b506ae91663853262fd",
+        "revealed_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\crater_lro_reference.json",
+        "revealed_sha256": "95483a0cb50d17d9822dc6d7c7cf4bd2ff90309a189d913c14ce229dc245be11"
+      },
+      "mars_fd": {
+        "best_mae_baselines": [
+          "legacy_heuristic_proxy"
+        ],
+        "best_rmse_baselines": [
+          "legacy_heuristic_proxy"
+        ],
+        "label": "mars_fd_v3",
+        "learned_beats_naive_baselines": true,
+        "learned_mae": 0.19339411985408106,
+        "learned_rmse": 0.22731436129038787,
+        "legacy_beats_naive_baselines": true,
+        "legacy_mae": 0.19204242496176088,
+        "legacy_rmse": 0.2254834129397106,
+        "midpoint_mae": 0.28503545741031805,
+        "midpoint_rmse": 0.3321570249404621,
+        "predictions_path": "D:\\Cosmos\\docs\\validation\\blind_predictions_mars_fd_v3.json",
+        "predictions_sha256": "8c114d48f1bb0a7ae8d51ba3d7ecfeda5d30b2fbd903f95f6f1f63668ecaf545",
+        "revealed_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\mars_fd_surface_orbit_reference.json",
+        "revealed_sha256": "3cf6dd9ef57384c790af4864c0236bf231fcf35e5e99829957b76cab28789548"
+      },
+      "msl": {
+        "best_mae_baselines": [
+          "learned_calibrator_proxy"
+        ],
+        "best_rmse_baselines": [
+          "learned_calibrator_proxy"
+        ],
+        "label": "msl_v3",
+        "learned_beats_naive_baselines": true,
+        "learned_mae": 0.011207102395483642,
+        "learned_rmse": 0.014807939927634274,
+        "legacy_beats_naive_baselines": false,
+        "legacy_mae": 0.24683581711328761,
+        "legacy_rmse": 0.25869141076297125,
+        "midpoint_mae": 0.10111915044662086,
+        "midpoint_rmse": 0.14127552913213917,
+        "predictions_path": "D:\\Cosmos\\docs\\validation\\blind_predictions_msl_v3.json",
+        "predictions_sha256": "1334b9d42becdcdb490313796736c02fd303ee02a3d7e09057af678fcbe2196a",
+        "revealed_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\msl_rad_reference.json",
+        "revealed_sha256": "13277438f861f68847aced6c06b8a05f9043d1df62b9e85fb4b964b1bfb0d971"
+      }
+    },
+    "external_baskets": {
+      "crater_external": {
+        "best_mae_baselines": [
+          "learned_calibrator_proxy"
+        ],
+        "best_rmse_baselines": [
+          "learned_calibrator_proxy"
+        ],
+        "learned_mae": 0.018755715578805815,
+        "learned_rmse": 0.01990594687655406,
+        "legacy_mae": 0.16691855902382216,
+        "legacy_rmse": 0.1790474161281152,
+        "midpoint_mae": 0.1684337105389737,
+        "midpoint_rmse": 0.22301710195105465
+      },
+      "mars_fd_external": {
+        "best_mae_baselines": [
+          "legacy_heuristic_proxy"
+        ],
+        "best_rmse_baselines": [
+          "legacy_heuristic_proxy"
+        ],
+        "learned_beats_naive_baselines": true,
+        "learned_mae": 0.19415361355374322,
+        "learned_rmse": 0.22825904619238488,
+        "legacy_beats_naive_baselines": true,
+        "legacy_mae": 0.19204242496176088,
+        "legacy_rmse": 0.2254834129397106,
+        "midpoint_mae": 0.28503545741031805,
+        "midpoint_rmse": 0.3321570249404621
+      },
+      "msl_external": {
+        "best_mae_baselines": [
+          "learned_calibrator_proxy"
+        ],
+        "best_rmse_baselines": [
+          "learned_calibrator_proxy"
+        ],
+        "learned_mae": 0.010525463648841762,
+        "learned_rmse": 0.013720556831793565,
+        "legacy_mae": 0.24683581711328761,
+        "legacy_rmse": 0.25869141076297125,
+        "midpoint_mae": 0.10111915044662086,
+        "midpoint_rmse": 0.14127552913213917
+      }
+    },
+    "learned_calibrator_status": "dominant_on_msl_and_crater_mixed_on_mars",
+    "v2_gate_status": "generalized",
+    "v3_gate": {
+      "rule": "Keep the v2 learned-calibrator gate generalized, win MSL and CRaTER on both direct and blind scoring with the learned calibrator, and require the Mars FD external plus blind checks to stay family-led while both structured proxies beat naive baselines.",
+      "status": "validated_model_family"
+    }
+  },
+  "reproducibility": {
+    "commands": [
+      "python scripts/run_final_v3_validation.py --output-dir docs/validation",
+      "python scripts/build_validation_manifest_v3.py --output docs/validation/validation_manifest_v3.json",
+      "python -m pytest tests/galactic_cosmic_rays -q"
+    ],
+    "python_version": "3.12.6"
+  },
+  "status": "validated_model_family",
+  "training_bundle": {
+    "paths": [
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\change4_lnd_reference.json",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_unseen_reference.json",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_m42_gcr_reference.json"
+    ],
+    "sha256": {
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_m42_gcr_reference.json": "52cf7c80e66a557e3fb1a3ec811f5b17153c49f3f28a4fe44cf238bf9d2ad465",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_unseen_reference.json": "3b16a15c465a278fccbe09f0c2386b637cd75b970cfef84ed84c39ad95057d1c",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\change4_lnd_reference.json": "77e313d2901c8578eb3be6e223c0771169403043ef29800751c6fade918da798"
+    }
+  }
+}

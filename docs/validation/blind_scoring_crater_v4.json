@@ -1,0 +1,133 @@
+{
+  "baselines": {
+    "learned_calibrator_proxy": {
+      "mae": 0.020491104334474403,
+      "max_abs_error": 0.032266374763513905,
+      "predictions": [
+        0.8627579846694828,
+        0.535296677793817,
+        0.461831482933663,
+        0.7536042157109275
+      ],
+      "rmse": 0.022031824879407462
+    },
+    "learned_phase_only_ablation": {
+      "mae": 0.11575549355410016,
+      "max_abs_error": 0.15114583765239115,
+      "predictions": [
+        0.7883398220265895,
+        0.36533433102575663,
+        0.2880076015010481,
+        0.6473379916929785
+      ],
+      "rmse": 0.11935898049900052
+    },
+    "learned_reversed_state_ablation": {
+      "mae": 0.0631588712863239,
+      "max_abs_error": 0.08413717610224924,
+      "predictions": [
+        0.8204787557598505,
+        0.4326940344999027,
+        0.35501626305119,
+        0.6912171820065345
+      ],
+      "rmse": 0.06493850434254575
+    },
+    "learned_zero_state_ablation": {
+      "mae": 0.560757786822907,
+      "max_abs_error": 0.6883366630190666,
+      "predictions": [
+        0.1846792099968066,
+        0.0007983398084945603,
+        0.00014743676514177725,
+        0.12338558660070258
+      ],
+      "rmse": 0.5690121872509123
+    },
+    "legacy_heuristic_proxy": {
+      "mae": 0.16691855902382216,
+      "max_abs_error": 0.2358465608465608,
+      "predictions": [
+        0.675,
+        0.675,
+        0.675,
+        0.675
+      ],
+      "rmse": 0.1790474161281152
+    },
+    "lunar_bundle_mean": {
+      "mae": 0.1669185590238222,
+      "max_abs_error": 0.3603732928211727,
+      "predictions": [
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004
+      ],
+      "rmse": 0.21542248428551053
+    },
+    "lunar_bundle_weighted_mean": {
+      "mae": 0.1669185590238222,
+      "max_abs_error": 0.3257938375428522,
+      "predictions": [
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021
+      ],
+      "rmse": 0.19731264922381953
+    },
+    "metadata_only_ridge": {
+      "mae": 0.16485785663780372,
+      "max_abs_error": 0.374028283113181,
+      "predictions": [
+        0.49898758990269215,
+        0.5000089856969256,
+        0.498987589902711,
+        0.5142944299077732
+      ],
+      "rmse": 0.21966672388472674
+    },
+    "midpoint_0_5": {
+      "mae": 0.1684337105389737,
+      "max_abs_error": 0.37301587301587313,
+      "predictions": [
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "rmse": 0.22301710195105465
+    },
+    "model_phase_proxy": {
+      "mae": 0.3272777587815543,
+      "max_abs_error": 0.5622832016817341,
+      "predictions": [
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139
+      ],
+      "rmse": 0.3712148708430276
+    }
+  },
+  "best_mae_baselines": [
+    "learned_calibrator_proxy"
+  ],
+  "best_rmse_baselines": [
+    "learned_calibrator_proxy"
+  ],
+  "label": "crater_v4",
+  "predictions_path": "D:\\Cosmos\\docs\\validation\\blind_predictions_crater_v4.json",
+  "predictions_sha256": "4c1b5a9b8dd001dfda6fb8cecd55fd8513807ce2d2aa591a67fb61a826c97980",
+  "revealed_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\crater_lro_reference.json",
+  "revealed_sha256": "95483a0cb50d17d9822dc6d7c7cf4bd2ff90309a189d913c14ce229dc245be11",
+  "targets": [
+    0.8730158730158731,
+    0.503030303030303,
+    0.43915343915343924,
+    0.7368421052631579
+  ],
+  "template_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\crater_lro_blind_template.json",
+  "template_sha256": "4c482d2438abe6a71aa8deb8c05c927add1bf16a436f714dc9cb6076537ae16b"
+}

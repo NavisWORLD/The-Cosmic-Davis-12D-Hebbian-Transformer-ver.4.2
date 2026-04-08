@@ -28,11 +28,41 @@ except ImportError:
     CV2_AVAILABLE = False
 
 # For saving audio
-try:
-    from scipy.io import wavfile
-    SCIPY_AVAILABLE = True
-except ImportError:
-    SCIPY_AVAILABLE = False
+# Guard: scipy.io hangs on Windows when torch 2.8.0 DLL conflict is present.
+# Use env-var cached subprocess probe to avoid re-testing across files.
+import os as _os
+import subprocess as _sp
+import sys as _sys
+
+def _import_probe_ok(test_code, timeout=20, cache_key=""):
+    if cache_key:
+        cached = _os.environ.get(f"_COSMOS_PROBE_{cache_key}")
+        if cached is not None:
+            return cached == "1"
+    try:
+        proc = _sp.Popen(
+            [_sys.executable, "-c", test_code],
+            stdout=_sp.PIPE, stderr=_sp.PIPE,
+            creationflags=getattr(_sp, 'CREATE_NO_WINDOW', 0),
+        )
+        stdout, _ = proc.communicate(timeout=timeout)
+        ok = b"OK" in stdout
+    except _sp.TimeoutExpired:
+        proc.kill(); proc.wait(); ok = False
+    except Exception:
+        ok = False
+    if cache_key:
+        _os.environ[f"_COSMOS_PROBE_{cache_key}"] = "1" if ok else "0"
+    return ok
+
+SCIPY_AVAILABLE = False
+wavfile = None
+if _import_probe_ok("from scipy.io import wavfile; print('OK')", timeout=20, cache_key="SCIPY"):
+    try:
+        from scipy.io import wavfile
+        SCIPY_AVAILABLE = True
+    except ImportError:
+        pass
 
 
 class LiveCapture:

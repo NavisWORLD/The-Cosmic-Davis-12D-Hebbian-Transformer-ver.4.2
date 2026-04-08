@@ -755,6 +755,20 @@ class UnifiedMemoryAPI:
         except ImportError:
             pass
 
+        # Planetary Audio Shard (distributed TTS cache)
+        try:
+            from Cosmos.core.memory.planetary.audio_shard import get_audio_shard
+            self._systems["planetary_audio"] = get_audio_shard()
+        except ImportError:
+            pass
+
+        # Planetary Memory / Akashic Record (P2P skill sharing)
+        try:
+            from Cosmos.core.memory.planetary.akashic import PlanetaryMemory
+            self._systems["p2p_memory"] = PlanetaryMemory(use_p2p=True)
+        except ImportError:
+            pass
+
         # Initialize async systems
         for name, system in self._systems.items():
             if hasattr(system, "initialize"):

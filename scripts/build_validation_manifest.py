@@ -14,7 +14,11 @@ CHANGE4_SCRIPT = ROOT / "scripts" / "run_change4_alignment_diagnostic.py"
 FINAL_SCRIPT = ROOT / "scripts" / "run_final_generalization_test.py"
 MSL_SCRIPT = ROOT / "scripts" / "run_msl_rad_external_validation.py"
 CRATER_SCRIPT = ROOT / "scripts" / "run_crater_lro_external_validation.py"
-DEFAULT_OUTPUT = ROOT / "docs" / "validation" / "validation_manifest_v1.json"
+DEFAULT_OUTPUT = ROOT / "docs" / "validation" / "validation_manifest_v2.json"
+V2_TEMPLATE_FILENAMES = (
+    "crater_lro_blind_template.json",
+    "msl_rad_blind_template.json",
+)
 
 
 def _load_module(path: Path, name: str):
@@ -45,14 +49,15 @@ def build_validation_manifest() -> dict:
     crater_report = crater.build_crater_lro_external_validation()
 
     template_dir = ROOT / "tests" / "galactic_cosmic_rays" / "blind_templates"
-    templates = {
-        str(path): _sha256(path)
-        for path in sorted(template_dir.glob("*.json"))
-    }
+    templates = {}
+    for filename in V2_TEMPLATE_FILENAMES:
+        path = template_dir / filename
+        if path.exists():
+            templates[str(path)] = _sha256(path)
 
     return {
-        "freeze_label": "cst_radiation_validation_v1",
-        "freeze_date": "2026-04-07",
+        "freeze_label": "cst_radiation_validation_v2",
+        "freeze_date": "2026-04-08",
         "status": final_report["generalization_gate"]["status"],
         "model": {
             "module_path": str(ROOT / "cosmos" / "core" / "cst_critical_integration.py"),
@@ -89,9 +94,9 @@ def build_validation_manifest() -> dict:
         "reproducibility": {
             "python_version": sys.version.split()[0],
             "commands": [
-                "python scripts/build_validation_manifest.py --output docs/validation/validation_manifest_v1.json",
-                "python scripts/generate_blind_validation_predictions.py --template tests/galactic_cosmic_rays/blind_templates/msl_rad_blind_template.json --output docs/validation/blind_predictions_msl_v1.json",
-                "python scripts/score_blind_validation_predictions.py --predictions docs/validation/blind_predictions_msl_v1.json --revealed tests/galactic_cosmic_rays/msl_rad_reference.json --output docs/validation/blind_scoring_msl_v1.json",
+                "python scripts/build_validation_manifest.py --output docs/validation/validation_manifest_v2.json",
+                "python scripts/generate_blind_validation_predictions.py --template tests/galactic_cosmic_rays/blind_templates/msl_rad_blind_template.json --output docs/validation/blind_predictions_msl_v2.json",
+                "python scripts/score_blind_validation_predictions.py --predictions docs/validation/blind_predictions_msl_v2.json --revealed tests/galactic_cosmic_rays/msl_rad_reference.json --output docs/validation/blind_scoring_msl_v2.json",
                 "python scripts/run_final_generalization_test.py --output-dir docs/validation",
                 "python -m pytest tests/galactic_cosmic_rays -q",
             ],

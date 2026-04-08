@@ -1,0 +1,62 @@
+[
+  {
+    "id": "chandrayaan1_inner_to_outer_belt_flux_ratio",
+    "published_date": "2010-12-09",
+    "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+    "source_url": "https://arxiv.org/abs/1012.2014",
+    "denominator": 15000.0,
+    "weight": 1.0,
+    "units": "inner_to_outer_belt_flux_ratio",
+    "notes": "Blind template keeps the outer-belt denominator but removes the inner-belt numerator."
+  },
+  {
+    "id": "chandrayaan1_outer_to_inner_belt_dose_ratio",
+    "published_date": "2010-12-09",
+    "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+    "source_url": "https://arxiv.org/abs/1012.2014",
+    "denominator": 130000.0,
+    "weight": 1.0,
+    "units": "outer_to_inner_belt_dose_rate_ratio",
+    "notes": "Blind template keeps the inner-belt dose denominator but removes the outer-belt numerator."
+  },
+  {
+    "id": "chandrayaan1_lunar_100km_to_transfer_flux_ratio",
+    "published_date": "2010-12-09",
+    "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+    "source_url": "https://arxiv.org/abs/1012.2014",
+    "denominator": 3.0,
+    "weight": 1.0,
+    "units": "lunar_100km_to_transfer_flux_ratio",
+    "notes": "Blind template keeps the transfer-space flux denominator but removes the 100 km lunar numerator."
+  },
+  {
+    "id": "chandrayaan1_lunar_100km_to_transfer_dose_ratio",
+    "published_date": "2010-12-09",
+    "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+    "source_url": "https://arxiv.org/abs/1012.2014",
+    "denominator": 12.0,
+    "weight": 1.0,
+    "units": "lunar_100km_to_transfer_dose_rate_ratio",
+    "notes": "Blind template keeps the transfer-space dose denominator but removes the 100 km lunar numerator."
+  },
+  {
+    "id": "chandrayaan1_lunar_100km_to_lunar_200km_flux_ratio",
+    "published_date": "2010-12-09",
+    "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+    "source_url": "https://arxiv.org/abs/1012.2014",
+    "denominator": 2.8,
+    "weight": 1.0,
+    "units": "lunar_100km_to_lunar_200km_flux_ratio",
+    "notes": "Blind template keeps the 200 km flux denominator but removes the 100 km numerator."
+  },
+  {
+    "id": "chandrayaan1_lunar_100km_to_lunar_200km_dose_ratio",
+    "published_date": "2010-12-09",
+    "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+    "source_url": "https://arxiv.org/abs/1012.2014",
+    "denominator": 11.0,
+    "weight": 1.0,
+    "units": "lunar_100km_to_lunar_200km_dose_rate_ratio",
+    "notes": "Blind template keeps the 200 km dose denominator but removes the 100 km numerator."
+  }
+]

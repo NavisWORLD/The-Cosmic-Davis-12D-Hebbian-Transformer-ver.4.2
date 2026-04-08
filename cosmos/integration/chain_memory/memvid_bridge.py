@@ -67,7 +67,7 @@ class MemoryChunk:
 class BotMemoryPackage:
     """Complete memory package for a bot."""
     bot_name: str
-    bot_type: str  # "cosmos" or "Hermes Agent"
+    bot_type: str  # "cosmos" or "HermesAgent"
     version: str
     created_at: str
     chunks: List[MemoryChunk]
@@ -95,7 +95,7 @@ class MemvidBridge:
     Bridge between bot memory and memvid MP4 encoding.
 
     Handles:
-    - Extracting memory from Cosmos/Hermes Agent format
+    - Extracting memory from Cosmos/HermesAgent format
     - Encoding to MP4 using memvid
     - Decoding MP4 back to memory format
     """
@@ -226,20 +226,20 @@ class MemvidBridge:
         )
 
     # -------------------------------------------------------------------------
-    # Hermes Agent memory EXTRACTION
+    # HermesAgent memory EXTRACTION
     # -------------------------------------------------------------------------
 
     def extract_hermes_memory(self, memory_path: Optional[str] = None) -> BotMemoryPackage:
         """
-        Extract memory from Hermes Agent's memory system.
+        Extract memory from HermesAgent's memory system.
 
-        Hermes Agent uses a similar but slightly different memory structure.
+        HermesAgent uses a similar but slightly different memory structure.
         """
         if memory_path is None:
-            # Try common Hermes Agent locations
+            # Try common HermesAgent locations
             possible_paths = [
                 Path.home() / ".hermes" / "memory",
-                Path.home() / ".config" / "Hermes Agent" / "memory",
+                Path.home() / ".config" / "HermesAgent" / "memory",
                 Path("/workspace/Hermes/memory")
             ]
             memory_path = next((p for p in possible_paths if p.exists()), possible_paths[0])
@@ -247,7 +247,7 @@ class MemvidBridge:
         memory_path = Path(memory_path)
         chunks = []
 
-        # Hermes Agent memory format
+        # HermesAgent memory format
         memory_file = memory_path / "memory.json"
         if memory_file.exists():
             try:
@@ -272,13 +272,13 @@ class MemvidBridge:
                             metadata={"session_id": entry.get('id', '')}
                         ))
 
-                logger.info(f"Extracted {len(chunks)} Hermes Agent memories")
+                logger.info(f"Extracted {len(chunks)} HermesAgent memories")
             except Exception as e:
-                logger.error(f"Failed to read Hermes Agent memory: {e}")
+                logger.error(f"Failed to read HermesAgent memory: {e}")
 
         return BotMemoryPackage(
-            bot_name="Hermes Agent",
-            bot_type="Hermes Agent",
+            bot_name="HermesAgent",
+            bot_type="HermesAgent",
             version="1.0",
             created_at=datetime.now().isoformat(),
             chunks=chunks

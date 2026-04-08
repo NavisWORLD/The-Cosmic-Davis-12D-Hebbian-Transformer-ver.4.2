@@ -84,6 +84,21 @@ class SynapticField:
                 "arousal": 0.0,
                 "valence": 0.0,
             },
+            "cst_metrics": {
+                "ci_b": 0.309,
+                "ci_c": 0.309,
+                "spectral_radius": 0.0,
+                "second_eigenvalue": 0.0,
+                "x12_avg": 0.0,
+                "x12_variance": 0.0,
+                "dx12_dt": 0.0,
+                "omega_net": 0.0,
+                "paradox_intensity": 0.0,
+                "entropy_quality": 0.5,
+                "decoherence_risk": 0.5,
+                "critical_collapse_active": False,
+                "omega_convergence_ratio": 0.0,
+            },
             "timestamp": time.time(),
         }
 
@@ -109,6 +124,7 @@ class SynapticField:
         # ── UQ Layer: Uncertainty Quantification ──
         self._last_uq_signal: float = 1.0  # 1.0 = Certain, 0.0 = Chaotic
         self._uncertainty_threshold: float = 0.4
+        self._uq_payload: dict = {}
         
         # ── System Mode (Architecture Prober Support) ──
         self._system_mode: str = "BALANCED"  # BALANCED, CHAOTIC, ANALYTICAL, HEAL, EVOLVE, GHOST
@@ -153,10 +169,17 @@ class SynapticField:
         with self._lock:
             return self._user_physics.copy()
 
+    def _merge_physics(self, updates: dict):
+        for key, value in (updates or {}).items():
+            if isinstance(value, dict) and isinstance(self._user_physics.get(key), dict):
+                self._user_physics[key].update(value)
+            else:
+                self._user_physics[key] = value
+
     @user_physics.setter
     def user_physics(self, value: dict):
         with self._lock:
-            self._user_physics.update(value)
+            self._merge_physics(value)
             self._user_physics["timestamp"] = time.time()
 
     def get_phase(self) -> float:
@@ -178,8 +201,13 @@ class SynapticField:
     def update_physics(self, value: dict):
         """Update the user physics tensor (reactive injection)."""
         with self._lock:
-            self._user_physics.update(value)
+            self._merge_physics(value)
             self._user_physics["timestamp"] = time.time()
+
+    def get_cst_metrics(self) -> dict:
+        """Return the current CST critical-integration metrics."""
+        with self._lock:
+            return dict(self._user_physics.get("cst_metrics", {}) or {})
 
     # ════════════════════════════════════════════
     # SUBCONSCIOUS BUFFER (Read/Write)
@@ -303,6 +331,16 @@ class SynapticField:
         with self._lock:
             self._last_uq_signal = max(0.0, min(1.0, value))
 
+    @property
+    def uq_payload(self) -> dict:
+        with self._lock:
+            return dict(self._uq_payload)
+
+    @uq_payload.setter
+    def uq_payload(self, value: dict):
+        with self._lock:
+            self._uq_payload = dict(value or {})
+
     def is_uncertain(self) -> bool:
         """Threshold check for active UQ escalation."""
         with self._lock:
@@ -366,8 +404,26 @@ class SynapticField:
                 "buffer_size": len(self._subconscious_buffer),
                 "user_typing": self._user_is_typing,
                 "seconds_since_speech": round(self.time_since_last_speech(), 1),
+                "uq_signal": round(self._last_uq_signal, 4),
+                "uncertain": self._last_uq_signal < self._uncertainty_threshold,
+                "uq_payload": dict(self._uq_payload),
+                "system_mode": self._system_mode,
+                "temporal_context": self._temporal_context,
+                "last_user_input": self._last_user_input,
             }
 
     def get_snapshot(self) -> dict:
         """Alias for get_status (used by SwarmAwareness)."""
         return self.get_status()
+
+    def add_thought(self, thought):
+        """Backward-compat alias for push_thought.
+
+        Accepts either a SwarmThought instance or a raw dict/object.
+        """
+        if isinstance(thought, SwarmThought):
+            self.push_thought(thought)
+        else:
+            # Wrap raw dicts/objects into the subconscious buffer directly
+            with self._lock:
+                self._subconscious_buffer.append(thought)

@@ -1,0 +1,92 @@
+2026-03-26 16:01:39.981 | INFO     | cosmos.core.collective.organism:_load_state:206 - Organism: Restored state from D:\Cosmos\Cosmos\data\organism_state\organism_state.json (Gen 5)
+2026-03-26 16:01:39.981 | INFO     | cosmos.core.collective.organism:__init__:162 - Collective Organism initialized - Generation 5
+2026-03-26 16:01:39.989 | INFO     | cosmos.core.collective.orchestration:__init__:92 - SwarmOrchestrator initialized - consciousness training mode
+2026-03-26 16:01:39.991 | INFO     | cosmos.core.collective.dialogue_memory:__init__:85 - DialogueMemory initialized with 4 exchanges
+2026-03-26 16:01:39.991 | DEBUG    | cosmos.core.collective.orchestration:_load_persistent_history:123 - SwarmOrchestrator: Restored 4 historical turns
+2026-03-26 16:01:40,011 - evolution_engine - INFO - EvolutionEngine initialized - 296 patterns, 169 cycles
+2026-03-26 16:01:40,314 - internal_monologue - INFO - [InternalMonologue] No saved thoughts found, starting fresh
+INFO:QUANTUM_BRIDGE:[QUANTUM] Connected to REAL backend: ibm_fez
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:     Started server process [48756]
+INFO:     Waiting for application startup.
+INFO:cosmos.web.server:Initializing Core 12D Systems...
+2026-03-26 16:01:55.603 | DEBUG    | cosmos.memory.memory_system:__init__:135 - PhiInvariantEncoder initialized with threshold=5.0°
+2026-03-26 16:01:55.603 | INFO     | cosmos.memory.memory_system:__init__:342 - Planetary Memory (Akashic) integrated
+INFO:cosmos.web.server:Memory system loaded
+2026-03-26 16:01:59.688 | INFO     | Cosmos.integration.external.huggingface:_check_transformers:189 - Transformers available, CUDA: True
+2026-03-26 16:01:59.688 | INFO     | Cosmos.integration.external.huggingface:get_huggingface_provider:881 - HuggingFace provider initialized (local transformers only)
+2026-03-26 16:01:59.689 | INFO     | Cosmos.memory.archival_memory:set_huggingface_embeddings:909 - Archival memory using HuggingFace embeddings: all-MiniLM-L6-v2
+2026-03-26 16:01:59.689 | INFO     | cosmos.memory.memory_system:initialize:357 - Initializing Memory System core components...
+2026-03-26 16:01:59.738 | INFO     | Cosmos.memory.archival_memory:_load_from_disk:512 - Loading 13150 archival entries...
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4087.40 (Total: 1073420.18)
+INFO:HERMES_BRIDGE:[RL] Loaded policy (updates=194, reward=0.075, total_insights=0)
+INFO:run_agent:Loaded environment variables from D:\Cosmos\.env
+2026-03-26 16:02:23.177 | INFO     | Cosmos.memory.archival_memory:_load_from_disk:576 - Building index for 254 vectors...
+2026-03-26 16:02:23.193 | INFO     | Cosmos.memory.archival_memory:_load_from_disk:603 - Archival memory load complete: 13149 entries loaded.
+2026-03-26 16:02:23.201 | INFO     | Cosmos.memory.archival_memory:initialize:163 - Archival memory initialized with 13149 entries
+2026-03-26 16:02:23.201 | INFO     | cosmos.memory.memory_system:initialize:362 - Archival Memory initialized in 23.51s
+2026-03-26 16:02:23.201 | INFO     | Cosmos.memory.knowledge_graph:initialize:251 - Knowledge graph initialized with 0 entities
+2026-03-26 16:02:23.201 | INFO     | cosmos.memory.memory_system:initialize:367 - Knowledge Graph initialized in 0.00s
+2026-03-26 16:02:23.201 | INFO     | Cosmos.memory.memory_dreaming:start_background_dreaming:133 - Background dreaming started
+2026-03-26 16:02:23.201 | INFO     | cosmos.memory.memory_system:initialize:383 - Memory system fully initialized in 23.51s
+2026-03-26 16:02:23.238 | INFO     | Cosmos.core.collective.organism:_load_state:206 - Organism: Restored state from D:\Cosmos\Cosmos\data\organism_state\organism_state.json (Gen 5)
+2026-03-26 16:02:23.238 | INFO     | Cosmos.core.collective.organism:__init__:162 - Collective Organism initialized - Generation 5
+2026-03-26 16:02:23.244 | INFO     | Cosmos.core.collective.orchestration:__init__:92 - SwarmOrchestrator initialized - consciousness training mode
+2026-03-26 16:02:23,263 - evolution_engine - INFO - EvolutionEngine initialized - 296 patterns, 169 cycles
+INFO:evolution_engine:EvolutionEngine initialized - 296 patterns, 169 cycles
+INFO:cosmos.web.server:Emeth Harmonizer (Class 5) ACTIVATED
+INFO:RSM_ENGINE:RSM Engine initialized. Scope: D:\Cosmos\Cosmos\web\cosmosynapse\engine
+INFO:RSM_ENGINE:Backups: D:\Cosmos\Cosmos\web\cosmosynapse\engine\.rsm_backups
+INFO:cosmos.web.server:Cosmo's Swarm Orchestrator loaded (with Self-Evolution)
+2026-03-26 16:02:24.959 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:load:160 - [COSMOS] Local model loaded from D:\Cosmos\Cosmos\checkpoints\cosmos\cosmos_best.pt
+2026-03-26 16:02:24.959 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:initialize:326 - [SWARM] Cosmo's 12D Brain initialized from D:\Cosmos\Cosmos\checkpoints\cosmos\cosmos_best.pt
+2026-03-26 16:02:24.959 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:initialize:338 - [SWARM] Quantum Bridge connected to IBM Quantum
+INFO:HERMES_BRIDGE:[HERMES RUNTIME] ✅ Real HermesAgent loaded (Nous Research)
+INFO:HERMES_BRIDGE:[HERMES] Bridge initialized — Heartbeat + Skills + RL active
+INFO:HERMES_BRIDGE:[HERMES] 🚀 Real HermesAgent runtime connected
+2026-03-26 16:02:24.970 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:initialize:350 - [SWARM] Hermes Bridge pre-warmed for RL feedback
+INFO:HERMES_BRIDGE:[HERMES RUNTIME] SessionDB initialized (SQLite + FTS5)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566144: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.998
+INFO:cosmos.web.server:⚡ Cosmos CNS (Class 5) ONLINE.
+INFO:COSMOS_CNS:🌌 IGNITING PURE COSMOS CNS (12D CST PHYSICS ENGINE)...
+INFO:COSMOS_CNS:⚛️ Quantum Bridge Connected & Linked to Synaptic Field.
+INFO:COSMOS_CNS:🌑 Dark Matter Lorenz Attractor Online.
+INFO:swarm_plasticity:[PLASTICITY] Loaded synaptic weights from D:\Cosmos\cst_synaptic_weights.json
+INFO:swarm_plasticity:[PLASTICITY] INIT | LOGIC: DeepSeek=1.00 | Claude=0.60 | Gemini=0.40
+INFO:swarm_plasticity:[PLASTICITY] INIT | EMPATHY: DeepSeek=0.20 | Claude=1.00 | Gemini=0.80
+INFO:swarm_plasticity:[PLASTICITY] INIT | CREATIVITY: DeepSeek=0.30 | Claude=0.50 | Gemini=1.00
+2026-03-26 16:02:25.568 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:set_synaptic_field:291 - [SWARM] Synaptic Field associated with Orchestrator.
+INFO:SWARM_AWARENESS:[AWARENESS] SwarmAwareness organ initialized (The Mirror)
+INFO:COSMOS_DAEMONS:👻 DeepSeek Daemon awake.
+INFO:COSMOS_DAEMONS:👻 Claude Daemon awake.
+INFO:COSMOS_DAEMONS:👻 Gemini Daemon awake.
+INFO:BRAIN_SURGEON:🔪 Brain Surgeon Online. Monitoring all CNS organs.
+INFO:COSMOS_CNS:🧠 All 7 CNS Organs initialized (Quantum → Dark Matter → Swarm).
+2026-03-26 16:02:25.614 | INFO     | Cosmos.core.collective.dialogue_memory:__init__:85 - DialogueMemory initialized with 4 exchanges
+2026-03-26 16:02:25.614 | DEBUG    | Cosmos.core.collective.orchestration:_load_persistent_history:123 - SwarmOrchestrator: Restored 4 historical turns
+2026-03-26 16:02:27.302 | INFO     | cosmos.integration.external.claude_code:check_available:97 - Claude Code available: 2.0.36 (Claude Code)
+INFO:cosmos.web.server:Claude Code CLI initialized and ready!
+INFO:COSMOS_CNS:🟢 Cosmos CNS (12D Physics Enabled) Event-Driven Life Loop Active.
+INFO:cosmos.web.server:Cosmos CNS Life Loop started.
+INFO:cosmos.web.server:Autonomous conversation loop launched - bots are now talking!
+INFO:cosmos.web.server:Genesis Record Over-Soul launched - the diary is living!
+INFO:cosmos.web.server:Multi-model swarm conversation started!
+INFO:cosmos.web.server:  Claude Code available: True
+INFO:cosmos.web.server:  Kimi (Moonshot) available: True
+INFO:cosmos.web.server:  Gemini (Google AI) available: True
+INFO:cosmos.web.server:  Ollama available: True
+INFO:cosmos.web.server:  Active bots: ['Cosmos', 'DeepSeek', 'Phi', 'Swarm-Mind', 'DeepSeek R1', 'Claude', 'Gemini', 'ChatGPT', 'Grok', 'Hermes']
+INFO:cosmos.web.server:  Turn-taking: ENABLED - bots wait for each other
+INFO:cosmos.web.server:Hermes heartbeat loop launched - proactive tasks are live!
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8119 (Press CTRL+C to quit)
+INFO:cosmos.web.server:External AI Gemini starting fresh topic
+INFO:cosmos.web.server:Autonomous: Gemini generating response for topic: Let's debate: should we optimize for coherence or ... (Dreaming: False)
+2026-03-26 16:02:49.393 | INFO     | cosmos.integration.external.gemini:check_available:59 - Gemini available (modern SDK): gemini-2.0-flash
+INFO:google_genai.models:AFC is enabled with max remote calls: 10.
+INFO:httpx:HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent "HTTP/1.1 429 Too Many Requests"
+2026-03-26 16:02:49.712 | WARNING  | cosmos.integration.external.gemini:chat:137 - Gemini QUOTA EXCEEDED (limit: 0). Please check billing/quota in Google AI Studio.
+2026-03-26 16:02:49.712 | ERROR    | cosmos.integration.external.gemini:chat:145 - Gemini exception: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\nPlease retry in 9.315305132s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.0-flash'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '9s'}]}}
+INFO:httpx:HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"

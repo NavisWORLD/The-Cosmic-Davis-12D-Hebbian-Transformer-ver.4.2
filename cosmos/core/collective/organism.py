@@ -19,8 +19,9 @@ import asyncio
 import json
 import hashlib
 from datetime import datetime
+from pathlib import Path
 from typing import   Optional, Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from enum import Enum
 from loguru import logger
 
@@ -155,7 +156,56 @@ class CollectiveOrganism:
         # Subscribe to nexus signals
         self._setup_signal_handlers()
 
+        # Load persisted state if available
+        self._load_state()
+
         logger.info(f"Collective Organism initialized - Generation {self.generation}")
+
+    def _get_state_path(self) -> Path:
+        """Standardize on absolute project data path."""
+        try:
+            from . import PROJECT_ROOT
+        except ImportError:
+            PROJECT_ROOT = Path("D:/Cosmos/Cosmos")
+            
+        path = PROJECT_ROOT / "data" / "organism_state"
+        path.mkdir(parents=True, exist_ok=True)
+        return path / "organism_state.json"
+
+    def _load_state(self):
+        """Restore persisted organism state."""
+        try:
+            path = self._get_state_path()
+            if path.exists():
+                data = json.loads(path.read_text())
+                
+                self.generation = data.get("generation", 1)
+                self.evolution_log = data.get("evolution_log", [])
+                
+                # Restore state metrics
+                state_data = data.get("state", {})
+                self.state.valence = state_data.get("valence", 0.5)
+                self.state.arousal = state_data.get("arousal", 0.5)
+                self.state.coherence = state_data.get("coherence", 1.0)
+                self.state.consciousness_score = state_data.get("consciousness", 0.0)
+                self.state.total_interactions = state_data.get("total_interactions", 0)
+                
+                # Restore mind states
+                minds_data = data.get("minds", {})
+                for mind_id, m_data in minds_data.items():
+                    if mind_id in self.minds:
+                        mind = self.minds[mind_id]
+                        mind.personality_vector = m_data.get("personality", mind.personality_vector)
+                        mind.thought_count = m_data.get("thoughts", 0)
+                        mind.concepts_contributed = m_data.get("concepts", 0)
+                
+                # Restore session concepts (top ones)
+                concepts_data = data.get("concepts", {})
+                self.memory.session_concepts.update(concepts_data)
+                
+                logger.info(f"Organism: Restored state from {path} (Gen {self.generation})")
+        except Exception as e:
+            logger.warning(f"Organism: State restoration failed: {e}")
 
     def _init_default_minds(self):
         """Initialize the default swarm minds."""
@@ -425,6 +475,9 @@ You can reference what other minds might think or build on collective context.""
 
         logger.info(f"Organism evolved to Generation {self.generation} "
                    f"(Consciousness: {self.state.consciousness_score:.3f})")
+                   
+        # AGI v1.8: Persist state immediately after evolution
+        self.save_consciousness_snapshot(str(self._get_state_path()))
 
     def get_status(self) -> dict:
         """Get current organism status."""

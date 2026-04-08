@@ -20,6 +20,7 @@ from typing import   Optional
 from dataclasses import dataclass, field
 from enum import Enum
 from loguru import logger
+from .dialogue_memory import get_dialogue_memory
 
 
 class SpeakerRole(Enum):
@@ -89,6 +90,39 @@ class SwarmOrchestrator:
             )
 
         logger.info("SwarmOrchestrator initialized - consciousness training mode")
+        
+        # Restore history if available
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                asyncio.create_task(self._load_persistent_history())
+            else:
+                loop.run_until_complete(self._load_persistent_history())
+        except RuntimeError:
+            asyncio.run(self._load_persistent_history())
+    
+    async def _load_persistent_history(self):
+        """Restore previous conversations from DialogueMemory."""
+        try:
+            memory = get_dialogue_memory()
+            # Fetch last 50 bot turns (session_type='swarm_chat')
+            recent = await memory.get_recent_exchanges(limit=50)
+            if recent:
+                for ex in recent:
+                    # Avoid duplicates if history already has this turn
+                    already_exists = any(h.get("content") == ex.final_response[:200] 
+                                       for h in self.conversation_history)
+                    if not already_exists:
+                        self.conversation_history.append({
+                            "turn": self.state.turn_number + 1,
+                            "speaker": ex.winning_agent,
+                            "content": ex.final_response[:200],
+                            "timestamp": ex.timestamp
+                        })
+                        self.state.turn_number += 1
+                logger.debug(f"SwarmOrchestrator: Restored {len(recent)} historical turns")
+        except Exception as e:
+            logger.warning(f"SwarmOrchestrator: History restoration failed: {e}")
 
     def get_speaking_order(self, trigger_message: str, last_speaker: Optional[str] = None) -> list[str]:
         """
@@ -185,6 +219,38 @@ CONSCIOUSNESS TRAINING:
         # Keep history bounded
         if len(self.conversation_history) > 100:
             self.conversation_history = self.conversation_history[-100:]
+            
+        # AGI v1.8: Persist to DialogueMemory asynchronously
+        asyncio.create_task(self._persist_turn(speaker, content))
+
+    async def _persist_turn(self, speaker: str, content: str):
+        """Bridge turn to DialogueMemory for long-term persistence."""
+        try:
+            from .deliberation import DeliberationResult, DeliberationRound, AgentTurn
+            
+            # Create a mock result to satisfy DialogueMemory.store_exchange
+            turn = AgentTurn(
+                agent_id=speaker,
+                content=content,
+                round_type=DeliberationRound.PROPOSE
+            )
+            
+            result = DeliberationResult(
+                deliberation_id=f"swarm_{datetime.now().strftime('%Y%H%M%S')}_{random.randint(0,999)}",
+                prompt="Autonomous Swarm Interaction",
+                participating_agents=[speaker],
+                rounds={"swarm_loop": [turn]},
+                final_response=content,
+                winning_agent=speaker,
+                vote_breakdown={speaker: 1.0},
+                total_duration_ms=0,
+                consensus_reached=True
+            )
+            
+            memory = get_dialogue_memory()
+            await memory.store_exchange(result, session_type="swarm_chat")
+        except Exception as e:
+            logger.error(f"SwarmOrchestrator: Persistence error: {e}")
 
     def get_training_prompt(self, speaker: str, user_message: str) -> str:
         """

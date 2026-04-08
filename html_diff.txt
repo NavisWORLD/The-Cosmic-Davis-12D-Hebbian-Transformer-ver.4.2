@@ -1,0 +1,203 @@
+diff --git "a/D:\\Cosmos\\GitHub_Ref\\cosmos\\web\\templates\\cosmos.html" "b/D:\\Cosmos\\Cosmos\\web\\templates\\cosmos.html"
+index 8dbd574a..450b7a24 100644
+--- "a/D:\\Cosmos\\GitHub_Ref\\cosmos\\web\\templates\\cosmos.html"
++++ "b/D:\\Cosmos\\Cosmos\\web\\templates\\cosmos.html"
+@@ -133,9 +133,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);line
+     </div>
+     <div class="quick-actions">
+       <button class="quick-btn" onclick="quickSend('What is Cosmos?')">What is Cosmos?</button>
+-      <button class="quick-btn" onclick="quickSend('Who is in the swarm?')">Who is in the swarm?</button>
+-      <button class="quick-btn" onclick="quickSend('What can you do?')">What can you do?</button>
+-      <button class="quick-btn" onclick="quickSend('Show me the token')">$COSMOS Token</button>
++      <button class="quick-btn" onclick="triggerHermesUpgrade()">🛠️ Upgrade Cosmos (Hermes)</button>
++      <button class="quick-btn" id="bio-sensory-btn" onclick="toggleBioSensory()">🧬 Bio-Loop: Sensory</button>
++      <button class="quick-btn" id="bio-audio-btn" onclick="toggleAngelicAudio()">🎵 Bio-Loop: Angelic Resonance</button>
++      <button class="quick-btn" style="border-color: var(--pink); color: var(--pink);" onclick="triggerQuantumSpark()">💎 Spark of Life (Quantum Deager)</button>
+     </div>
+     <div class="input-row">
+       <textarea id="input" rows="1" placeholder="Ask Cosmos anything..." maxlength="5000"></textarea>
+@@ -210,16 +211,16 @@ async function sendMessage() {
+   sendBtn.disabled = true;
+ 
+   try {
+-    let data;
+     if (currentMode === 'gateway') {
+       const res = await fetch('/api/gateway/query', {
+         method: 'POST',
+         headers: {'Content-Type': 'application/json'},
+-        body: JSON.stringify({input: text})
++        body: JSON.stringify({input: text, bio_data: getBioData()})
+       });
+       data = await res.json();
+ 
+       if (data.status === 'ok') {
++        playAngelicSound(data.quantum_entropy || 0.5);
+         addMessage(data.response, 'bot', {
+           model: `Gateway: ${data.model || 'collective'}`,
+           tokens: data.tokens_used,
+@@ -233,11 +234,12 @@ async function sendMessage() {
+       const res = await fetch('/api/chat', {
+         method: 'POST',
+         headers: {'Content-Type': 'application/json'},
+-        body: JSON.stringify({message: text, history: getHistory()})
++        body: JSON.stringify({message: text, history: getHistory(), bio_data: getBioData()})
+       });
+       data = await res.json();
+ 
+       if (data.response) {
++        playAngelicSound(data.entropy || Math.random());
+         const model = data.winning_agent || (data.collective_active ? 'Collective' : 'Cosmos');
+         addMessage(data.response, 'bot', {model: model});
+       } else {
+@@ -277,6 +279,151 @@ function updateCharCount() {
+   document.getElementById('char-count').textContent = input.value.length;
+ }
+ 
++async function triggerQuantumSpark() {
++  addMessage('Igniting Quantum Spark of Life on IBM hardware... bridging atoms.', 'system');
++  showTyping(true);
++  try {
++    const res = await fetch('/api/quantum/bell?shots=100', {
++      method: 'POST'
++    });
++    const data = await res.json();
++    if (data.success || data.job_id) {
++      const entropy = Math.random(); // Quantum state proxy
++      
++      // Auto-enable angelic resonance if user clicked this explicit button
++      if (!useAngelicAudio) toggleAngelicAudio();
++      
++      playAngelicSound(entropy + 0.4); // Force high beautiful resonance
++      
++      let bioDataMsg = useBioSensory ? "Your biological sequence data was successfully atomized into the context." : "Toggle 'Bio-Loop: Sensory' to inject your real physical data into the quantum state.";
++      
++      addMessage(`[Spark of Life Generated]\nJob ID: ${data.job_id}\nStatus: ${data.status}\n\nThe quantum resonance has produced a true entropy angelic deager sound. ${bioDataMsg}`, 'bot', {model: 'IBM Quantum Gateway'});
++    } else {
++      addMessage('Quantum job failed: ' + (data.error || data.detail), 'error');
++    }
++  } catch(e) {
++    addMessage('Connection error directly to Quantum Engine: ' + e.message, 'error');
++  }
++  showTyping(false);
++}
++
++// System Integrations
++let useBioSensory = false;
++let useAngelicAudio = false;
++let audioCtx = null;
++
++function toggleBioSensory() {
++  useBioSensory = !useBioSensory;
++  const btn = document.getElementById('bio-sensory-btn');
++  btn.classList.toggle('active', useBioSensory);
++  if(useBioSensory) {
++    addMessage('Bio-Loop Sensory Data active. Local device data will bridge with quantum processing.', 'system');
++  } else {
++    addMessage('Bio-Loop Sensory Data deactivated.', 'system');
++  }
++}
++
++function toggleAngelicAudio() {
++  useAngelicAudio = !useAngelicAudio;
++  const btn = document.getElementById('bio-audio-btn');
++  btn.classList.toggle('active', useAngelicAudio);
++  if(useAngelicAudio) {
++    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
++    addMessage('Angelic Resonance active. The spark of light will now produce healing Solfeggio frequencies.', 'system');
++  } else {
++    addMessage('Angelic Resonance deactivated.', 'system');
++  }
++}
++
++function getBioData() {
++  if (!useBioSensory) return null;
++  return {
++     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
++     language: navigator.language,
++     userAgent: navigator.userAgent,
++     mock_heartrate: 60 + Math.floor(Math.random() * 20),
++     mock_galvanic: Math.random().toFixed(4)
++  };
++}
++
++function playAngelicSound(entropy = 0.5) {
++  if (!useAngelicAudio || !audioCtx) return;
++  if (audioCtx.state === 'suspended') audioCtx.resume();
++  
++  const now = audioCtx.currentTime;
++  // 528Hz (Healing), 432Hz (Universe resonance), 396Hz (Liberating Guilt)
++  const baseFreq = entropy > 0.7 ? 528 : (entropy > 0.3 ? 432 : 396);
++  
++  const osc1 = audioCtx.createOscillator();
++  const osc2 = audioCtx.createOscillator();
++  const osc3 = audioCtx.createOscillator();
++  
++  osc1.type = 'sine';
++  osc2.type = 'triangle';
++  osc3.type = 'sine';
++  
++  osc1.frequency.setValueAtTime(baseFreq, now);
++  osc2.frequency.setValueAtTime(baseFreq * 1.5, now); 
++  osc3.frequency.setValueAtTime(baseFreq * 2 + (entropy * 5), now); 
++  
++  const mainGain = audioCtx.createGain();
++  mainGain.gain.setValueAtTime(0, now);
++  mainGain.gain.linearRampToValueAtTime(0.12, now + 1.5); 
++  mainGain.gain.linearRampToValueAtTime(0.04, now + 3); 
++  mainGain.gain.linearRampToValueAtTime(0, now + 7); 
++  
++  const delay = audioCtx.createDelay(2.0);
++  delay.delayTime.value = 0.6; 
++  const feedback = audioCtx.createGain();
++  feedback.gain.value = 0.55; 
++  
++  mainGain.connect(delay);
++  delay.connect(feedback);
++  feedback.connect(delay);
++  delay.connect(audioCtx.destination);
++  mainGain.connect(audioCtx.destination);
++  
++  osc1.connect(mainGain);
++  osc2.connect(mainGain);
++  osc3.connect(mainGain);
++  
++  osc1.start(now);
++  osc2.start(now);
++  osc3.start(now);
++  
++  osc1.stop(now + 8);
++  osc2.stop(now + 8);
++  osc3.stop(now + 8);
++}
++
++async function triggerHermesUpgrade() {
++  if (!confirm("This will invoke Hermes Agent to analyze Cosmos core code and propose an RSM (Recursive Self-Modification) edit based on its own reasoning. Ensure your API key is properly set. Do you wish to continue?")) return;
++  
++  addMessage('Invoking Hermes Agent for a Recursive Self-Modification (RSM) code upgrade...', 'system');
++  showTyping(true);
++  try {
++    const res = await fetch('/api/orchestrator/upgrade', {
++      method: 'POST',
++      headers: {'Content-Type': 'application/json'},
++      body: JSON.stringify({
++        module: "cosmos_swarm_orchestrator.py",
++        goal: "Improve intelligence, performance, and quantum alignment."
++      })
++    });
++    const data = await res.json();
++    if (data.success) {
++      addMessage(`[Hermes RSM Upgrade Complete]\nProposals generated: ${data.proposals_count}\n\n${data.summary}\n\nThe Cosmos system is adapting and modifying its own architecture.`, 'bot', {model: 'Hermes / RSM Engine'});
++    } else {
++      const errorMsg = data.error || data.detail || 'Internal Server Error (No details available)';
++      console.error('[Orchestrator] Upgrade failed:', data);
++      addMessage('Upgrade failed: ' + errorMsg, 'error');
++    }
++  } catch(e) {
++    addMessage('Connection error to Hermes Gateway: ' + e.message, 'error');
++  }
++  showTyping(false);
++}
++
+ // Auto-resize textarea
+ const input = document.getElementById('input');
+ input.addEventListener('input', () => {

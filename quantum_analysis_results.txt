@@ -1,0 +1,13 @@
+Total workload JSON files found: 242
+
+==================================================
+             QUANTUM WORKLOAD ANALYSIS
+==================================================
+Total jobs successfully decoded: 0
+Total quantum circuits analyzed: 0
+Total unique states maintained : 0
+
+Could not find state distributions in standard formats. The JSON structure might be non-standard.
+
+Top 10 most frequent/probable states:
+==================================================

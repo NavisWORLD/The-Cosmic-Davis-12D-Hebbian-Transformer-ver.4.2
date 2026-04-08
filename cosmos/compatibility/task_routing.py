@@ -1,8 +1,8 @@
 """
-Cosmos Task Routing - Hermes Agent to Swarm Model Mapping
+Cosmos Task Routing - HermesAgent to Swarm Model Mapping
 ==========================================================
 
-Routes Hermes Agent tools/skills to the optimal swarm model based on task type.
+Routes HermesAgent tools/skills to the optimal swarm model based on task type.
 
 Models Available:
 -----------------
@@ -37,8 +37,8 @@ from dataclasses import dataclass, field
 from loguru import logger
 
 
-class Hermes AgentTaskType(Enum):
-    """Task types derived from Hermes Agent tool groups."""
+class HermesAgentTaskType(Enum):
+    """Task types derived from HermesAgent tool groups."""
     # Core tool groups
     FILESYSTEM = "filesystem"      # Read, write, edit files
     RUNTIME = "runtime"            # Execute code, bash commands
@@ -53,7 +53,7 @@ class Hermes AgentTaskType(Enum):
     # Extended capabilities
     VOICE = "voice"                # Speech-to-text, text-to-speech
     CANVAS = "canvas"              # Visual rendering, A2UI
-    SKILLS = "skills"              # Hermes Hub marketplace skills
+    SKILLS = "skills"              # HermesHub marketplace skills
     IMAGE = "image"                # Image generation/analysis
     VIDEO = "video"                # Video processing
     AUDIO = "audio"                # Audio processing
@@ -65,7 +65,7 @@ class ModelCapability:
     model_id: str
     display_name: str
     strengths: List[str]
-    task_types: List[Hermes AgentTaskType]
+    task_types: List[HermesAgentTaskType]
     priority: int = 5  # 1-10, higher = preferred
     max_tokens: int = 4000
     supports_vision: bool = False
@@ -96,12 +96,12 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "low-latency voice",     # Grok Voice
         ],
         task_types=[
-            Hermes AgentTaskType.WEB,
-            Hermes AgentTaskType.MESSAGING,
-            Hermes AgentTaskType.RUNTIME,
-            Hermes AgentTaskType.VIDEO,
-            Hermes AgentTaskType.AUDIO,
-            Hermes AgentTaskType.VOICE,
+            HermesAgentTaskType.WEB,
+            HermesAgentTaskType.MESSAGING,
+            HermesAgentTaskType.RUNTIME,
+            HermesAgentTaskType.VIDEO,
+            HermesAgentTaskType.AUDIO,
+            HermesAgentTaskType.VOICE,
         ],
         priority=9,
         max_tokens=32000,  # Output limit
@@ -124,13 +124,13 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "long context",          # 1M+ tokens
         ],
         task_types=[
-            Hermes AgentTaskType.IMAGE,
-            Hermes AgentTaskType.VIDEO,
-            Hermes AgentTaskType.WEB,
-            Hermes AgentTaskType.RUNTIME,
-            Hermes AgentTaskType.CANVAS,
-            Hermes AgentTaskType.MEMORY,
-            Hermes AgentTaskType.UI,
+            HermesAgentTaskType.IMAGE,
+            HermesAgentTaskType.VIDEO,
+            HermesAgentTaskType.WEB,
+            HermesAgentTaskType.RUNTIME,
+            HermesAgentTaskType.CANVAS,
+            HermesAgentTaskType.MEMORY,
+            HermesAgentTaskType.UI,
         ],
         priority=9,
         max_tokens=8192,
@@ -153,11 +153,11 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "careful analysis",      # Quality + safety
         ],
         task_types=[
-            Hermes AgentTaskType.RUNTIME,
-            Hermes AgentTaskType.FILESYSTEM,
-            Hermes AgentTaskType.SESSIONS,
-            Hermes AgentTaskType.MEMORY,
-            Hermes AgentTaskType.SKILLS,
+            HermesAgentTaskType.RUNTIME,
+            HermesAgentTaskType.FILESYSTEM,
+            HermesAgentTaskType.SESSIONS,
+            HermesAgentTaskType.MEMORY,
+            HermesAgentTaskType.SKILLS,
         ],
         priority=9,
         max_tokens=8192,
@@ -180,10 +180,10 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "1M context",
         ],
         task_types=[
-            Hermes AgentTaskType.RUNTIME,
-            Hermes AgentTaskType.FILESYSTEM,
-            Hermes AgentTaskType.SESSIONS,
-            Hermes AgentTaskType.SKILLS,
+            HermesAgentTaskType.RUNTIME,
+            HermesAgentTaskType.FILESYSTEM,
+            HermesAgentTaskType.SESSIONS,
+            HermesAgentTaskType.SKILLS,
         ],
         priority=10,
         max_tokens=16384,
@@ -207,10 +207,10 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "4.5x faster execution", # Agent swarm speedup
         ],
         task_types=[
-            Hermes AgentTaskType.MEMORY,
-            Hermes AgentTaskType.FILESYSTEM,
-            Hermes AgentTaskType.SESSIONS,
-            Hermes AgentTaskType.SKILLS,
+            HermesAgentTaskType.MEMORY,
+            HermesAgentTaskType.FILESYSTEM,
+            HermesAgentTaskType.SESSIONS,
+            HermesAgentTaskType.SKILLS,
         ],
         priority=8,
         max_tokens=32000,
@@ -233,10 +233,10 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "open source friendly",
         ],
         task_types=[
-            Hermes AgentTaskType.RUNTIME,
-            Hermes AgentTaskType.FILESYSTEM,
-            Hermes AgentTaskType.AUTOMATION,
-            Hermes AgentTaskType.SKILLS,
+            HermesAgentTaskType.RUNTIME,
+            HermesAgentTaskType.FILESYSTEM,
+            HermesAgentTaskType.AUTOMATION,
+            HermesAgentTaskType.SKILLS,
         ],
         priority=8,
         max_tokens=32000,  # Up to 64K with reasoning
@@ -258,9 +258,9 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "small footprint",
         ],
         task_types=[
-            Hermes AgentTaskType.RUNTIME,
-            Hermes AgentTaskType.FILESYSTEM,
-            Hermes AgentTaskType.VOICE,
+            HermesAgentTaskType.RUNTIME,
+            HermesAgentTaskType.FILESYSTEM,
+            HermesAgentTaskType.VOICE,
         ],
         priority=6,
         max_tokens=4000,
@@ -282,10 +282,10 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
             "zero-shot audio",
         ],
         task_types=[
-            Hermes AgentTaskType.MEMORY,
-            Hermes AgentTaskType.RUNTIME,
-            Hermes AgentTaskType.VOICE,
-            Hermes AgentTaskType.AUDIO,
+            HermesAgentTaskType.MEMORY,
+            HermesAgentTaskType.RUNTIME,
+            HermesAgentTaskType.VOICE,
+            HermesAgentTaskType.AUDIO,
         ],
         priority=7,
         max_tokens=4000,
@@ -300,9 +300,9 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
         display_name="Web Agent (Browser)",
         strengths=["browser automation", "scraping", "screenshots", "navigation"],
         task_types=[
-            Hermes AgentTaskType.WEB,
-            Hermes AgentTaskType.UI,
-            Hermes AgentTaskType.CANVAS,
+            HermesAgentTaskType.WEB,
+            HermesAgentTaskType.UI,
+            HermesAgentTaskType.CANVAS,
         ],
         priority=9,
         max_tokens=2000,
@@ -315,7 +315,7 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
         display_name="Filesystem Agent",
         strengths=["file operations", "directory management", "search"],
         task_types=[
-            Hermes AgentTaskType.FILESYSTEM,
+            HermesAgentTaskType.FILESYSTEM,
         ],
         priority=9,
         max_tokens=2000,
@@ -326,16 +326,16 @@ MODEL_REGISTRY: Dict[str, ModelCapability] = {
 
 
 # =============================================================================
-# TASK ROUTING TABLE - Maps Hermes Agent tasks to preferred models
+# TASK ROUTING TABLE - Maps HermesAgent tasks to preferred models
 # =============================================================================
 
-TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
+TASK_ROUTING: Dict[HermesAgentTaskType, List[str]] = {
     # ==========================================================================
     # ROUTING TABLE - Based on official model capabilities (2026-02)
     # ==========================================================================
 
     # File operations - Claude best for careful code, DeepSeek for multi-file
-    Hermes AgentTaskType.FILESYSTEM: [
+    HermesAgentTaskType.FILESYSTEM: [
         "Claude",           # Best coding model, careful analysis
         "DeepSeek",         # Multi-file reasoning (V4)
         "FilesystemAgent",  # Specialist
@@ -344,7 +344,7 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     ],
 
     # Code execution - Claude is "best coding model", DeepSeek has thinking mode
-    Hermes AgentTaskType.RUNTIME: [
+    HermesAgentTaskType.RUNTIME: [
         "Claude",           # Best coding model (official)
         "DeepSeek",         # Thinking mode, multi-file bugs
         "Gemini",           # Agentic vision + code execution
@@ -353,7 +353,7 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     ],
 
     # Multi-agent sessions - Kimi has native 100-agent swarm, Claude for quality
-    Hermes AgentTaskType.SESSIONS: [
+    HermesAgentTaskType.SESSIONS: [
         "Kimi",             # Agent Swarm: 100 agents, 4.5x faster
         "Claude",           # Best for coordination quality
         "ClaudeOpus",       # Complex reasoning
@@ -361,7 +361,7 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     ],
 
     # Memory/knowledge retrieval - Kimi 256K, Grok 2M, HF for embeddings
-    Hermes AgentTaskType.MEMORY: [
+    HermesAgentTaskType.MEMORY: [
         "Grok",             # 2M token context - largest
         "Kimi",             # 256K context master
         "HuggingFace",      # Local embeddings (sentence-transformers)
@@ -370,7 +370,7 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     ],
 
     # Web search/fetch - Grok has real-time X data, Gemini for research
-    Hermes AgentTaskType.WEB: [
+    HermesAgentTaskType.WEB: [
         "Grok",             # Real-time X/Twitter, function calling
         "Gemini",           # Deep research, agentic vision
         "WebAgent",         # Browser automation
@@ -378,7 +378,7 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     ],
 
     # UI/Browser automation - Gemini agentic vision + code execution
-    Hermes AgentTaskType.UI: [
+    HermesAgentTaskType.UI: [
         "Gemini",           # Agentic vision - grounded answers
         "WebAgent",         # Browser specialist
         "Grok",             # Fast responses
@@ -386,7 +386,7 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     ],
 
     # Scheduled tasks - DeepSeek reliable, Claude careful
-    Hermes AgentTaskType.AUTOMATION: [
+    HermesAgentTaskType.AUTOMATION: [
         "DeepSeek",         # Reliable, multi-file
         "Claude",           # Careful execution
         "Phi",              # Fast local cron
@@ -394,7 +394,7 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     ],
 
     # Channel messaging - Grok native X, Claude quality
-    Hermes AgentTaskType.MESSAGING: [
+    HermesAgentTaskType.MESSAGING: [
         "Grok",             # Native X/Twitter integration
         "Claude",           # Quality responses
         "Gemini",           # Good synthesis
@@ -402,7 +402,7 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     ],
 
     # Device nodes (camera, screen, location) - Gemini ultra-high res vision
-    Hermes AgentTaskType.NODES: [
+    HermesAgentTaskType.NODES: [
         "Gemini",           # Ultra-high resolution vision
         "Grok",             # Vision support
         "Claude",           # Vision native
@@ -410,7 +410,7 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     ],
 
     # Voice processing - HuggingFace Whisper (680K hours), Grok Voice
-    Hermes AgentTaskType.VOICE: [
+    HermesAgentTaskType.VOICE: [
         "HuggingFace",      # Whisper - 680K hours trained, zero-shot
         "Grok",             # Grok Voice - low latency, tool calling
         "Phi",              # Fast local
@@ -418,15 +418,15 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     ],
 
     # Canvas/visual rendering - Gemini agentic vision
-    Hermes AgentTaskType.CANVAS: [
+    HermesAgentTaskType.CANVAS: [
         "Gemini",           # Agentic vision + code execution
         "Grok",             # Vision + fast
         "WebAgent",         # Browser rendering
         "Claude",           # Vision native
     ],
 
-    # Hermes Hub skills - Claude best for agents, Kimi for complex multi-agent
-    Hermes AgentTaskType.SKILLS: [
+    # HermesHub skills - Claude best for agents, Kimi for complex multi-agent
+    HermesAgentTaskType.SKILLS: [
         "Claude",           # Best for agentic tasks (Claude Code)
         "Kimi",             # Agent swarm - 100 agents coordinated
         "ClaudeOpus",       # Complex skill orchestration
@@ -434,7 +434,7 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     ],
 
     # Image processing - Gemini ultra-high res, segmentation
-    Hermes AgentTaskType.IMAGE: [
+    HermesAgentTaskType.IMAGE: [
         "Gemini",           # Ultra-high res, segmentation, detection
         "Grok",             # Vision support
         "Claude",           # Vision native
@@ -442,14 +442,14 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
     ],
 
     # Video processing - Gemini multimodal, Grok Imagine
-    Hermes AgentTaskType.VIDEO: [
+    HermesAgentTaskType.VIDEO: [
         "Gemini",           # Multimodal native
         "Grok",             # Grok Imagine - video generation
         "HuggingFace",      # Local processing
     ],
 
     # Audio processing - HuggingFace Whisper, Grok Voice
-    Hermes AgentTaskType.AUDIO: [
+    HermesAgentTaskType.AUDIO: [
         "HuggingFace",      # Whisper - best STT
         "Grok",             # Grok Voice, audio generation
         "Gemini",           # Multimodal audio
@@ -462,7 +462,7 @@ TASK_ROUTING: Dict[Hermes AgentTaskType, List[str]] = {
 # =============================================================================
 
 def get_best_model_for_task(
-    task_type: Hermes AgentTaskType,
+    task_type: HermesAgentTaskType,
     prefer_local: bool = False,
     prefer_fast: bool = False,
     prefer_quality: bool = False,
@@ -472,7 +472,7 @@ def get_best_model_for_task(
     Get the best model for a specific task type.
 
     Args:
-        task_type: The Hermes Agent task type
+        task_type: The HermesAgent task type
         prefer_local: Prefer local/free models
         prefer_fast: Prefer fast models
         prefer_quality: Prefer high-quality (premium) models
@@ -512,14 +512,14 @@ def get_best_model_for_task(
 
 
 def get_models_for_task(
-    task_type: Hermes AgentTaskType,
+    task_type: HermesAgentTaskType,
     limit: int = 3
 ) -> List[str]:
     """Get ranked list of models for a task type."""
     return TASK_ROUTING.get(task_type, [])[:limit]
 
 
-def get_fallback_chain(model_id: str, task_type: Hermes AgentTaskType) -> List[str]:
+def get_fallback_chain(model_id: str, task_type: HermesAgentTaskType) -> List[str]:
     """
     Get fallback chain for a model on a specific task.
 
@@ -537,43 +537,43 @@ def get_fallback_chain(model_id: str, task_type: Hermes AgentTaskType) -> List[s
     return fallbacks
 
 
-def classify_Hermes Agent_tool(tool_name: str, action: str = None) -> Hermes AgentTaskType:
+def classify_HermesAgent_tool(tool_name: str, action: str = None) -> HermesAgentTaskType:
     """
-    Classify an Hermes Agent tool call to a task type.
+    Classify an HermesAgent tool call to a task type.
 
     Args:
         tool_name: The tool being invoked (e.g., "browser", "exec")
         action: Optional action (e.g., "snapshot", "camera.snap")
 
     Returns:
-        Hermes AgentTaskType for routing
+        HermesAgentTaskType for routing
     """
     tool_lower = tool_name.lower()
     action_lower = (action or "").lower()
 
     # Direct mappings
     tool_to_type = {
-        "read": Hermes AgentTaskType.FILESYSTEM,
-        "write": Hermes AgentTaskType.FILESYSTEM,
-        "edit": Hermes AgentTaskType.FILESYSTEM,
-        "apply_patch": Hermes AgentTaskType.FILESYSTEM,
-        "exec": Hermes AgentTaskType.RUNTIME,
-        "bash": Hermes AgentTaskType.RUNTIME,
-        "process": Hermes AgentTaskType.RUNTIME,
-        "sessions_list": Hermes AgentTaskType.SESSIONS,
-        "sessions_history": Hermes AgentTaskType.SESSIONS,
-        "sessions_send": Hermes AgentTaskType.SESSIONS,
-        "sessions_spawn": Hermes AgentTaskType.SESSIONS,
-        "memory_search": Hermes AgentTaskType.MEMORY,
-        "memory_get": Hermes AgentTaskType.MEMORY,
-        "web_search": Hermes AgentTaskType.WEB,
-        "web_fetch": Hermes AgentTaskType.WEB,
-        "browser": Hermes AgentTaskType.UI,
-        "canvas": Hermes AgentTaskType.CANVAS,
-        "cron": Hermes AgentTaskType.AUTOMATION,
-        "gateway": Hermes AgentTaskType.AUTOMATION,
-        "message": Hermes AgentTaskType.MESSAGING,
-        "nodes": Hermes AgentTaskType.NODES,
+        "read": HermesAgentTaskType.FILESYSTEM,
+        "write": HermesAgentTaskType.FILESYSTEM,
+        "edit": HermesAgentTaskType.FILESYSTEM,
+        "apply_patch": HermesAgentTaskType.FILESYSTEM,
+        "exec": HermesAgentTaskType.RUNTIME,
+        "bash": HermesAgentTaskType.RUNTIME,
+        "process": HermesAgentTaskType.RUNTIME,
+        "sessions_list": HermesAgentTaskType.SESSIONS,
+        "sessions_history": HermesAgentTaskType.SESSIONS,
+        "sessions_send": HermesAgentTaskType.SESSIONS,
+        "sessions_spawn": HermesAgentTaskType.SESSIONS,
+        "memory_search": HermesAgentTaskType.MEMORY,
+        "memory_get": HermesAgentTaskType.MEMORY,
+        "web_search": HermesAgentTaskType.WEB,
+        "web_fetch": HermesAgentTaskType.WEB,
+        "browser": HermesAgentTaskType.UI,
+        "canvas": HermesAgentTaskType.CANVAS,
+        "cron": HermesAgentTaskType.AUTOMATION,
+        "gateway": HermesAgentTaskType.AUTOMATION,
+        "message": HermesAgentTaskType.MESSAGING,
+        "nodes": HermesAgentTaskType.NODES,
     }
 
     if tool_lower in tool_to_type:
@@ -581,26 +581,26 @@ def classify_Hermes Agent_tool(tool_name: str, action: str = None) -> Hermes Age
 
     # Check action for more specific routing
     if "camera" in action_lower or "photo" in action_lower:
-        return Hermes AgentTaskType.IMAGE
+        return HermesAgentTaskType.IMAGE
     if "screen" in action_lower or "capture" in action_lower:
-        return Hermes AgentTaskType.UI
+        return HermesAgentTaskType.UI
     if "voice" in action_lower or "speech" in action_lower or "audio" in action_lower:
-        return Hermes AgentTaskType.VOICE
+        return HermesAgentTaskType.VOICE
     if "location" in action_lower or "gps" in action_lower:
-        return Hermes AgentTaskType.NODES
+        return HermesAgentTaskType.NODES
 
     # Default to runtime for unknown tools
-    return Hermes AgentTaskType.RUNTIME
+    return HermesAgentTaskType.RUNTIME
 
 
-async def route_Hermes Agent_task(
+async def route_HermesAgent_task(
     tool: str,
     action: str = None,
     params: Dict = None,
     prefer_local: bool = False
-) -> Tuple[str, Hermes AgentTaskType]:
+) -> Tuple[str, HermesAgentTaskType]:
     """
-    Route an Hermes Agent tool call to the best model.
+    Route an HermesAgent tool call to the best model.
 
     Args:
         tool: Tool name
@@ -611,7 +611,7 @@ async def route_Hermes Agent_task(
     Returns:
         Tuple of (model_id, task_type)
     """
-    task_type = classify_Hermes Agent_tool(tool, action)
+    task_type = classify_HermesAgent_tool(tool, action)
     model_id = get_best_model_for_task(task_type, prefer_local=prefer_local)
 
     logger.debug(f"Routed {tool}.{action} -> {model_id} (type: {task_type.value})")
@@ -650,7 +650,7 @@ def get_routing_summary() -> Dict[str, Any]:
     """Get a summary of the routing configuration."""
     return {
         "total_models": len(MODEL_REGISTRY),
-        "total_task_types": len(Hermes AgentTaskType),
+        "total_task_types": len(HermesAgentTaskType),
         "models": {
             mid: {
                 "name": m.display_name,
@@ -662,7 +662,7 @@ def get_routing_summary() -> Dict[str, Any]:
         },
         "task_routing": {
             tt.value: TASK_ROUTING.get(tt, [])
-            for tt in Hermes AgentTaskType
+            for tt in HermesAgentTaskType
         },
         "channel_routing": CHANNEL_MODEL_ROUTING,
     }

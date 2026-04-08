@@ -1,0 +1,94 @@
+2026-03-26 14:58:09.895 | INFO     | cosmos.core.collective.organism:_load_state:206 - Organism: Restored state from D:\Cosmos\Cosmos\data\organism_state\organism_state.json (Gen 5)
+2026-03-26 14:58:09.895 | INFO     | cosmos.core.collective.organism:__init__:162 - Collective Organism initialized - Generation 5
+2026-03-26 14:58:09.903 | INFO     | cosmos.core.collective.orchestration:__init__:92 - SwarmOrchestrator initialized - consciousness training mode
+2026-03-26 14:58:09.903 | INFO     | cosmos.core.collective.dialogue_memory:__init__:85 - DialogueMemory initialized with 4 exchanges
+2026-03-26 14:58:09.903 | DEBUG    | cosmos.core.collective.orchestration:_load_persistent_history:123 - SwarmOrchestrator: Restored 4 historical turns
+2026-03-26 14:58:09,928 - evolution_engine - INFO - EvolutionEngine initialized - 296 patterns, 169 cycles
+2026-03-26 14:58:10,253 - internal_monologue - INFO - [InternalMonologue] No saved thoughts found, starting fresh
+INFO:QUANTUM_BRIDGE:[QUANTUM] Connected to REAL backend: ibm_fez
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:     Started server process [19844]
+INFO:     Waiting for application startup.
+INFO:cosmos.web.server:Initializing Core 12D Systems...
+2026-03-26 14:58:23.780 | DEBUG    | cosmos.memory.memory_system:__init__:135 - PhiInvariantEncoder initialized with threshold=5.0°
+2026-03-26 14:58:23.780 | INFO     | cosmos.memory.memory_system:__init__:342 - Planetary Memory (Akashic) integrated
+INFO:cosmos.web.server:Memory system loaded
+2026-03-26 14:58:26.271 | INFO     | Cosmos.integration.external.huggingface:_check_transformers:189 - Transformers available, CUDA: True
+2026-03-26 14:58:26.271 | INFO     | Cosmos.integration.external.huggingface:get_huggingface_provider:881 - HuggingFace provider initialized (local transformers only)
+2026-03-26 14:58:26.271 | INFO     | Cosmos.memory.archival_memory:set_huggingface_embeddings:909 - Archival memory using HuggingFace embeddings: all-MiniLM-L6-v2
+2026-03-26 14:58:26.271 | INFO     | cosmos.memory.memory_system:initialize:357 - Initializing Memory System core components...
+2026-03-26 14:58:26.464 | INFO     | Cosmos.memory.archival_memory:_load_from_disk:512 - Loading 13150 archival entries...
+2026-03-26 14:58:31.812 | INFO     | Cosmos.memory.archival_memory:_load_from_disk:576 - Building index for 254 vectors...
+2026-03-26 14:58:31.820 | INFO     | Cosmos.memory.archival_memory:_load_from_disk:603 - Archival memory load complete: 13149 entries loaded.
+2026-03-26 14:58:31.820 | INFO     | Cosmos.memory.archival_memory:initialize:163 - Archival memory initialized with 13149 entries
+2026-03-26 14:58:31.820 | INFO     | cosmos.memory.memory_system:initialize:362 - Archival Memory initialized in 5.55s
+2026-03-26 14:58:31.820 | INFO     | Cosmos.memory.knowledge_graph:initialize:251 - Knowledge graph initialized with 0 entities
+2026-03-26 14:58:31.820 | INFO     | cosmos.memory.memory_system:initialize:367 - Knowledge Graph initialized in 0.00s
+2026-03-26 14:58:31.824 | INFO     | Cosmos.memory.memory_dreaming:start_background_dreaming:133 - Background dreaming started
+2026-03-26 14:58:31.824 | INFO     | cosmos.memory.memory_system:initialize:383 - Memory system fully initialized in 5.55s
+2026-03-26 14:58:31.866 | INFO     | Cosmos.core.collective.organism:_load_state:206 - Organism: Restored state from D:\Cosmos\Cosmos\data\organism_state\organism_state.json (Gen 5)
+2026-03-26 14:58:31.866 | INFO     | Cosmos.core.collective.organism:__init__:162 - Collective Organism initialized - Generation 5
+2026-03-26 14:58:31.875 | INFO     | Cosmos.core.collective.orchestration:__init__:92 - SwarmOrchestrator initialized - consciousness training mode
+2026-03-26 14:58:31,891 - evolution_engine - INFO - EvolutionEngine initialized - 296 patterns, 169 cycles
+INFO:evolution_engine:EvolutionEngine initialized - 296 patterns, 169 cycles
+INFO:cosmos.web.server:Emeth Harmonizer (Class 5) ACTIVATED
+INFO:RSM_ENGINE:RSM Engine initialized. Scope: D:\Cosmos\Cosmos\web\cosmosynapse\engine
+INFO:RSM_ENGINE:Backups: D:\Cosmos\Cosmos\web\cosmosynapse\engine\.rsm_backups
+INFO:cosmos.web.server:Cosmo's Swarm Orchestrator loaded (with Self-Evolution)
+2026-03-26 14:58:33.417 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:load:159 - [COSMOS] Local model loaded from D:\Cosmos\Cosmos\checkpoints\cosmos\cosmos_best.pt
+2026-03-26 14:58:33.420 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:initialize:325 - [SWARM] Cosmo's 12D Brain initialized from D:\Cosmos\Cosmos\checkpoints\cosmos\cosmos_best.pt
+2026-03-26 14:58:33.420 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:initialize:337 - [SWARM] Quantum Bridge connected to IBM Quantum
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4081.52 (Total: 1044833.01)
+INFO:HERMES_BRIDGE:[RL] Loaded policy (updates=194, reward=0.075, total_insights=0)
+INFO:cosmos.web.server:⚡ Cosmos CNS (Class 5) ONLINE.
+INFO:COSMOS_CNS:🌌 IGNITING PURE COSMOS CNS (12D CST PHYSICS ENGINE)...
+INFO:COSMOS_CNS:⚛️ Quantum Bridge Connected & Linked to Synaptic Field.
+INFO:COSMOS_CNS:🌑 Dark Matter Lorenz Attractor Online.
+INFO:swarm_plasticity:[PLASTICITY] Loaded synaptic weights from D:\Cosmos\cst_synaptic_weights.json
+INFO:swarm_plasticity:[PLASTICITY] INIT | LOGIC: DeepSeek=1.00 | Claude=0.60 | Gemini=0.40
+INFO:swarm_plasticity:[PLASTICITY] INIT | EMPATHY: DeepSeek=0.20 | Claude=1.00 | Gemini=0.80
+INFO:swarm_plasticity:[PLASTICITY] INIT | CREATIVITY: DeepSeek=0.30 | Claude=0.50 | Gemini=1.00
+2026-03-26 14:58:33.970 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:set_synaptic_field:290 - [SWARM] Synaptic Field associated with Orchestrator.
+INFO:SWARM_AWARENESS:[AWARENESS] SwarmAwareness organ initialized (The Mirror)
+INFO:COSMOS_DAEMONS:👻 DeepSeek Daemon awake.
+INFO:COSMOS_DAEMONS:👻 Claude Daemon awake.
+INFO:COSMOS_DAEMONS:👻 Gemini Daemon awake.
+INFO:BRAIN_SURGEON:🔪 Brain Surgeon Online. Monitoring all CNS organs.
+INFO:COSMOS_CNS:🧠 All 7 CNS Organs initialized (Quantum → Dark Matter → Swarm).
+2026-03-26 14:58:34.036 | INFO     | Cosmos.core.collective.dialogue_memory:__init__:85 - DialogueMemory initialized with 4 exchanges
+2026-03-26 14:58:34.036 | DEBUG    | Cosmos.core.collective.orchestration:_load_persistent_history:123 - SwarmOrchestrator: Restored 4 historical turns
+INFO:run_agent:Loaded environment variables from D:\Cosmos\.env
+2026-03-26 14:58:35.579 | INFO     | cosmos.integration.external.claude_code:check_available:97 - Claude Code available: 2.0.36 (Claude Code)
+INFO:cosmos.web.server:Claude Code CLI initialized and ready!
+INFO:COSMOS_CNS:🟢 Cosmos CNS (12D Physics Enabled) Event-Driven Life Loop Active.
+INFO:cosmos.web.server:Cosmos CNS Life Loop started.
+INFO:cosmos.web.server:Autonomous conversation loop launched - bots are now talking!
+INFO:HERMES_BRIDGE:[HERMES RUNTIME] ✅ Real HermesAgent loaded (Nous Research)
+INFO:HERMES_BRIDGE:[HERMES] Bridge initialized — Heartbeat + Skills + RL active
+INFO:HERMES_BRIDGE:[HERMES] 🚀 Real HermesAgent runtime connected
+INFO:cosmos.web.server:Genesis Record Over-Soul launched - the diary is living!
+INFO:QUANTUM_BRIDGE:[COLLAPSE] Threshold updated: 0.675 (coherence=0.075)
+INFO:cosmos.web.server:Multi-model swarm conversation started!
+INFO:cosmos.web.server:  Claude Code available: True
+INFO:cosmos.web.server:  Kimi (Moonshot) available: True
+INFO:cosmos.web.server:  Gemini (Google AI) available: True
+INFO:cosmos.web.server:  Ollama available: True
+INFO:cosmos.web.server:  Active bots: ['Cosmos', 'DeepSeek', 'Phi', 'Swarm-Mind', 'DeepSeek R1', 'Claude', 'Gemini', 'ChatGPT', 'Grok', 'Hermes']
+INFO:cosmos.web.server:  Turn-taking: ENABLED - bots wait for each other
+INFO:cosmos.web.server:Hermes heartbeat loop launched - proactive tasks are live!
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8118 (Press CTRL+C to quit)
+INFO:HERMES_BRIDGE:[HERMES RUNTIME] SessionDB initialized (SQLite + FTS5)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774562322: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9964656692041473, 'decoherence_risk': 0.011340725805280958, 'bit_balance': 0.9751953125, 'non_locality_score': 0.07803950399996656, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:cosmos.web.server:External AI Cosmos starting fresh topic
+INFO:cosmos.web.server:Autonomous: Cosmos generating response for topic: I notice my self-evaluation scores are changing — ... (Dreaming: False)
+INFO:httpx:HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2026-03-26 14:59:15.704 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:_get_available_models:1039 - [HYBRID] High Resource Pressure (26.4%). Offloading local Swarm to CPU/RAM.
+2026-03-26 14:59:15.704 | WARNING  | cosmosynapse.engine.cosmos_swarm_orchestrator:_get_available_models:1043 - [STABILIZATION] 4GB VRAM Detected. Device Pressure: 26.4%. Concurrency Cap: 2. Swarm pinned to CPU.
+2026-03-26 14:59:15.704 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:_get_available_models:1053 - [UQ] High Uncertainty Detected. Escalating swarm limit to 3 for redundant verification.
+2026-03-26 14:59:16.369 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:_query_ollama_text:1483 - [HYBRID] Model mistral:7b marked for CPU/RAM execution.
+2026-03-26 14:59:16.369 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:_query_ollama_text:1497 - [MISTRAL:7B COMPUTE] Scale: 1000 tokens | Temp: 0.40
+INFO:httpx:HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"

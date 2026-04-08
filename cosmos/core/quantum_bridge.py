@@ -1,27 +1,88 @@
 import asyncio
 import time
 import numpy as np
+from collections import deque
 from typing import Optional
 import threading
 import logging
+import sys
+import builtins
 
 logger = logging.getLogger("QUANTUM_BRIDGE")
 
 try:
-    from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
-    from qiskit import QuantumCircuit
-    from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-    QISKIT_AVAILABLE = True
-    QISKIT_ERROR = None
-except ImportError as e:
-    QISKIT_AVAILABLE = False
-    QISKIT_ERROR = str(e)
-    with open("quantum_debug.log", "a") as f:
-        f.write(f"\n[INIT] Qiskit Import Failed: {e}\n")
+    from Cosmos.core.cst_critical_integration import (
+        SOPHIA_POINT,
+        DEFAULT_COLLAPSE_THRESHOLD,
+        DEFAULT_RECOVERY_THRESHOLD,
+        build_12d_state_vector,
+        coherence_conservation_step,
+        dynamic_temperature,
+        fold_onset_triplet,
+        mahalanobis_collapse_distance,
+        omega_point_convergence,
+        phase_transition_hysteresis,
+        spectral_profile_from_counts,
+        triple_gate_phase_transition,
+    )
+except ImportError:
+    from cosmos.core.cst_critical_integration import (
+        SOPHIA_POINT,
+        DEFAULT_COLLAPSE_THRESHOLD,
+        DEFAULT_RECOVERY_THRESHOLD,
+        build_12d_state_vector,
+        coherence_conservation_step,
+        dynamic_temperature,
+        fold_onset_triplet,
+        mahalanobis_collapse_distance,
+        omega_point_convergence,
+        phase_transition_hysteresis,
+        spectral_profile_from_counts,
+        triple_gate_phase_transition,
+    )
+
+# Guard: qiskit imports can hang on Windows due to torch 2.8.0 DLL conflict.
+import os as _os
+import subprocess as _sp
+
+def _qiskit_import_ok(timeout=6):
+    cached = _os.environ.get("_COSMOS_PROBE_QISKIT")
+    if cached is not None:
+        return cached == "1"
+    try:
+        proc = _sp.Popen(
+            [sys.executable, "-c", "from qiskit_ibm_runtime import QiskitRuntimeService; print('OK')"],
+            stdout=_sp.PIPE, stderr=_sp.PIPE,
+            creationflags=getattr(_sp, 'CREATE_NO_WINDOW', 0),
+        )
+        stdout, _ = proc.communicate(timeout=timeout)
+        ok = b"OK" in stdout
+    except _sp.TimeoutExpired:
+        proc.kill(); proc.wait(); ok = False
+    except Exception:
+        ok = False
+    _os.environ["_COSMOS_PROBE_QISKIT"] = "1" if ok else "0"
+    return ok
+
+QISKIT_AVAILABLE = False
+QISKIT_ERROR = None
+if _qiskit_import_ok():
+    try:
+        from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
+        from qiskit import QuantumCircuit
+        from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+        QISKIT_AVAILABLE = True
+    except ImportError as e:
+        QISKIT_ERROR = str(e)
+        with open("quantum_debug.log", "a") as f:
+            f.write(f"\n[INIT] Qiskit Import Failed: {e}\n")
+else:
+    QISKIT_ERROR = "qiskit import hangs (DLL conflict)"
+    print("[WARN] qiskit import hangs (DLL conflict) — quantum bridge disabled")
 
 # HermesAgent integration (optional — degrades gracefully)
 try:
-    from cosmos.integration.hermes_bridge import get_hermes_bridge
+    from Cosmos.integration.hermes_bridge import get_hermes_bridge
     HERMES_AVAILABLE = True
 except ImportError:
     HERMES_AVAILABLE = False
@@ -34,7 +95,8 @@ class QuantumEntanglementBridge:
         self.backend = None
         self.connected = False
         self.entropy_buffer: list[float] = []
-        self.buffer_lock = threading.Lock()
+        # RLock protects nested status/consumption checks during active entropy use.
+        self.buffer_lock = threading.RLock()
         self.min_buffer_size = 10
         self.is_refilling = False
         self.last_error = None
@@ -44,12 +106,32 @@ class QuantumEntanglementBridge:
         # [UPGRADE 3] Buffer demand prediction
         self._entropy_consumption_log: list[float] = []  # Timestamps of each consumption
         self._consumption_window_seconds: float = 60.0   # Look-back window for rate calc
-        self._predicted_depletion_threshold: int = 15    # Refill if predicted depletion < Ns
+        self._predicted_depletion_threshold: int = 5    # Refill if predicted depletion < Ns
 
         # [UPGRADE 4] Collapse threshold adaptation
         self._learned_threshold: float = 0.65          # Live learned value
         self._threshold_last_updated: float = 0.0      # Unix timestamp
         self._threshold_update_interval: float = 300.0 # Update every 5 minutes
+        self.last_entropy: Optional[float] = None
+        self.last_run_summary: dict = {}
+        self.total_life_force: float = 0.0
+        self.last_life_force_yield: float = 0.0
+        self.last_harvest_timestamp: float = 0.0
+        self.last_quantum_signature: dict = {}
+        self._recent_run_history = deque(maxlen=25)
+        self.last_refill_started_at: float = 0.0
+        self.last_refill_completed_at: float = 0.0
+        self.last_refill_duration_seconds: float = 0.0
+        self.last_refill_error: Optional[str] = None
+        self.last_refill_phase: str = "idle"
+        self.current_job_metadata: dict = {}
+        self._ci_b: float = SOPHIA_POINT * 0.5
+        self._ci_c: float = SOPHIA_POINT * 0.5
+        self._critical_collapse_active: bool = False
+        self._lambda2_history: deque[float] = deque(maxlen=16)
+        self._ideational_density_history: deque[float] = deque(maxlen=16)
+        self._zeta_history: deque[float] = deque(maxlen=16)
+        self._load_life_force_state()
         
         # Log init
         with open("quantum_debug.log", "a") as f:
@@ -80,6 +162,8 @@ class QuantumEntanglementBridge:
         import logging as py_logging
         py_logging.getLogger("qiskit_ibm_runtime").setLevel(py_logging.ERROR)
         py_logging.getLogger("qiskit_runtime_service").setLevel(py_logging.ERROR)
+        py_logging.getLogger("qiskit").setLevel(py_logging.WARNING)
+        py_logging.getLogger("qiskit.passmanager").setLevel(py_logging.WARNING)
 
         import traceback
         
@@ -260,10 +344,20 @@ class QuantumEntanglementBridge:
         phase = 0.0
         if 'cst_physics' in user_physics:
             phase = user_physics['cst_physics'].get('geometric_phase_rad', 0.0)
-            
-        w = 0.1 
-        
-        return self.collapse_state_vector(phase, w)
+
+        cst_metrics = user_physics.get("cst_metrics", {}) if user_physics else {}
+        w = float(
+            user_physics.get("dark_matter_w", cst_metrics.get("dark_matter_w", 0.1))
+        ) if user_physics else 0.1
+
+        threshold = None
+        if cst_metrics.get("critical_collapse_active"):
+            threshold = min(
+                0.95,
+                self._hermes_get_collapse_threshold() + 0.05,
+            )
+
+        return self.collapse_state_vector(phase, w, threshold=threshold)
 
     def collapse_state_vector(
         self, phase: float, dark_matter_w: float, threshold: float | None = None
@@ -299,36 +393,42 @@ class QuantumEntanglementBridge:
             self.last_physics = user_physics
 
         if not self.connected:
-            return np.random.random()
+            val = float(np.random.random())
+            self.last_entropy = val
+            return val
 
         with self.buffer_lock:
             if self.entropy_buffer:
                 val = self.entropy_buffer.pop(0)
-                # Log consumption timestamp for demand prediction
                 self._entropy_consumption_log.append(time.time())
-
-                # Reactive threshold check (existing behavior)
-                reactive_low = len(self.entropy_buffer) < self.min_buffer_size
-
-                # Proactive prediction check (Upgrade 3)
-                proactive_trigger = (
-                    not self.is_refilling and
-                    self._hermes_predict_buffer_demand()
-                )
-
-                if (reactive_low or proactive_trigger) and not self.is_refilling:
-                    self._trigger_refill(user_physics or self.last_physics)
-
-                print(
-                    f'[QUANTUM] Entropy consumed: {val:.4f}'
-                    f' Buffer: {len(self.entropy_buffer)}'
-                    f' Proactive: {proactive_trigger}'
-                )
-                return val
+                buffer_size = len(self.entropy_buffer)
             else:
-                if not self.is_refilling:
-                    self._trigger_refill(user_physics or self.last_physics)
-                return np.random.random()
+                buffer_size = 0
+                val = None
+
+        if val is not None:
+            reactive_low = buffer_size < self.min_buffer_size
+            proactive_trigger = (
+                not self.is_refilling and
+                self._hermes_predict_buffer_demand()
+            )
+
+            if (reactive_low or proactive_trigger) and not self.is_refilling:
+                self._trigger_refill(user_physics or self.last_physics)
+
+            logger.debug(
+                f'[QUANTUM] Entropy consumed: {val:.4f}'
+                f' Buffer: {buffer_size}'
+                f' Proactive: {proactive_trigger}'
+            )
+            self.last_entropy = float(val)
+            return val
+
+        if not self.is_refilling:
+            self._trigger_refill(user_physics or self.last_physics)
+        val = float(np.random.random())
+        self.last_entropy = val
+        return val
 
     # [UPGRADE 3] Buffer Demand Predictor
     def _hermes_predict_buffer_demand(self) -> bool:
@@ -382,6 +482,14 @@ class QuantumEntanglementBridge:
     def _refill_buffer(self, user_physics: Optional[dict] = None):
         """Execute quantum circuit parameterized by human emotional physics."""
         self.is_refilling = True
+        self.last_refill_started_at = time.time()
+        self.last_refill_completed_at = 0.0
+        self.last_refill_duration_seconds = 0.0
+        self.last_refill_error = None
+        self.last_refill_phase = "extracting_physics"
+        self.current_job_metadata = {}
+        with self.buffer_lock:
+            buffer_before = len(self.entropy_buffer)
         try:
             # 1. Extract Symbiotic Parameters
             if not user_physics:
@@ -392,14 +500,14 @@ class QuantumEntanglementBridge:
             phase = 0.0
             entropy = 0.5
             resonance = 0.0
-            
+
             # Robust mapping for 12D Physics
             cst = user_physics.get('cst_physics', {})
             bio = user_physics.get('bio_signatures', {})
-            
+
             phase = cst.get('geometric_phase_rad', user_physics.get('geometric_phase_rad', 0.0))
             entropy = user_physics.get('entropy_field', bio.get('intensity', 0.5))
-            
+
             # Resonance Mapping: Prioritize resonance_scalar, then entanglement_score, then fallback to phase synchrony
             resonance = user_physics.get('resonance_scalar', 0.0)
             if resonance == 0.0:
@@ -413,9 +521,11 @@ class QuantumEntanglementBridge:
             theta_1 = float(abs(phase) % np.pi)
             theta_2 = float((entropy * np.pi) % np.pi)
             theta_3 = float((abs(resonance) * np.pi) % np.pi)
+            base_thetas = (theta_1, theta_2, theta_3)
 
             # [UPGRADE 1] Query the pre-run oracle for advisory thetas from historical best runs
             oracle_thetas = self._hermes_get_oracle_thetas(phase, entropy, resonance)
+            blend = 0.0
             if oracle_thetas is not None:
                 o1, o2, o3 = oracle_thetas
                 # Blend: 60% current physics (respects present moment),
@@ -429,16 +539,16 @@ class QuantumEntanglementBridge:
 
             # 2. Construct Symbiotic Entanglement Circuit
             qc = QuantumCircuit(5)
-            
+
             # Apply initial superposition
-            qc.h(range(5)) 
-            
+            qc.h(range(5))
+
             # Apply user-physics parameterized rotations
             for i in range(5):
                 qc.ry(theta_1, i)
                 qc.rx(theta_2, i)
                 qc.rz(theta_3, i)
-                
+
             # Entangle the swarm qubits
             qc.cx(0, 1)
             qc.cx(1, 2)
@@ -447,46 +557,153 @@ class QuantumEntanglementBridge:
             qc.cx(4, 0) # Close the topology ring
 
             qc.measure_all()
-            
+
             # 3. Run on backend
+            self.last_refill_phase = "transpiling_circuit"
+            run_started_at = time.time()
             pm = generate_preset_pass_manager(backend=self.backend, optimization_level=1)
             isa_circuit = pm.run(qc)
             sampler = Sampler(mode=self.backend)
+            self.last_refill_phase = "submitting_job"
+            submitted_at = time.time()
             job = sampler.run([isa_circuit])
+            job_meta = self._safe_job_metadata(job)
+            self.current_job_metadata = dict(job_meta)
+            self.last_refill_phase = "awaiting_result"
             result = job.result()
-            
+            completed_at = time.time()
+            job_meta.update(self._safe_job_metadata(job))
+            self.current_job_metadata = dict(job_meta)
+            self.last_refill_phase = "harvesting_results"
             pub_result = result[0]
             counts = pub_result.data.meas.get_counts()
-            
-            # [NEW] PERMANENT ARCHIVAL: Never waste a quantum run. 
-            # Store the raw results forever to computationally build AI Plasticity over time.
-            self._archive_quantum_run(user_physics, counts)
-            
-            # [HERMES] Index quantum results for searchable analysis
-            self._hermes_process_quantum(user_physics, counts)
-            
+            life_force_yield = self._harvest_life_force(counts)
+
             # 4. Extract Cognition Entropy from Entangled States
-            new_entropy = []
+            #    Apply Von Neumann debiasing to eliminate QPU hardware bias
+            #    (IBM Fez qubit asymmetry: Q0→|0⟩ 51.5%, Q2→|1⟩ 52.3%)
+            raw_bits = []
             for bitstring, count in counts.items():
-                val = int(bitstring, 2) / (2**5)
-                n_adds = min(count, 5) 
-                new_entropy.extend([val] * n_adds)
-                
+                for _ in range(min(count, 5)):
+                    raw_bits.extend(int(b) for b in bitstring)
+
+            # Von Neumann extractor: pairs (0,1)→0, (1,0)→1, discard (0,0)/(1,1)
+            # Provably eliminates bias regardless of source distribution
+            debiased_bits = []
+            for i in range(0, len(raw_bits) - 1, 2):
+                if raw_bits[i] == 0 and raw_bits[i + 1] == 1:
+                    debiased_bits.append(0)
+                elif raw_bits[i] == 1 and raw_bits[i + 1] == 0:
+                    debiased_bits.append(1)
+                # else: (0,0) or (1,1) → discard (correlated bias)
+
+            # Pack debiased bits into normalized floats [0.0, 1.0]
+            # Use 5-bit words to match the 5-qubit circuit register width
+            new_entropy = []
+            word_size = 5
+            for i in range(0, len(debiased_bits) - word_size + 1, word_size):
+                word = 0
+                for bit in debiased_bits[i:i + word_size]:
+                    word = (word << 1) | bit
+                new_entropy.append(word / (2**word_size))
+
+            if not new_entropy and counts:
+                # Fallback: if debiasing consumed too many bits, use raw
+                # (happens rarely when hardware bias is extreme)
+                logger.debug("[QUANTUM] Von Neumann yield too low, using raw entropy")
+                for bitstring, count in counts.items():
+                    val = int(bitstring, 2) / (2**5)
+                    n_adds = min(count, 5)
+                    new_entropy.extend([val] * n_adds)
+
             np.random.shuffle(new_entropy)
-            
+            logger.debug(
+                f"[QUANTUM] Von Neumann debiased: {len(raw_bits)} raw bits → "
+                f"{len(debiased_bits)} clean bits → {len(new_entropy)} entropy values"
+            )
+
             with self.buffer_lock:
                 self.entropy_buffer.extend(new_entropy)
-                if len(self.entropy_buffer) > 100:
-                    self.entropy_buffer = self.entropy_buffer[:100]
-                    
-            print(f"[QUANTUM SYMBIOSIS] Hardware refilled. Resonance: {resonance:.2f}, Buffer: {len(self.entropy_buffer)}")
+                if len(self.entropy_buffer) > 500:
+                    self.entropy_buffer = self.entropy_buffer[:500]
+                buffer_after = len(self.entropy_buffer)
+
+            signature = self._build_quantum_signature(
+                user_physics=user_physics,
+                counts=counts,
+                life_force_yield=life_force_yield,
+                base_thetas=base_thetas,
+                final_thetas=(theta_1, theta_2, theta_3),
+                oracle_thetas=oracle_thetas,
+                blend=blend,
+                logical_circuit=qc,
+                isa_circuit=isa_circuit,
+                job_meta=job_meta,
+                buffer_before=buffer_before,
+                buffer_after=buffer_after,
+                run_started_at=run_started_at,
+                submitted_at=submitted_at,
+                completed_at=completed_at,
+            )
+
+            self.last_quantum_signature = signature
+            self._recent_run_history.append(signature)
+            self.current_job_metadata = dict(signature.get("job", {}))
+
+            # [NEW] PERMANENT ARCHIVAL: Never waste a quantum run.
+            # Store the raw results forever to computationally build AI Plasticity over time.
+            self.last_refill_phase = "archiving"
+            self._archive_quantum_run(
+                user_physics,
+                counts,
+                life_force_yield,
+                signature=signature,
+            )
+
+            # [HERMES] Index quantum results for searchable analysis
+            self._hermes_process_quantum(user_physics, counts)
+
+            metrics = self._build_run_metrics(counts, user_physics=user_physics)
+            uq_payload = dict(
+                getattr(self.synaptic_field, "uq_payload", {}) or
+                self.last_run_summary.get("uq_payload", {}) or
+                {}
+            )
+            self.last_run_summary = {
+                **metrics,
+                "backend": self.backend.name if self.backend else None,
+                "life_force_yield": life_force_yield,
+                "harvested_at": self.last_harvest_timestamp,
+                "buffer_before": buffer_before,
+                "buffer_after": buffer_after,
+                "job": dict(signature.get("job", {})),
+                "quantum_signature": signature,
+                "maintenance_estimate_seconds": signature.get("maintenance", {}).get("estimated_seconds_remaining"),
+                "uq_payload": uq_payload,
+            }
+            self.last_refill_phase = "complete"
+
+            print(f"[QUANTUM SYMBIOSIS] Hardware refilled. Resonance: {resonance:.2f}, Buffer: {buffer_after}")
 
         except Exception as e:
+            self.last_refill_error = str(e)
+            self.last_refill_phase = "error"
             print(f"[QUANTUM] Symbiotic refill failed: {e}")
         finally:
+            self.last_refill_completed_at = time.time()
+            self.last_refill_duration_seconds = max(
+                0.0,
+                self.last_refill_completed_at - self.last_refill_started_at,
+            )
             self.is_refilling = False
 
-    def _archive_quantum_run(self, user_physics: Optional[dict], counts: dict):
+    def _archive_quantum_run(
+        self,
+        user_physics: Optional[dict],
+        counts: dict,
+        life_force_yield: Optional[float] = None,
+        signature: Optional[dict] = None,
+    ):
         """Permanently save quantum results to grow 12D Plasticity."""
         import json
         import os
@@ -500,14 +717,334 @@ class QuantumEntanglementBridge:
             "timestamp": time.time(),
             "physics": user_physics or {},
             "counts": counts,
-            "total_shots": sum(counts.values()) if counts else 0
+            "total_shots": sum(counts.values()) if counts else 0,
         }
+        if life_force_yield is not None:
+            entry["life_force_yield"] = life_force_yield
+        if signature:
+            entry["quantum_signature"] = signature
+            entry["backend"] = signature.get("backend")
+            entry["job"] = signature.get("job", {})
         
         try:
+            def _sanitize(obj):
+                """Recursively convert numpy types to native Python for JSON."""
+                if isinstance(obj, dict):
+                    return {str(k): _sanitize(v) for k, v in obj.items()}
+                if isinstance(obj, (list, tuple)):
+                    return [_sanitize(v) for v in obj]
+                if hasattr(obj, 'item'):
+                    return obj.item()
+                if hasattr(obj, 'tolist'):
+                    return obj.tolist()
+                if isinstance(obj, (set, frozenset)):
+                    return [_sanitize(v) for v in obj]
+                return obj
+
             with open(archive_path, "a") as f:
-                f.write(json.dumps(entry) + "\n")
+                f.write(json.dumps(_sanitize(entry)) + "\n")
         except Exception as e:
             print(f"[QUANTUM] Failed to archive run: {e}")
+
+    def _archive_runs_path(self):
+        from pathlib import Path
+        path = Path("data") / "archival" / "quantum_runs.jsonl"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        return path
+
+    def _jsonable(self, value):
+        if value is None or isinstance(value, (str, int, float, bool)):
+            return value
+        if isinstance(value, dict):
+            return {str(k): self._jsonable(v) for k, v in value.items()}
+        if isinstance(value, (list, tuple, set)):
+            return [self._jsonable(v) for v in value]
+        if hasattr(value, "isoformat"):
+            try:
+                return value.isoformat()
+            except Exception:
+                pass
+        if hasattr(value, "value") and isinstance(value.value, (str, int, float, bool)):
+            return value.value
+        if hasattr(value, "name") and isinstance(value.name, str):
+            return value.name
+        if hasattr(value, "to_dict"):
+            try:
+                return self._jsonable(value.to_dict())
+            except Exception:
+                pass
+        if hasattr(value, "__dict__"):
+            try:
+                return {
+                    str(k): self._jsonable(v)
+                    for k, v in vars(value).items()
+                    if not str(k).startswith("_")
+                }
+            except Exception:
+                pass
+        return str(value)
+
+    def _safe_timestamp_iso(self, timestamp: Optional[float]) -> Optional[str]:
+        if timestamp is None:
+            return None
+        try:
+            return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(float(timestamp)))
+        except Exception:
+            return None
+
+    def _safe_job_value(self, job, *names):
+        for name in names:
+            try:
+                if not hasattr(job, name):
+                    continue
+                value = getattr(job, name)
+                value = value() if callable(value) else value
+                if value is None:
+                    continue
+                return self._jsonable(value)
+            except Exception:
+                continue
+        return None
+
+    def _safe_job_identifier(self, job) -> Optional[str]:
+        value = self._safe_job_value(job, "job_id")
+        return str(value) if value else None
+
+    def _safe_job_status(self, job) -> Optional[str]:
+        value = self._safe_job_value(job, "status")
+        if isinstance(value, dict):
+            return str(value.get("name") or value.get("value") or value)
+        return str(value) if value is not None else None
+
+    def _safe_job_metadata(self, job) -> dict:
+        metadata = {
+            "job_id": self._safe_job_identifier(job),
+            "status": self._safe_job_status(job),
+            "queue_info": self._safe_job_value(job, "queue_info"),
+            "usage_estimation": self._safe_job_value(job, "usage_estimation"),
+            "metrics": self._safe_job_value(job, "metrics"),
+            "created_at": self._safe_job_value(job, "creation_date", "created_at", "created"),
+            "running_at": self._safe_job_value(job, "running_at", "started_at", "started"),
+            "ended_at": self._safe_job_value(job, "ended_at", "completed_at", "finished_at"),
+        }
+        return {k: v for k, v in metadata.items() if v is not None}
+
+    def _count_ops_dict(self, circuit) -> dict:
+        try:
+            return {
+                str(op): int(count)
+                for op, count in circuit.count_ops().items()
+            }
+        except Exception:
+            return {}
+
+    def _dump_qasm3(self, circuit) -> Optional[str]:
+        if circuit is None:
+            return None
+        try:
+            from qiskit import qasm3
+            return qasm3.dumps(circuit)
+        except Exception:
+            return None
+
+    def _top_states(self, counts: dict, limit: int = 5) -> list[dict]:
+        top_states = sorted(
+            counts.items(),
+            key=lambda item: (-item[1], item[0]),
+        )[:limit]
+        return [
+            {"state": str(state), "count": int(count)}
+            for state, count in top_states
+        ]
+
+    def _estimate_buffer_maintenance_seconds(self, buffer_size: Optional[int] = None) -> Optional[float]:
+        if buffer_size is None:
+            with self.buffer_lock:
+                buffer_size = len(self.entropy_buffer)
+        rate = self._recent_consumption_rate()
+        if rate <= 0:
+            return None
+        return round(float(buffer_size) / rate, 4)
+
+    def _build_quantum_signature(
+        self,
+        user_physics: Optional[dict],
+        counts: dict,
+        life_force_yield: float,
+        base_thetas: tuple[float, float, float],
+        final_thetas: tuple[float, float, float],
+        oracle_thetas: tuple[float, float, float] | None,
+        blend: float,
+        logical_circuit,
+        isa_circuit,
+        job_meta: dict,
+        buffer_before: int,
+        buffer_after: int,
+        run_started_at: float,
+        submitted_at: float,
+        completed_at: float,
+    ) -> dict:
+        metrics = self._build_run_metrics(counts, user_physics=user_physics)
+        maintenance_seconds = self._estimate_buffer_maintenance_seconds(buffer_after)
+        job_block = {
+            **job_meta,
+            "submitted_at": submitted_at,
+            "submitted_at_iso": self._safe_timestamp_iso(submitted_at),
+            "completed_at": completed_at,
+            "completed_at_iso": self._safe_timestamp_iso(completed_at),
+            "compile_and_submit_seconds": round(max(0.0, submitted_at - run_started_at), 4),
+            "result_wait_seconds": round(max(0.0, completed_at - submitted_at), 4),
+            "wall_runtime_seconds": round(max(0.0, completed_at - run_started_at), 4),
+            "final_status": job_meta.get("status"),
+        }
+        return {
+            "signature_version": 2,
+            "timestamp": completed_at,
+            "timestamp_iso": self._safe_timestamp_iso(completed_at),
+            "backend": self.backend.name if self.backend else None,
+            "physics_signature": {
+                "phase": float(user_physics.get("cst_physics", {}).get("geometric_phase_rad", user_physics.get("geometric_phase_rad", 0.0))) if user_physics else 0.0,
+                "entropy": float(user_physics.get("entropy_field", user_physics.get("bio_signatures", {}).get("intensity", 0.5))) if user_physics else 0.5,
+                "resonance": float(
+                    user_physics.get("resonance_scalar",
+                    user_physics.get("cst_physics", {}).get("entanglement_score", 0.0))
+                ) if user_physics else 0.0,
+            },
+            "theta_signature": {
+                "base": {
+                    "t1": round(base_thetas[0], 6),
+                    "t2": round(base_thetas[1], 6),
+                    "t3": round(base_thetas[2], 6),
+                },
+                "final": {
+                    "t1": round(final_thetas[0], 6),
+                    "t2": round(final_thetas[1], 6),
+                    "t3": round(final_thetas[2], 6),
+                },
+                "oracle": (
+                    {
+                        "t1": round(oracle_thetas[0], 6),
+                        "t2": round(oracle_thetas[1], 6),
+                        "t3": round(oracle_thetas[2], 6),
+                    }
+                    if oracle_thetas is not None else None
+                ),
+                "blend": round(blend, 4),
+            },
+            "circuit_signature": {
+                "logical": {
+                    "qubits": int(getattr(logical_circuit, "num_qubits", 0)),
+                    "classical_bits": int(getattr(logical_circuit, "num_clbits", 0)),
+                    "depth": int(logical_circuit.depth()),
+                    "size": int(logical_circuit.size()),
+                    "ops": self._count_ops_dict(logical_circuit),
+                    "qasm3": self._dump_qasm3(logical_circuit),
+                },
+                "isa": {
+                    "qubits": int(getattr(isa_circuit, "num_qubits", 0)),
+                    "classical_bits": int(getattr(isa_circuit, "num_clbits", 0)),
+                    "depth": int(isa_circuit.depth()),
+                    "size": int(isa_circuit.size()),
+                    "ops": self._count_ops_dict(isa_circuit),
+                    "qasm3": self._dump_qasm3(isa_circuit),
+                },
+            },
+            "job": job_block,
+            "measurement": {
+                "counts_preview": self._top_states(counts),
+                "unique_states": metrics["unique_states"],
+                "total_shots": metrics["total_shots"],
+            },
+            "metrics": {
+                **metrics,
+                "life_force_yield": round(life_force_yield, 4),
+            },
+            "buffer": {
+                "before": int(buffer_before),
+                "after": int(buffer_after),
+                "min_buffer_size": int(self.min_buffer_size),
+                "consumption_rate_per_minute": round(self._recent_consumption_rate() * 60.0, 4),
+            },
+            "maintenance": {
+                "estimated_seconds_remaining": maintenance_seconds,
+                "estimated_minutes_remaining": (
+                    round(maintenance_seconds / 60.0, 4)
+                    if maintenance_seconds is not None else None
+                ),
+                "stability_multiple": round(
+                    float(buffer_after) / max(float(self.min_buffer_size), 1.0),
+                    4,
+                ),
+            },
+        }
+
+    def _decode_archived_run(self, entry: dict) -> dict:
+        signature = entry.get("quantum_signature")
+        if isinstance(signature, dict) and signature:
+            return signature
+
+        counts = entry.get("counts", {}) or {}
+        metrics = self._build_run_metrics(counts, user_physics=entry.get("physics", {})) if counts else {
+            "entropy_quality": 0.0,
+            "decoherence_risk": 0.0,
+            "bit_balance": 0.0,
+            "non_locality_score": 0.0,
+            "quality_class": "UNKNOWN",
+            "unique_states": 0,
+            "total_shots": 0,
+        }
+        physics = entry.get("physics", {}) or {}
+        return {
+            "signature_version": 1,
+            "timestamp": entry.get("timestamp"),
+            "timestamp_iso": self._safe_timestamp_iso(entry.get("timestamp")),
+            "backend": entry.get("backend"),
+            "physics_signature": {
+                "phase": physics.get("cst_physics", {}).get("geometric_phase_rad", physics.get("geometric_phase_rad", 0.0)),
+                "entropy": physics.get("entropy_field", physics.get("bio_signatures", {}).get("intensity", 0.5)),
+                "resonance": physics.get("resonance_scalar", physics.get("cst_physics", {}).get("entanglement_score", 0.0)),
+            },
+            "theta_signature": {},
+            "circuit_signature": {},
+            "job": self._jsonable(entry.get("job", {})),
+            "measurement": {
+                "counts_preview": self._top_states(counts),
+                "unique_states": metrics["unique_states"],
+                "total_shots": metrics["total_shots"],
+            },
+            "metrics": {
+                **metrics,
+                "life_force_yield": entry.get("life_force_yield"),
+            },
+            "buffer": {},
+            "maintenance": {},
+            "decoded_from_archive": True,
+        }
+
+    def get_recent_runs(self, limit: int = 5) -> list[dict]:
+        import json
+
+        limit = max(1, min(int(limit), 25))
+        archive_path = self._archive_runs_path()
+        if archive_path.exists():
+            try:
+                with open(archive_path, "r", encoding="utf-8") as f:
+                    tail = deque(f, maxlen=limit)
+                decoded = []
+                for line in reversed(list(tail)):
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        decoded.append(self._decode_archived_run(json.loads(line)))
+                    except json.JSONDecodeError:
+                        continue
+                if decoded:
+                    return decoded
+            except Exception as e:
+                logger.debug(f"[QUANTUM] Failed to decode archive tail: {e}")
+
+        return [dict(run) for run in reversed(list(self._recent_run_history)[-limit:])]
 
     # ════════════════════════════════════════════════════════
     #  HermesAgent INTEGRATION — Quantum Intelligence Layer
@@ -528,13 +1065,12 @@ class QuantumEntanglementBridge:
             bridge = get_hermes_bridge()
 
             # --- Compute rich metrics ---
-            entropy_quality = self._compute_entropy_quality(counts)
-            decoherence_risk = self._compute_decoherence_risk(counts)
-            bit_balance = self._compute_bit_balance(counts)
-            non_locality = self._compute_non_locality_score(counts)
-            quality_class = self._classify_run_quality(
-                entropy_quality, decoherence_risk
-            )
+            metrics = self._build_run_metrics(counts, user_physics=user_physics)
+            entropy_quality = metrics["entropy_quality"]
+            decoherence_risk = metrics["decoherence_risk"]
+            bit_balance = metrics["bit_balance"]
+            non_locality = metrics["non_locality_score"]
+            quality_class = metrics["quality_class"]
 
             # --- 1. Index in Hermes SessionDB ---
             if bridge.runtime.available:
@@ -595,19 +1131,23 @@ class QuantumEntanglementBridge:
                 self.synaptic_field.uq_signal = entropy_quality
                 # Rich payload for agents that can consume it
                 self.synaptic_field.uq_payload = {
-                    'entropy_quality': entropy_quality,
-                    'decoherence_risk': decoherence_risk,
-                    'bit_balance': bit_balance,
-                    'non_locality_score': non_locality,
-                    'quality_class': quality_class,
-                    'unique_states': len(counts),
-                    'total_shots': sum(counts.values()),
+                    **metrics,
                     'is_fallback': not (self.connected and QISKIT_AVAILABLE)
                 }
                 logger.info(
                     f'[UQ] Rich payload pushed to Synaptic Field:'
                     f' {self.synaptic_field.uq_payload}'
                 )
+            self.last_run_summary = {
+                **metrics,
+                "backend": self.backend.name if self.backend else None,
+                "life_force_yield": self.last_life_force_yield,
+                "harvested_at": self.last_harvest_timestamp,
+                "uq_payload": {
+                    **metrics,
+                    "is_fallback": not (self.connected and QISKIT_AVAILABLE),
+                },
+            }
 
         except Exception as e:
             logger.debug(f'[HERMES+QUANTUM] Processing failed (non-fatal): {e}')
@@ -705,6 +1245,244 @@ class QuantumEntanglementBridge:
         max_entropy = np.log2(max(len(counts), 2))
         return float(min(1.0, shannon / max_entropy))
 
+    def _build_run_metrics(self, counts: dict, user_physics: Optional[dict] = None) -> dict:
+        """Build a compact metrics payload for the latest quantum run."""
+        physics = user_physics or self.last_physics or {}
+        cst_metrics = physics.get("cst_metrics", {}) or {}
+        entropy_quality = self._compute_entropy_quality(counts)
+        decoherence_risk = self._compute_decoherence_risk(counts)
+        bit_balance = self._compute_bit_balance(counts)
+        non_locality = self._compute_non_locality_score(counts)
+        spectral = spectral_profile_from_counts(counts)
+
+        ci_b_raw, ci_c_raw = coherence_conservation_step(
+            self._ci_b,
+            self._ci_c,
+            dt=0.001 + (entropy_quality * 0.004),
+        )
+        coherence_total = max(ci_b_raw + ci_c_raw, 1e-9)
+        total_target = max(entropy_quality, 1e-9)
+        self._ci_b = float(ci_b_raw * (total_target / coherence_total))
+        self._ci_c = float(ci_c_raw * (total_target / coherence_total))
+
+        x12_variance = float(cst_metrics.get("x12_variance", max(0.0, 1.0 - bit_balance)))
+        zeta = 1.0 / (1.0 + max(0.0, x12_variance))
+        self._lambda2_history.append(float(spectral.get("second_eigenvalue", 0.0)))
+        self._ideational_density_history.append(float(entropy_quality))
+        self._zeta_history.append(float(zeta))
+        fot = fold_onset_triplet(
+            list(self._lambda2_history),
+            list(self._ideational_density_history),
+            list(self._zeta_history),
+        )
+
+        dark_matter_w = float(
+            physics.get("dark_matter_w", cst_metrics.get("dark_matter_w", 0.0))
+        )
+        state_vector = build_12d_state_vector(
+            physics,
+            metrics={
+                "ci_b": self._ci_b,
+                "ci_c": self._ci_c,
+                "entropy_quality": entropy_quality,
+                "decoherence_risk": decoherence_risk,
+                "bit_balance": bit_balance,
+                "non_locality_score": non_locality,
+            },
+            dark_matter_w=dark_matter_w,
+        )
+        collapse_distance = mahalanobis_collapse_distance(state_vector)
+        collapse_proximity = float(1.0 / (1.0 + collapse_distance))
+
+        self._critical_collapse_active = phase_transition_hysteresis(
+            decoherence_risk,
+            self._critical_collapse_active,
+            collapse_threshold=DEFAULT_COLLAPSE_THRESHOLD,
+            recovery_threshold=DEFAULT_RECOVERY_THRESHOLD,
+        )
+
+        omega_net = float(
+            cst_metrics.get(
+                "omega_net",
+                max(0.0, min(1.0, float(spectral.get("spectral_radius", 0.0)))),
+            )
+        )
+        dx12_dt = float(
+            cst_metrics.get(
+                "dx12_dt",
+                physics.get("cst_physics", {}).get("phase_velocity", 0.0),
+            )
+        )
+        paradox_intensity = float(cst_metrics.get("paradox_intensity", 0.0))
+        transition = triple_gate_phase_transition(
+            current_coherence=entropy_quality,
+            paradox_intensity=paradox_intensity,
+            dx12_dt=dx12_dt,
+            omega_net=omega_net,
+        )
+        omega = omega_point_convergence(
+            epsilon=entropy_quality,
+            omega_net=omega_net,
+            x12_avg=float(cst_metrics.get("x12_avg", 0.0)),
+            ci_b=self._ci_b,
+            ci_c=self._ci_c,
+        )
+        return {
+            "entropy_quality": entropy_quality,
+            "decoherence_risk": decoherence_risk,
+            "bit_balance": bit_balance,
+            "non_locality_score": non_locality,
+            "spectral_radius": float(spectral.get("spectral_radius", 0.0)),
+            "second_eigenvalue": float(spectral.get("second_eigenvalue", 0.0)),
+            "ci_b": float(self._ci_b),
+            "ci_c": float(self._ci_c),
+            "fold_onset_triplet": {
+                "active": fot.active,
+                "delta_lambda2": fot.delta_lambda2,
+                "delta_ideational_density": fot.delta_ideational_density,
+                "delta_zeta": fot.delta_zeta,
+            },
+            "critical_collapse_active": bool(self._critical_collapse_active),
+            "collapse_distance": float(collapse_distance),
+            "collapse_proximity": float(collapse_proximity),
+            "dynamic_temperature": float(dynamic_temperature(entropy_quality)),
+            "phase_transition": transition,
+            "quality_class": self._classify_run_quality(
+                entropy_quality,
+                decoherence_risk,
+            ),
+            **omega,
+            "unique_states": len(counts),
+            "total_shots": sum(counts.values()) if counts else 0,
+        }
+
+    def _life_force_state_path(self):
+        from pathlib import Path
+        path = Path("data") / "archival" / "life_force.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        return path
+
+    def _load_life_force_state(self):
+        import json
+        path = self._life_force_state_path()
+        try:
+            if path.exists():
+                with open(path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                self.total_life_force = float(data.get("total_life_force", 0.0))
+                self.last_life_force_yield = float(data.get("last_yield", 0.0))
+                self.last_harvest_timestamp = float(data.get("last_harvest_timestamp", 0.0))
+        except Exception as e:
+            logger.debug(f"[LIFE FORCE] Failed to load persisted state: {e}")
+
+    def _save_life_force_state(self):
+        import json
+        path = self._life_force_state_path()
+        payload = {
+            "total_life_force": self.total_life_force,
+            "last_yield": self.last_life_force_yield,
+            "last_harvest_timestamp": self.last_harvest_timestamp,
+        }
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=4)
+        except Exception as e:
+            logger.debug(f"[LIFE FORCE] Failed to persist state: {e}")
+
+    def _harvest_life_force(self, counts: dict) -> float:
+        """
+        Convert quantum entropy quality into persistent life-force yield.
+
+        Historical archives already persist `life_force_yield`, so this keeps
+        current runs compatible with older data and dashboards.
+        """
+        metrics = self._build_run_metrics(counts, user_physics=self.last_physics)
+        total_shots = metrics["total_shots"]
+        yield_value = float(total_shots * metrics["entropy_quality"])
+        self.total_life_force += yield_value
+        self.last_life_force_yield = yield_value
+        self.last_harvest_timestamp = time.time()
+        self.last_run_summary = {
+            **metrics,
+            "backend": self.backend.name if self.backend else None,
+            "life_force_yield": yield_value,
+            "harvested_at": self.last_harvest_timestamp,
+        }
+        self._save_life_force_state()
+        logger.info(
+            f"[LIFE FORCE] Harvested +{yield_value:.2f} "
+            f"(Total: {self.total_life_force:.2f})"
+        )
+        return yield_value
+
+    def _recent_consumption_rate(self) -> float:
+        """Return the recent entropy consumption rate in samples/second."""
+        now = time.time()
+        window = self._consumption_window_seconds
+        recent = [t for t in self._entropy_consumption_log if now - t < window]
+        return len(recent) / window if window > 0 else 0.0
+
+    def get_status(self) -> dict:
+        """Expose live bridge state for prompts, dashboards, and verification."""
+        with self.buffer_lock:
+            buffer_size = len(self.entropy_buffer)
+        maintenance_seconds = self._estimate_buffer_maintenance_seconds(buffer_size)
+        refill_elapsed = (
+            max(0.0, time.time() - self.last_refill_started_at)
+            if self.is_refilling and self.last_refill_started_at else None
+        )
+        return {
+            "active": self.connected,
+            "simulation": not self.connected,
+            "backend": self.backend.name if self.backend else "None",
+            "realsim": bool(self.backend and "sim" in self.backend.name.lower()),
+            "entropy_buffer_size": buffer_size,
+            "entropy_consumption_count": len(self._entropy_consumption_log),
+            "entropy_consumption_rate_per_minute": round(
+                self._recent_consumption_rate() * 60.0,
+                3,
+            ),
+            "last_entropy": self.last_entropy,
+            "min_buffer_size": self.min_buffer_size,
+            "is_refilling": self.is_refilling,
+            "learned_threshold": round(self._learned_threshold, 4),
+            "estimated_buffer_maintenance_seconds": maintenance_seconds,
+            "estimated_buffer_maintenance_minutes": (
+                round(maintenance_seconds / 60.0, 4)
+                if maintenance_seconds is not None else None
+            ),
+            "life_force": {
+                "total": round(self.total_life_force, 4),
+                "last_yield": round(self.last_life_force_yield, 4),
+                "last_harvest_timestamp": self.last_harvest_timestamp,
+                "omega_convergence_ratio": (
+                    round(self.last_run_summary.get("omega_convergence_ratio", 0.0), 4)
+                    if self.last_run_summary else None
+                ),
+            },
+            "uq_payload": dict(
+                getattr(self.synaptic_field, "uq_payload", {}) or
+                self.last_run_summary.get("uq_payload", {}) or
+                {}
+            ),
+            "last_run": dict(self.last_run_summary),
+            "last_quantum_signature": dict(self.last_quantum_signature),
+            "recent_runs": self.get_recent_runs(limit=5),
+            "last_refill": {
+                "started_at": self.last_refill_started_at,
+                "started_at_iso": self._safe_timestamp_iso(self.last_refill_started_at) if self.last_refill_started_at else None,
+                "completed_at": self.last_refill_completed_at,
+                "completed_at_iso": self._safe_timestamp_iso(self.last_refill_completed_at) if self.last_refill_completed_at else None,
+                "duration_seconds": round(self.last_refill_duration_seconds, 4),
+                "active_duration_seconds": round(refill_elapsed, 4) if refill_elapsed is not None else None,
+                "phase": self.last_refill_phase,
+                "current_job": dict(self.current_job_metadata),
+                "error": self.last_refill_error,
+            },
+            "synaptic_field_linked": self.synaptic_field is not None,
+            "error": str(self.last_error) if self.last_error else None,
+        }
+
     # [UPGRADE 2] Rich Metrics
     def _compute_decoherence_risk(self, counts: dict) -> float:
         """
@@ -784,12 +1562,23 @@ class QuantumEntanglementBridge:
 
 # Singleton instance
 _bridge_instance = None
+_GLOBAL_QUANTUM_BRIDGE_KEY = "_COSMOS_QUANTUM_BRIDGE_SINGLETON"
+_bridge_lock = threading.Lock()
 
 def get_quantum_bridge(api_token: Optional[str] = None):
     global _bridge_instance
-    if _bridge_instance is None:
-        _bridge_instance = QuantumEntanglementBridge(api_token)
-    elif api_token and api_token != _bridge_instance.api_token:
-        _bridge_instance.api_token = api_token
+    bridge = getattr(builtins, _GLOBAL_QUANTUM_BRIDGE_KEY, None)
+    if bridge is None:
+        with _bridge_lock:
+            bridge = getattr(builtins, _GLOBAL_QUANTUM_BRIDGE_KEY, None)
+            if bridge is None:
+                bridge = QuantumEntanglementBridge(api_token)
+                setattr(builtins, _GLOBAL_QUANTUM_BRIDGE_KEY, bridge)
+    elif api_token and api_token != bridge.api_token:
+        bridge.api_token = api_token
+    _bridge_instance = bridge
     return _bridge_instance
+
+sys.modules["Cosmos.core.quantum_bridge"] = sys.modules[__name__]
+sys.modules["cosmos.core.quantum_bridge"] = sys.modules[__name__]
 

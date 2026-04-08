@@ -351,7 +351,12 @@ class HuggingFaceProvider(ExternalProvider):
             return await self.generate_image(
                 prompt=params.get("prompt"),
                 model=params.get("model", self.default_image_model),
-                negative_prompt=params.get("negative_prompt")
+                negative_prompt=params.get("negative_prompt"),
+                width=params.get("width", 1024),
+                height=params.get("height", 1024),
+                guidance_scale=params.get("guidance_scale"),
+                num_inference_steps=params.get("num_inference_steps"),
+                seed=params.get("seed"),
             )
         elif action == "code":
             return await self.generate_code(
@@ -691,7 +696,10 @@ class HuggingFaceProvider(ExternalProvider):
         model: str = None,
         negative_prompt: str = None,
         width: int = 1024,
-        height: int = 1024
+        height: int = 1024,
+        guidance_scale: float = None,
+        num_inference_steps: int = None,
+        seed: int = None,
     ) -> Dict[str, Any]:
         """
         Generate an image using Hugging Face model.
@@ -728,6 +736,12 @@ class HuggingFaceProvider(ExternalProvider):
                         "height": height
                     }
                 }
+                if guidance_scale is not None:
+                    payload["parameters"]["guidance_scale"] = guidance_scale
+                if num_inference_steps is not None:
+                    payload["parameters"]["num_inference_steps"] = num_inference_steps
+                if seed is not None:
+                    payload["parameters"]["seed"] = int(seed)
 
                 url = f"{self.inference_url}/{model_id}"
 
@@ -746,7 +760,16 @@ class HuggingFaceProvider(ExternalProvider):
                         wait_time = data.get("estimated_time", 60)
                         logger.info(f"HF image model loading, waiting {wait_time}s...")
                         await asyncio.sleep(min(wait_time, 120))
-                        return await self.generate_image(prompt, model, negative_prompt, width, height)
+                        return await self.generate_image(
+                            prompt,
+                            model,
+                            negative_prompt,
+                            width,
+                            height,
+                            guidance_scale=guidance_scale,
+                            num_inference_steps=num_inference_steps,
+                            seed=seed,
+                        )
 
                     else:
                         error_text = await response.text()

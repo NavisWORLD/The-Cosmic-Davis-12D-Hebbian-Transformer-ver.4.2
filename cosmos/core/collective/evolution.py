@@ -141,14 +141,14 @@ class EvolutionEngine:
         """Persist evolution state to storage."""
         try:
             # Save patterns
-            patterns_data = [asany(p) for p in self.patterns.values()]
+            patterns_data = [asdict(p) for p in self.patterns.values()]
             (self.storage_path / "patterns.json").write_text(
                 json.dumps(patterns_data, indent=2)
             )
 
             # Save personalities
             personalities_data = {
-                name: asany(p) for name, p in self.personalities.items()
+                name: asdict(p) for name, p in self.personalities.items()
             }
             (self.storage_path / "personalities.json").write_text(
                 json.dumps(personalities_data, indent=2)
@@ -277,7 +277,7 @@ class EvolutionEngine:
             return
 
         # Group by topic
-        topic_groups = defaultany(list)
+        topic_groups = defaultdict(list)
         for event in self.learning_buffer:
             topic_groups[event.topic].append(event)
 

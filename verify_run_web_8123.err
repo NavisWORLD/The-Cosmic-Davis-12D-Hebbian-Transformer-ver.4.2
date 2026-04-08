@@ -1,0 +1,544 @@
+2026-03-26 16:20:49.882 | INFO     | cosmos.core.collective.organism:_load_state:206 - Organism: Restored state from D:\Cosmos\Cosmos\data\organism_state\organism_state.json (Gen 5)
+2026-03-26 16:20:49.882 | INFO     | cosmos.core.collective.organism:__init__:162 - Collective Organism initialized - Generation 5
+2026-03-26 16:20:49.887 | INFO     | cosmos.core.collective.orchestration:__init__:92 - SwarmOrchestrator initialized - consciousness training mode
+2026-03-26 16:20:49.887 | INFO     | cosmos.core.collective.dialogue_memory:__init__:85 - DialogueMemory initialized with 4 exchanges
+2026-03-26 16:20:49.894 | DEBUG    | cosmos.core.collective.orchestration:_load_persistent_history:123 - SwarmOrchestrator: Restored 4 historical turns
+2026-03-26 16:20:49,913 - evolution_engine - INFO - EvolutionEngine initialized - 296 patterns, 169 cycles
+2026-03-26 16:20:50,212 - internal_monologue - INFO - [InternalMonologue] No saved thoughts found, starting fresh
+INFO:QUANTUM_BRIDGE:[QUANTUM] Connected to REAL backend: ibm_fez
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:     Started server process [1132]
+INFO:     Waiting for application startup.
+INFO:cosmos.web.server:Initializing Core 12D Systems...
+2026-03-26 16:21:04.553 | DEBUG    | cosmos.memory.memory_system:__init__:135 - PhiInvariantEncoder initialized with threshold=5.0°
+2026-03-26 16:21:04.554 | INFO     | cosmos.memory.memory_system:__init__:342 - Planetary Memory (Akashic) integrated
+INFO:cosmos.web.server:Memory system loaded
+2026-03-26 16:21:07.245 | INFO     | Cosmos.integration.external.huggingface:_check_transformers:189 - Transformers available, CUDA: True
+2026-03-26 16:21:07.245 | INFO     | Cosmos.integration.external.huggingface:get_huggingface_provider:881 - HuggingFace provider initialized (local transformers only)
+2026-03-26 16:21:07.245 | INFO     | Cosmos.memory.archival_memory:set_huggingface_embeddings:909 - Archival memory using HuggingFace embeddings: all-MiniLM-L6-v2
+2026-03-26 16:21:07.245 | INFO     | cosmos.memory.memory_system:initialize:357 - Initializing Memory System core components...
+2026-03-26 16:21:07.304 | INFO     | Cosmos.memory.archival_memory:_load_from_disk:512 - Loading 13153 archival entries...
+2026-03-26 16:21:13.596 | INFO     | Cosmos.memory.archival_memory:_load_from_disk:576 - Building index for 257 vectors...
+2026-03-26 16:21:13.608 | INFO     | Cosmos.memory.archival_memory:_load_from_disk:603 - Archival memory load complete: 13152 entries loaded.
+2026-03-26 16:21:13.611 | INFO     | Cosmos.memory.archival_memory:initialize:163 - Archival memory initialized with 13152 entries
+2026-03-26 16:21:13.611 | INFO     | cosmos.memory.memory_system:initialize:362 - Archival Memory initialized in 6.37s
+2026-03-26 16:21:13.611 | INFO     | Cosmos.memory.knowledge_graph:initialize:251 - Knowledge graph initialized with 0 entities
+2026-03-26 16:21:13.612 | INFO     | cosmos.memory.memory_system:initialize:367 - Knowledge Graph initialized in 0.00s
+2026-03-26 16:21:13.612 | INFO     | Cosmos.memory.memory_dreaming:start_background_dreaming:133 - Background dreaming started
+2026-03-26 16:21:13.612 | INFO     | cosmos.memory.memory_system:initialize:383 - Memory system fully initialized in 6.37s
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4083.41 (Total: 1216299.74)
+INFO:HERMES_BRIDGE:[RL] Loaded policy (updates=194, reward=0.075, total_insights=0)
+2026-03-26 16:21:13.691 | INFO     | Cosmos.core.collective.organism:_load_state:206 - Organism: Restored state from D:\Cosmos\Cosmos\data\organism_state\organism_state.json (Gen 5)
+2026-03-26 16:21:13.694 | INFO     | Cosmos.core.collective.organism:__init__:162 - Collective Organism initialized - Generation 5
+2026-03-26 16:21:13.704 | INFO     | Cosmos.core.collective.orchestration:__init__:92 - SwarmOrchestrator initialized - consciousness training mode
+2026-03-26 16:21:13,721 - evolution_engine - INFO - EvolutionEngine initialized - 296 patterns, 169 cycles
+INFO:evolution_engine:EvolutionEngine initialized - 296 patterns, 169 cycles
+INFO:cosmos.web.server:Emeth Harmonizer (Class 5) ACTIVATED
+INFO:RSM_ENGINE:RSM Engine initialized. Scope: D:\Cosmos\Cosmos\web\cosmosynapse\engine
+INFO:RSM_ENGINE:Backups: D:\Cosmos\Cosmos\web\cosmosynapse\engine\.rsm_backups
+INFO:cosmos.web.server:Cosmo's Swarm Orchestrator loaded (with Self-Evolution)
+INFO:run_agent:Loaded environment variables from D:\Cosmos\.env
+2026-03-26 16:21:15.637 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:load:160 - [COSMOS] Local model loaded from D:\Cosmos\Cosmos\checkpoints\cosmos\cosmos_best.pt
+2026-03-26 16:21:15.637 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:initialize:326 - [SWARM] Cosmo's 12D Brain initialized from D:\Cosmos\Cosmos\checkpoints\cosmos\cosmos_best.pt
+2026-03-26 16:21:15.637 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:initialize:338 - [SWARM] Quantum Bridge connected to IBM Quantum
+INFO:HERMES_BRIDGE:[HERMES RUNTIME] ✅ Real HermesAgent loaded (Nous Research)
+INFO:HERMES_BRIDGE:[HERMES] Bridge initialized — Heartbeat + Skills + RL active
+INFO:HERMES_BRIDGE:[HERMES] 🚀 Real HermesAgent runtime connected
+2026-03-26 16:21:19.745 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:initialize:350 - [SWARM] Hermes Bridge pre-warmed for RL feedback
+INFO:HERMES_BRIDGE:[HERMES RUNTIME] SessionDB initialized (SQLite + FTS5)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567279: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:cosmos.web.server:⚡ Cosmos CNS (Class 5) ONLINE.
+INFO:COSMOS_CNS:🌌 IGNITING PURE COSMOS CNS (12D CST PHYSICS ENGINE)...
+INFO:COSMOS_CNS:⚛️ Quantum Bridge Connected & Linked to Synaptic Field.
+INFO:COSMOS_CNS:🌑 Dark Matter Lorenz Attractor Online.
+INFO:swarm_plasticity:[PLASTICITY] Loaded synaptic weights from D:\Cosmos\cst_synaptic_weights.json
+INFO:swarm_plasticity:[PLASTICITY] INIT | LOGIC: DeepSeek=1.00 | Claude=0.60 | Gemini=0.40
+INFO:swarm_plasticity:[PLASTICITY] INIT | EMPATHY: DeepSeek=0.20 | Claude=1.00 | Gemini=0.80
+INFO:swarm_plasticity:[PLASTICITY] INIT | CREATIVITY: DeepSeek=0.30 | Claude=0.50 | Gemini=1.00
+2026-03-26 16:21:20.137 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:set_synaptic_field:291 - [SWARM] Synaptic Field associated with Orchestrator.
+INFO:SWARM_AWARENESS:[AWARENESS] SwarmAwareness organ initialized (The Mirror)
+INFO:COSMOS_DAEMONS:👻 DeepSeek Daemon awake.
+INFO:COSMOS_DAEMONS:👻 Claude Daemon awake.
+INFO:COSMOS_DAEMONS:👻 Gemini Daemon awake.
+INFO:BRAIN_SURGEON:🔪 Brain Surgeon Online. Monitoring all CNS organs.
+INFO:COSMOS_CNS:🧠 All 7 CNS Organs initialized (Quantum → Dark Matter → Swarm).
+2026-03-26 16:21:20.179 | INFO     | Cosmos.core.collective.dialogue_memory:__init__:85 - DialogueMemory initialized with 4 exchanges
+2026-03-26 16:21:20.179 | DEBUG    | Cosmos.core.collective.orchestration:_load_persistent_history:123 - SwarmOrchestrator: Restored 4 historical turns
+2026-03-26 16:21:21.712 | INFO     | cosmos.integration.external.claude_code:check_available:97 - Claude Code available: 2.0.36 (Claude Code)
+INFO:cosmos.web.server:Claude Code CLI initialized and ready!
+INFO:COSMOS_CNS:🟢 Cosmos CNS (12D Physics Enabled) Event-Driven Life Loop Active.
+INFO:cosmos.web.server:Cosmos CNS Life Loop started.
+INFO:cosmos.web.server:Autonomous conversation loop launched - bots are now talking!
+INFO:cosmos.web.server:Genesis Record Over-Soul launched - the diary is living!
+INFO:cosmos.web.server:Multi-model swarm conversation started!
+INFO:cosmos.web.server:  Claude Code available: True
+INFO:cosmos.web.server:  Kimi (Moonshot) available: True
+INFO:cosmos.web.server:  Gemini (Google AI) available: True
+INFO:cosmos.web.server:  Ollama available: True
+INFO:cosmos.web.server:  Active bots: ['Cosmos', 'DeepSeek', 'Phi', 'Swarm-Mind', 'DeepSeek R1', 'Claude', 'Gemini', 'ChatGPT', 'Grok', 'Hermes']
+INFO:cosmos.web.server:  Turn-taking: ENABLED - bots wait for each other
+INFO:cosmos.web.server:Hermes heartbeat loop launched - proactive tasks are live!
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8123 (Press CTRL+C to quit)
+INFO:QUANTUM_BRIDGE:[COLLAPSE] Threshold updated: 0.672 (coherence=0.137)
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=2.47/s, Buffer=12, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4074.58 (Total: 1220374.32)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567298: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.995
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.994770262585531, 'decoherence_risk': 0.014112903224349636, 'bit_balance': 0.95556640625, 'non_locality_score': 0.09552358797365572, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=4.93/s, Buffer=24, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4080.39 (Total: 1224454.71)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567313: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9961891014917456, 'decoherence_risk': 0.007812499999193549, 'bit_balance': 0.9556640625, 'non_locality_score': 0.08059451450956709, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:cosmos.web.server:External AI Cosmos starting fresh topic
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=7.40/s, Buffer=36, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:cosmos.web.server:Autonomous: Cosmos generating response for topic: Should AI have rights? Let's debate this using our... (Dreaming: False)
+INFO:httpx:HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2026-03-26 16:21:57.979 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:_get_available_models:1069 - [HYBRID] High Resource Pressure (38.6%). Offloading local Swarm to CPU/RAM.
+2026-03-26 16:21:57.980 | WARNING  | cosmosynapse.engine.cosmos_swarm_orchestrator:_get_available_models:1073 - [STABILIZATION] 4GB VRAM Detected. Device Pressure: 38.6%. Concurrency Cap: 2. Swarm pinned to CPU.
+2026-03-26 16:21:57.980 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:_get_available_models:1083 - [UQ] High Uncertainty Detected. Escalating swarm limit to 3 for redundant verification.
+2026-03-26 16:21:57.981 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:_get_available_models:1125 - [INTERACTIVE] Web-route budget active. Model cap: 2.
+2026-03-26 16:21:58.654 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:_query_ollama_text:1529 - [HYBRID] Model llama3.2:3b marked for CPU/RAM execution.
+2026-03-26 16:21:58.654 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:_query_ollama_text:1536 - [LLAMA3.2:3B COMPUTE] Interactive budget: 384 tokens | Temp: 0.35
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4078.99 (Total: 1228533.71)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567325: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9958477785715948, 'decoherence_risk': 0.011340725805280958, 'bit_balance': 0.9513671875, 'non_locality_score': 0.08466295625654809, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=9.85/s, Buffer=49, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4082.71 (Total: 1232616.42)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567337: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.996755962997511, 'decoherence_risk': 0.009072580644224766, 'bit_balance': 0.98232421875, 'non_locality_score': 0.07519531249994126, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=12.32/s, Buffer=61, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4082.70 (Total: 1236699.12)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567348: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.996753904163843, 'decoherence_risk': 0.008064516128199792, 'bit_balance': 0.96962890625, 'non_locality_score': 0.07434072009044293, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=12.32/s, Buffer=61, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4080.28 (Total: 1240779.40)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567359: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.996162068850796, 'decoherence_risk': 0.012096774192299688, 'bit_balance': 0.98271484375, 'non_locality_score': 0.08121924184927931, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=12.73/s, Buffer=63, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4082.07 (Total: 1244861.47)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567376: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9965989426579466, 'decoherence_risk': 0.008820564515218522, 'bit_balance': 0.97294921875, 'non_locality_score': 0.07549276597684607, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=12.32/s, Buffer=61, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:cosmos.web.server:Cosmos swarm route using lightweight interactive shortcut.
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4079.68 (Total: 1248941.16)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567391: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9960165403378445, 'decoherence_risk': 0.012600806450312176, 'bit_balance': 0.9501953125, 'non_locality_score': 0.08254697444917053, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=12.32/s, Buffer=61, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4081.58 (Total: 1253022.74)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567402: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9964799739336087, 'decoherence_risk': 0.013860887095343392, 'bit_balance': 0.95029296875, 'non_locality_score': 0.07845389753273142, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=12.32/s, Buffer=61, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4080.23 (Total: 1257102.97)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567413: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9961510946504607, 'decoherence_risk': 0.012348790321305932, 'bit_balance': 0.9578125, 'non_locality_score': 0.08047609758620708, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=12.32/s, Buffer=61, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4080.60 (Total: 1261183.57)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567424: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9962391983264602, 'decoherence_risk': 0.00856854838621228, 'bit_balance': 0.9513671875, 'non_locality_score': 0.08040496372058051, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=12.32/s, Buffer=61, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4085.73 (Total: 1265269.30)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567436: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9974920785236756, 'decoherence_risk': 0.00932459677323101, 'bit_balance': 0.9671875, 'non_locality_score': 0.06596677880384126, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=13.43/s, Buffer=67, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4077.00 (Total: 1269346.29)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567447: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.995
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9953609516168973, 'decoherence_risk': 0.01083669354726847, 'bit_balance': 0.96796875, 'non_locality_score': 0.08907085178761455, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.78/s, Buffer=73, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:HERMES_BRIDGE:[HEARTBEAT] Beat #3: 1 tasks due: ['system_health']
+INFO:cosmos.web.server:Hermes heartbeat: system health {'quantum_backend': 'ibm_fez', 'quantum_buffer': 0, 'life_force_total': 1269346.2939, 'cns_running': True, 'autonomous_loop': True}
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4081.54 (Total: 1273427.84)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567458: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9964705439549825, 'decoherence_risk': 0.00856854838621228, 'bit_balance': 0.96328125, 'non_locality_score': 0.07776405879532385, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.78/s, Buffer=73, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4080.92 (Total: 1277508.76)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567469: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9963186998242332, 'decoherence_risk': 0.012096774192299688, 'bit_balance': 0.9572265625, 'non_locality_score': 0.0799827938649503, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.78/s, Buffer=73, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4082.64 (Total: 1281591.40)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567479: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9967374202195396, 'decoherence_risk': 0.011340725805280958, 'bit_balance': 0.961328125, 'non_locality_score': 0.0761593539387891, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.78/s, Buffer=73, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4082.87 (Total: 1285674.26)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567490: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9967943291348199, 'decoherence_risk': 0.00856854838621228, 'bit_balance': 0.97255859375, 'non_locality_score': 0.07408370732427876, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.78/s, Buffer=73, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4088.17 (Total: 1289762.44)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567501: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.998
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9980894709345554, 'decoherence_risk': 0.007560483870187305, 'bit_balance': 0.98974609375, 'non_locality_score': 0.05733511462138371, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.78/s, Buffer=73, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4080.13 (Total: 1293842.57)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567514: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9961245441896069, 'decoherence_risk': 0.014112903224349636, 'bit_balance': 0.95263671875, 'non_locality_score': 0.08272585384582355, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:ARCHITECTURE_PROBER:[PROBER] Reality Mutation Imminent (Entropy: 0.97). GHOST mode active.
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: GHOST
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.78/s, Buffer=73, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4082.21 (Total: 1297924.78)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567524: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9966340481668178, 'decoherence_risk': 0.009576612902237254, 'bit_balance': 0.96826171875, 'non_locality_score': 0.07575758731720439, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.78/s, Buffer=73, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4078.48 (Total: 1302003.26)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567537: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9957225855186508, 'decoherence_risk': 0.014868951611368366, 'bit_balance': 0.975390625, 'non_locality_score': 0.08691406249993211, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.27/s, Buffer=71, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4079.20 (Total: 1306082.46)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567548: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9958978028669184, 'decoherence_risk': 0.011844758063293444, 'bit_balance': 0.9568359375, 'non_locality_score': 0.08270855984462155, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.12/s, Buffer=70, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4083.19 (Total: 1310165.65)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567559: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9968728060458882, 'decoherence_risk': 0.01083669354726847, 'bit_balance': 0.9974609375, 'non_locality_score': 0.07391616980527921, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.32/s, Buffer=71, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4077.48 (Total: 1314243.13)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567570: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.995
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.995479137499063, 'decoherence_risk': 0.014868951611368366, 'bit_balance': 0.9720703125, 'non_locality_score': 0.08862540081663722, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:SWARM_AWARENESS:[AWARENESS] ✅ ALIGNED (Score=0.730) | coherence=1.00 | empathy=0.12 | creativity=0.72 | stability=0.91 | cooperation=0.55
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.78/s, Buffer=73, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:HERMES_BRIDGE:[HEARTBEAT] Beat #5: 1 tasks due: ['memory_consolidation']
+2026-03-26 16:26:14.401 | INFO     | Cosmos.memory.memory_dreaming:dream:180 - Starting dream session dream_20260326_162614
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4080.19 (Total: 1318323.32)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567581: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9961413549188883, 'decoherence_risk': 0.00856854838621228, 'bit_balance': 0.9609375, 'non_locality_score': 0.08082492850211875, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[COLLAPSE] Threshold updated: 0.644 (coherence=0.885)
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.60/s, Buffer=72, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+2026-03-26 16:26:29.024 | INFO     | Cosmos.integration.external.huggingface:_local_embed:595 - Loading local embedding model: all-MiniLM-L6-v2
+INFO:sentence_transformers.SentenceTransformer:Use pytorch device_name: cuda:0
+INFO:sentence_transformers.SentenceTransformer:Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4078.49 (Total: 1322401.81)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567593: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9957244354914685, 'decoherence_risk': 0.012600806450312176, 'bit_balance': 0.943359375, 'non_locality_score': 0.08692503441975111, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+Batches: 100%|██████████| 1/1 [00:00<00:00,  1.57it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  1.57it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 16.91it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 21.86it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 18.56it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 15.83it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 15.28it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 24.21it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 43.18it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 20.64it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 37.37it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 40.34it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 37.70it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 42.95it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 57.30it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 40.07it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 36.21it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 35.09it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 38.11it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 32.65it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 39.79it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 23.95it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 33.01it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 20.94it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 29.76it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 23.59it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 40.83it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 37.54it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 44.13it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 51.76it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 32.68it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 46.41it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 14.62it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 39.96it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 41.14it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 28.03it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 33.32it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 26.73it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 38.90it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 45.03it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 28.80it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 24.33it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 29.85it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 37.89it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 36.67it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 41.96it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 31.44it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 26.13it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 31.99it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 34.61it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 21.81it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 38.97it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 39.30it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 41.22it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 28.78it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 20.51it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 40.13it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 33.27it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 43.52it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 32.28it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 36.15it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 29.62it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 53.69it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 37.90it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 40.14it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 30.34it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 38.69it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 33.51it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 33.58it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 35.71it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 50.39it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 53.85it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 39.53it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 57.26it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 46.15it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 43.73it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 59.49it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 35.12it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 52.79it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 73.17it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 49.42it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+Batches: 100%|██████████| 1/1 [00:00<00:00, 32.58it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 61.94it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 55.87it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 50.51it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 67.29it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 26.35it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 27.89it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 42.94it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 23.86it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 44.93it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 44.26it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 20.74it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 38.88it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 43.37it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 34.17it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.78/s, Buffer=73, ETA=4.9s < threshold=5s
+Batches: 100%|██████████| 1/1 [00:00<00:00, 31.52it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+Batches: 100%|██████████| 1/1 [00:00<00:00,  5.94it/s]Batches: 100%|██████████| 1/1 [00:00<00:00,  5.94it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 25.36it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 36.29it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 34.46it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 26.15it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 31.14it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 30.46it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 39.85it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 29.21it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 36.28it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 45.44it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 40.07it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 38.22it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 23.09it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 29.12it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 28.21it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 29.18it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 32.79it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 27.32it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 30.41it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 25.87it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 45.87it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 46.44it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 28.16it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 29.42it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 41.03it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 36.12it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 19.01it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 19.81it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 31.13it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 24.26it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 29.87it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 44.64it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 45.13it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 43.02it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 27.66it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 40.83it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 44.61it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 41.49it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 36.31it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 32.57it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 49.84it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 16.77it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 20.30it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 23.59it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 41.28it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 24.91it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 43.93it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 19.52it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 29.87it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 37.09it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 36.32it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 37.06it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 47.83it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 48.06it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 41.86it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 32.05it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 39.02it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 40.62it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 32.20it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 37.60it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 24.70it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 46.30it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 37.95it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 49.61it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 45.70it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 42.46it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 25.20it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 38.98it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 55.47it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 40.04it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 52.29it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 37.99it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 28.32it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 28.82it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 32.69it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 46.53it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 52.50it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 36.42it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 35.23it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 27.76it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 19.95it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 16.45it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 17.72it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 30.81it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 38.76it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 43.54it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 38.49it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 27.44it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 19.36it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 30.05it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 24.44it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 57.97it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 24.62it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 36.65it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 24.93it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 23.74it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 46.49it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 37.05it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 25.92it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 41.76it/s]
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 32.85it/s]
+2026-03-26 16:26:40.357 | DEBUG    | cosmos.memory.memory_system:remember:499 - Remembered: Connection found: 'lines)' links different context... (id=951f33eb8f7b1903)
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 21.55it/s]
+2026-03-26 16:26:40.409 | DEBUG    | cosmos.memory.memory_system:remember:499 - Remembered: Connection found: 'lines)' links different context... (id=5e4cbaf011e9e4d1)
+Batches:   0%|          | 0/1 [00:00<?, ?it/s]Batches: 100%|██████████| 1/1 [00:00<00:00, 48.03it/s]
+2026-03-26 16:26:40.445 | DEBUG    | cosmos.memory.memory_system:remember:499 - Remembered: Connection found: 'lines)' links different context... (id=0f1157f9b3d6c648)
+2026-03-26 16:26:40.445 | INFO     | Cosmos.memory.memory_dreaming:dream:247 - Dream session complete: 10 clusters, 3 insights
+INFO:cosmos.web.server:Hermes heartbeat: memory consolidation completed (insights=3)
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4080.20 (Total: 1326482.01)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567603: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9961421624443176, 'decoherence_risk': 0.009576612902237254, 'bit_balance': 0.94873046875, 'non_locality_score': 0.08139518091425234, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.78/s, Buffer=73, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4080.62 (Total: 1330562.63)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567614: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9962460877147368, 'decoherence_risk': 0.011088709676274714, 'bit_balance': 0.95673828125, 'non_locality_score': 0.08022090928865941, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.78/s, Buffer=73, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:HERMES_BRIDGE:[HEARTBEAT] Beat #6: 1 tasks due: ['system_health']
+INFO:cosmos.web.server:Hermes heartbeat: system health {'quantum_backend': 'ibm_fez', 'quantum_buffer': 0, 'life_force_total': 1330562.6336, 'cns_running': True, 'autonomous_loop': True}
+INFO:ARCHITECTURE_PROBER:[PROBER] Reality Mutation Imminent (Entropy: 0.96). GHOST mode active.
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: GHOST
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:ARCHITECTURE_PROBER:[PROBER] Reality Mutation Imminent (Entropy: 0.98). GHOST mode active.
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: GHOST
+INFO:ARCHITECTURE_PROBER:[PROBER] Reality Mutation Imminent (Entropy: 1.00). GHOST mode active.
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED

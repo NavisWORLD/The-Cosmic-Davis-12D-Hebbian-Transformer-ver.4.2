@@ -29,6 +29,7 @@ import time
 import json
 import random
 import uuid
+import sys
 from enum import Enum
 from dataclasses import dataclass, field, asdict
 from typing import Tuple, Optional
@@ -51,13 +52,62 @@ except ImportError:
         print("[WARN] Lyapunov Lock not found - Stability Checks disabled")
         LyapunovGatekeeper = None
 
-try:
-    from scipy.io import wavfile
-    from scipy.fft import fft
-    from scipy.signal import spectrogram
-    SCIPY_AVAILABLE = True
-except ImportError:
-    SCIPY_AVAILABLE = False
+# Guard: scipy submodule imports hang when torch 2.8.0 DLL conflict is present.
+# Use subprocess probe (same pattern as run_web.py torch guard) to detect the hang,
+# then lazy-load the actual callables on first use so startup never blocks.
+# Results are cached in env vars so repeated probes across files are instant.
+import os as _os
+import subprocess as _sp
+
+def _import_probe_ok(test_code: str, timeout: int = 20, cache_key: str = "") -> bool:
+    """Return True if *test_code* runs in a subprocess within *timeout* seconds."""
+    if cache_key:
+        env_key = f"_COSMOS_PROBE_{cache_key}"
+        cached = _os.environ.get(env_key)
+        if cached is not None:
+            return cached == "1"
+    try:
+        proc = _sp.Popen(
+            [sys.executable, "-c", test_code],
+            stdout=_sp.PIPE, stderr=_sp.PIPE,
+            env=_os.environ.copy(),
+            creationflags=getattr(_sp, 'CREATE_NO_WINDOW', 0),
+        )
+        stdout, _ = proc.communicate(timeout=timeout)
+        ok = b"OK" in stdout
+    except _sp.TimeoutExpired:
+        proc.kill(); proc.wait(); ok = False
+    except Exception:
+        ok = False
+    if cache_key:
+        _os.environ[f"_COSMOS_PROBE_{cache_key}"] = "1" if ok else "0"
+    return ok
+
+SCIPY_AVAILABLE = False
+_scipy_wavfile = None
+_scipy_fft_func = None
+_scipy_spectrogram = None
+
+if _import_probe_ok(
+    "from scipy.io import wavfile; from scipy.fft import fft; "
+    "from scipy.signal import spectrogram; print('OK')",
+    timeout=20,
+    cache_key="SCIPY",
+):
+    try:
+        from scipy.io import wavfile as _scipy_wavfile
+        from scipy.fft import fft as _scipy_fft_func
+        from scipy.signal import spectrogram as _scipy_spectrogram
+        SCIPY_AVAILABLE = True
+    except ImportError:
+        SCIPY_AVAILABLE = False
+else:
+    print("[WARN] scipy submodules hang (DLL conflict) — audio analysis disabled")
+
+# Expose names at module level for existing code
+wavfile = _scipy_wavfile
+fft = _scipy_fft_func
+spectrogram = _scipy_spectrogram
 
 try:
     import cv2
@@ -67,35 +117,41 @@ except ImportError:
 
 # MediaPipe for accurate face mesh and blendshape-based Action Units
 # MediaPipe 0.10.x uses the Tasks API instead of solutions
+# Guard: mediapipe import can hang on Windows due to the same DLL conflict
+# that affects scipy.  Use a subprocess probe before committing to the import.
 MEDIAPIPE_AVAILABLE = False
+mp = None
 mp_face_mesh = None
 mp_drawing = None
 mp_drawing_styles = None
 mp_python = None
 mp_vision = None
 
-try:
-    import mediapipe as mp
-    
-    # Try importing Tasks API (0.10.x+)
+if _import_probe_ok("import mediapipe; print('OK')", timeout=20, cache_key="MEDIAPIPE"):
     try:
-        from mediapipe.tasks import python as mp_python
-        from mediapipe.tasks.python import vision as mp_vision
-        MEDIAPIPE_AVAILABLE = True
-    except (ImportError, AttributeError):
+        import mediapipe as mp
+
+        # Try importing Tasks API (0.10.x+)
+        try:
+            from mediapipe.tasks import python as mp_python
+            from mediapipe.tasks.python import vision as mp_vision
+            MEDIAPIPE_AVAILABLE = True
+        except (ImportError, AttributeError):
+            pass
+
+        # Try importing Solutions API (older versions)
+        try:
+            mp_face_mesh = mp.solutions.face_mesh
+            mp_drawing = mp.solutions.drawing_utils
+            mp_drawing_styles = mp.solutions.drawing_styles
+            MEDIAPIPE_AVAILABLE = True
+        except AttributeError:
+            pass
+
+    except ImportError:
         pass
-    
-    # Try importing Solutions API (older versions)
-    try:
-        mp_face_mesh = mp.solutions.face_mesh
-        mp_drawing = mp.solutions.drawing_utils
-        mp_drawing_styles = mp.solutions.drawing_styles
-        MEDIAPIPE_AVAILABLE = True
-    except AttributeError:
-        pass
-        
-except ImportError:
-    pass
+else:
+    print("[WARN] mediapipe import hangs (DLL conflict) — face tracking disabled")
 
 # ============================================
 # 12D CST CONSTANTS

@@ -18,15 +18,17 @@ import time
 import shutil
 import logging
 import py_compile
+import html
 from pathlib import Path
 from typing import Optional, Tuple
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
+from difflib import SequenceMatcher
 import sys
 
 # Attempt to load Cosmic Ethics Validator
 try:
-    from cosmos.core.collective.stewardship import StewardshipValidator
+    from Cosmos.core.collective.stewardship import StewardshipValidator
 except ImportError:
     try:
         from core.collective.stewardship import StewardshipValidator
@@ -146,6 +148,110 @@ class RSMEngine:
             return p
         return None
 
+    def _fuzzy_resolve_filename(self, hallucinated: str) -> Optional[str]:
+        """
+        When an LLM hallucinates a filename (e.g. 'engine.py'), find the
+        closest real module in scope using fuzzy string matching.
+        Returns the corrected filename or None if no good match.
+        """
+        available = [f.name for f in self.engine_dir.glob("*.py")
+                     if not f.name.startswith("__")]
+        if not available:
+            return None
+
+        # Exact match — no correction needed
+        if hallucinated in available:
+            return hallucinated
+
+        # Strip common prefixes the LLM might omit (e.g. "cosmos_" prefix)
+        best_match = None
+        best_score = 0.0
+
+        for candidate in available:
+            # Direct substring check: "engine" in "cosmos_engine.py"
+            base = hallucinated.replace(".py", "")
+            if base in candidate:
+                score = 0.85 + (len(base) / len(candidate)) * 0.15
+            else:
+                score = SequenceMatcher(None, hallucinated.lower(), candidate.lower()).ratio()
+
+            if score > best_score:
+                best_score = score
+                best_match = candidate
+
+        # Require at least 50% similarity to avoid wild mismatches
+        if best_score >= 0.50 and best_match:
+            logger.info(f"[RSM] Fuzzy filename correction: '{hallucinated}' → '{best_match}' (score: {best_score:.2f})")
+            return best_match
+
+        return None
+
+    def _decode_model_text(self, text: str) -> str:
+        """Normalize LLM-emitted code blocks before matching or writing them."""
+        if not text:
+            return ""
+        return html.unescape(text).replace("\r\n", "\n").strip("\n")
+
+    def _resolve_original_snippet(self, content: str, original_code: str) -> Optional[str]:
+        """
+        Rebase an LLM-proposed original snippet onto the current file contents.
+        This keeps RSM resilient to HTML escaping, newline differences, and
+        small formatting drift after earlier edits in the same file.
+        """
+        if not content or not original_code:
+            return None
+
+        content_normalized = content.replace("\r\n", "\n")
+        candidates: list[str] = []
+        for candidate in (
+            original_code,
+            self._decode_model_text(original_code),
+            original_code.strip(),
+            self._decode_model_text(original_code).strip(),
+        ):
+            if candidate and candidate not in candidates:
+                candidates.append(candidate)
+
+        for candidate in candidates:
+            if candidate in content:
+                return candidate
+            normalized = candidate.replace("\r\n", "\n")
+            if normalized in content_normalized:
+                start = content_normalized.find(normalized)
+                end = start + len(normalized)
+                return content_normalized[start:end]
+
+        candidate = max(candidates, key=len, default="")
+        candidate_lines = candidate.splitlines()
+        content_lines = content.splitlines()
+        if len(candidate_lines) >= 2 and len(content_lines) >= len(candidate_lines):
+            target = "\n".join(line.rstrip() for line in candidate_lines)
+            best_score = 0.0
+            best_window = None
+            window_sizes = {len(candidate_lines)}
+            if len(candidate_lines) > 2:
+                window_sizes.add(len(candidate_lines) - 1)
+                window_sizes.add(len(candidate_lines) + 1)
+
+            for window_size in sorted(window_sizes):
+                if window_size <= 0 or window_size > len(content_lines):
+                    continue
+                for start_idx in range(0, len(content_lines) - window_size + 1):
+                    window = "\n".join(
+                        line.rstrip() for line in content_lines[start_idx:start_idx + window_size]
+                    )
+                    score = SequenceMatcher(None, target, window).ratio()
+                    if score > best_score:
+                        best_score = score
+                        best_window = start_idx, start_idx + window_size
+
+            if best_window and best_score >= 0.985:
+                logger.info(f"[RSM] Rebased snippet match with score {best_score:.3f}")
+                start_idx, end_idx = best_window
+                return "\n".join(content_lines[start_idx:end_idx])
+
+        return None
+
     # ============================================
     # READ OPERATIONS
     # ============================================
@@ -250,17 +356,23 @@ class RSMEngine:
         """
         path = self._resolve_path(filename)
         if not path:
-            logger.warning(f"RSM: propose_edit blocked — '{filename}' out of scope")
+            logger.debug(f"RSM: propose_edit blocked — '{filename}' out of scope")
             return None
-        
+
+        original_code = self._decode_model_text(original_code)
+        replacement_code = self._decode_model_text(replacement_code)
+        reason = html.unescape(reason or "").strip()
+
         if not is_forge:
             if not path.exists():
-                logger.warning(f"RSM: proposal blocked — {filename} does not exist.")
+                logger.debug(f"RSM: proposal blocked — {filename} does not exist")
                 return None
             content = path.read_text(encoding="utf-8")
-            if original_code not in content:
+            matched_original = self._resolve_original_snippet(content, original_code)
+            if not matched_original:
                 logger.warning(f"RSM: propose_edit failed — original code not found in {filename}")
                 return None
+            original_code = matched_original
         
         proposal = RSMProposal(
             file_path=str(path),
@@ -339,12 +451,17 @@ class RSMEngine:
                 logger.info(f"RSM: Forge created fresh module {path.name}")
             else:
                 content = path.read_text(encoding="utf-8")
-                if proposal.original_code not in content:
+                matched_original = self._resolve_original_snippet(content, proposal.original_code)
+                if not matched_original:
                     msg = f"RSM FAILED: Original code no longer found in {path.name}. File may have changed."
                     logger.error(msg)
                     self._audit_log("FAILED_NOT_FOUND", proposal)
                     return False, msg
-                
+
+                if matched_original != proposal.original_code:
+                    logger.info(f"RSM: Rebasing proposal against current {path.name} contents before apply")
+                    proposal.original_code = matched_original
+
                 new_content = content.replace(proposal.original_code, proposal.replacement_code, 1)
                 path.write_text(new_content, encoding="utf-8")
                 proposal.applied = True
@@ -454,6 +571,7 @@ class RSMEngine:
             list of RSMProposal objects.
         """
         proposals = []
+        llm_output = html.unescape(llm_output or "")
         
         # Match rsm_edit blocks
         pattern = re.compile(
@@ -469,13 +587,23 @@ class RSMEngine:
             reason = match.group(2)
             original = match.group(3).strip()
             replacement = match.group(4).strip()
-            
+
             if original and replacement:
+                # Fuzzy-correct hallucinated filenames before proposing
+                resolved = self._resolve_path(filename)
+                if not resolved or not resolved.exists():
+                    corrected = self._fuzzy_resolve_filename(filename)
+                    if corrected and corrected != filename:
+                        filename = corrected
+                    else:
+                        logger.debug(f"RSM: Skipping hallucinated filename '{filename}' — no match in scope")
+                        continue
+
                 proposal = self.propose_edit(filename, original, replacement, reason)
                 if proposal:
                     proposals.append(proposal)
                 else:
-                    logger.warning(f"RSM: Could not create proposal for {filename}")
+                    logger.debug(f"RSM: Could not create proposal for {filename}")
         
         # Match rsm_forge blocks
         forge_pattern = re.compile(
@@ -621,10 +749,16 @@ class RSMEngine:
             if not agent:
                 return [], "Could not create HermesAgent instance."
 
+            # Provide available module names so Hermes uses correct filenames
+            available_modules = [f.name for f in self.engine_dir.glob("*.py")
+                                 if not f.name.startswith("__")]
+            modules_list = ", ".join(available_modules)
+
             analysis_prompt = f"""Analyze this Python module from the Cosmos AI swarm framework and propose improvements.
 
 MODULE: {filename}
 GOAL: {goal}
+AVAILABLE MODULES IN SCOPE: {modules_list}
 
 ```python
 {content[:6000]}
@@ -646,23 +780,20 @@ RULES:
 - Do NOT break existing interfaces or signatures
 - Maximum 3 proposals
 - Each proposal must have a clear, specific reason
+- CRITICAL: The file= attribute MUST be exactly "{filename}" — do NOT use generic names like "engine.py"
 """
 
-            # Run Hermes analysis (blocks, but RSM is not time-critical)
-            import asyncio
-            try:
-                loop = asyncio.get_running_loop()
-                import concurrent.futures
-                with concurrent.futures.ThreadPoolExecutor() as pool:
-                    result = loop.run_in_executor(pool, agent.run, analysis_prompt)
-            except RuntimeError:
-                # No event loop — run directly
-                result = agent.run(analysis_prompt, max_iterations=5)
+            # Run Hermes analysis (synchronous — RSM is not time-critical)
+            result = agent.run_conversation(analysis_prompt)
 
             if not result:
                 return [], "HermesAgent returned no analysis."
 
-            result_text = str(result)
+            # run_conversation returns a dict with 'final_response' key
+            if isinstance(result, dict):
+                result_text = result.get("final_response", "") or ""
+            else:
+                result_text = str(result)
 
             # Parse the RSM tags from Hermes' output
             proposals = self.parse_rsm_tags(result_text)
@@ -728,7 +859,9 @@ Provide:
 3. Top 3 areas for improvement
 4. Integration opportunities with other Cosmos systems
 """
-            result = agent.run(prompt, max_iterations=3)
+            result = agent.run_conversation(prompt)
+            if isinstance(result, dict):
+                return result.get("final_response", "") or "No analysis returned."
             return str(result) if result else "No analysis returned."
 
         except Exception as e:

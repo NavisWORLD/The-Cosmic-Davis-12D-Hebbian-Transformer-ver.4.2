@@ -270,6 +270,32 @@ class ModelManager:
                 "strengths": ["reasoning", "code", "agentic", "research"],
                 "env_key": "HERMES_API_KEY",
             },
+            # ── Hybrid Cascade: local companion + cloud escalation ──
+            "hermes-36b-cloud": {
+                "name": "Hermes-4.3-36B Cloud",
+                "backend": "openai_compatible",
+                "api_model": "nousresearch/hermes-3-llama-3.1-405b",
+                "api_base": "https://openrouter.ai/api/v1",
+                "params": 36e9,
+                "vram_gb": 0,
+                "ram_gb": 0.5,
+                "context_length": 32768,
+                "quantization": "cloud",
+                "strengths": ["reasoning", "code", "analysis", "agentic"],
+                "env_key": "OPENROUTER_API_KEY",
+                "cloud_only": True,
+            },
+            "hermes-local-companion": {
+                "name": "Hermes Local Companion",
+                "backend": "ollama",
+                "ollama_name": "qwen3:8b",
+                "params": 8e9,
+                "vram_gb": 5.0,
+                "ram_gb": 6.0,
+                "context_length": 32768,
+                "quantization": "Q4_K_M",
+                "strengths": ["fast", "reasoning", "code", "lightweight"],
+            },
         }
 
     async def _scan_available_models(self):

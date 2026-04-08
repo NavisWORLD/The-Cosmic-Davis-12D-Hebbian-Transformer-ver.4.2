@@ -66,6 +66,11 @@ def build_msl_rad_external_validation() -> dict:
     records = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
     state_vector = cst_module.default_validation_state_vector()
     alignment = cst_module.galactic_cosmic_ray_alignment(state_vector, records)
+    learned_batch = cst_module.predict_observable_batch_scalars(
+        state_vector,
+        records,
+        calibrator=calibrator,
+    )
 
     targets = np.array([cst_module._normalize_gcr_scalar(record) for record in records], dtype=float)
     phase_proxy = np.full(len(records), float(locked_change4["model"]["phase_proxy_clamped"]), dtype=float)
@@ -74,14 +79,7 @@ def build_msl_rad_external_validation() -> dict:
         dtype=float,
     )
     learned_calibrator = np.array(
-        [
-            cst_module.predict_change4_observable_scalar(
-                state_vector,
-                record,
-                calibrator=calibrator,
-            )
-            for record in records
-        ],
+        [float(learned_batch[record["id"]]) for record in records],
         dtype=float,
     )
     midpoint = np.full(len(records), 0.5, dtype=float)

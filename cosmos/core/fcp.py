@@ -11,7 +11,7 @@ UPDATES:
 
 import asyncio
 from pathlib import Path
-, Optional
+from typing import Optional
 from datetime import datetime, timedelta
 from loguru import logger
 

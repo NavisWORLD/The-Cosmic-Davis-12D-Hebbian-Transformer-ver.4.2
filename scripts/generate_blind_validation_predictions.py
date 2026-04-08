@@ -38,6 +38,11 @@ def build_prediction_bundle(template_path: Path, label: str | None = None) -> di
     template_records = json.loads(template_path.read_text(encoding="utf-8"))
     state_vector = cst_module.default_validation_state_vector()
     calibrator = cst_module.load_learned_observable_calibrator()
+    learned_batch = cst_module.predict_observable_batch_scalars(
+        state_vector,
+        template_records,
+        calibrator=calibrator,
+    )
     phase_proxy = float(
         change4.build_change4_alignment_diagnostic()["model"]["phase_proxy_clamped"]
     )
@@ -45,13 +50,7 @@ def build_prediction_bundle(template_path: Path, label: str | None = None) -> di
     predictions = []
     for record in template_records:
         legacy_scalar = float(cst_module.predict_legacy_observable_scalar(state_vector, record))
-        learned_scalar = float(
-            cst_module.predict_change4_observable_scalar(
-                state_vector,
-                record,
-                calibrator=calibrator,
-            )
-        )
+        learned_scalar = float(learned_batch[record["id"]])
         raw_predictions = {}
         for key, scalar in {
             "model_phase_proxy": phase_proxy,

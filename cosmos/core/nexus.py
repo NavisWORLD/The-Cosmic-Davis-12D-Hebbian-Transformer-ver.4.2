@@ -40,6 +40,10 @@ class SignalType(Enum):
     TASK_FAILED = "task.failed"
     TASK_BLOCKED = "task.blocked"
     
+    # Evolution & Self-Improvement
+    RECURSIVE_EVOLUTION_TRIGGERED = "evolution.recursive_triggered"
+    SELF_UPGRADE_PROPOSED = "evolution.self_upgrade_proposed"
+    
     # External I/O
     USER_MESSAGE = "io.user.message"
     USER_INTERRUPTION = "io.user.interruption"

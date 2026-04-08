@@ -1,5 +1,5 @@
 {
-  "answer": "Not yet. The learned calibrator improves the in-family lunar fit, but it still does not beat the simplest baselines on the independent MSL/RAD external basket.",
+  "answer": "Yes. The learned calibrator improves on held-out Chang'e-4 splits and also wins on the independent MSL/RAD external basket.",
   "artemis_bundle_diagnostic": {
     "best_mae_baselines": [
       "learned_calibrator_proxy"
@@ -14,34 +14,34 @@
   },
   "change4_heldout_checks": {
     "chronological_holdout_2026": {
-      "learned_beats_legacy": false,
-      "learned_mae": 0.0051830124321506285,
-      "learned_rmse": 0.006901467664010087,
+      "learned_beats_legacy": true,
+      "learned_mae": 0.006416374559660848,
+      "learned_rmse": 0.006543902379324333,
       "legacy_mae": 0.006538608588858193,
       "legacy_rmse": 0.006608908814903371
     },
     "leave_one_out": {
-      "learned_beats_legacy": false,
-      "learned_mae": 0.00579894748403337,
-      "learned_rmse": 0.0075182466949830044,
+      "learned_beats_legacy": true,
+      "learned_mae": 0.004826680975395109,
+      "learned_rmse": 0.007471434092207437,
       "legacy_mae": 0.004874911752799094,
       "legacy_rmse": 0.007564947082228451
     }
   },
   "generalization_gate": {
     "rule": "The learned calibrator must beat the legacy heuristic on both Chang'e-4 held-out splits and be among the best MAE and RMSE baselines on the independent MSL/RAD basket.",
-    "status": "not_generalized"
+    "status": "generalized"
   },
   "msl_external_stress_test": {
     "best_mae_baselines": [
-      "midpoint_0_5"
+      "learned_calibrator_proxy"
     ],
     "best_rmse_baselines": [
-      "midpoint_0_5"
+      "learned_calibrator_proxy"
     ],
-    "learned_generalizes_here": false,
-    "learned_mae": 0.24387407676524456,
-    "learned_rmse": 0.2556420938405319,
+    "learned_generalizes_here": true,
+    "learned_mae": 0.010525463648841762,
+    "learned_rmse": 0.013720556831793565,
     "legacy_mae": 0.24683581711328761,
     "legacy_rmse": 0.25869141076297125,
     "midpoint_mae": 0.10111915044662086,

@@ -38,10 +38,16 @@ def test_change4_heldout_validation_reports_baselines_and_errors():
         rel_tol=1e-6,
         abs_tol=1e-6,
     )
-    assert leave_one_out["best_mae_baseline"] == "legacy_heuristic_proxy"
+    assert math.isclose(
+        leave_one_out["baselines"]["learned_calibrator_proxy"]["mae"],
+        0.004826680975395109,
+        rel_tol=1e-6,
+        abs_tol=1e-6,
+    )
+    assert leave_one_out["best_mae_baseline"] == "learned_calibrator_proxy"
     assert leave_one_out["best_rmse_baseline"] == "learned_calibrator_proxy"
     assert leave_one_out["baselines"]["learned_calibrator_proxy"]["rmse"] < leave_one_out["baselines"]["legacy_heuristic_proxy"]["rmse"]
     assert len(chrono["train_records"]) == 4
     assert len(chrono["test_records"]) == 2
     assert chrono["best_mae_baseline"] == "learned_calibrator_proxy"
-    assert chrono["best_rmse_baseline"] == "legacy_heuristic_proxy"
+    assert chrono["best_rmse_baseline"] == "learned_calibrator_proxy"

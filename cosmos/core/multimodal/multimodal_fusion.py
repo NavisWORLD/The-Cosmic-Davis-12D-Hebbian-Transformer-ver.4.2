@@ -13,13 +13,17 @@ sys.path.append(str(Path(__file__).parent))
 from visual_engine import VisualLightToken
 from affective_engine import EmotionalState, detect_emotion_from_audio, detect_emotion_from_vision, detect_emotion_from_text
 
-#  Audio imports (assumes audio_engine.py exists)
+#  Audio imports (audio_engine.py lives in this package)
 try:
-    from audio_engine import MusicalLightToken
+    from .audio_engine import MusicalLightToken
     AUDIO_AVAILABLE = True
 except ImportError:
-    AUDIO_AVAILABLE = False
-    print("Warning: audio_engine not found. Audio fusion disabled.")
+    try:
+        from audio_engine import MusicalLightToken
+        AUDIO_AVAILABLE = True
+    except ImportError:
+        AUDIO_AVAILABLE = False
+        print("Warning: audio_engine not found. Audio fusion disabled.")
 
 # ============================================================================
 # MULTIMODAL LIGHT TOKEN

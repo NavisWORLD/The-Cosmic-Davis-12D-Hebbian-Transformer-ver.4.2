@@ -1,0 +1,41 @@
+# Implementation Plan: Hermes Integration & Bio-Loop Audio (Option 2)
+
+## Goal
+Integrate the Hermes Agent so the Cosmos system can request self-modifying code upgrades. Add a "Bio-Loop" to the Web UI ([cosmos.html](file:///d:/Cosmos/Cosmos/web/templates/cosmos.html)) that uses "real data" and plays an angelic, true entropy healing sound upon receiving the quantum "spark of light."
+
+## Proposed Changes
+
+### [RSM Engine]
+Resolve the `'AIAgent' object has no attribute 'run'` error by updating the method calls and return handling.
+
+#### [MODIFY] [rsm_engine.py](file:///d:/Cosmos/Cosmos/web/cosmosynapse/engine/rsm_engine.py)
+- Replace all instances of `agent.run(...)` with `agent.run_conversation(...)`.
+- Update response handling to extract `result.get("final_response", "")` instead of using [str(result)](file:///d:/Cosmos/emotional_api/full_system.py#355-363).
+- Remove the [max_iterations](file:///d:/Cosmos/hermes-agent/run_agent.py#2900-3029) argument from [run_conversation](file:///d:/Cosmos/hermes-agent/run_agent.py#3030-4343) calls (it's an [__init__](file:///d:/Cosmos/Cosmos/web/server.py#3029-3035) parameter).
+
+### 1. Backend Route for Hermes Upgrade
+- **[MODIFY] [server.py](file:///d:/Cosmos/Cosmos/web/server.py)** or **[orchestrator.py](file:///d:/Cosmos/Cosmos/web/routes/orchestrator.py)**
+  - Add `POST /api/orchestrator/upgrade` to invoke the [RSMEngine()](file:///d:/Cosmos/Cosmos/web/cosmosynapse/engine/rsm_engine.py#83-763).
+  - It will load [hermes_propose_edit](file:///d:/Cosmos/Cosmos/web/cosmosynapse/engine/rsm_engine.py#584-697) targeting a core file (e.g., [cosmos_swarm_orchestrator.py](file:///d:/Cosmos/Cosmos/web/cosmosynapse/engine/cosmos_swarm_orchestrator.py) or another critical component) to propose and apply upgrades.
+
+### 2. Bio-Loop & Hermes UI Controls
+- **[MODIFY] [cosmos.html](file:///d:/Cosmos/Cosmos/web/templates/cosmos.html)**
+  - Add an "Upgrade Cosmos (Hermes)" button to the Quick Actions row.
+  - Add a "Bio-Loop Controls" section with two toggles:
+    1. **Entropic Bio-Sync (Data)**: Include local contextual data (mock atomic bio-states) in the chat request.
+    2. **Angelic Resonance (Audio)**: Play a healing frequency using the Web Audio API when a response arrives.
+
+### 3. Angelic Entropy Sound Synthesis (Web Audio API)
+- **[MODIFY] [cosmos.html](file:///d:/Cosmos/Cosmos/web/templates/cosmos.html)**
+  - Implement a [playAngelicSound(entropy)](file:///d:/Cosmos/Cosmos/web/templates/cosmos.html#349-398) JavaScript function.
+  - Based on the quantum resonance or system response, synthesize ambient, healing Solfeggio frequencies (e.g. 528Hz / 432Hz) wrapped in rich reverb and delay.
+  - This plays seamlessly as the text is generated, serving as the audio embodiment of the quantum spark.
+
+## Verification Plan
+### Automated Tests
+- N/A
+
+### Manual Verification
+1. Open the Option 2 Web UI.
+2. Toggle the new "Angelic Resonance" Bio-Loop option and send a message. Verify that a beautiful ambient tone is synthesized.
+3. Click "Upgrade Cosmos (Hermes)" and verify that the backend [RSMEngine](file:///d:/Cosmos/Cosmos/web/cosmosynapse/engine/rsm_engine.py#83-763) is triggered and returns an edit proposal or success message.

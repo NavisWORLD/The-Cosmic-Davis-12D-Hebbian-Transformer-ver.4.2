@@ -1,0 +1,462 @@
+{
+  "answer": "Yes. The learned 12D calibrator now clears a predictive subdomain on MSL/RAD and CRaTER/LRO against stronger metadata-only and ablation baselines, while the broader model family remains stable on Mars FD and Chandrayaan-1 under both direct and blind evaluation.",
+  "blind_reports": {
+    "chandrayaan1": {
+      "best_mae_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "best_rmse_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "family_beats_naive_and_metadata": true,
+      "family_led": true,
+      "learned_mae": 0.19125459679816134,
+      "learned_rmse": 0.21578033298847207,
+      "legacy_mae": 0.19757040182040178,
+      "legacy_rmse": 0.22121216214087064,
+      "metadata_mae": 0.27233947879033354,
+      "metadata_rmse": 0.2936601572903129,
+      "phase_only_ablation_mae": 0.27673347635031736,
+      "phase_only_ablation_rmse": 0.29633823964191763,
+      "predictions_path": "docs\\validation\\blind_predictions_chandrayaan1_v4.json",
+      "predictions_sha256": "7e6dc2513ffaf6a3eb6a8b9b2948b12a74178042502140e9f411135cbd9c8f45",
+      "revealed_sha256": "9a6b236ce4ff031140e129e15cb794b0ec80bb635ff010011dc7d6a9b4ed0ac8",
+      "template_sha256": "26fc674d4fe8f810dc93b13150c0206a8e0188367bdaf26631058d8bccd2a196"
+    },
+    "crater": {
+      "best_mae_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "best_rmse_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "family_beats_naive_and_metadata": true,
+      "family_led": true,
+      "learned_mae": 0.020491104334474403,
+      "learned_rmse": 0.022031824879407462,
+      "legacy_mae": 0.16691855902382216,
+      "legacy_rmse": 0.1790474161281152,
+      "metadata_mae": 0.16485785663780372,
+      "metadata_rmse": 0.21966672388472674,
+      "phase_only_ablation_mae": 0.11575549355410016,
+      "phase_only_ablation_rmse": 0.11935898049900052,
+      "predictions_path": "docs\\validation\\blind_predictions_crater_v4.json",
+      "predictions_sha256": "4c1b5a9b8dd001dfda6fb8cecd55fd8513807ce2d2aa591a67fb61a826c97980",
+      "revealed_sha256": "95483a0cb50d17d9822dc6d7c7cf4bd2ff90309a189d913c14ce229dc245be11",
+      "template_sha256": "4c482d2438abe6a71aa8deb8c05c927add1bf16a436f714dc9cb6076537ae16b"
+    },
+    "mars_fd": {
+      "best_mae_baselines": [
+        "legacy_heuristic_proxy"
+      ],
+      "best_rmse_baselines": [
+        "legacy_heuristic_proxy"
+      ],
+      "family_beats_naive_and_metadata": true,
+      "family_led": true,
+      "learned_mae": 0.19339411985408106,
+      "learned_rmse": 0.22731436129038787,
+      "legacy_mae": 0.19204242496176088,
+      "legacy_rmse": 0.2254834129397106,
+      "metadata_mae": 0.28107049422640895,
+      "metadata_rmse": 0.3273057631740667,
+      "phase_only_ablation_mae": 0.26622653182320444,
+      "phase_only_ablation_rmse": 0.3120624092803865,
+      "predictions_path": "docs\\validation\\blind_predictions_mars_fd_v4.json",
+      "predictions_sha256": "0510e60b7df815fbdf99ef67f0d992a8d47e43a0f0be895b2ff889ee6f854285",
+      "revealed_sha256": "3cf6dd9ef57384c790af4864c0236bf231fcf35e5e99829957b76cab28789548",
+      "template_sha256": "93b7c60491f0a680d616827096f4baad789c5f47a3856f0266016966cae53492"
+    },
+    "msl": {
+      "best_mae_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "best_rmse_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "family_beats_naive_and_metadata": true,
+      "family_led": true,
+      "learned_mae": 0.011207102395483642,
+      "learned_rmse": 0.014807939927634274,
+      "legacy_mae": 0.24683581711328761,
+      "legacy_rmse": 0.25869141076297125,
+      "metadata_mae": 0.16464081119273344,
+      "metadata_rmse": 0.18544029129926362,
+      "phase_only_ablation_mae": 0.09026246706336305,
+      "phase_only_ablation_rmse": 0.09809038525498354,
+      "predictions_path": "docs\\validation\\blind_predictions_msl_v4.json",
+      "predictions_sha256": "c8d3efaadd70d300dba80578bdb47f9ec474a526e43d59842d82e94d827375a5",
+      "revealed_sha256": "13277438f861f68847aced6c06b8a05f9043d1df62b9e85fb4b964b1bfb0d971",
+      "template_sha256": "1729fe488b02f45b8430c3297d61708234c17a29c75ea02fd883461d37e5ec9e"
+    }
+  },
+  "direct_reports": {
+    "chandrayaan1": {
+      "best_mae_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "best_rmse_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "bootstrap": {
+        "learned_vs_legacy": {
+          "mae": {
+            "ci_high": 0.0034020245188170206,
+            "ci_low": -0.015243813931555564,
+            "observed_delta": -0.005515804991929607
+          },
+          "rmse": {
+            "ci_high": 0.003587137672113383,
+            "ci_low": -0.011793588686046352,
+            "observed_delta": -0.004893158146431903
+          }
+        },
+        "learned_vs_metadata_only": {
+          "mae": {
+            "ci_high": 0.062311106875547334,
+            "ci_low": -0.18391570804687138,
+            "observed_delta": -0.0849843789127949
+          },
+          "rmse": {
+            "ci_high": 0.06628746987063311,
+            "ci_low": -0.18232473577030858,
+            "observed_delta": -0.08293784021344744
+          }
+        },
+        "learned_vs_midpoint": {
+          "mae": {
+            "ci_high": 0.02174999762435212,
+            "ci_low": -0.19156225625267403,
+            "observed_delta": -0.10143247165859634
+          },
+          "rmse": {
+            "ci_high": 0.03704918868572671,
+            "ci_low": -0.18863486905218949,
+            "observed_delta": -0.09750063033331655
+          }
+        },
+        "learned_vs_phase_only_ablation": {
+          "mae": {
+            "ci_high": 0.03314721731075945,
+            "ci_low": -0.17511462294053945,
+            "observed_delta": -0.08627887958246697
+          },
+          "rmse": {
+            "ci_high": 0.05168774398946965,
+            "ci_low": -0.17311055935087646,
+            "observed_delta": -0.08175988902562312
+          }
+        },
+        "learned_vs_zero_state_ablation": {
+          "mae": {
+            "ci_high": -0.28401495094291385,
+            "ci_low": -0.6841774560130515,
+            "observed_delta": -0.5334290404897222
+          },
+          "rmse": {
+            "ci_high": -0.3062243543366096,
+            "ci_low": -0.6804236293773215,
+            "observed_delta": -0.5393998043763146
+          }
+        }
+      },
+      "family_beats_naive_and_metadata": true,
+      "family_led": true,
+      "learned_beats_metadata_only": true,
+      "learned_beats_midpoint": true,
+      "learned_mae": 0.19205459682847217,
+      "learned_rmse": 0.21631900399443874,
+      "legacy_beats_metadata_only": true,
+      "legacy_beats_midpoint": true,
+      "legacy_mae": 0.19757040182040178,
+      "legacy_rmse": 0.22121216214087064,
+      "metadata_mae": 0.27703897574126707,
+      "metadata_rmse": 0.2992568442078862,
+      "phase_only_ablation_mae": 0.27833347641093914,
+      "phase_only_ablation_rmse": 0.29807889302006185,
+      "zero_ablation_mae": 0.7254836373181943,
+      "zero_ablation_rmse": 0.7557188083707533
+    },
+    "crater": {
+      "best_mae_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "best_rmse_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "bootstrap": {
+        "learned_vs_legacy": {
+          "mae": {
+            "ci_high": -0.08180465203792023,
+            "ci_low": -0.20150870836830256,
+            "observed_delta": -0.14816284344501635
+          },
+          "rmse": {
+            "ci_high": -0.09840086647017464,
+            "ci_low": -0.2018217042644613,
+            "observed_delta": -0.15914146925156114
+          }
+        },
+        "learned_vs_metadata_only": {
+          "mae": {
+            "ci_high": -0.007111301787865315,
+            "ci_low": -0.29214222575653087,
+            "observed_delta": -0.1496267637721981
+          },
+          "rmse": {
+            "ci_high": -0.013193622449978341,
+            "ci_low": -0.3172139615434694,
+            "observed_delta": -0.20416016571890064
+          }
+        },
+        "learned_vs_midpoint": {
+          "mae": {
+            "ci_high": -0.007621999684972652,
+            "ci_low": -0.2917339902353631,
+            "observed_delta": -0.1496779949601679
+          },
+          "rmse": {
+            "ci_high": -0.018274182848864652,
+            "ci_low": -0.3106081564546072,
+            "observed_delta": -0.2031111550745006
+          }
+        },
+        "learned_vs_phase_only_ablation": {
+          "mae": {
+            "ci_high": -0.07545906775103528,
+            "ci_low": -0.12270945327604749,
+            "observed_delta": -0.09908426051354138
+          },
+          "rmse": {
+            "ci_high": -0.07537962095467651,
+            "ci_low": -0.12237386283110044,
+            "observed_delta": -0.10160089575011037
+          }
+        },
+        "learned_vs_zero_state_ablation": {
+          "mae": {
+            "ci_high": -0.44644818039059175,
+            "ci_low": -0.6503066768546437,
+            "observed_delta": -0.5483774286226177
+          },
+          "rmse": {
+            "ci_high": -0.44702695301128387,
+            "ci_low": -0.6513876737438877,
+            "observed_delta": -0.5564846086025435
+          }
+        }
+      },
+      "family_beats_naive_and_metadata": true,
+      "family_led": true,
+      "learned_beats_metadata_only": true,
+      "learned_beats_midpoint": true,
+      "learned_mae": 0.018755715578805815,
+      "learned_rmse": 0.01990594687655406,
+      "legacy_beats_metadata_only": true,
+      "legacy_beats_midpoint": true,
+      "legacy_mae": 0.16691855902382216,
+      "legacy_rmse": 0.1790474161281152,
+      "metadata_mae": 0.16838247935100392,
+      "metadata_rmse": 0.2240661125954547,
+      "phase_only_ablation_mae": 0.1178399760923472,
+      "phase_only_ablation_rmse": 0.12150684262666443,
+      "zero_ablation_mae": 0.5671331442014236,
+      "zero_ablation_rmse": 0.5763905554790975
+    },
+    "mars_fd": {
+      "best_mae_baselines": [
+        "legacy_heuristic_proxy"
+      ],
+      "best_rmse_baselines": [
+        "legacy_heuristic_proxy"
+      ],
+      "bootstrap": {
+        "learned_vs_legacy": {
+          "mae": {
+            "ci_high": 0.003928968642047171,
+            "ci_low": 0.000326130463162893,
+            "observed_delta": 0.002111188591982338
+          },
+          "rmse": {
+            "ci_high": 0.004348690213258806,
+            "ci_low": 0.0011297872685474527,
+            "observed_delta": 0.00277563325267427
+          }
+        },
+        "learned_vs_metadata_only": {
+          "mae": {
+            "ci_high": -0.06367055849390788,
+            "ci_low": -0.11927460967710987,
+            "observed_delta": -0.09200304509424573
+          },
+          "rmse": {
+            "ci_high": -0.08170752810491552,
+            "ci_low": -0.12496539614896213,
+            "observed_delta": -0.10451762540993129
+          }
+        },
+        "learned_vs_midpoint": {
+          "mae": {
+            "ci_high": -0.06292756570211587,
+            "ci_low": -0.11800292416072702,
+            "observed_delta": -0.09088184385657483
+          },
+          "rmse": {
+            "ci_high": -0.08115617884790444,
+            "ci_low": -0.12448313318750058,
+            "observed_delta": -0.10389797874807724
+          }
+        },
+        "learned_vs_phase_only_ablation": {
+          "mae": {
+            "ci_high": -0.048847631961003744,
+            "ci_low": -0.09779107976338233,
+            "observed_delta": -0.0737438044087182
+          },
+          "rmse": {
+            "ci_high": -0.06497200769089365,
+            "ci_low": -0.10426968568981453,
+            "observed_delta": -0.08558698160094744
+          }
+        },
+        "learned_vs_zero_state_ablation": {
+          "mae": {
+            "ci_high": -0.5189835236786148,
+            "ci_low": -0.6046605909854169,
+            "observed_delta": -0.5632103745966046
+          },
+          "rmse": {
+            "ci_high": -0.5195587883254876,
+            "ci_low": -0.5923446503733917,
+            "observed_delta": -0.5576156622744118
+          }
+        }
+      },
+      "family_beats_naive_and_metadata": true,
+      "family_led": true,
+      "learned_beats_metadata_only": true,
+      "learned_beats_midpoint": true,
+      "learned_mae": 0.19415361355374322,
+      "learned_rmse": 0.22825904619238488,
+      "legacy_beats_metadata_only": true,
+      "legacy_beats_midpoint": true,
+      "legacy_mae": 0.19204242496176088,
+      "legacy_rmse": 0.2254834129397106,
+      "metadata_mae": 0.28615665864798895,
+      "metadata_rmse": 0.33277667160231617,
+      "phase_only_ablation_mae": 0.2678974179624614,
+      "phase_only_ablation_rmse": 0.3138460277933323,
+      "zero_ablation_mae": 0.7573639881503479,
+      "zero_ablation_rmse": 0.7858747084667967
+    },
+    "msl": {
+      "best_mae_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "best_rmse_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "bootstrap": {
+        "learned_vs_legacy": {
+          "mae": {
+            "ci_high": -0.17383947168594097,
+            "ci_low": -0.29580072191912143,
+            "observed_delta": -0.23631035346444584
+          },
+          "rmse": {
+            "ci_high": -0.18229419294359508,
+            "ci_low": -0.29912767614644253,
+            "observed_delta": -0.24497085393117768
+          }
+        },
+        "learned_vs_metadata_only": {
+          "mae": {
+            "ci_high": -0.07464180813468638,
+            "ci_low": -0.21364671500066026,
+            "observed_delta": -0.14487045028399936
+          },
+          "rmse": {
+            "ci_high": -0.09537275905854578,
+            "ci_low": -0.22480437697317254,
+            "observed_delta": -0.16770368790537538
+          }
+        },
+        "learned_vs_midpoint": {
+          "mae": {
+            "ci_high": -0.024792595492201495,
+            "ci_low": -0.17663231499510756,
+            "observed_delta": -0.0905936867977791
+          },
+          "rmse": {
+            "ci_high": -0.026032652960295385,
+            "ci_low": -0.2066302347397219,
+            "observed_delta": -0.1275549723003456
+          }
+        },
+        "learned_vs_phase_only_ablation": {
+          "mae": {
+            "ci_high": -0.04223918595801714,
+            "ci_low": -0.11755880535127583,
+            "observed_delta": -0.08244137907596069
+          },
+          "rmse": {
+            "ci_high": -0.04915897312121144,
+            "ci_low": -0.11841004095804414,
+            "observed_delta": -0.08770829356485854
+          }
+        },
+        "learned_vs_zero_state_ablation": {
+          "mae": {
+            "ci_high": -0.3253740922588863,
+            "ci_low": -0.5940551480991435,
+            "observed_delta": -0.44356009664818946
+          },
+          "rmse": {
+            "ci_high": -0.3370847965540305,
+            "ci_low": -0.6220588680300149,
+            "observed_delta": -0.4724228056404983
+          }
+        }
+      },
+      "family_beats_naive_and_metadata": true,
+      "family_led": true,
+      "learned_beats_metadata_only": true,
+      "learned_beats_midpoint": true,
+      "learned_mae": 0.010525463648841762,
+      "learned_rmse": 0.013720556831793565,
+      "legacy_beats_metadata_only": false,
+      "legacy_beats_midpoint": false,
+      "legacy_mae": 0.24683581711328761,
+      "legacy_rmse": 0.25869141076297125,
+      "metadata_mae": 0.15539591393284113,
+      "metadata_rmse": 0.18142424473716895,
+      "phase_only_ablation_mae": 0.09296684272480245,
+      "phase_only_ablation_rmse": 0.1014288503966521,
+      "zero_ablation_mae": 0.45408556029703123,
+      "zero_ablation_rmse": 0.4861433624722919
+    }
+  },
+  "freeze_date": "2026-04-08",
+  "freeze_label": "cst_radiation_validation_v4",
+  "question": "Does the upgraded v4 evidence package support a stronger claim than the v3 validated model-family result?",
+  "reproducibility": {
+    "commands": [
+      "python scripts/run_chandrayaan1_radom_external_validation.py --output-dir docs/validation",
+      "python scripts/run_final_v4_validation.py --output-dir docs/validation",
+      "python scripts/build_validation_manifest_v4.py --output docs/validation/validation_manifest_v4.json",
+      "python -m pytest tests/galactic_cosmic_rays -q"
+    ],
+    "python_version": "3.12.6",
+    "template_sha256": {
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\chandrayaan1_radom_blind_template.json": "26fc674d4fe8f810dc93b13150c0206a8e0188367bdaf26631058d8bccd2a196",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\crater_lro_blind_template.json": "4c482d2438abe6a71aa8deb8c05c927add1bf16a436f714dc9cb6076537ae16b",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\mars_fd_surface_orbit_blind_template.json": "93b7c60491f0a680d616827096f4baad789c5f47a3856f0266016966cae53492",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\msl_rad_blind_template.json": "1729fe488b02f45b8430c3297d61708234c17a29c75ea02fd883461d37e5ec9e"
+    }
+  },
+  "v3_gate_status": "validated_model_family",
+  "v4_gate": {
+    "rule": "Keep the v3 model-family result intact, require learned-calibrator dominance on MSL and CRaTER under direct and blind scoring against metadata-only and 12D ablation baselines, and require Mars FD plus Chandrayaan-1 to remain family-led while beating naive and metadata-only baselines.",
+    "status": "validated_predictive_subdomain"
+  }
+}

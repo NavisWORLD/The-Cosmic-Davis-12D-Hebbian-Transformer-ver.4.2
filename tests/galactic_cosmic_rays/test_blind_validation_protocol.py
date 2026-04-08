@@ -27,23 +27,25 @@ sys.modules["validation_manifest_builder"] = MANIFEST_MODULE
 MANIFEST_SPEC.loader.exec_module(MANIFEST_MODULE)
 
 
-def test_blind_prediction_and_scoring_pipeline_is_reproducible_for_msl():
+def test_blind_prediction_and_scoring_pipeline_is_reproducible_for_msl(tmp_path):
     template = ROOT / "tests" / "galactic_cosmic_rays" / "blind_templates" / "msl_rad_blind_template.json"
     revealed = ROOT / "tests" / "galactic_cosmic_rays" / "msl_rad_reference.json"
 
-    bundle = PREDICT_MODULE.build_prediction_bundle(template, label="msl_rad_v1")
+    bundle = PREDICT_MODULE.build_prediction_bundle(template, label="msl_rad_v2")
+    predictions_path = tmp_path / "blind_predictions_msl_v2.json"
+    PREDICT_MODULE.write_prediction_bundle(predictions_path, bundle)
     score = SCORE_MODULE.score_prediction_bundle(
-        ROOT / "docs" / "validation" / "blind_predictions_msl_v1.json",
+        predictions_path,
         revealed,
     )
 
-    assert bundle["label"] == "msl_rad_v1"
+    assert bundle["label"] == "msl_rad_v2"
     assert len(bundle["predictions"]) == 6
-    assert score["best_mae_baselines"] == ["midpoint_0_5"]
-    assert score["best_rmse_baselines"] == ["midpoint_0_5"]
+    assert score["best_mae_baselines"] == ["learned_calibrator_proxy"]
+    assert score["best_rmse_baselines"] == ["learned_calibrator_proxy"]
     assert math.isclose(
         score["baselines"]["learned_calibrator_proxy"]["mae"],
-        0.2471541684533243,
+        0.011207102395483642,
         rel_tol=1e-6,
         abs_tol=1e-6,
     )
@@ -52,7 +54,7 @@ def test_blind_prediction_and_scoring_pipeline_is_reproducible_for_msl():
 def test_validation_manifest_freezes_the_current_status():
     manifest = MANIFEST_MODULE.build_validation_manifest()
 
-    assert manifest["freeze_label"] == "cst_radiation_validation_v1"
-    assert manifest["status"] == "not_generalized"
+    assert manifest["freeze_label"] == "cst_radiation_validation_v2"
+    assert manifest["status"] == "generalized"
     assert len(manifest["blind_protocol"]["template_sha256"]) == 2
-    assert manifest["reports"]["msl_external"]["best_mae_baselines"] == ["midpoint_0_5"]
+    assert manifest["reports"]["msl_external"]["best_mae_baselines"] == ["learned_calibrator_proxy"]

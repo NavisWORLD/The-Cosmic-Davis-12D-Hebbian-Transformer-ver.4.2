@@ -35,6 +35,7 @@ class DarkMatterLorenz:
         Steps the chaos engine forward based on User Physics.
         """
         x, y, z, w = self.state
+        cst_metrics = user_physics.get("cst_metrics", {}) or {}
 
         # Extract Bio-Signals with robustness for different schema versions
         arousal = 0.5
@@ -64,18 +65,27 @@ class DarkMatterLorenz:
         # Normalize inputs for stability
         arousal = max(0.0, abs(arousal)) # Use magnitude
         entropy = max(0.1, min(5.0, entropy))
+        omega_net = max(0.0, min(1.0, float(cst_metrics.get("omega_net", 0.0))))
+        ci_b = max(0.0, float(cst_metrics.get("ci_b", 0.0)))
+        ci_c = max(0.0, float(cst_metrics.get("ci_c", 0.0)))
+        x12_avg = float(cst_metrics.get("x12_avg", 0.0))
+        x12_baseline = float(cst_metrics.get("x12_baseline", PHI_INV))
+        epsilon_curvature = float(cst_metrics.get("epsilon_curvature", 0.0))
 
-        # 1. Standard Lorenz Dynamics
-        dx = self.sigma * (y - x)
-        dy = x * (self.rho - z) - y
-        dz = x * y - self.beta * z
+        # 1. Enhanced Lorenz dynamics with live CST coupling terms.
+        alpha_c = 0.35
+        beta_c = 0.18
+        gamma_c = 0.22
+        dx = self.sigma * (y - x) + alpha_c * omega_net * (x12_avg - x12_baseline)
+        dy = x * (self.rho - z) - y + beta_c * epsilon_curvature
+        dz = x * y - self.beta * z + gamma_c * ci_b
 
         # 2. Quantum / Dark Matter Dynamics (The 4th Dimension)
         # Driven by true quantum entropy if available
         q_entropy = 0.5
         try:
              # Lazy import to avoid circular dependencies/path issues
-            from cosmos.core.quantum_bridge import get_quantum_bridge
+            from Cosmos.core.quantum_bridge import get_quantum_bridge
             bridge = get_quantum_bridge()
             q_entropy = bridge.get_entropy(user_physics) # 0.0 to 1.0
         except ImportError:
@@ -88,7 +98,11 @@ class DarkMatterLorenz:
         # dw/dt = (Arousal * Entropy * QuantumFactor) × φ⁻¹ - Decay × φ⁻¹
         # φ-damping prevents the "Perfect Prediction Machine" from over-correcting
         # during high-velocity data ingress (Dynamic Damping per Blueprint §III)
-        dw = (arousal * entropy * q_factor * 2.0) * PHI_INV - (w * 0.05 * PHI_INV)
+        dw = (
+            (arousal * entropy * q_factor * 2.0)
+            + (omega_net * 0.75)
+            + (ci_c * 0.5)
+        ) * PHI_INV - (w * 0.05 * PHI_INV)
 
         # Update State with φ-dampened quantum jitters
         self.state += np.array([
@@ -103,7 +117,10 @@ class DarkMatterLorenz:
             "y": self.state[1],
             "z": self.state[2],
             "w": self.state[3], # The Dark Matter Value
-            "q": q_entropy      # Expose quantum state
+            "q": q_entropy,      # Expose quantum state
+            "omega_net": omega_net,
+            "ci_b": ci_b,
+            "ci_c": ci_c,
         }
 
     def get_current_state(self):

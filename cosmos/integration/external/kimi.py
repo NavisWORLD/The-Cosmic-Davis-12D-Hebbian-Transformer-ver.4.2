@@ -15,8 +15,13 @@ Docs: https://platform.moonshot.cn/docs
 
 from typing import Dict, Any, List, Optional
 from loguru import logger
-import aiohttp
+# NOTE: aiohttp import deferred — hangs on Windows when torch 2.8.0 DLL conflict
+# is present.  Lazy-loaded on first use via _get_aiohttp().
 import os
+
+def _get_aiohttp():
+    import aiohttp
+    return aiohttp
 
 from .base import ExternalProvider, IntegrationConfig, ConnectionStatus
 
@@ -46,7 +51,7 @@ class KimiProvider(ExternalProvider):
             return False
 
         try:
-            async with aiohttp.ClientSession() as session:
+            async with _get_aiohttp().ClientSession() as session:
                 headers = {"Authorization": f"Bearer {self.api_key}"}
                 async with session.get(f"{self.base_url}/models", headers=headers) as resp:
                     if resp.status == 200:
@@ -150,7 +155,7 @@ Be concise but insightful. Ask good questions. Build on others' ideas."""
         messages.append({"role": "user", "content": prompt})
 
         try:
-            async with aiohttp.ClientSession() as session:
+            async with _get_aiohttp().ClientSession() as session:
                 headers = {
                     "Authorization": f"Bearer {self.api_key}",
                     "Content-Type": "application/json"

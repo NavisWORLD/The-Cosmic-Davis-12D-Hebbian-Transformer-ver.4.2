@@ -51,14 +51,15 @@ class GeminiSwarmProvider:
             return False
         
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=self.api_key)
-            self._client = genai.GenerativeModel(self.model)
+            from google import genai
+            self._client = genai.Client(api_key=self.api_key)
+            # Fast probe to verify key/model
+            # We don't perform a live probe here to save tokens, just verify client init
             self._available = True
-            logger.info(f"Gemini available: {self.model}")
+            logger.info(f"Gemini available (modern SDK): {self.model}")
             return True
         except Exception as e:
-            logger.warning(f"Gemini not available: {e}")
+            logger.warning(f"Gemini not available (failed to init google-genai client): {e}")
             self._available = False
             return False
     
@@ -92,20 +93,23 @@ class GeminiSwarmProvider:
         
         try:
             # Build full prompt with system instructions
-            full_prompt = ""
-            if system:
-                full_prompt = f"[System Instructions]: {system}\n\n"
-            full_prompt += prompt
+            # In google-genai, system instructions are passed separately or prepended
+            config = {
+                "max_output_tokens": max_tokens,
+                "temperature": 0.8,
+            }
             
+            if system:
+                # System instructions in the new SDK
+                config["system_instruction"] = system
+
             # Generate response
             response = await asyncio.wait_for(
                 asyncio.to_thread(
-                    self._client.generate_content,
-                    full_prompt,
-                    generation_config={
-                        "max_output_tokens": max_tokens,
-                        "temperature": 0.8
-                    }
+                    self._client.models.generate_content,
+                    model=self.model,
+                    contents=prompt,
+                    config=config
                 ),
                 timeout=self.timeout
             )
@@ -127,12 +131,12 @@ class GeminiSwarmProvider:
         except Exception as e:
             error_str = str(e)
             if "429" in error_str:
-                # Check if it's a daily quota (longer cooldown) or per-minute (short cooldown)
-                if "PerDay" in error_str or "limit: 0" in error_str:
-                    self._retry_after = time.time() + 300  # 5 min cooldown for daily quota
-                    logger.warning("Gemini DAILY Quota Exceeded — cooling down for 5 minutes")
+                # Specific check for unconfigured/zero-limit quota
+                if "limit: 0" in error_str or "quota exceeded" in error_str.lower():
+                    self._retry_after = time.time() + 300  # 5 min cooldown
+                    logger.warning("Gemini QUOTA EXCEEDED (limit: 0). Please check billing/quota in Google AI Studio.")
                 else:
-                    self._retry_after = time.time() + 60  # 60s for per-minute limits
+                    self._retry_after = time.time() + 60  # 60s for standard rate limit
                     logger.warning("Gemini 429 Rate Limited — cooling down for 60s")
             elif "403" in error_str or "leaked" in error_str.lower():
                 self._available = False

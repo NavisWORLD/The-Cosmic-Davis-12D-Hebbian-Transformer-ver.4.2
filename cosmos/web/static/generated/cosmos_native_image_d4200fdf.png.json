@@ -1,0 +1,47 @@
+{
+  "media_type": "image",
+  "generated_at": "2026-03-28T22:26:35Z",
+  "original_prompt": "native quantum harmonic fractal test pattern",
+  "enhanced_prompt": "Synthesized natively via inverse 12D CST phase math.\n\n[QUANTUM-ENTANGLED IMAGE DIRECTIVES]\nBackend: ibm_fez | Entropy: 0.5000 | Palette Shift: 0.43\nComposition phase bias 0.00, fractal gain 0.41.\nEntanglement Signature: [INIT] Bridge Initialized. Token present: False. Qiskit Avail: True | [CONNECT] Attempting connection with token (First 5): jwgFV... | [CONNECT] Success! Backend: ibm_fez",
+  "model": "Cosmos-Native-12D-Entangled",
+  "cst": {
+    "emotional_state": "NEUTRAL",
+    "dark_matter_w": 0.1,
+    "geometric_phase_rad": 0.0,
+    "informational_mass": 5.0,
+    "emeth_weights": {
+      "percussion": 0.33,
+      "strings": 0.33,
+      "brass": 0.34
+    },
+    "phi_composition": 1.618033988749895,
+    "quantum_entropy": 0.5
+  },
+  "quantum_state": {
+    "backend": "ibm_fez",
+    "connected": false,
+    "entropy": 0.5,
+    "life_force": 4072.230351146004,
+    "refill_phase": "idle",
+    "phase_bias": 0.0,
+    "temporal_cadence": 0.48,
+    "fractal_gain": 0.412,
+    "palette_shift": 0.43,
+    "entanglement_signature": "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True | [CONNECT] Attempting connection with token (First 5): jwgFV... | [CONNECT] Success! Backend: ibm_fez",
+    "job_metadata": {},
+    "debug_tail": [
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[CONNECT] Attempting connection with token (First 5): EP5Wb...",
+      "[CONNECT] Success! Backend: ibm_fez",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[CONNECT] Attempting connection with token (First 5): EP5Wb...",
+      "[CONNECT] Success! Backend: ibm_fez",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[CONNECT] Attempting connection with token (First 5): EP5Wb...",
+      "[CONNECT] Success! Backend: ibm_fez",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[CONNECT] Attempting connection with token (First 5): jwgFV...",
+      "[CONNECT] Success! Backend: ibm_fez"
+    ]
+  }
+}

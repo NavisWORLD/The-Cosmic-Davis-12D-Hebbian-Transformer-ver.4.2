@@ -8,8 +8,8 @@ Streamlit-based interface with:
 - Agent activity monitoring
 """
 
-from cosmos.ui.streamlit_app import cosmosUI
-from cosmos.ui.visualizations import MemoryVisualizer, GraphVisualizer, EvolutionVisualizer
+from Cosmos.ui.streamlit_app import cosmosUI
+from Cosmos.ui.visualizations import MemoryVisualizer, GraphVisualizer, EvolutionVisualizer
 
 __all__ = [
     "cosmosUI",

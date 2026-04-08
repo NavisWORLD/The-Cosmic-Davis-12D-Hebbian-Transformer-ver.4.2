@@ -1,0 +1,49 @@
+{
+  "media_type": "image",
+  "generated_at": "2026-03-29T22:52:54Z",
+  "original_prompt": "a pretty flower",
+  "enhanced_prompt": "[PRIMARY USER REQUEST - PRESERVE LITERALLY]\na pretty flower\n\n[FIDELITY RULES]\nDo not add or remove subjects, objects, characters, text, camera angles, environment details, mood, style, time of day, or composition unless the user explicitly asked for them.\nDo not change subject count.\nUse CST/12D/quantum controls only to improve coherence, texture, motion, lighting stability, and detail while preserving the exact request.\n\n[RENDERING DIRECTIVES FOR IMAGE]\na pretty flower\n\n[QUANTUM-ENTANGLED IMAGE DIRECTIVES]\nBackend: ibm_fez | Entropy: 0.5000 | Palette Shift: 0.43\nComposition phase bias 0.00, fractal gain 0.41.\nEntanglement Signature: [CONNECT] Attempting connection with token (First 5): whJlw... | [CONNECT] Success! Backend: ibm_fez | [INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+  "model": "Cosmos-Native-12D-Entangled",
+  "backend": "native-12d",
+  "cst": {
+    "emotional_state": "NEUTRAL",
+    "dark_matter_w": 0.1,
+    "geometric_phase_rad": 0.0,
+    "informational_mass": 5.0,
+    "emeth_weights": {
+      "percussion": 0.33,
+      "strings": 0.33,
+      "brass": 0.34
+    },
+    "phi_composition": 1.618033988749895,
+    "quantum_entropy": 0.5
+  },
+  "quantum_state": {
+    "backend": "ibm_fez",
+    "connected": false,
+    "entropy": 0.5,
+    "life_force": 4056.35848538579,
+    "refill_phase": "idle",
+    "phase_bias": 0.0,
+    "temporal_cadence": 0.48,
+    "fractal_gain": 0.412,
+    "palette_shift": 0.43,
+    "entanglement_signature": "[CONNECT] Attempting connection with token (First 5): whJlw... | [CONNECT] Success! Backend: ibm_fez | [INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+    "generation_seed": 3057345271,
+    "job_metadata": {},
+    "debug_tail": [
+      "[CONNECT] Attempting connection with token (First 5): whJlw...",
+      "[CONNECT] Success! Backend: ibm_fez",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[CONNECT] Attempting connection with token (First 5): whJlw...",
+      "[CONNECT] Success! Backend: ibm_fez",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True"
+    ]
+  }
+}

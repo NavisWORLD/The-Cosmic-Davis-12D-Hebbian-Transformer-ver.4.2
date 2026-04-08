@@ -2601,6 +2601,14 @@ Provide a thoughtful, complete response that adds value to the discussion."""
         except Exception as e:
             logger.error(f"Claude Opus error, falling back to Ollama: {e}")
 
+    # If it's a model that doesn't have local Ollama support, use fallback directly
+    if speaker in ["Claude", "ClaudeOpus", "Kimi", "Gemini", "ChatGPT", "Grok", "Hermes", "DeepSeek R1"]:
+        # Only fallback to Ollama if explicitly instructed or if it's not a cloud-only model
+        if speaker == "Grok" and not GROK_AVAILABLE:
+            return "" # Fallbacks not strictly defined here, we just avoid throwing Ollama errors
+        if speaker == "Hermes":
+            return ""
+
     # Default: Use Ollama for local models (Cosmos, DeepSeek, Phi, Swarm-Mind)
     if OLLAMA_AVAILABLE:
         try:
@@ -6154,7 +6162,7 @@ async def get_polymarket_stats():
         stats = predictor.get_stats()
 
         return {
-            "stats": asany(stats),
+            "stats": asdict(stats),
             "updated_at": datetime.now().isoformat()
         }
     except Exception as e:

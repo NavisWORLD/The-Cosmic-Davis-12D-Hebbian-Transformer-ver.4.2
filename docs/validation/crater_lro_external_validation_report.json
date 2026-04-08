@@ -1,16 +1,16 @@
 {
-  "answer": "The learned calibrator slightly beats the preserved legacy heuristic on MAE, but it does not win RMSE against the simple midpoint baseline.",
+  "answer": "The learned calibrator is the best MAE and RMSE baseline on the supplementary CRaTER/LRO basket.",
   "baselines": {
     "learned_calibrator_proxy": {
-      "mae": 0.16597115647212154,
-      "max_abs_error": 0.2378929416568319,
+      "mae": 0.018755715578805815,
+      "max_abs_error": 0.029211053766714068,
       "predictions": [
-        0.6770463808102717,
-        0.6773173343675992,
-        0.6770463808102711,
-        0.6811069445744011
+        0.8615926666302488,
+        0.5322413567970171,
+        0.4585752498936437,
+        0.7518088966858383
       ],
-      "rmse": 0.17922016557493697
+      "rmse": 0.01990594687655406
     },
     "legacy_heuristic_proxy": {
       "mae": 0.16691855902382216,
@@ -50,7 +50,7 @@
     "learned_calibrator_proxy"
   ],
   "best_rmse_baselines": [
-    "legacy_heuristic_proxy"
+    "learned_calibrator_proxy"
   ],
   "external_alignment": {
     "official_cosine_similarity": 0.5365196925805269,
@@ -61,8 +61,8 @@
   "records": [
     {
       "id": "crater_annual_10000km_to_microdosimeter_ratio",
-      "learned_calibrator_prediction": 0.6770463808102717,
-      "learned_calibrator_raw_prediction": 12.796176597314133,
+      "learned_calibrator_prediction": 0.8615926666302488,
+      "learned_calibrator_raw_prediction": 16.2841013993117,
       "legacy_heuristic_prediction": 0.675,
       "legacy_heuristic_raw_prediction": 12.7575,
       "normalized_target": 0.8730158730158731,
@@ -75,8 +75,8 @@
     },
     {
       "id": "crater_annual_surface_to_10000km_ratio",
-      "learned_calibrator_prediction": 0.6773173343675992,
-      "learned_calibrator_raw_prediction": 11.175736017065388,
+      "learned_calibrator_prediction": 0.5322413567970171,
+      "learned_calibrator_raw_prediction": 8.781982387150782,
       "legacy_heuristic_prediction": 0.675,
       "legacy_heuristic_raw_prediction": 11.137500000000001,
       "normalized_target": 0.503030303030303,
@@ -89,8 +89,8 @@
     },
     {
       "id": "crater_annual_surface_to_microdosimeter_ratio",
-      "learned_calibrator_prediction": 0.6770463808102711,
-      "learned_calibrator_raw_prediction": 12.796176597314123,
+      "learned_calibrator_prediction": 0.4585752498936437,
+      "learned_calibrator_raw_prediction": 8.667072222989864,
       "legacy_heuristic_prediction": 0.675,
       "legacy_heuristic_raw_prediction": 12.7575,
       "normalized_target": 0.43915343915343924,
@@ -103,8 +103,8 @@
     },
     {
       "id": "crater_june7_surface_to_10000km_event_ratio",
-      "learned_calibrator_prediction": 0.6811069445744011,
-      "learned_calibrator_raw_prediction": 1.2941031946913621,
+      "learned_calibrator_prediction": 0.7518088966858383,
+      "learned_calibrator_raw_prediction": 1.4284369037030926,
       "legacy_heuristic_prediction": 0.675,
       "legacy_heuristic_raw_prediction": 1.2825,
       "normalized_target": 0.7368421052631579,

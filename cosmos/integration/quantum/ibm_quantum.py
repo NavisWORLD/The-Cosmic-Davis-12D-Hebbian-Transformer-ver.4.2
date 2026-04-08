@@ -148,6 +148,9 @@ class QuantumOptions:
     zne_noise_factors: Tuple[int, ...] = (1, 3, 5)
     zne_extrapolator: str = "exponential"  # or "linear", "polynomial"
 
+    # Safety timeout so long-running hardware jobs do not stall the server loop.
+    result_timeout_s: float = 15.0
+
 
 @dataclass
 class QuantumUsageStats:
@@ -648,87 +651,89 @@ class IBMQuantumProvider:
 
         try:
             if is_hardware and self.service:
-                # Run on real quantum hardware with IBM best practices
-                backend = self.service.backend(backend_name)
+                def _execute_hardware_circuit() -> QuantumJobResult:
+                    backend = self.service.backend(backend_name)
+                    transpiled = transpile(
+                        circuit,
+                        backend,
+                        optimization_level=options.optimization_level
+                    )
 
-                # Transpile with configurable optimization level
-                transpiled = transpile(
-                    circuit,
-                    backend,
-                    optimization_level=options.optimization_level
-                )
-
-                # Configure runtime options per IBM docs
-                runtime_options = {
-                    "dynamical_decoupling": {
-                        "enable": options.dynamical_decoupling,
-                        "sequence_type": options.dd_sequence_type
-                    },
-                    "twirling": {
-                        "enable_gates": options.enable_twirling,
-                        "num_randomizations": options.twirling_num_randomizations,
-                        "shots_per_randomization": options.twirling_shots_per_randomization
+                    # Preserve the existing runtime tuning block for future IBM runtime use.
+                    runtime_options = {
+                        "dynamical_decoupling": {
+                            "enable": options.dynamical_decoupling,
+                            "sequence_type": options.dd_sequence_type
+                        },
+                        "twirling": {
+                            "enable_gates": options.enable_twirling,
+                            "num_randomizations": options.twirling_num_randomizations,
+                            "shots_per_randomization": options.twirling_shots_per_randomization
+                        }
                     }
-                }
+                    _ = runtime_options
 
-                # Execution mode: Open Plan only supports Job and Batch (NOT Session)
-                if options.execution_mode == ExecutionMode.SESSION:
-                    logger.warning("Session mode not available on Open Plan, using Batch instead")
+                    if options.execution_mode == ExecutionMode.SESSION:
+                        logger.warning("Session mode not available on Open Plan, using Batch instead")
 
-                if options.execution_mode == ExecutionMode.JOB:
-                    # Job mode: single primitive request, simplest
-                    sampler = SamplerV2(mode=backend)
-                    if parameters:
-                        job = sampler.run([(transpiled.assign_parameters(parameters),)], shots=shots)
-                    else:
-                        job = sampler.run([(transpiled,)], shots=shots)
-                    result = job.result()
-                else:
-                    # Batch mode (default): parallel compilation, Open Plan compatible
-                    with Batch(backend=backend) as batch:
-                        sampler = SamplerV2(mode=batch)
+                    if options.execution_mode == ExecutionMode.JOB:
+                        sampler = SamplerV2(mode=backend)
                         if parameters:
                             job = sampler.run([(transpiled.assign_parameters(parameters),)], shots=shots)
                         else:
                             job = sampler.run([(transpiled,)], shots=shots)
-                        result = job.result()
+                        try:
+                            result = job.result(timeout=options.result_timeout_s)
+                        except TypeError:
+                            result = job.result()
+                    else:
+                        with Batch(backend=backend) as batch:
+                            sampler = SamplerV2(mode=batch)
+                            if parameters:
+                                job = sampler.run([(transpiled.assign_parameters(parameters),)], shots=shots)
+                            else:
+                                job = sampler.run([(transpiled,)], shots=shots)
+                            try:
+                                result = job.result(timeout=options.result_timeout_s)
+                            except TypeError:
+                                result = job.result()
 
-                execution_time = (datetime.now() - start_time).total_seconds()
+                    execution_time = (datetime.now() - start_time).total_seconds()
+                    self.usage_stats.record_hardware_job(execution_time)
+                    self.budget.record_usage(task_type, execution_time)
+                    self._save_usage_stats()
 
-                # Record usage against overall quota and category budget
-                self.usage_stats.record_hardware_job(execution_time)
-                self.budget.record_usage(task_type, execution_time)
-                self._save_usage_stats()
+                    counts = {}
+                    if hasattr(result[0], 'data'):
+                        pub_data = result[0].data
+                        if hasattr(pub_data, 'meas'):
+                            counts = pub_data.meas.get_counts()
+                        elif hasattr(pub_data, 'c'):
+                            counts = pub_data.c.get_counts()
 
-                # Extract counts from PubResult
-                counts = {}
-                if hasattr(result[0], 'data'):
-                    pub_data = result[0].data
-                    if hasattr(pub_data, 'meas'):
-                        counts = pub_data.meas.get_counts()
-                    elif hasattr(pub_data, 'c'):
-                        counts = pub_data.c.get_counts()
+                    return QuantumJobResult(
+                        success=True,
+                        backend_used=backend_name,
+                        execution_time=execution_time,
+                        shots=shots,
+                        counts=counts,
+                        metadata={
+                            "is_hardware": True,
+                            "transpiled_depth": transpiled.depth(),
+                            "execution_mode": options.execution_mode.value,
+                            "dynamical_decoupling": options.dynamical_decoupling,
+                            "twirling": options.enable_twirling
+                        }
+                    )
 
-                job_result = QuantumJobResult(
-                    success=True,
-                    backend_used=backend_name,
-                    execution_time=execution_time,
-                    shots=shots,
-                    counts=counts,
-                    metadata={
-                        "is_hardware": True,
-                        "transpiled_depth": transpiled.depth(),
-                        "execution_mode": options.execution_mode.value,
-                        "dynamical_decoupling": options.dynamical_decoupling,
-                        "twirling": options.enable_twirling
-                    }
-                )
+                job_result = await asyncio.to_thread(_execute_hardware_circuit)
+                counts = job_result.counts or {}
 
                 # Emit result signal for hardware
                 asyncio.create_task(_emit_quantum_signal("quantum.result", {
                     "backend": backend_name,
                     "is_hardware": True,
-                    "execution_time": execution_time,
+                    "execution_time": job_result.execution_time,
                     "shots": shots,
                     "unique_outcomes": len(counts) if counts else 0,
                     "timestamp": datetime.now().isoformat()
@@ -738,48 +743,51 @@ class IBMQuantumProvider:
                 return job_result
 
             else:
-                # Run on local simulator (unlimited, free)
-                # Use noise-aware fake backend when available for realistic results
-                sim_backend = self.simulator
-                backend_label = "aer_simulator"
-                use_noise = hasattr(self, 'fake_backend') and self.fake_backend is not None
+                def _execute_simulator_circuit() -> QuantumJobResult:
+                    sim_backend = self.simulator
+                    backend_label = "aer_simulator"
+                    use_noise = hasattr(self, 'fake_backend') and self.fake_backend is not None
 
-                if use_noise and circuit.num_qubits <= 133:
-                    # Noise-aware simulation using real QPU noise model
-                    sim_backend = AerSimulator.from_backend(self.fake_backend)
-                    backend_label = "aer_simulator_noisy(FakeTorino)"
+                    if use_noise and circuit.num_qubits <= 133:
+                        sim_backend = AerSimulator.from_backend(self.fake_backend)
+                        backend_label = "aer_simulator_noisy(FakeTorino)"
 
-                transpiled = transpile(circuit, sim_backend, optimization_level=1)
+                    transpiled = transpile(circuit, sim_backend, optimization_level=1)
 
-                if parameters:
-                    transpiled = transpiled.assign_parameters(parameters)
+                    if parameters:
+                        transpiled = transpiled.assign_parameters(parameters)
 
-                job = sim_backend.run(transpiled, shots=shots)
-                result = job.result()
+                    job = sim_backend.run(transpiled, shots=shots)
+                    try:
+                        result = job.result(timeout=options.result_timeout_s)
+                    except TypeError:
+                        result = job.result()
 
-                execution_time = (datetime.now() - start_time).total_seconds()
-                self.usage_stats.record_simulator_job()
+                    execution_time = (datetime.now() - start_time).total_seconds()
+                    self.usage_stats.record_simulator_job()
+                    counts = result.get_counts()
 
-                counts = result.get_counts()
+                    return QuantumJobResult(
+                        success=True,
+                        backend_used=backend_label,
+                        execution_time=execution_time,
+                        shots=shots,
+                        counts=counts,
+                        metadata={
+                            "is_hardware": False,
+                            "noise_aware": use_noise,
+                            "circuit_depth": transpiled.depth()
+                        }
+                    )
 
-                job_result = QuantumJobResult(
-                    success=True,
-                    backend_used=backend_label,
-                    execution_time=execution_time,
-                    shots=shots,
-                    counts=counts,
-                    metadata={
-                        "is_hardware": False,
-                        "noise_aware": use_noise,
-                        "circuit_depth": transpiled.depth()
-                    }
-                )
+                job_result = await asyncio.to_thread(_execute_simulator_circuit)
+                counts = job_result.counts or {}
 
                 # Emit result signal for simulator
                 asyncio.create_task(_emit_quantum_signal("quantum.result", {
-                    "backend": backend_label,
+                    "backend": job_result.backend_used,
                     "is_hardware": False,
-                    "execution_time": execution_time,
+                    "execution_time": job_result.execution_time,
                     "shots": shots,
                     "unique_outcomes": len(counts) if counts else 0,
                     "timestamp": datetime.now().isoformat()
@@ -853,125 +861,125 @@ class IBMQuantumProvider:
 
         try:
             if is_hardware and self.service:
-                backend = self.service.backend(backend_name)
+                def _execute_hardware_estimator() -> QuantumJobResult:
+                    backend = self.service.backend(backend_name)
+                    transpiled = transpile(
+                        circuit,
+                        backend,
+                        optimization_level=options.optimization_level
+                    )
 
-                # Transpile circuit
-                transpiled = transpile(
-                    circuit,
-                    backend,
-                    optimization_level=options.optimization_level
-                )
+                    if options.execution_mode == ExecutionMode.SESSION:
+                        logger.warning("Session mode not available on Open Plan, using Batch for Estimator")
 
-                # Open Plan: use Batch mode (Session not available)
-                if options.execution_mode == ExecutionMode.SESSION:
-                    logger.warning("Session mode not available on Open Plan, using Batch for Estimator")
+                    with Batch(backend=backend) as batch:
+                        estimator = EstimatorV2(mode=batch)
 
-                with Batch(backend=backend) as batch:
-                    # Configure Estimator with resilience level per IBM docs
-                    estimator = EstimatorV2(mode=batch)
+                        try:
+                            estimator.options.resilience_level = options.resilience_level.value
+                        except Exception:
+                            pass
 
-                    # Set resilience options
-                    try:
-                        estimator.options.resilience_level = options.resilience_level.value
-                    except Exception:
-                        pass  # Some versions don't support this
+                        try:
+                            if options.resilience_level.value >= 1:
+                                estimator.options.resilience.measure_mitigation = True
 
-                    # Configure error mitigation techniques
-                    try:
-                        if options.resilience_level.value >= 1:
-                            estimator.options.resilience.measure_mitigation = True
+                            if options.resilience_level.value >= 2:
+                                estimator.options.resilience.zne_mitigation = True
+                                estimator.options.resilience.zne.noise_factors = options.zne_noise_factors
+                                estimator.options.resilience.zne.extrapolator = options.zne_extrapolator
+                        except Exception:
+                            pass
 
-                        if options.resilience_level.value >= 2:
-                            estimator.options.resilience.zne_mitigation = True
-                            estimator.options.resilience.zne.noise_factors = options.zne_noise_factors
-                            estimator.options.resilience.zne.extrapolator = options.zne_extrapolator
-                    except Exception:
-                        pass  # Resilience options vary by version
+                        try:
+                            if options.dynamical_decoupling:
+                                estimator.options.dynamical_decoupling.enable = True
+                                estimator.options.dynamical_decoupling.sequence_type = options.dd_sequence_type
+                        except Exception:
+                            pass
 
-                    # Enable dynamical decoupling
-                    try:
-                        if options.dynamical_decoupling:
-                            estimator.options.dynamical_decoupling.enable = True
-                            estimator.options.dynamical_decoupling.sequence_type = options.dd_sequence_type
-                    except Exception:
-                        pass
+                        try:
+                            if options.enable_twirling:
+                                estimator.options.twirling.enable_gates = True
+                                estimator.options.twirling.num_randomizations = options.twirling_num_randomizations
+                        except Exception:
+                            pass
 
-                    # Enable twirling
-                    try:
-                        if options.enable_twirling:
-                            estimator.options.twirling.enable_gates = True
-                            estimator.options.twirling.num_randomizations = options.twirling_num_randomizations
-                    except Exception:
-                        pass
+                        if parameters:
+                            pub = (transpiled.assign_parameters(parameters), observable)
+                        else:
+                            pub = (transpiled, observable)
 
-                    # Build PUB (Primitive Unified Bloc) per IBM docs
-                    if parameters:
-                        pub = (transpiled.assign_parameters(parameters), observable)
-                    else:
-                        pub = (transpiled, observable)
+                        job = estimator.run([pub])
+                        try:
+                            result = job.result(timeout=options.result_timeout_s)
+                        except TypeError:
+                            result = job.result()
 
-                    job = estimator.run([pub])
-                    result = job.result()
+                    execution_time = (datetime.now() - start_time).total_seconds()
+                    self.usage_stats.record_hardware_job(execution_time)
+                    self.budget.record_usage(task_type, execution_time)
+                    self._save_usage_stats()
 
-                execution_time = (datetime.now() - start_time).total_seconds()
-                self.usage_stats.record_hardware_job(execution_time)
-                self.budget.record_usage(task_type, execution_time)
-                self._save_usage_stats()
+                    expectation_values = []
+                    if hasattr(result[0], 'data'):
+                        evs = result[0].data.evs
+                        expectation_values = evs.tolist() if hasattr(evs, 'tolist') else [evs]
 
-                # Extract expectation values
-                expectation_values = []
-                if hasattr(result[0], 'data'):
-                    evs = result[0].data.evs
-                    expectation_values = evs.tolist() if hasattr(evs, 'tolist') else [evs]
-
-                job_result = QuantumJobResult(
-                    success=True,
-                    backend_used=backend_name,
-                    execution_time=execution_time,
-                    shots=shots,
-                    expectation_values=expectation_values,
-                    metadata={
-                        "is_hardware": True,
-                        "resilience_level": options.resilience_level.value,
-                        "error_mitigation": {
-                            "measure_mitigation": options.resilience_level.value >= 1,
-                            "zne": options.resilience_level.value >= 2,
-                            "dynamical_decoupling": options.dynamical_decoupling,
-                            "twirling": options.enable_twirling
+                    return QuantumJobResult(
+                        success=True,
+                        backend_used=backend_name,
+                        execution_time=execution_time,
+                        shots=shots,
+                        expectation_values=expectation_values,
+                        metadata={
+                            "is_hardware": True,
+                            "resilience_level": options.resilience_level.value,
+                            "error_mitigation": {
+                                "measure_mitigation": options.resilience_level.value >= 1,
+                                "zne": options.resilience_level.value >= 2,
+                                "dynamical_decoupling": options.dynamical_decoupling,
+                                "twirling": options.enable_twirling
+                            }
                         }
-                    }
-                )
+                    )
+
+                job_result = await asyncio.to_thread(_execute_hardware_estimator)
                 self._log_quantum_job(job_result, task_type, circuit, parameters)
                 return job_result
 
             else:
-                # Simulator - use StatevectorEstimator (Qiskit 2.x)
-                estimator = StatevectorEstimator()
+                def _execute_simulator_estimator() -> QuantumJobResult:
+                    estimator = StatevectorEstimator()
 
-                if parameters:
-                    pub = (circuit.assign_parameters(parameters), observable)
-                else:
-                    pub = (circuit, observable)
+                    if parameters:
+                        pub = (circuit.assign_parameters(parameters), observable)
+                    else:
+                        pub = (circuit, observable)
 
-                job = estimator.run([pub])
-                result = job.result()
-                execution_time = (datetime.now() - start_time).total_seconds()
-                self.usage_stats.record_simulator_job()
+                    job = estimator.run([pub])
+                    try:
+                        result = job.result(timeout=options.result_timeout_s)
+                    except TypeError:
+                        result = job.result()
+                    execution_time = (datetime.now() - start_time).total_seconds()
+                    self.usage_stats.record_simulator_job()
 
-                # Extract expectation values from PubResult
-                expectation_values = []
-                if hasattr(result[0], 'data'):
-                    evs = result[0].data.evs
-                    expectation_values = evs.tolist() if hasattr(evs, 'tolist') else [float(evs)]
+                    expectation_values = []
+                    if hasattr(result[0], 'data'):
+                        evs = result[0].data.evs
+                        expectation_values = evs.tolist() if hasattr(evs, 'tolist') else [float(evs)]
 
-                job_result = QuantumJobResult(
-                    success=True,
-                    backend_used="statevector_simulator",
-                    execution_time=execution_time,
-                    shots=shots,
-                    expectation_values=expectation_values,
-                    metadata={"is_hardware": False}
-                )
+                    return QuantumJobResult(
+                        success=True,
+                        backend_used="statevector_simulator",
+                        execution_time=execution_time,
+                        shots=shots,
+                        expectation_values=expectation_values,
+                        metadata={"is_hardware": False}
+                    )
+
+                job_result = await asyncio.to_thread(_execute_simulator_estimator)
                 self._log_quantum_job(job_result, task_type, circuit, parameters)
                 return job_result
 

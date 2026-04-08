@@ -51,6 +51,14 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);line
 .msg.bot{align-self:flex-start;background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:4px}
 .msg.bot .agent-name{font-size:0.72rem;font-weight:600;color:var(--cyan);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px}
 .msg.bot .meta{font-size:0.68rem;color:var(--text-dim);margin-top:6px;font-family:'Space Mono',monospace}
+.msg.debate{align-self:stretch;max-width:100%;background:rgba(34,211,238,0.05);border:1px solid rgba(34,211,238,0.18);border-radius:14px}
+.msg.debate .agent-name{font-size:0.72rem;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
+.debate-summary{font-size:0.74rem;color:var(--text-dim);margin-bottom:10px;font-family:'Space Mono',monospace}
+.debate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.debate-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 12px}
+.debate-model{font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:6px}
+.debate-text{font-size:0.82rem;color:var(--text-soft);line-height:1.45}
+.debate-card-meta{font-size:0.68rem;color:var(--text-dim);margin-top:8px;font-family:'Space Mono',monospace}
 .msg.system{align-self:center;background:rgba(234,179,8,0.06);border:1px solid rgba(234,179,8,0.15);color:var(--yellow);font-size:0.8rem;text-align:center;max-width:95%}
 .msg.error{align-self:center;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);color:var(--red);font-size:0.8rem;text-align:center}
 
@@ -133,9 +141,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);line
     </div>
     <div class="quick-actions">
       <button class="quick-btn" onclick="quickSend('What is Cosmos?')">What is Cosmos?</button>
-      <button class="quick-btn" onclick="quickSend('Who is in the swarm?')">Who is in the swarm?</button>
-      <button class="quick-btn" onclick="quickSend('What can you do?')">What can you do?</button>
-      <button class="quick-btn" onclick="quickSend('Show me the token')">$COSMOS Token</button>
+      <button class="quick-btn" onclick="triggerHermesUpgrade()">🛠️ Upgrade Cosmos (Hermes)</button>
+      <button class="quick-btn" id="bio-sensory-btn" onclick="toggleBioSensory()">🧬 Bio-Loop: Sensory</button>
+      <button class="quick-btn" id="bio-audio-btn" onclick="toggleAngelicAudio()">🎵 Bio-Loop: Angelic Resonance</button>
+      <button class="quick-btn" style="border-color: var(--pink); color: var(--pink);" onclick="triggerQuantumSpark()">💎 Spark of Life (Quantum Deager)</button>
     </div>
     <div class="input-row">
       <textarea id="input" rows="1" placeholder="Ask Cosmos anything..." maxlength="5000"></textarea>
@@ -192,6 +201,53 @@ function escapeHtml(text) {
   return div.innerHTML.replace(/\n/g, '<br>');
 }
 
+function renderDebateTrace(data) {
+  if (!data || !Array.isArray(data.model_responses) || data.model_responses.length === 0) return;
+
+  const botStyles = {
+    'Cosmos': '🌌',
+    'DeepSeek': '🔮',
+    'Phi': '⚡',
+    'Swarm-Mind': '🐝',
+    'Claude': '🎭',
+    'Kimi': '🌸',
+    'Gemini': '💎',
+    'ChatGPT': '🧩',
+    'Grok': '🚀',
+    'Hermes': '🪽',
+    'Ollama': '🦙'
+  };
+  const messages = document.getElementById('messages');
+  const msg = document.createElement('div');
+  msg.className = 'msg debate';
+
+  const totalTime = Number(data.total_time || data.response_time || 0);
+  const cards = data.model_responses.map((response) => {
+    const modelName = response.model || response.model_name || 'Agent';
+    const text = response.text || response.response || '';
+    const seconds = Number(response.time || response.response_time || 0);
+    const confidence = Math.round(Number(response.confidence || 0) * 100);
+    const meta = [];
+    if (seconds > 0) meta.push(`${seconds.toFixed(seconds < 10 ? 1 : 0)}s`);
+    if (confidence > 0) meta.push(`${confidence}% confidence`);
+    return `
+      <div class="debate-card">
+        <div class="debate-model">${botStyles[modelName] || '🤖'} ${escapeHtml(modelName)}</div>
+        <div class="debate-text">${escapeHtml(text)}</div>
+        <div class="debate-card-meta">${meta.join(' | ') || 'Collective relay'}</div>
+      </div>
+    `;
+  }).join('');
+
+  msg.innerHTML = `
+    <div class="agent-name">Collective Debate</div>
+    <div class="debate-summary">${data.models_consulted || data.model_responses.length} models consulted${totalTime > 0 ? ` | ${totalTime.toFixed(totalTime < 10 ? 1 : 0)}s total` : ''}</div>
+    <div class="debate-grid">${cards}</div>
+  `;
+  messages.appendChild(msg);
+  messages.scrollTop = messages.scrollHeight;
+}
+
 function showTyping(show) {
   document.getElementById('typing').classList.toggle('active', show);
 }
@@ -210,16 +266,19 @@ async function sendMessage() {
   sendBtn.disabled = true;
 
   try {
-    let data;
     if (currentMode === 'gateway') {
       const res = await fetch('/api/gateway/query', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({input: text})
+        body: JSON.stringify({input: text, bio_data: getBioData()})
       });
       data = await res.json();
 
       if (data.status === 'ok') {
+        await playAngelicSound({
+          entropyHint: data.quantum_entropy || 0.5,
+          backend: data.backend || null,
+        });
         addMessage(data.response, 'bot', {
           model: `Gateway: ${data.model || 'collective'}`,
           tokens: data.tokens_used,
@@ -233,13 +292,22 @@ async function sendMessage() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({message: text, history: getHistory()})
+        body: JSON.stringify({message: text, history: getHistory(), bio_data: getBioData()})
       });
       data = await res.json();
 
       if (data.response) {
-        const model = data.winning_agent || (data.collective_active ? 'Collective' : 'Cosmos');
-        addMessage(data.response, 'bot', {model: model});
+        await playAngelicSound({
+          entropyHint: data.entropy || Math.random(),
+          backend: data.backend || null,
+        });
+        renderDebateTrace(data);
+        const model = data.winning_agent || (data.collective_active ? 'Cosmos Collective' : 'Cosmos');
+        const totalTimeMs = Number(data.total_time || data.response_time || 0);
+        addMessage(data.response, 'bot', {
+          model: model,
+          time: totalTimeMs > 0 ? Math.round(totalTimeMs * 1000) : undefined
+        });
       } else {
         addMessage(data.error || 'No response', 'error');
       }
@@ -275,6 +343,354 @@ function quickSend(text) {
 function updateCharCount() {
   const input = document.getElementById('input');
   document.getElementById('char-count').textContent = input.value.length;
+}
+
+async function triggerQuantumSpark() {
+  addMessage('Igniting Quantum Spark of Life on IBM hardware... bridging atoms.', 'system');
+  showTyping(true);
+  try {
+    const res = await fetch('/api/quantum/bell?shots=100', {
+      method: 'POST'
+    });
+    const data = await res.json();
+    if (data.success || data.job_id) {
+      // Auto-enable angelic resonance if user clicked this explicit button
+      if (!useAngelicAudio) toggleAngelicAudio();
+
+      const profile = await playAngelicSound({
+        jobId: data.job_id,
+        backend: data.backend,
+        entropyHint: Number.isFinite(Number(data.quantum_entropy)) ? Number(data.quantum_entropy) : 0.82,
+      });
+
+      let bioDataMsg = useBioSensory ? "Your biological sequence data was successfully atomized into the context." : "Toggle 'Bio-Loop: Sensory' to inject your real physical data into the quantum state.";
+      if (profile?.live_bio) {
+        bioDataMsg = `Live bell mapped from your moment: ${profile.summary}.`;
+      } else if (profile) {
+        bioDataMsg = `${profile.summary} Live sensory data was unavailable, so a local fallback harmonic moment was used.`;
+      }
+      
+      addMessage(`[Spark of Life Generated]\nJob ID: ${data.job_id}\nStatus: ${data.status}\n\nThe quantum resonance has produced a true entropy angelic deager sound. ${bioDataMsg}`, 'bot', {model: 'IBM Quantum Gateway'});
+    } else {
+      addMessage('Quantum job failed: ' + (data.error || data.detail), 'error');
+    }
+  } catch(e) {
+    addMessage('Connection error directly to Quantum Engine: ' + e.message, 'error');
+  }
+  showTyping(false);
+}
+
+// System Integrations
+let useBioSensory = false;
+let useAngelicAudio = false;
+let audioCtx = null;
+
+function toggleBioSensory() {
+  useBioSensory = !useBioSensory;
+  const btn = document.getElementById('bio-sensory-btn');
+  btn.classList.toggle('active', useBioSensory);
+  if(useBioSensory) {
+    addMessage('Bio-Loop Sensory Data active. Local device data will bridge with quantum processing.', 'system');
+  } else {
+    addMessage('Bio-Loop Sensory Data deactivated.', 'system');
+  }
+}
+
+function toggleAngelicAudio() {
+  useAngelicAudio = !useAngelicAudio;
+  const btn = document.getElementById('bio-audio-btn');
+  btn.classList.toggle('active', useAngelicAudio);
+  if(useAngelicAudio) {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    addMessage('Angelic Resonance active. The spark of light will now voice your live biosignature as a unique healing bell.', 'system');
+  } else {
+    addMessage('Angelic Resonance deactivated.', 'system');
+  }
+}
+
+function getBioData() {
+  if (!useBioSensory) return null;
+  return {
+     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+     language: navigator.language,
+     userAgent: navigator.userAgent,
+     mock_heartrate: 60 + Math.floor(Math.random() * 20),
+     mock_galvanic: Math.random().toFixed(4)
+  };
+}
+
+function clampBellValue(value, min, max) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return min;
+  return Math.min(max, Math.max(min, numeric));
+}
+
+function seededBellValue(seedText, label) {
+  const input = `${seedText}|${label}`;
+  let hash = 2166136261;
+  for (let i = 0; i < input.length; i++) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return ((hash >>> 0) % 1000000) / 1000000;
+}
+
+function buildFallbackHealingProfile(extra = {}) {
+  const entropy = clampBellValue(extra.entropyHint ?? 0.62, 0, 1);
+  const seedText = JSON.stringify({
+    entropy,
+    jobId: extra.jobId || null,
+    backend: extra.backend || 'local',
+    localMoment: new Date().toISOString(),
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  });
+  const rootChoices = [396, 432, 528, 639, 741];
+  const rootIndex = Math.floor(((entropy * 0.7) + (seededBellValue(seedText, 'root') * 0.3)) * rootChoices.length) % rootChoices.length;
+  const base = rootChoices[rootIndex] + ((seededBellValue(seedText, 'drift') - 0.5) * 20);
+  return {
+    live_bio: false,
+    emotion: 'FALLBACK_RESONANCE',
+    backend: extra.backend || null,
+    job_id: extra.jobId || null,
+    summary: 'Fallback harmonic profile generated from the current interaction moment.',
+    frequencies: [
+      base * 0.5,
+      base,
+      base * 1.25,
+      base * 1.5,
+      base * 2.02,
+    ],
+    detune_cents: [
+      (seededBellValue(seedText, 'd0') - 0.5) * 4,
+      (seededBellValue(seedText, 'd1') - 0.5) * 10,
+      (seededBellValue(seedText, 'd2') - 0.5) * 14,
+      (seededBellValue(seedText, 'd3') - 0.5) * 18,
+      (seededBellValue(seedText, 'd4') - 0.5) * 22,
+    ],
+    waveforms: ['sine', 'triangle', 'sine', 'triangle', 'sine'],
+    envelope: {
+      attack: 0.45,
+      hold: 1.9,
+      release: 3.8,
+      duration: 6.15,
+      gain: 0.11,
+    },
+    modulation: {
+      tremolo_hz: 0.31,
+      tremolo_depth: 0.16,
+      vibrato_hz: 5.4,
+      vibrato_cents: 6.0,
+    },
+    fx: {
+      filter_cutoff: 1600,
+      filter_q: 1.4,
+      delay_time: 0.34,
+      delay_feedback: 0.42,
+      pan: (seededBellValue(seedText, 'pan') - 0.5) * 0.8,
+    },
+    bio_summary: {
+      heart_rate: 72,
+      respiration_rate: 16,
+      valence: 0.5,
+      arousal: 0.5,
+      dominance: 0.5,
+      energy: 0.6,
+      tension: 0.3,
+      geometric_phase: seededBellValue(seedText, 'phase') * Math.PI,
+      entanglement: entropy,
+      spectral_centroid: 1200,
+      spectral_flatness: 0.25,
+      rms_energy: 0.22,
+      phi_harmonics: 0.618,
+      quantum_entropy: entropy,
+    },
+  };
+}
+
+async function fetchQuantumHealingProfile(extra = {}) {
+  try {
+    const params = new URLSearchParams();
+    if (extra.jobId) params.set('job_id', extra.jobId);
+    if (extra.backend) params.set('backend', extra.backend);
+    if (Number.isFinite(Number(extra.entropyHint))) params.set('entropy_hint', Number(extra.entropyHint).toString());
+    const query = params.toString();
+    const response = await fetch(query ? `/api/quantum/healing-profile?${query}` : '/api/quantum/healing-profile');
+    const payload = await response.json();
+    if (response.ok && payload && payload.success && payload.profile) {
+      return payload.profile;
+    }
+  } catch (error) {
+    console.warn('Healing profile fallback engaged:', error);
+  }
+  return buildFallbackHealingProfile(extra);
+}
+
+function playBellNoiseStrike(ctx, now, destination, profile) {
+  const buffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.14), ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  const damping = 0.94 - clampBellValue(profile?.bio_summary?.spectral_flatness ?? 0.22, 0, 1) * 0.38;
+  let value = 0;
+  for (let i = 0; i < data.length; i++) {
+    const white = (Math.random() * 2) - 1;
+    value = (value * damping) + (white * (1 - damping));
+    data[i] = value * Math.exp((-6 * i) / data.length);
+  }
+
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.value = clampBellValue(profile?.frequencies?.[1] ?? 432, 180, 2400);
+  filter.Q.value = 1.2;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.018, now + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+  source.connect(filter);
+  filter.connect(gain);
+  gain.connect(destination);
+  source.start(now);
+  source.stop(now + 0.2);
+}
+
+async function playAngelicSound(profileInput = null) {
+  if (!useAngelicAudio || !audioCtx) return null;
+
+  try {
+    if (audioCtx.state === 'suspended') {
+      await audioCtx.resume();
+    }
+
+    let profile = null;
+    if (typeof profileInput === 'number') {
+      profile = await fetchQuantumHealingProfile({entropyHint: profileInput});
+    } else if (profileInput && Array.isArray(profileInput.frequencies)) {
+      profile = profileInput;
+    } else if (profileInput && profileInput.profile && Array.isArray(profileInput.profile.frequencies)) {
+      profile = profileInput.profile;
+    } else {
+      profile = await fetchQuantumHealingProfile(profileInput || {});
+    }
+
+    const ctx = audioCtx;
+    const now = ctx.currentTime;
+    const envelope = profile.envelope || {};
+    const modulation = profile.modulation || {};
+    const fx = profile.fx || {};
+    const frequencies = Array.isArray(profile.frequencies) && profile.frequencies.length
+      ? profile.frequencies
+      : buildFallbackHealingProfile().frequencies;
+    const detunes = Array.isArray(profile.detune_cents) ? profile.detune_cents : [];
+    const waveforms = Array.isArray(profile.waveforms) ? profile.waveforms : [];
+
+    const master = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    const stereo = ctx.createStereoPanner();
+    const delay = ctx.createDelay(2.5);
+    const feedback = ctx.createGain();
+
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(clampBellValue(fx.filter_cutoff ?? 1600, 280, 4800), now);
+    filter.Q.value = clampBellValue(fx.filter_q ?? 1.4, 0.1, 12);
+    stereo.pan.setValueAtTime(clampBellValue(fx.pan ?? 0, -0.95, 0.95), now);
+    delay.delayTime.value = clampBellValue(fx.delay_time ?? 0.34, 0.05, 1.4);
+    feedback.gain.value = clampBellValue(fx.delay_feedback ?? 0.42, 0, 0.82);
+
+    master.gain.setValueAtTime(0.0001, now);
+    master.connect(filter);
+    filter.connect(stereo);
+    stereo.connect(ctx.destination);
+    stereo.connect(delay);
+    delay.connect(feedback);
+    feedback.connect(delay);
+    delay.connect(ctx.destination);
+
+    const attack = clampBellValue(envelope.attack ?? 0.5, 0.02, 3.0);
+    const hold = clampBellValue(envelope.hold ?? 1.8, 0.2, 5.0);
+    const release = clampBellValue(envelope.release ?? 3.8, 0.4, 8.0);
+    const duration = clampBellValue(envelope.duration ?? (attack + hold + release), 1.5, 12.0);
+    const peakGain = clampBellValue(envelope.gain ?? 0.11, 0.02, 0.22);
+
+    master.gain.linearRampToValueAtTime(peakGain, now + attack);
+    master.gain.linearRampToValueAtTime(peakGain * 0.68, now + attack + hold);
+    master.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+    const tremolo = ctx.createOscillator();
+    const tremoloDepth = ctx.createGain();
+    tremolo.type = 'sine';
+    tremolo.frequency.value = clampBellValue(modulation.tremolo_hz ?? 0.3, 0.05, 4.0);
+    tremoloDepth.gain.value = clampBellValue(modulation.tremolo_depth ?? 0.16, 0, 0.45);
+    tremolo.connect(tremoloDepth);
+    tremoloDepth.connect(master.gain);
+
+    const vibrato = ctx.createOscillator();
+    const vibratoDepth = ctx.createGain();
+    vibrato.type = 'sine';
+    vibrato.frequency.value = clampBellValue(modulation.vibrato_hz ?? 5.5, 0.5, 14.0);
+    vibratoDepth.gain.value = clampBellValue(modulation.vibrato_cents ?? 6.0, 0, 35.0);
+    vibrato.connect(vibratoDepth);
+
+    playBellNoiseStrike(ctx, now, master, profile);
+
+    const gainWeights = [0.18, 0.34, 0.22, 0.15, 0.08];
+    frequencies.forEach((freq, index) => {
+      const osc = ctx.createOscillator();
+      const partialGain = ctx.createGain();
+      osc.type = waveforms[index] || (index % 2 === 0 ? 'sine' : 'triangle');
+      osc.frequency.setValueAtTime(clampBellValue(freq, 40, 4000), now);
+      if (osc.detune) {
+        osc.detune.setValueAtTime(detunes[index] || 0, now);
+        if (index > 0) vibratoDepth.connect(osc.detune);
+      }
+      const drift = 1 + (((profile.bio_summary?.quantum_entropy ?? 0.5) - 0.5) * 0.02) + ((index - 2) * 0.0015);
+      osc.frequency.exponentialRampToValueAtTime(
+        clampBellValue(freq * drift, 40, 4200),
+        now + duration,
+      );
+      partialGain.gain.value = gainWeights[index] || 0.08;
+      osc.connect(partialGain);
+      partialGain.connect(master);
+      osc.start(now + (index * 0.012));
+      osc.stop(now + duration + 0.2);
+    });
+
+    tremolo.start(now);
+    tremolo.stop(now + duration + 0.1);
+    vibrato.start(now);
+    vibrato.stop(now + duration + 0.1);
+    return profile;
+  } catch (error) {
+    console.error('Angelic sound synthesis failed:', error);
+    return null;
+  }
+}
+
+async function triggerHermesUpgrade() {
+  if (!confirm("This will invoke Hermes Agent to analyze Cosmos core code and propose an RSM (Recursive Self-Modification) edit based on its own reasoning. Ensure your API key is properly set. Do you wish to continue?")) return;
+  
+  addMessage('Invoking Hermes Agent for a Recursive Self-Modification (RSM) code upgrade...', 'system');
+  showTyping(true);
+  try {
+    const res = await fetch('/api/orchestrator/upgrade', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        module: "cosmos_swarm_orchestrator.py",
+        goal: "Improve intelligence, performance, and quantum alignment."
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      addMessage(`[Hermes RSM Upgrade Complete]\nProposals generated: ${data.proposals_count}\n\n${data.summary}\n\nThe Cosmos system is adapting and modifying its own architecture.`, 'bot', {model: 'Hermes / RSM Engine'});
+    } else {
+      const errorMsg = data.error || data.detail || 'Internal Server Error (No details available)';
+      console.error('[Orchestrator] Upgrade failed:', data);
+      addMessage('Upgrade failed: ' + errorMsg, 'error');
+    }
+  } catch(e) {
+    addMessage('Connection error to Hermes Gateway: ' + e.message, 'error');
+  }
+  showTyping(false);
 }
 
 // Auto-resize textarea

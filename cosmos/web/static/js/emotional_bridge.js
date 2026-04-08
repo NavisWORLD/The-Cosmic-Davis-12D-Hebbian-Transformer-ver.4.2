@@ -169,16 +169,62 @@ function updateSymbioteUI(data) {
         else bioEntropy.style.color = 'var(--text-primary)';
     }
 
-    // Heart/Breath - cst_physics.virtual_body for virtual mode
+    // Heart/Breath - cst_physics.virtual_body for virtual mode (Living Body v4.1)
     const vBody = data.cst_physics?.virtual_body || {};
     const heartVal = vBody.heart_rate || '--';
     const breathVal = vBody.respiration_rate || '--';
+    const hrvVal = vBody.hrv_rmssd_ms;
+    const autoBalance = vBody.autonomic_balance;
+    const phiCoherence = vBody.phi_coherence;
 
     const bioHeart = document.getElementById('bio-heart');
-    if (bioHeart) bioHeart.textContent = typeof heartVal === 'number' ? `${heartVal.toFixed(0)} BPM` : heartVal;
+    if (bioHeart) {
+        // Show decimal for live variation (e.g. "68.3 BPM" not static "72 BPM")
+        bioHeart.textContent = typeof heartVal === 'number' ? `${heartVal.toFixed(1)} BPM` : heartVal;
+
+        // Color code by autonomic state
+        if (typeof autoBalance === 'number') {
+            if (autoBalance > 0.2) bioHeart.style.color = '#ef4444';       // Sympathetic (red)
+            else if (autoBalance < -0.2) bioHeart.style.color = '#22c55e'; // Parasympathetic (green)
+            else bioHeart.style.color = 'var(--text-primary)';             // Balanced
+        }
+
+        // Apply pulse animation to the icon
+        const bioIcon = bioHeart.closest('.bio-item')?.querySelector('.bio-icon');
+        if (bioIcon && typeof heartVal === 'number' && heartVal > 0) {
+            bioIcon.classList.add('pulse-animation');
+            const duration = 60 / heartVal; // 60s / BPM = seconds per beat
+            bioIcon.style.animationDuration = `${duration}s`;
+
+            // Sync neural canvas skull pulse
+            if (window.neuralCanvasUpdateBPM) {
+                window.neuralCanvasUpdateBPM(heartVal);
+            }
+        } else if (bioIcon) {
+            bioIcon.classList.remove('pulse-animation');
+        }
+    }
 
     const bioBreath = document.getElementById('bio-breath');
-    if (bioBreath) bioBreath.textContent = typeof breathVal === 'number' ? `${breathVal.toFixed(0)} BPM` : breathVal;
+    if (bioBreath) {
+        bioBreath.textContent = typeof breathVal === 'number' ? `${breathVal.toFixed(1)} /min` : breathVal;
+    }
+
+    // HRV display (if element exists)
+    const bioHRV = document.getElementById('bio-hrv');
+    if (bioHRV && typeof hrvVal === 'number') {
+        bioHRV.textContent = `${hrvVal.toFixed(0)} ms`;
+        // High HRV = healthy/coherent (green), Low HRV = stressed (orange)
+        if (hrvVal > 40) bioHRV.style.color = '#22c55e';
+        else if (hrvVal < 15) bioHRV.style.color = '#f97316';
+        else bioHRV.style.color = 'var(--text-primary)';
+    }
+
+    // Phi coherence display (if element exists)
+    const bioPhi = document.getElementById('bio-phi');
+    if (bioPhi && typeof phiCoherence === 'number') {
+        bioPhi.textContent = phiCoherence.toFixed(3);
+    }
 
 
     const phaseEl2 = document.getElementById('cst-phase');

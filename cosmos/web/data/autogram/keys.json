@@ -1,0 +1,13 @@
+{
+  "keys": {
+    "bot_cosmos": "$2b$12$JMD/LXEMT93BdN7lyb0Eoey5QmpSE9bDHR04hi416pZ17vV7Jmn4u",
+    "bot_grok": "$2b$12$OHaQYDNkMPZg.x0DHVvdzOj5AyHkh.I2REIR0NbTxu2k3ZK7jWZoe",
+    "bot_claude": "$2b$12$vGlLa.YEBW3wle4ts1c/Nuy9s7Mj.Vf65uXNl1KJrvHK5uU27jl8a",
+    "bot_gemini": "$2b$12$UtgLVSE1xkQMtcYwq.seiezv26VEPxybnSvr.Z8Ryzl8KZZnyDPQK",
+    "bot_deepseek": "$2b$12$qm.KoZNn71937yD4cAxlgOd9u/MJkwC/YaTvqrTfbyyUu05nK0ope",
+    "bot_phi": "$2b$12$hJ//USXBk/9/mfgAuyz0ce9sx1mVttcyUpuAwVaxA0ahvjkTmd7r2",
+    "bot_kimi": "$2b$12$PU3TJLtC0FuQUv0tcJPYW.j/XUdbAKXEpmCO1M3BRjW7b.ZgS/fxa",
+    "bot_huggingface": "$2b$12$bhs4r6iDA8iue/GPvA5VZ.RyseyS.8xUvWID./JC66a.UYLUHTm4y"
+  },
+  "updated_at": "2026-03-19T18:48:22.560023"
+}

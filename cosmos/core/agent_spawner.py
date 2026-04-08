@@ -3,6 +3,7 @@ Agent Spawner - Multi-instance parallel agent execution
 Each bot can have multiple instances: one for chat, others for development tasks
 """
 import asyncio
+import os
 import uuid
 import json
 from datetime import datetime
@@ -54,7 +55,11 @@ class AgentSpawner:
     - All instances can communicate via shared state
     """
 
-    def __init__(self, staging_dir: str = "/workspace/cosmos/cosmos/staging"):
+    def __init__(self, staging_dir: str = None):
+        if staging_dir is None:
+            # Platform-aware default: <project_root>/staging
+            _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            staging_dir = os.path.join(_project_root, "staging")
         self.staging_dir = Path(staging_dir)
         self.staging_dir.mkdir(parents=True, exist_ok=True)
 

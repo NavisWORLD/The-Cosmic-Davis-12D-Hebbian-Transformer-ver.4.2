@@ -29,7 +29,7 @@ import time
 from collections import deque
 from datetime import datetime
 from pathlib import Path
-from typing import   Optional, Tuple
+from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass, field, asdict
 
 logger = logging.getLogger("COSMOS_FEEDBACK")
@@ -210,8 +210,7 @@ class SelfEvaluator:
         marker_score = min(0.3, depth_markers * 0.075)
 
         # Lists and structure indicate depth
-        list_items = len(re.findall(r'^[-•*]\s', text, re.MULTILINE))
-        structure_score = min(0.2_items * 0.05)
+        structure_score = min(1.0, list_items * 0.05)
 
         return max(0.1, min(1.0, length_score + marker_score + structure_score))
 
@@ -397,8 +396,8 @@ class FeedbackAggregator:
             user_message=user_message[:200],
             cosmos_response=cosmos_response[:200],
             model_used=model_used,
-            self_eval=asany(self_eval),
-            user_signal=asany(user_signal) if user_signal else None,
+            self_eval=asdict(self_eval),
+            user_signal=asdict(user_signal) if user_signal else None,
             combined_score=combined,
         )
 
@@ -455,7 +454,7 @@ class FeedbackAggregator:
                 "model_ema": self.model_ema,
                 "model_count": self.model_count,
                 "total_interactions": self.total_interactions,
-                "recent_records": [asany(r) for r in self.recent_records],
+                "recent_records": [asdict(r) for r in self.recent_records],
             }
             self.storage_path.parent.mkdir(parents=True, exist_ok=True)
             self.storage_path.write_text(json.dumps(data, indent=2, default=str))
@@ -670,8 +669,8 @@ class CognitiveFeedbackLoop:
 
         return {
             "interaction_id": interaction_id,
-            "self_eval": asany(self_eval),
-            "user_signal": asany(user_signal) if user_signal else None,
+            "self_eval": asdict(self_eval),
+            "user_signal": asdict(user_signal) if user_signal else None,
             "combined_score": record.combined_score,
             "model_ema": self.aggregator.model_ema.get(model_used, 0),
             "trend": self.aggregator.get_trend(),

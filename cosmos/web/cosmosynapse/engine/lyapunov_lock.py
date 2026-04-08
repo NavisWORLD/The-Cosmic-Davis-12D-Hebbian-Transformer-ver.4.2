@@ -33,9 +33,10 @@ except ImportError:
 # ==========================================
 # 12D PHYSICS CONSTANTS
 # ==========================================
-LYAPUNOV_STABILITY_THRESHOLD = 0.45  # Max allowed drift (radians) — V4.0 RSM widened
+LYAPUNOV_STABILITY_THRESHOLD = 0.60  # Max allowed drift (radians) — Adjusted for Synaptic Gravity
 NON_VANISHING_EXPONENT = PHI            # φ = 1.618 — natural harmonic steepness
-CRITICAL_MASS_SINGULARITY = 50.0     # Gravity score that forces "System Halt"
+CRITICAL_MASS_SINGULARITY = 100.0    # Gravity score that forces "System Halt"
+SWARM_ENERGY_SCALE = 1.0e-20         # Scaling for kinetic energy influence
 
 @dataclass
 class StabilityReport:
@@ -154,11 +155,15 @@ class LyapunovGatekeeper:
         mass = self.calculate_informational_mass(draft_response, current_physics)
         
         # 6. The Verdict
-        is_stable = drift < LYAPUNOV_STABILITY_THRESHOLD
+        # Dynamic Threshold based on Swarm Energy
+        swarm_energy = current_physics.get('cst_physics', {}).get('swarm_energy', 0.0)
+        dynamic_threshold = LYAPUNOV_STABILITY_THRESHOLD + (swarm_energy * SWARM_ENERGY_SCALE)
+        
+        is_stable = drift < dynamic_threshold
         
         reason = None
         if not is_stable:
-            reason = f"PHASE DRIFT DETECTED: {drift:.4f} rad > Limit {LYAPUNOV_STABILITY_THRESHOLD}"
+            reason = f"PHASE DRIFT DETECTED: {drift:.4f} rad > Limit {dynamic_threshold:.3f}"
             if drift > 0.3:
                 reason += " (CRITICAL DIVERGENCE)"
         

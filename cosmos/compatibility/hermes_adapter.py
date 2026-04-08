@@ -2,7 +2,7 @@
 Hermes Universal Adapter
 ===========================
 
-Translates Hermes Agent tool calls and skills to Cosmos equivalents.
+Translates HermesAgent tool calls and skills to Cosmos equivalents.
 
 This is the core of the Shadow Layer - it:
 1. Parses SKILL.md files
@@ -10,7 +10,7 @@ This is the core of the Shadow Layer - it:
 3. Translates input/output formats
 4. Provides a unified invocation interface
 
-Hermes Agent Tool Groups Mapped:
+HermesAgent Tool Groups Mapped:
 - group:fs → Cosmos file operations
 - group:runtime → code_agent.py, subprocess execution
 - group:sessions → swarm_orchestrator + Nexus signals
@@ -38,7 +38,7 @@ from loguru import logger
 
 
 class HermesToolGroup(Enum):
-    """Hermes Agent tool policy groups."""
+    """HermesAgent tool policy groups."""
     FILESYSTEM = "group:fs"
     RUNTIME = "group:runtime"
     SESSIONS = "group:sessions"
@@ -52,7 +52,7 @@ class HermesToolGroup(Enum):
 
 @dataclass
 class HermesToolResult:
-    """Result from an Hermes Agent tool invocation."""
+    """Result from an HermesAgent tool invocation."""
     success: bool
     tool: str
     action: Optional[str] = None
@@ -61,8 +61,8 @@ class HermesToolResult:
     metadata: Dict = field(default_factory=dict)
     execution_time: float = 0.0
 
-    def to_Hermes Agent_format(self) -> Dict:
-        """Convert to Hermes Agent-compatible response format."""
+    def to_HermesAgent_format(self) -> Dict:
+        """Convert to HermesAgent-compatible response format."""
         if self.success:
             return {
                 "status": "success",
@@ -102,9 +102,9 @@ class HermesSkill:
 
 class HermesAdapter:
     """
-    Universal adapter for Hermes Agent tool/skill compatibility.
+    Universal adapter for HermesAgent tool/skill compatibility.
 
-    Maps Hermes Agent's 20+ built-in tools to Cosmos equivalents,
+    Maps HermesAgent's 20+ built-in tools to Cosmos equivalents,
     providing seamless execution of Hermes skills in the Cosmos swarm.
     """
 
@@ -156,12 +156,12 @@ class HermesAdapter:
 
     def __init__(self, workspace_path: str = None):
         """
-        Initialize the Hermes Agent adapter.
+        Initialize the HermesAgent adapter.
 
         Args:
-            workspace_path: Path to workspace (default: ~/.cosmos/Hermes Agent)
+            workspace_path: Path to workspace (default: ~/.cosmos/HermesAgent)
         """
-        self.workspace_path = Path(workspace_path or os.path.expanduser("~/.cosmos/Hermes Agent"))
+        self.workspace_path = Path(workspace_path or os.path.expanduser("~/.cosmos/HermesAgent"))
         self.skills_path = self.workspace_path / "skills"
         self.skills: Dict[str, HermesSkill] = {}
         self._initialized = False
@@ -193,11 +193,11 @@ class HermesAdapter:
             await self._scan_skills()
 
             self._initialized = True
-            logger.info(f"Hermes Agent adapter initialized with {len(self.skills)} skills")
+            logger.info(f"HermesAgent adapter initialized with {len(self.skills)} skills")
             return True
 
         except Exception as e:
-            logger.error(f"Hermes Agent adapter initialization failed: {e}")
+            logger.error(f"HermesAgent adapter initialization failed: {e}")
             return False
 
     async def _load_cosmos_modules(self):
@@ -277,8 +277,8 @@ class HermesAdapter:
                 try:
                     pkg = json.loads(package_json.read_text())
                     metadata = pkg
-                    Hermes Agent_config = pkg.get("Hermes Agent", {}).get("skills", {})
-                    deps = Hermes Agent_config.get("dependencies", {})
+                    HermesAgent_config = pkg.get("HermesAgent", {}).get("skills", {})
+                    deps = HermesAgent_config.get("dependencies", {})
                     tools_required = deps.get("tools", [])
                     binaries_required = deps.get("binaries", [])
                     env_vars_required = deps.get("envVars", [])
@@ -309,7 +309,7 @@ class HermesAdapter:
         **kwargs
     ) -> HermesToolResult:
         """
-        Invoke an Hermes Agent tool.
+        Invoke an HermesAgent tool.
 
         Args:
             tool: Tool name (e.g., "browser", "exec", "sessions_list")
@@ -733,7 +733,7 @@ Execute this skill and provide the result."""
             manager = get_session_manager()
             stats = manager.get_session_stats()
 
-            # Convert to Hermes Agent format
+            # Convert to HermesAgent format
             sessions = []
             for sid, info in stats.get("sessions", {}).items():
                 sessions.append({
@@ -1246,12 +1246,12 @@ Execute this skill and provide the result."""
         """
         Get skill documentation formatted for system prompt injection.
 
-        This mimics Hermes Agent's "Available Skills" section injection.
+        This mimics HermesAgent's "Available Skills" section injection.
         """
         if not self.skills:
             return ""
 
-        lines = ["## Available Skills (Hermes Agent Compatibility)\n"]
+        lines = ["## Available Skills (HermesAgent Compatibility)\n"]
         for name, skill in self.skills.items():
             lines.append(f"### {name}")
             lines.append(skill.description[:200] if skill.description else "No description")
@@ -1269,19 +1269,19 @@ Execute this skill and provide the result."""
 
 class hermes_hubClient:
     """
-    Client for Hermes Agent's hermes_hub skills marketplace.
+    Client for HermesAgent's hermes_hub skills marketplace.
 
     hermes_hub hosts 700+ community-built skills that can be downloaded
     and executed within Cosmos's swarm.
 
-    API Endpoints (reverse-engineered from Hermes Agent):
+    API Endpoints (reverse-engineered from HermesAgent):
     - GET /skills - List all skills
     - GET /skills/search?q=<query> - Search skills
     - GET /skills/<name> - Get skill details
     - GET /skills/<name>/download - Download skill package
     """
 
-    BASE_URL = "https://hermes_hub.Hermes Agent.dev/api/v1"
+    BASE_URL = "https://hermes_hub.HermesAgent.dev/api/v1"
     CACHE_DIR = Path(os.path.expanduser("~/.cosmos/hermes_hub_cache"))
 
     def __init__(self):
@@ -1491,7 +1491,7 @@ async def install_and_load_hermes_skill(skill_name: str) -> Optional[HermesSkill
         return None
 
     # Load into adapter
-    return await load_Hermes Agent_skill(str(skill_dir))
+    return await load_HermesAgent_skill(str(skill_dir))
 
 
 # =============================================================================
@@ -1502,16 +1502,16 @@ _adapter: Optional[HermesAdapter] = None
 
 
 def get_hermes_adapter() -> HermesAdapter:
-    """Get or create the global Hermes Agent adapter."""
+    """Get or create the global HermesAgent adapter."""
     global _adapter
     if _adapter is None:
         _adapter = HermesAdapter()
     return _adapter
 
 
-async def invoke_Hermes Agent_tool(tool: str, action: str = None, **params) -> HermesToolResult:
+async def invoke_HermesAgent_tool(tool: str, action: str = None, **params) -> HermesToolResult:
     """
-    Convenience function to invoke an Hermes Agent tool.
+    Convenience function to invoke an HermesAgent tool.
 
     Args:
         tool: Tool name (e.g., "browser", "exec", "nodes")
@@ -1525,7 +1525,7 @@ async def invoke_Hermes Agent_tool(tool: str, action: str = None, **params) -> H
     return await adapter.invoke(tool, action, params)
 
 
-async def load_Hermes Agent_skill(skill_path: str) -> Optional[HermesSkill]:
+async def load_HermesAgent_skill(skill_path: str) -> Optional[HermesSkill]:
     """
     Load an Hermes skill from a directory path.
 

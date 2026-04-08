@@ -9,9 +9,9 @@ from dataclasses import dataclass, field
 # Internal Imports
 # Use relative imports assuming package structure
 try:
-    from .cosmos_cns import SynapticField
+    from .synaptic_field import SynapticField
 except ImportError:
-    from cosmos_cns import SynapticField
+    from synaptic_field import SynapticField
 
 logger = logging.getLogger("COSMOS_DAEMONS")
 

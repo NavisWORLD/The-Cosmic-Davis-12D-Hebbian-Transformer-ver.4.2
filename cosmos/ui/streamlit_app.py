@@ -51,10 +51,10 @@ class cosmosUI:
             return
 
         try:
-            from cosmos.memory.memory_system import MemorySystem
-            from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
-            from cosmos.evolution.fitness_tracker import FitnessTracker
-            from cosmos.core.model_manager import ModelManager
+            from Cosmos.memory.memory_system import MemorySystem
+            from Cosmos.agents.swarm_orchestrator import SwarmOrchestrator
+            from Cosmos.evolution.fitness_tracker import FitnessTracker
+            from Cosmos.core.model_manager import ModelManager
 
             self._memory_system = MemorySystem(data_dir=str(self.data_dir))
             await self._memory_system.initialize()

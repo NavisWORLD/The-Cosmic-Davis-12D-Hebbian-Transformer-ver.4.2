@@ -54,11 +54,18 @@ class QuantumProof:
 
         self._service = None
         self._initialized = False
+        self._quota_exhausted = False
+        self._quota_message = ""
 
     async def initialize(self) -> bool:
         """Initialize IBM Quantum service."""
         if self._initialized:
             return True
+
+        # If we already know quota is exhausted, don't retry
+        if self._quota_exhausted:
+            logger.warning("IBM Quantum quota exhausted — skipping init (use simulated fallback)")
+            return False
 
         # Load env if not already loaded
         if not self.api_key:
@@ -75,16 +82,31 @@ class QuantumProof:
         try:
             # Import qiskit runtime
             from qiskit_ibm_runtime import QiskitRuntimeService
+            import warnings
 
-            # Save and initialize service
-            # Channel: ibm_quantum_platform (ibm_quantum channel removed July 2025)
-            QiskitRuntimeService.save_account(
-                channel="ibm_quantum_platform",
-                token=self.api_key,
-                overwrite=True
-            )
+            # Capture usage-limit warnings during init
+            with warnings.catch_warnings(record=True) as caught:
+                warnings.simplefilter("always")
 
-            self._service = QiskitRuntimeService(channel="ibm_quantum_platform")
+                # Save and initialize service
+                # Channel: ibm_quantum_platform (ibm_quantum channel removed July 2025)
+                QiskitRuntimeService.save_account(
+                    channel="ibm_quantum_platform",
+                    token=self.api_key,
+                    overwrite=True
+                )
+
+                self._service = QiskitRuntimeService(channel="ibm_quantum_platform")
+
+            # Check if usage limit warning was emitted
+            for w in caught:
+                if "usage limit" in str(w.message).lower():
+                    logger.warning(f"IBM Quantum quota exhausted: {w.message}")
+                    self._quota_exhausted = True
+                    self._quota_message = str(w.message)
+                    # Service is initialized but jobs won't run — still mark initialized
+                    # so status checks work, but run_bell_state will return graceful error
+
             self._initialized = True
             logger.info("IBM Quantum service initialized")
             return True
@@ -93,6 +115,13 @@ class QuantumProof:
             logger.error("qiskit_ibm_runtime not installed. Run: pip install qiskit-ibm-runtime")
             return False
         except Exception as e:
+            err_str = str(e)
+            # Handle SSL errors and instance-retrieval failures gracefully
+            if "SSL" in err_str or "Unable to retrieve instances" in err_str:
+                logger.warning(f"IBM Quantum connection issue (non-fatal): {e}")
+                self._quota_exhausted = True
+                self._quota_message = err_str
+                return False
             logger.error(f"IBM Quantum init error: {e}")
             return False
 
@@ -135,8 +164,31 @@ class QuantumProof:
 
         This is the "Hello World" of quantum computing.
         """
-        if not await self.initialize():
-            raise RuntimeError("Failed to initialize IBM Quantum")
+        init_ok = await self.initialize()
+
+        # If quota exhausted or init failed, return simulated result
+        if not init_ok or self._quota_exhausted:
+            import random
+            logger.warning("IBM Quantum unavailable — returning simulated Bell state")
+            sim_id = f"sim_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{random.randint(1000,9999)}"
+            # Simulate ideal Bell state distribution: ~50% |00⟩, ~50% |11⟩
+            count_00 = shots // 2 + random.randint(-shots // 10, shots // 10)
+            count_11 = shots - count_00
+            quantum_job = QuantumJob(
+                job_id=sim_id,
+                backend="simulator_fallback",
+                circuit_name="bell_state",
+                num_qubits=2,
+                shots=shots,
+                status="completed_simulated",
+                counts={"00": max(count_00, 0), "11": max(count_11, 0)},
+            )
+            quantum_job.result = {
+                "simulated": True,
+                "reason": self._quota_message or "IBM Quantum service unavailable",
+            }
+            self.jobs[sim_id] = quantum_job
+            return quantum_job
 
         try:
             from qiskit import QuantumCircuit

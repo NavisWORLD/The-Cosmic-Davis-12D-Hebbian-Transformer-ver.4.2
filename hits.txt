@@ -1,0 +1,3 @@
+HIT: d:/Cosmos/Cosmos\core\quantum_bridge.py
+HIT: d:/Cosmos/Cosmos\core\collective\dialogue_memory.py
+HIT: d:/Cosmos/Cosmos\memory\virtual_context.py

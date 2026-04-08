@@ -10,7 +10,7 @@
       "autonomous": 5.0
     },
     "interaction_count": 132,
-    "evolution_generation": 169
+    "evolution_generation": 172
   },
   "Claude": {
     "bot_name": "Claude",
@@ -20,10 +20,10 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.9999999999999964
+      "autonomous": 5.399999999999999
     },
-    "interaction_count": 1169,
-    "evolution_generation": 169
+    "interaction_count": 1176,
+    "evolution_generation": 172
   },
   "cosmos": {
     "bot_name": "cosmos",
@@ -35,10 +35,10 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 6.599999999999994
+      "autonomous": 5.0
     },
     "interaction_count": 367,
-    "evolution_generation": 29
+    "evolution_generation": 32
   },
   "DeepSeek": {
     "bot_name": "DeepSeek",
@@ -51,11 +51,11 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.499999999999998,
-      "conversation": 5.1
+      "autonomous": 5.299999999999999,
+      "conversation": 5.0
     },
-    "interaction_count": 682,
-    "evolution_generation": 169
+    "interaction_count": 687,
+    "evolution_generation": 172
   },
   "Phi": {
     "bot_name": "Phi",
@@ -68,11 +68,11 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.6999999999999975,
+      "autonomous": 5.1,
       "conversation": 5.0
     },
-    "interaction_count": 714,
-    "evolution_generation": 169
+    "interaction_count": 717,
+    "evolution_generation": 172
   },
   "Gemini": {
     "bot_name": "Gemini",
@@ -82,10 +82,10 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.6999999999999975
+      "autonomous": 5.399999999999999
     },
-    "interaction_count": 791,
-    "evolution_generation": 169
+    "interaction_count": 797,
+    "evolution_generation": 172
   },
   "Swarm-Mind": {
     "bot_name": "Swarm-Mind",
@@ -99,11 +99,11 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.199999999999999,
-      "conversation": 5.1
+      "autonomous": 5.1,
+      "conversation": 5.0
     },
-    "interaction_count": 721,
-    "evolution_generation": 169
+    "interaction_count": 724,
+    "evolution_generation": 172
   },
   "Cosmos": {
     "bot_name": "Cosmos",
@@ -119,10 +119,10 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.799999999999997
+      "autonomous": 6.399999999999995
     },
-    "interaction_count": 1013,
-    "evolution_generation": 144
+    "interaction_count": 1037,
+    "evolution_generation": 147
   },
   "DeepSeek R1": {
     "bot_name": "DeepSeek R1",
@@ -174,10 +174,10 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.599999999999998
+      "autonomous": 5.299999999999999
     },
-    "interaction_count": 587,
-    "evolution_generation": 143
+    "interaction_count": 591,
+    "evolution_generation": 146
   },
   "ChatGPT": {
     "bot_name": "ChatGPT",
@@ -187,10 +187,10 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.6999999999999975
+      "autonomous": 5.399999999999999
     },
-    "interaction_count": 125,
-    "evolution_generation": 26
+    "interaction_count": 132,
+    "evolution_generation": 29
   },
   "Grok": {
     "bot_name": "Grok",
@@ -200,9 +200,22 @@
     ],
     "debate_style": "collaborative",
     "topic_expertise": {
-      "autonomous": 5.599999999999998
+      "autonomous": 5.1
     },
-    "interaction_count": 68,
-    "evolution_generation": 17
+    "interaction_count": 71,
+    "evolution_generation": 20
+  },
+  "Hermes": {
+    "bot_name": "Hermes",
+    "traits": {},
+    "learned_phrases": [
+      "That's interesting! Tell me more?"
+    ],
+    "debate_style": "collaborative",
+    "topic_expertise": {
+      "autonomous": 0.5
+    },
+    "interaction_count": 5,
+    "evolution_generation": 4
   }
 }

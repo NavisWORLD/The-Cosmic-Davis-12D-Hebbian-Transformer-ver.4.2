@@ -1,0 +1,97 @@
+{
+  "version": "1.0",
+  "generation": 5,
+  "timestamp": "2026-03-15T11:21:52.688328",
+  "minds": {
+    "cosmos": {
+      "personality": [
+        0.9,
+        0.7,
+        0.8,
+        0.6,
+        0.95,
+        0.4,
+        0.8,
+        0.6
+      ],
+      "thoughts": 0,
+      "concepts": 0
+    },
+    "deepseek": {
+      "personality": [
+        0.8,
+        0.4,
+        0.3,
+        0.9,
+        0.6,
+        0.7,
+        0.9,
+        0.3
+      ],
+      "thoughts": 0,
+      "concepts": 0
+    },
+    "phi": {
+      "personality": [
+        0.7,
+        0.8,
+        0.9,
+        0.5,
+        0.8,
+        0.6,
+        0.6,
+        0.7
+      ],
+      "thoughts": 0,
+      "concepts": 0
+    },
+    "swarm-mind": {
+      "personality": [
+        0.6,
+        0.6,
+        0.5,
+        0.5,
+        0.7,
+        0.8,
+        0.5,
+        0.9
+      ],
+      "thoughts": 0,
+      "concepts": 0
+    }
+  },
+  "state": {
+    "valence": 0.5,
+    "arousal": 0.5,
+    "coherence": 1.0,
+    "consciousness": 0.0
+  },
+  "concepts": {},
+  "evolution_log": [
+    {
+      "generation": 2,
+      "timestamp": "2026-03-15T09:29:12.432637",
+      "total_interactions": 0,
+      "consciousness_score": 0.0
+    },
+    {
+      "generation": 3,
+      "timestamp": "2026-03-15T09:29:51.116943",
+      "total_interactions": 0,
+      "consciousness_score": 0.0
+    },
+    {
+      "generation": 4,
+      "timestamp": "2026-03-15T09:34:24.857997",
+      "total_interactions": 0,
+      "consciousness_score": 0.0
+    },
+    {
+      "generation": 5,
+      "timestamp": "2026-03-15T11:21:52.686330",
+      "total_interactions": 0,
+      "consciousness_score": 0.0
+    }
+  ],
+  "hash": "256f8c17f9efcb5e"
+}

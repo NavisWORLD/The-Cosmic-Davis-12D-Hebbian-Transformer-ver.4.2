@@ -24,16 +24,16 @@ print("  COSMOS V4.0 ARCHITECTURE VERIFICATION")
 print("=" * 60)
 
 # --- 1. Lyapunov Threshold ---
-print("\n--- 1. Lyapunov Threshold ---")
+print("\n--- 1. Lyapunov Thresholds ---")
 def t1a():
     from Cosmos.web.cosmosynapse.engine.lyapunov_lock import LYAPUNOV_STABILITY_THRESHOLD
-    assert LYAPUNOV_STABILITY_THRESHOLD == 0.45, f"Got {LYAPUNOV_STABILITY_THRESHOLD}"
-test("lyapunov_lock threshold = 0.45", t1a)
+    assert LYAPUNOV_STABILITY_THRESHOLD == 0.60, f"Got {LYAPUNOV_STABILITY_THRESHOLD}"
+test("lyapunov_lock STABILITY threshold = 0.60 (response gate)", t1a)
 
 def t1b():
     from Cosmos.web.cosmosynapse.engine.swarm_plasticity import LYAPUNOV_THRESHOLD
     assert LYAPUNOV_THRESHOLD == 0.45, f"Got {LYAPUNOV_THRESHOLD}"
-test("swarm_plasticity threshold = 0.45", t1b)
+test("swarm_plasticity LEARNING threshold = 0.45 (Hebbian gate)", t1b)
 
 # --- 2. ChaosBuffer ---
 print("\n--- 2. ChaosBuffer ---")

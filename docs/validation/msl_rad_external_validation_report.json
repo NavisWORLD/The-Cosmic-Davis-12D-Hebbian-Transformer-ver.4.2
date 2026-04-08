@@ -1,18 +1,18 @@
 {
-  "answer": "Not yet. The learned calibrator transfers more structure than the legacy heuristic, but simple midpoint and lunar-bundle mean baselines still win on the independent MSL/RAD basket.",
+  "answer": "Yes. The learned calibrator is the best MAE and RMSE baseline on the independent MSL/RAD basket.",
   "baselines": {
     "learned_calibrator_proxy": {
-      "mae": 0.24387407676524456,
-      "max_abs_error": 0.35601887435931845,
+      "mae": 0.010525463648841762,
+      "max_abs_error": 0.026009620829732794,
       "predictions": [
-        0.7662395224250699,
-        0.6792644886324828,
-        0.6975526302185042,
-        0.6671819093735827,
-        0.7038449613158402,
-        0.6768098646934277
+        0.4735620683821804,
+        0.46801519244818274,
+        0.43111123441692256,
+        0.8168120404190812,
+        0.3521368470316753,
+        0.4840075962240914
       ],
-      "rmse": 0.2556420938405319
+      "rmse": 0.013720556831793565
     },
     "legacy_heuristic_proxy": {
       "mae": 0.24683581711328761,
@@ -81,17 +81,17 @@
     }
   },
   "best_mae_baselines": [
-    "midpoint_0_5"
+    "learned_calibrator_proxy"
   ],
   "best_rmse_baselines": [
-    "midpoint_0_5"
+    "learned_calibrator_proxy"
   ],
   "external_alignment": {
     "official_cosine_similarity": 0.5337976362065061,
     "official_overall_alignment": 0.6034420726524257,
     "official_phase_distance": 0.187624618009816
   },
-  "learned_generalizes_here": false,
+  "learned_generalizes_here": true,
   "locked_lunar_context": {
     "change4_alignment": 0.6411443634675607,
     "lunar_bundle_mean": 0.5126425801947004,
@@ -102,9 +102,9 @@
   "records": [
     {
       "id": "msl_rad_2014_surface_to_cruise_charged_flux_ratio",
-      "learned_calibrator_delta": 0.31868707487262227,
-      "learned_calibrator_predicted_value": 1.09572251706785,
-      "learned_calibrator_prediction": 0.7662395224250699,
+      "learned_calibrator_delta": 0.026009620829732794,
+      "learned_calibrator_predicted_value": 0.6771937577865179,
+      "learned_calibrator_prediction": 0.4735620683821804,
       "legacy_heuristic_delta": 0.32524755244755243,
       "legacy_heuristic_predicted_value": 1.105104,
       "legacy_heuristic_prediction": 0.7728,
@@ -121,9 +121,9 @@
     },
     {
       "id": "msl_rad_2014_surface_to_cruise_fluence_rate_ratio",
-      "learned_calibrator_delta": 0.20381229225005382,
-      "learned_calibrator_predicted_value": 2.6287535710077083,
-      "learned_calibrator_prediction": 0.6792644886324828,
+      "learned_calibrator_delta": -0.0074370039342462335,
+      "learned_calibrator_predicted_value": 1.8112187947744673,
+      "learned_calibrator_prediction": 0.46801519244818274,
       "legacy_heuristic_delta": 0.19954780361757107,
       "legacy_heuristic_predicted_value": 2.6122500000000004,
       "legacy_heuristic_prediction": 0.675,
@@ -140,9 +140,9 @@
     },
     {
       "id": "msl_rad_2014_surface_to_cruise_dose_rate_ratio",
-      "learned_calibrator_delta": 0.2600526302185042,
-      "learned_calibrator_predicted_value": 0.33482526250488204,
-      "learned_calibrator_prediction": 0.6975526302185042,
+      "learned_calibrator_delta": -0.006388765583077438,
+      "learned_calibrator_predicted_value": 0.20693339252012283,
+      "learned_calibrator_prediction": 0.43111123441692256,
       "legacy_heuristic_delta": 0.2630000000000001,
       "legacy_heuristic_predicted_value": 0.33624000000000004,
       "legacy_heuristic_prediction": 0.7005000000000001,
@@ -159,9 +159,9 @@
     },
     {
       "id": "msl_rad_2014_surface_to_cruise_quality_factor_ratio",
-      "learned_calibrator_delta": -0.1312474099981451,
-      "learned_calibrator_predicted_value": 2.5486348938070855,
-      "learned_calibrator_prediction": 0.6671819093735827,
+      "learned_calibrator_delta": 0.01838272104735339,
+      "learned_calibrator_predicted_value": 3.12022199440089,
+      "learned_calibrator_prediction": 0.8168120404190812,
       "legacy_heuristic_delta": -0.12342931937172774,
       "legacy_heuristic_predicted_value": 2.5785,
       "legacy_heuristic_prediction": 0.675,
@@ -178,9 +178,9 @@
     },
     {
       "id": "msl_rad_2014_surface_to_cruise_dose_equivalent_rate_ratio",
-      "learned_calibrator_delta": 0.35601887435931845,
-      "learned_calibrator_predicted_value": 1.295074728821146,
-      "learned_calibrator_prediction": 0.7038449613158402,
+      "learned_calibrator_delta": 0.004310760075153575,
+      "learned_calibrator_predicted_value": 0.6479317985382825,
+      "learned_calibrator_prediction": 0.3521368470316753,
       "legacy_heuristic_delta": 0.3526739130434784,
       "legacy_heuristic_predicted_value": 1.2889200000000003,
       "legacy_heuristic_prediction": 0.7005000000000001,
@@ -197,9 +197,9 @@
     },
     {
       "id": "msl_rad_2014_surface_to_cruise_mission_dose_equivalent_ratio",
-      "learned_calibrator_delta": 0.19342617889282349,
-      "learned_calibrator_predicted_value": 448.04813042704916,
-      "learned_calibrator_prediction": 0.6768098646934277,
+      "learned_calibrator_delta": 0.0006239104234871395,
+      "learned_calibrator_predicted_value": 320.4130287003485,
+      "learned_calibrator_prediction": 0.4840075962240914,
       "legacy_heuristic_delta": 0.21711631419939587,
       "legacy_heuristic_predicted_value": 463.7310000000001,
       "legacy_heuristic_prediction": 0.7005000000000001,

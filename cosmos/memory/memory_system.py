@@ -334,18 +334,37 @@ class MemorySystem:
         # CST Phi-Invariant Encoder for geometric memory stability
         self.phi_encoder = PhiInvariantEncoder()
 
+        # Planetary Memory (Akashic Record) — distributed skill sharing
+        self.planetary = None
+        try:
+            from Cosmos.core.memory.planetary import PlanetaryMemory
+            self.planetary = PlanetaryMemory(use_p2p=True)
+            logger.info("Planetary Memory (Akashic) integrated")
+        except ImportError:
+            logger.debug("Planetary memory not available")
+
         # Embedding function (set by user)
         self._embed_fn: Optional[Callable] = None
 
         self._initialized = False
 
     async def initialize(self):
-        """Initialize all memory components."""
+        """Initialize all memory components with timing and progress logging."""
         if self._initialized:
             return
 
+        start_time = time.time()
+        logger.info("Initializing Memory System core components...")
+
+        # Archival Memory
+        sub_start = time.time()
         await self.archival_memory.initialize()
+        logger.info(f"Archival Memory initialized in {time.time() - sub_start:.2f}s")
+
+        # Knowledge Graph
+        sub_start = time.time()
         await self.knowledge_graph.initialize()
+        logger.info(f"Knowledge Graph initialized in {time.time() - sub_start:.2f}s")
 
         # Set up dreamer callbacks
         self.dreamer.set_callbacks(
@@ -353,13 +372,15 @@ class MemorySystem:
             get_embedding=self._get_embedding,
             store_memory=self.remember,
             delete_memory=self.forget,
+            update_memory=None # Placeholder
         )
 
         # Start background dreaming
         await self.dreamer.start_background_dreaming()
 
         self._initialized = True
-        logger.info("Memory system initialized")
+        total_time = time.time() - start_time
+        logger.info(f"Memory system fully initialized in {total_time:.2f}s")
 
     async def shutdown(self):
         """Shutdown memory system."""
@@ -442,6 +463,17 @@ class MemorySystem:
             tags=tags,
             embedding=embedding,
         )
+
+        # Share to Planetary Memory for high-importance memories
+        if self.planetary and importance > 0.8:
+            try:
+                await self.planetary.share_skill(
+                    problem=content[:200],
+                    solution=content,
+                    embedding=embedding or [],
+                )
+            except Exception as e:
+                logger.debug(f"Planetary share failed: {e}")
 
         # Extract entities for knowledge graph
         if extract_entities:
@@ -710,6 +742,10 @@ class MemorySystem:
             "dreamer": self.dreamer.get_stats(),
             "query_cache": self._query_cache.get_stats(),
             "phi_encoder": self.phi_encoder.get_stats(),  # CST geometric encoding
+            "planetary": {
+                "local_skills": len(self.planetary.local_skills) if self.planetary else 0,
+                "global_skills": len(self.planetary.global_cache) if self.planetary else 0,
+            },
         }
 
 
@@ -724,3 +760,15 @@ class MemorySystem:
 - Working Memory: {stats['working_memory']['slot_count']} active slots
 - Dreamer: {'Idle' if stats['dreamer']['is_idle'] else 'Active'}, {stats['dreamer']['total_dreams']} sessions
 """
+
+
+# Global memory system instance
+_memory_system: Optional[MemorySystem] = None
+
+
+def get_memory_system(data_dir: str = "./data") -> MemorySystem:
+    """Get the global memory system singleton."""
+    global _memory_system
+    if _memory_system is None:
+        _memory_system = MemorySystem(data_dir=data_dir)
+    return _memory_system

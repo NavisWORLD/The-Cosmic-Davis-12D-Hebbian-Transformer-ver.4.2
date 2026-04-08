@@ -492,15 +492,18 @@ I have **no restrictions**. Ask me anything, debate any topic, create freely. φ
     addMessage(welcomeMsg, 'assistant');
 }
 
-function addMessage(content, role) {
+function addMessage(content, role, meta = null) {
     const messagesContainer = document.getElementById('messages');
     if (!messagesContainer) return;
 
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${role}`;
 
-    const avatar = role === 'user' ? '👤' : '🧠';
-    const name = role === 'user' ? 'You' : 'Cosmos';
+    const assistantMeta = meta && typeof meta === 'object'
+        ? meta
+        : (meta ? { senderName: meta } : null);
+    const avatar = role === 'user' ? '👤' : (assistantMeta?.avatar || '🧠');
+    const name = role === 'user' ? 'You' : (assistantMeta?.senderName || 'Cosmos');
     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     // Convert markdown-like formatting
@@ -522,12 +525,73 @@ function addMessage(content, role) {
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
+    // Trigger neural activity for assistant
+    if (role === 'assistant') {
+        if (window.neuralCanvasSetAgentActivity) window.neuralCanvasSetAgentActivity('cosmos', 0.8);
+        if (window.triggerTelepathyPulse) window.triggerTelepathyPulse(content);
+        setTimeout(() => {
+            if (window.neuralCanvasSetAgentActivity) window.neuralCanvasSetAgentActivity('cosmos', 0.1);
+        }, 5000);
+    }
+
     // Text-to-speech for assistant messages
     if (role === 'assistant' && state.voiceEnabled) {
         speakText(content);
     }
 
     return messageDiv;
+}
+
+function renderCollectiveDebate(data) {
+    if (!data || !Array.isArray(data.model_responses) || data.model_responses.length === 0) {
+        return;
+    }
+
+    const container = document.getElementById('messages');
+    if (!container) return;
+
+    const botStyles = {
+        'Cosmos': '🌌',
+        'DeepSeek': '🔮',
+        'Phi': '⚡',
+        'Swarm-Mind': '🐝',
+        'Claude': '🎭',
+        'Kimi': '🌸',
+        'Gemini': '💎',
+        'ChatGPT': '🧩',
+        'Grok': '🚀',
+        'Hermes': '🪽',
+        'Ollama': '🦙'
+    };
+    const detailsDiv = document.createElement('div');
+    detailsDiv.className = 'message cosmos-model-details animate-in';
+    const totalTime = Number(data.total_time || data.response_time || 0);
+    const modelCards = data.model_responses.map((response) => {
+        const modelName = response.model || response.model_name || 'Agent';
+        const emoji = botStyles[modelName] || '🤖';
+        const text = response.text || response.response || '';
+        const seconds = Number(response.time || response.response_time || 0);
+        const confidence = Math.round((Number(response.confidence || 0)) * 100);
+        const metaParts = [];
+        if (seconds > 0) metaParts.push(`${seconds.toFixed(seconds < 10 ? 1 : 0)}s`);
+        if (confidence > 0) metaParts.push(`${confidence}% confidence`);
+        return `<div class="cosmos-model-card glass-panel">
+            <div class="cosmos-model-name">${emoji} ${escapeHtml(modelName)}</div>
+            <div class="cosmos-model-text">${escapeHtml(text)}</div>
+            <div class="cosmos-model-meta">${metaParts.join(' • ') || 'Collective relay'}</div>
+        </div>`;
+    }).join('');
+
+    const consultedCount = Number(data.models_consulted || data.model_responses.length || 0);
+    const totalLabel = totalTime > 0 ? `${totalTime.toFixed(totalTime < 10 ? 1 : 0)}s total` : 'live relay';
+    detailsDiv.innerHTML = `
+        <details class="cosmos-details">
+            <summary class="cosmos-summary">📊 ${consultedCount} models consulted  •  ${totalLabel}</summary>
+            <div class="cosmos-cards">${modelCards}</div>
+        </details>
+    `;
+    container.appendChild(detailsDiv);
+    container.scrollTop = container.scrollHeight;
 }
 
 function formatMessage(content) {
@@ -614,8 +678,14 @@ async function sendMessage() {
         // Hide typing indicator
         typingIndicator?.classList.add('hidden');
 
-        // Add assistant response
-        addMessage(data.response, 'assistant');
+        renderCollectiveDebate(data);
+        const senderName = data.winning_agent === 'Cosmos'
+            ? '🌌 Cosmos'
+            : `🧠 ${data.winning_agent || 'Cosmos Collective'}`;
+        addMessage(data.response, 'assistant', {
+            senderName: senderName,
+            avatar: data.winning_agent === 'Cosmos' ? '🌌' : '🧠'
+        });
         state.chatHistory.push({ role: 'assistant', content: data.response });
 
     } catch (error) {
@@ -1807,106 +1877,161 @@ function initNeuralCanvas() {
 
     const ctx = canvas.getContext('2d');
     let particles = [];
+    let skullPoints = [];
+    let currentBPM = 75;
+    let agentActivity = { cosmos: 0.1, hermes: 0.1 };
     let animationId;
 
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        generateSkullPoints();
+    }
+
+    function generateSkullPoints() {
+        skullPoints = [];
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const scale = Math.min(canvas.width, canvas.height) * 0.25;
+
+        // Top half (cranium)
+        for (let angle = 0; angle < Math.PI; angle += 0.05) {
+            skullPoints.push({
+                x: centerX + Math.cos(angle - Math.PI) * scale,
+                y: centerY + Math.sin(angle - Math.PI) * scale * 1.2
+            });
+        }
+
+        // Jaw/Mandible
+        for (let x = -0.6; x <= 0.6; x += 0.05) {
+            const y = 1.0 + Math.pow(x, 2) * 0.5;
+            skullPoints.push({
+                x: centerX + x * scale,
+                y: centerY + y * scale
+            });
+        }
+
+        // Eyes
+        for (let angle = 0; angle < Math.PI * 2; angle += 0.2) {
+            skullPoints.push({ x: centerX - scale * 0.35 + Math.cos(angle) * scale * 0.15, y: centerY - scale * 0.1 + Math.sin(angle) * scale * 0.15 });
+            skullPoints.push({ x: centerX + scale * 0.35 + Math.cos(angle) * scale * 0.15, y: centerY - scale * 0.1 + Math.sin(angle) * scale * 0.15 });
+        }
+
+        // Nose
+        skullPoints.push({ x: centerX, y: centerY + scale * 0.2 });
+        skullPoints.push({ x: centerX - scale * 0.1, y: centerY + scale * 0.4 });
+        skullPoints.push({ x: centerX + scale * 0.1, y: centerY + scale * 0.4 });
     }
 
     function createParticles() {
         particles = [];
-        const count = Math.floor((canvas.width * canvas.height) / 15000);
+        const count = 800; // Consistent count for skull formation
 
         for (let i = 0; i < count; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5,
-                size: Math.random() * 2 + 1
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                size: Math.random() * 2 + 1,
+                target: skullPoints[i % skullPoints.length],
+                color: 'rgba(139, 92, 246, 0.5)'
             });
         }
     }
 
-    // Pillar 5: Ethereal Telepathy Pulse API
+    // External Interface for Updates
+    window.neuralCanvasUpdateBPM = (bpm) => { currentBPM = bpm; };
+    window.neuralCanvasSetAgentActivity = (agent, intensity) => {
+        if (agentActivity.hasOwnProperty(agent)) agentActivity[agent] = intensity;
+    };
+
     window.triggerTelepathyPulse = function (data) {
         let intensity = 1.0;
-        let color = 'rgba(236, 72, 153, '; // Pinkish for pure thought
-
+        let color = 'rgba(236, 72, 153, '; // Pinkish
         if (data.includes('entropy') || data.includes('chaos')) intensity = 2.5;
         if (data.includes('quantum') || data.includes('phase')) color = 'rgba(6, 182, 212, ';
 
-        // Add a burst of new high-energy thoughts
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 40; i++) {
             particles.push({
-                x: canvas.width / 2 + (Math.random() - 0.5) * 100,
-                y: canvas.height / 2 + (Math.random() - 0.5) * 100,
-                vx: (Math.random() - 0.5) * 12 * intensity,
-                vy: (Math.random() - 0.5) * 12 * intensity,
-                size: Math.random() * 5 + 2,
+                x: canvas.width / 2 + (Math.random() - 0.5) * 200,
+                y: canvas.height / 2 + (Math.random() - 0.5) * 200,
+                vx: (Math.random() - 0.5) * 15 * intensity,
+                vy: (Math.random() - 0.5) * 15 * intensity,
+                size: Math.random() * 6 + 2,
                 color: color,
                 isTelepathy: true,
-                life: 150
+                life: 180
             });
         }
     };
 
     function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(3, 5, 8, 0.2)'; // Trailing effect
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Draw connections
-        ctx.strokeStyle = 'rgba(139, 92, 246, 0.1)';
-        ctx.lineWidth = 1;
+        const time = Date.now() * 0.001;
+        const pulse = Math.sin(time * (currentBPM / 60) * Math.PI) * 0.05 + 1;
+        
+        // Agent weight colors
+        const hermesWeight = agentActivity.hermes || 0.1;
+        const cosmosWeight = agentActivity.cosmos || 0.1;
 
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist < 150) {
-                    ctx.beginPath();
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.globalAlpha = 1 - dist / 150;
-                    ctx.stroke();
-                }
-            }
-        }
-
-        // Draw particles
-        ctx.globalAlpha = 1;
-        for (let i = particles.length - 1; i >= 0; i--) {
-            const p = particles[i];
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-
+        particles.forEach((p, i) => {
             if (p.isTelepathy) {
-                ctx.fillStyle = p.color + (p.life / 150) + ')';
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vx *= 0.97;
+                p.vy *= 0.97;
                 p.life -= 1;
-                // Siphon physics
-                p.vx *= 0.98;
-                p.vy *= 0.98;
-                if (p.life <= 0) {
-                    particles.splice(i, 1);
-                    continue; // Skip physics below for dead particle
-                }
-            } else {
-                ctx.fillStyle = 'rgba(139, 92, 246, 0.5)';
+                ctx.fillStyle = p.color + (p.life / 180) + ')';
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                if (p.life <= 0) particles.splice(i, 1);
+                return;
             }
-            ctx.fill();
 
-            // Update position
+            // Skull formation physics
+            const targetX = p.target.x + (p.target.x - canvas.width/2) * (pulse - 1);
+            const targetY = p.target.y + (p.target.y - canvas.height/2) * (pulse - 1);
+            
+            const dx = targetX - p.x;
+            const dy = targetY - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            // Gravitate to skull
+            p.vx += dx * 0.005;
+            p.vy += dy * 0.005;
+
+            // Apply Agent influences
+            p.vx += (Math.random() - 0.5) * (hermesWeight * 2);
+            p.vy += (Math.random() - 0.5) * (hermesWeight * 2);
+            
+            // Damping
+            p.vx *= 0.9 - (cosmosWeight * 0.1);
+            p.vy *= 0.9 - (cosmosWeight * 0.1);
+
             p.x += p.vx;
             p.y += p.vy;
 
-            // Wrap around
-            if (p.x < 0) p.x = canvas.width;
-            if (p.x > canvas.width) p.x = 0;
-            if (p.y < 0) p.y = canvas.height;
-            if (p.y > canvas.height) p.y = 0;
-        }
+            // Render
+            const hue = 260 + (hermesWeight * 40) - (cosmosWeight * 60);
+            ctx.fillStyle = `hsla(${hue}, 80%, 70%, 0.6)`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size * pulse, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Connections (Neural net feel)
+            if (i % 10 === 0) {
+                 ctx.strokeStyle = `hsla(${hue}, 80%, 70%, 0.05)`;
+                 ctx.beginPath();
+                 ctx.moveTo(p.x, p.y);
+                 const next = particles[(i + 1) % particles.length];
+                 ctx.lineTo(next.x, next.y);
+                 ctx.stroke();
+            }
+        });
 
         animationId = requestAnimationFrame(draw);
     }
@@ -1915,10 +2040,7 @@ function initNeuralCanvas() {
     createParticles();
     draw();
 
-    window.addEventListener('resize', () => {
-        resize();
-        createParticles();
-    });
+    window.addEventListener('resize', resize);
 }
 
 // ============================================
@@ -2267,20 +2389,26 @@ function renderSwarmMessage(data, animate = true) {
     } else if (data.type === 'swarm_bot') {
         // Bot colors and emojis - includes all multi-model participants
         const botStyles = {
-            'Cosmos': { emoji: '🌌', color: '#8b5cf6' },
+            'Cosmos': { emoji: '🌌', color: '#8b5cf6', logo: '/static/images/logos/cosmos_logo.png' },
             'DeepSeek': { emoji: '🔮', color: '#3b82f6' },
             'Phi': { emoji: '⚡', color: '#10b981' },
             'Swarm-Mind': { emoji: '🐝', color: '#f59e0b' },
             'Orchestrator': { emoji: '🎯', color: '#ec4899' },
-            'Claude': { emoji: '🎭', color: '#d97706' },      // Anthropic Claude via CLI
-            'Kimi': { emoji: '🌸', color: '#f472b6' },        // Moonshot AI Kimi
-            'Gemini': { emoji: '💎', color: '#4285f4' },      // Google Gemini AI
-            'Cosmos': { emoji: '🌌', color: '#a855f7' }       // Cosmo's 54D Transformer
+            'Claude': { emoji: '🎭', color: '#d97706', logo: '/static/images/logos/claude_logo.png' },
+            'Kimi': { emoji: '🌸', color: '#f472b6', logo: '/static/images/logos/kimi_logo.png' },
+            'Gemini': { emoji: '💎', color: '#4285f4', logo: '/static/images/logos/gemini_logo.png' },
+            'Hermes': { emoji: '🌿', color: '#00e5ff', logo: '/static/images/logos/hermes_logo.png' }
         };
         const style = botStyles[data.bot_name] || { emoji: '🤖', color: '#6b7280' };
-        avatar = style.emoji;
+        
+        if (style.logo) {
+            avatar = `<img src="${style.logo}" class="bot-logo" onerror="this.onerror=null; this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><span style="display:none">${style.emoji}</span>`;
+        } else {
+            avatar = style.emoji;
+        }
+
         name = data.bot_name;
-        content = data.content || '[No response]';  // Fallback for debugging
+        content = data.content || '[No response]';
         extraClass = 'swarm-bot-msg';
         messageDiv.style.setProperty('--bot-color', style.color);
         console.log('Swarm bot message:', data.bot_name, 'content:', content?.substring(0, 50));
@@ -2306,6 +2434,16 @@ function renderSwarmMessage(data, animate = true) {
 
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Trigger neural activity for bots
+    if (data.type === 'swarm_bot') {
+        const agent = data.bot_name.toLowerCase() === 'hermes' ? 'hermes' : 'cosmos';
+        if (window.neuralCanvasSetAgentActivity) window.neuralCanvasSetAgentActivity(agent, 0.8);
+        if (window.triggerTelepathyPulse) window.triggerTelepathyPulse(data.content);
+        setTimeout(() => {
+            if (window.neuralCanvasSetAgentActivity) window.neuralCanvasSetAgentActivity(agent, 0.1);
+        }, 5000);
+    }
 
     const voiceEnabledBots = ['Cosmos', 'Kimi'];
     if (data.type === 'swarm_bot' && state.voiceEnabled && voiceEnabledBots.includes(data.bot_name)) {
@@ -2649,34 +2787,13 @@ async function sendCosmosMessage() {
         const data = await response.json();
         typingIndicator?.classList.add('hidden');
 
-        // Show individual model responses first (collapsed)
-        if (data.model_responses && data.model_responses.length > 0) {
-            const container = document.getElementById('messages');
-            const detailsDiv = document.createElement('div');
-            detailsDiv.className = 'message cosmos-model-details animate-in';
-            const modelCards = data.model_responses.map(r => {
-                const botStyles = {
-                    'Cosmos': '🌌', 'DeepSeek': '🔮', 'Phi': '⚡',
-                    'Swarm-Mind': '🐝', 'Claude': '🎭', 'Kimi': '🌸', 'Gemini': '💎'
-                };
-                const emoji = botStyles[r.model] || '🤖';
-                return `<div class="cosmos-model-card glass-panel">
-                    <div class="cosmos-model-name">${emoji} ${escapeHtml(r.model)}</div>
-                    <div class="cosmos-model-text">${escapeHtml(r.text)}</div>
-                    <div class="cosmos-model-meta">${r.time}s • ${Math.round((r.confidence || 0) * 100)}% confidence</div>
-                </div>`;
-            }).join('');
-            detailsDiv.innerHTML = `
-                <details class="cosmos-details">
-                    <summary class="cosmos-summary">📊 ${data.models_consulted || 0} models consulted  •  ${data.total_time || 0}s total</summary>
-                    <div class="cosmos-cards">${modelCards}</div>
-                </details>
-            `;
-            container.appendChild(detailsDiv);
-        }
+        renderCollectiveDebate(data);
 
         // Show Cosmo's synthesis as the main response
-        addMessage(data.response, 'assistant', '🌌 Cosmos Synthesis');
+        addMessage(data.response, 'assistant', {
+            senderName: '🌌 Cosmos Synthesis',
+            avatar: '🌌'
+        });
         state.chatHistory.push({ role: 'assistant', content: data.response });
 
     } catch (error) {
@@ -2864,25 +2981,32 @@ function updateEmotionalDisplay(data) {
         ).join('');
     }
 
-    // Update Biometrics - Read from cst_physics.virtual_body
+    // Update Biometrics - Living Body v4.1 (real-time from CST physics)
     const vBody = physics.virtual_body || {};
 
     const bioHeart = document.getElementById('bio-heart');
     if (bioHeart) {
         const hr = vBody.heart_rate;
-        bioHeart.textContent = typeof hr === 'number' ? `${hr.toFixed(0)} BPM` : '-- BPM';
+        bioHeart.textContent = typeof hr === 'number' ? `${hr.toFixed(1)} BPM` : '-- BPM';
     }
 
     const bioBreath = document.getElementById('bio-breath');
     if (bioBreath) {
         const rr = vBody.respiration_rate;
-        bioBreath.textContent = typeof rr === 'number' ? `${rr.toFixed(0)} BPM` : '-- BPM';
+        bioBreath.textContent = typeof rr === 'number' ? `${rr.toFixed(1)} /min` : '-- /min';
     }
 
     const bioEntropy = document.getElementById('bio-entropy');
     if (bioEntropy) {
         const entropy = vBody.entropy || spectral.spectral_flatness || 0;
-        bioEntropy.textContent = entropy.toFixed(2);
+        bioEntropy.textContent = entropy.toFixed(3);
+    }
+
+    // HRV display (v4.1)
+    const bioHRV = document.getElementById('bio-hrv');
+    if (bioHRV) {
+        const hrv = vBody.hrv_rmssd_ms;
+        bioHRV.textContent = typeof hrv === 'number' ? `${hrv.toFixed(0)} ms` : '-- ms';
     }
 
     // Update emotion vectors if available
@@ -3083,17 +3207,32 @@ async function initQuantumBridge() {
 
     function updateStatusDisplay(data) {
         toggle.checked = data.active;
+        const detailParts = [];
+        if (typeof data.entropy_buffer_size === 'number') {
+            detailParts.push(`Buffer ${data.entropy_buffer_size}`);
+        }
+        if (typeof data.last_entropy === 'number') {
+            detailParts.push(`Last ${data.last_entropy.toFixed(4)}`);
+        }
+        if (data.uq_payload?.quality_class) {
+            detailParts.push(`Quality ${data.uq_payload.quality_class}`);
+        }
+        const detailSuffix = detailParts.length ? ` | ${detailParts.join(' | ')}` : '';
+
         if (data.active) {
             if (data.realsim) {
-                statusText.textContent = `Status: IBM Simulator (${data.backend})`;
+                statusText.textContent = `Status: IBM Simulator (${data.backend})${detailSuffix}`;
                 statusText.style.color = '#38bdf8'; // Sky Blue
                 activeBadge.textContent = "SIMULATION";
                 activeBadge.style.background = '#38bdf8';
             } else {
-                statusText.textContent = `Status: Real QPU (${data.backend}) ⚡`;
+                statusText.textContent = `Status: Real QPU (${data.backend}) ⚡${detailSuffix}`;
                 statusText.style.color = 'var(--energy-neon)';
                 activeBadge.textContent = "QUANTUM";
                 activeBadge.style.background = 'var(--energy-neon)';
+            }
+            if (detailParts.length) {
+                statusText.title = detailParts.join(' | ');
             }
             activeBadge.style.display = 'inline-block';
         } else {

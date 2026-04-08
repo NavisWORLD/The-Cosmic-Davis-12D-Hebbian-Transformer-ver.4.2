@@ -87,7 +87,7 @@ class PendingPayment:
     verified_at: Optional[str] = None
 
     def to_any(self) -> dict:
-        return asany(self)
+        return asdict(self)
 
     @classmethod
     def from_any(cls, data: dict) -> 'PendingPayment':

@@ -1,0 +1,703 @@
+{
+  "basis": "v4 predictive-subdomain evidence plus a v5 Mars transport router that upgrades the Mars FD benchmark and wins on a separate untouched Mars ICME transit holdout.",
+  "blind_protocol": {
+    "prediction_script": "D:\\Cosmos\\scripts\\generate_blind_validation_predictions.py",
+    "scoring_script": "D:\\Cosmos\\scripts\\score_blind_validation_predictions.py",
+    "templates_sha256": {
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\chandrayaan1_radom_blind_template.json": "26fc674d4fe8f810dc93b13150c0206a8e0188367bdaf26631058d8bccd2a196",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\crater_lro_blind_template.json": "4c482d2438abe6a71aa8deb8c05c927add1bf16a436f714dc9cb6076537ae16b",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\mars_fd_surface_orbit_blind_template.json": "93b7c60491f0a680d616827096f4baad789c5f47a3856f0266016966cae53492",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\mars_icme_transit_blind_template.json": "45676147a589cda543b252cc0d76c7ec28d4b276ad6fd14b3eb625386f1773c8",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\msl_rad_blind_template.json": "1729fe488b02f45b8430c3297d61708234c17a29c75ea02fd883461d37e5ec9e"
+    }
+  },
+  "freeze_date": "2026-04-08",
+  "freeze_label": "cst_radiation_validation_v5",
+  "model": {
+    "default_validation_state_vector": [
+      0.71,
+      0.028,
+      0.64,
+      0.77,
+      0.31,
+      0.09,
+      0.36,
+      0.41,
+      0.29,
+      0.78,
+      0.22,
+      0.58
+    ],
+    "learned_calibrator": {
+      "alpha": 0.2,
+      "calibration_paths": [
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\change4_lnd_reference.json",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_unseen_reference.json",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_m42_gcr_reference.json"
+      ],
+      "coefficients": [
+        0.002209825707632046,
+        -0.003592671954439403,
+        -0.0035926719544383495,
+        -0.005950387105876481,
+        -0.0022978882496163407,
+        -0.0024000000909326566,
+        0.004697888340548498,
+        1.6400358518680497e-16,
+        2.266901631869705e-16,
+        -0.002108278712728598,
+        0.0014528458357405832,
+        0.0007495596761064294,
+        -0.0024141227921074485,
+        0.0009225665212551557,
+        -4.859583760468994e-16,
+        3.5872339383364787e-16,
+        0.0004363937193405605,
+        0.0026418224806448345,
+        0.0009225665212561146,
+        0.0009225665212554016,
+        -5.731607122183623e-16,
+        -1.0793650344543118e-16,
+        -0.003493421869119674,
+        -0.003493421869118956,
+        0.008016575800133036,
+        -0.002568318591549497,
+        0.011882735236051534,
+        -0.001672126197362201,
+        -0.0017565676339328638,
+        -0.003220454770872177,
+        -0.012822142713945455,
+        0.0009225665212554474,
+        1.1863965336013893e-16,
+        -3.694710862522831e-16,
+        -0.010080549764747626,
+        -0.0003561611584284288,
+        -0.0034343773584142056,
+        -0.015187631443494304,
+        0.0029100722443578465,
+        0.008075620310839008,
+        8.444143657086956e-05,
+        0.012104336714258247,
+        0.0,
+        0.0
+      ],
+      "feature_names": [
+        "bias",
+        "legacy_scalar",
+        "legacy_centered",
+        "legacy_squared",
+        "has_ratio",
+        "has_fraction_scale",
+        "has_value",
+        "has_current_forecast",
+        "has_log_transform",
+        "scale_hint_log",
+        "kw_ratio",
+        "kw_dose",
+        "kw_equivalent",
+        "kw_flux",
+        "kw_fluence",
+        "kw_quality",
+        "kw_charged",
+        "kw_neutral",
+        "kw_albedo",
+        "kw_primary",
+        "kw_surface",
+        "kw_cruise",
+        "kw_storm",
+        "kw_shelter",
+        "kw_shield",
+        "kw_peak",
+        "kw_rotation",
+        "kw_cavity",
+        "kw_duration",
+        "kw_reduction",
+        "kw_gcr",
+        "kw_proton",
+        "kw_organ",
+        "kw_tissue",
+        "kw_absorbed",
+        "kw_total",
+        "kw_mission",
+        "kw_flyby",
+        "kw_low",
+        "kw_high",
+        "kw_count",
+        "kw_rate",
+        "kw_current",
+        "kw_forecast"
+      ],
+      "legacy_training_mae": 0.02188709127861746,
+      "legacy_training_rmse": 0.03192815917289068,
+      "training_mae": 0.010577694882032062,
+      "training_record_count": 19,
+      "training_rmse": 0.018472538221116372,
+      "type": "residual_ridge"
+    },
+    "mars_fd_transport_expert": {
+      "alpha": 0.8,
+      "base_training_mae": 0.19415361355374322,
+      "base_training_rmse": 0.22825904619238488,
+      "calibration_paths": [
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\mars_fd_surface_orbit_reference.json"
+      ],
+      "coefficients": [
+        1.1925435291160804,
+        0.0005407044453868288,
+        0.0005407044454199983,
+        0.0007252272325954562,
+        -0.25646725082280897,
+        0.032621853464093124,
+        0.03566260361854098,
+        -0.047229864842561364,
+        -0.043884177628708415,
+        0.03633965759163208,
+        -0.005915916585973912,
+        -0.051764134240927726
+      ],
+      "feature_names": [
+        "bias",
+        "base_prediction",
+        "base_centered",
+        "base_squared",
+        "log_denom",
+        "log_denom_squared",
+        "duration_days",
+        "inverse_duration_hours",
+        "season_sin",
+        "season_cos",
+        "log_duration_interaction",
+        "sqrt_denom"
+      ],
+      "training_mae": 0.1446653298111801,
+      "training_record_count": 79,
+      "training_rmse": 0.1785663492857948,
+      "type": "mars_fd_transport_ridge"
+    },
+    "mars_icme_drag_gamma_per_km": 1e-08,
+    "module_path": "D:\\Cosmos\\cosmos\\core\\cst_critical_integration.py"
+  },
+  "reports": {
+    "blind_reports": {
+      "chandrayaan1": {
+        "best_mae_baselines": [
+          "learned_v4_calibrator_proxy",
+          "v5_transport_router_proxy"
+        ],
+        "best_rmse_baselines": [
+          "learned_v4_calibrator_proxy",
+          "v5_transport_router_proxy"
+        ],
+        "family_beats_naive_and_metadata": true,
+        "family_led": true,
+        "legacy_mae": 0.19757040182040178,
+        "legacy_rmse": 0.22121216214087064,
+        "metadata_mae": 0.27233947879033354,
+        "metadata_rmse": 0.2936601572903129,
+        "predictions_path": "D:\\Cosmos\\docs\\validation\\blind_predictions_chandrayaan1_v5.json",
+        "predictions_sha256": "6237869bc381ba297b721d9a7e94d8561833357f6f7c716cfd79d3c11cbad97c",
+        "revealed_sha256": "9a6b236ce4ff031140e129e15cb794b0ec80bb635ff010011dc7d6a9b4ed0ac8",
+        "template_sha256": "26fc674d4fe8f810dc93b13150c0206a8e0188367bdaf26631058d8bccd2a196",
+        "v4_mae": 0.19125459679816134,
+        "v4_rmse": 0.21578033298847207,
+        "v5_beats_legacy": true,
+        "v5_beats_metadata_only": true,
+        "v5_beats_v4": false,
+        "v5_mae": 0.19125459679816134,
+        "v5_rmse": 0.21578033298847207
+      },
+      "crater": {
+        "best_mae_baselines": [
+          "learned_v4_calibrator_proxy",
+          "v5_transport_router_proxy"
+        ],
+        "best_rmse_baselines": [
+          "learned_v4_calibrator_proxy",
+          "v5_transport_router_proxy"
+        ],
+        "family_beats_naive_and_metadata": true,
+        "family_led": true,
+        "legacy_mae": 0.16691855902382216,
+        "legacy_rmse": 0.1790474161281152,
+        "metadata_mae": 0.16485785663780372,
+        "metadata_rmse": 0.21966672388472674,
+        "predictions_path": "D:\\Cosmos\\docs\\validation\\blind_predictions_crater_v5.json",
+        "predictions_sha256": "1bd411d88ccf8506aadc3b6945b6ff7e1cafd4abf359202a0e2f6d8f9a5c8432",
+        "revealed_sha256": "95483a0cb50d17d9822dc6d7c7cf4bd2ff90309a189d913c14ce229dc245be11",
+        "template_sha256": "4c482d2438abe6a71aa8deb8c05c927add1bf16a436f714dc9cb6076537ae16b",
+        "v4_mae": 0.020491104334474403,
+        "v4_rmse": 0.022031824879407462,
+        "v5_beats_legacy": true,
+        "v5_beats_metadata_only": true,
+        "v5_beats_v4": false,
+        "v5_mae": 0.020491104334474403,
+        "v5_rmse": 0.022031824879407462
+      },
+      "mars_fd": {
+        "best_mae_baselines": [
+          "v5_transport_router_proxy"
+        ],
+        "best_rmse_baselines": [
+          "v5_transport_router_proxy"
+        ],
+        "family_beats_naive_and_metadata": true,
+        "family_led": true,
+        "legacy_mae": 0.19204242496176088,
+        "legacy_rmse": 0.2254834129397106,
+        "metadata_mae": 0.28107049422640895,
+        "metadata_rmse": 0.3273057631740667,
+        "predictions_path": "D:\\Cosmos\\docs\\validation\\blind_predictions_mars_fd_v5.json",
+        "predictions_sha256": "9df471456549cdfe04aeabd9b0c01eb5696b053d22c9df14c63331a8490791a8",
+        "revealed_sha256": "3cf6dd9ef57384c790af4864c0236bf231fcf35e5e99829957b76cab28789548",
+        "template_sha256": "93b7c60491f0a680d616827096f4baad789c5f47a3856f0266016966cae53492",
+        "v4_mae": 0.19339411985408106,
+        "v4_rmse": 0.22731436129038787,
+        "v5_beats_legacy": true,
+        "v5_beats_metadata_only": true,
+        "v5_beats_v4": true,
+        "v5_mae": 0.1446648930418736,
+        "v5_rmse": 0.17856634924683315
+      },
+      "mars_icme_transit": {
+        "best_mae_baselines": [
+          "v5_transport_router_proxy"
+        ],
+        "best_rmse_baselines": [
+          "v5_transport_router_proxy"
+        ],
+        "family_beats_naive_and_metadata": true,
+        "family_led": true,
+        "legacy_mae": 0.16780223180131362,
+        "legacy_rmse": 0.1980515200204573,
+        "metadata_mae": 0.36150486789648195,
+        "metadata_rmse": 0.3809187458137235,
+        "predictions_path": "D:\\Cosmos\\docs\\validation\\blind_predictions_mars_icme_transit_v5.json",
+        "predictions_sha256": "cfe5c4a1276a2f600705a2ec344b063b50b86d2d7b39722e8f82d8f44f99c4f9",
+        "revealed_sha256": "18f09c7470c8bc5793feb0f54124a575563ad0e52e0a298eb9343a63d885c983",
+        "template_sha256": "45676147a589cda543b252cc0d76c7ec28d4b276ad6fd14b3eb625386f1773c8",
+        "v4_mae": 0.178875045033638,
+        "v4_rmse": 0.21014016475005184,
+        "v5_beats_legacy": true,
+        "v5_beats_metadata_only": true,
+        "v5_beats_v4": true,
+        "v5_mae": 0.09751739893255516,
+        "v5_rmse": 0.1274470222465052
+      },
+      "msl": {
+        "best_mae_baselines": [
+          "learned_v4_calibrator_proxy",
+          "v5_transport_router_proxy"
+        ],
+        "best_rmse_baselines": [
+          "learned_v4_calibrator_proxy",
+          "v5_transport_router_proxy"
+        ],
+        "family_beats_naive_and_metadata": true,
+        "family_led": true,
+        "legacy_mae": 0.24683581711328761,
+        "legacy_rmse": 0.25869141076297125,
+        "metadata_mae": 0.16464081119273344,
+        "metadata_rmse": 0.18544029129926362,
+        "predictions_path": "D:\\Cosmos\\docs\\validation\\blind_predictions_msl_v5.json",
+        "predictions_sha256": "b60cc9c8301cecf5701b4e9a0c2f9f9cc11672f5f286a3c191cdff5777dcaaf2",
+        "revealed_sha256": "13277438f861f68847aced6c06b8a05f9043d1df62b9e85fb4b964b1bfb0d971",
+        "template_sha256": "1729fe488b02f45b8430c3297d61708234c17a29c75ea02fd883461d37e5ec9e",
+        "v4_mae": 0.011207102395483642,
+        "v4_rmse": 0.014807939927634274,
+        "v5_beats_legacy": true,
+        "v5_beats_metadata_only": true,
+        "v5_beats_v4": false,
+        "v5_mae": 0.011207102395483642,
+        "v5_rmse": 0.014807939927634274
+      }
+    },
+    "direct_reports": {
+      "chandrayaan1": {
+        "best_mae_baselines": [
+          "learned_v4_calibrator_proxy",
+          "v5_transport_router_proxy"
+        ],
+        "best_rmse_baselines": [
+          "learned_v4_calibrator_proxy",
+          "v5_transport_router_proxy"
+        ],
+        "bootstrap": {
+          "v5_vs_legacy": {
+            "mae": {
+              "ci_high": 0.0034020245188170206,
+              "ci_low": -0.015243813931555564,
+              "observed_delta": -0.005515804991929607
+            },
+            "rmse": {
+              "ci_high": 0.003587137672113383,
+              "ci_low": -0.011793588686046352,
+              "observed_delta": -0.004893158146431903
+            }
+          },
+          "v5_vs_metadata_only": {
+            "mae": {
+              "ci_high": 0.062311106875547334,
+              "ci_low": -0.18391570804687138,
+              "observed_delta": -0.0849843789127949
+            },
+            "rmse": {
+              "ci_high": 0.06628746987063311,
+              "ci_low": -0.18232473577030858,
+              "observed_delta": -0.08293784021344744
+            }
+          },
+          "v5_vs_phase_only_ablation": {
+            "mae": {
+              "ci_high": 0.03314721731075945,
+              "ci_low": -0.17511462294053945,
+              "observed_delta": -0.08627887958246697
+            },
+            "rmse": {
+              "ci_high": 0.05168774398946965,
+              "ci_low": -0.17311055935087646,
+              "observed_delta": -0.08175988902562312
+            }
+          },
+          "v5_vs_v4": {
+            "mae": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "observed_delta": 0.0
+            },
+            "rmse": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "observed_delta": 0.0
+            }
+          }
+        },
+        "family_beats_naive_and_metadata": true,
+        "family_led": true,
+        "legacy_mae": 0.19757040182040178,
+        "legacy_rmse": 0.22121216214087064,
+        "metadata_mae": 0.27703897574126707,
+        "metadata_rmse": 0.2992568442078862,
+        "phase_only_ablation_mae": 0.27833347641093914,
+        "phase_only_ablation_rmse": 0.29807889302006185,
+        "v4_mae": 0.19205459682847217,
+        "v4_rmse": 0.21631900399443874,
+        "v5_beats_legacy": true,
+        "v5_beats_metadata_only": true,
+        "v5_beats_v4": false,
+        "v5_mae": 0.19205459682847217,
+        "v5_rmse": 0.21631900399443874
+      },
+      "crater": {
+        "best_mae_baselines": [
+          "learned_v4_calibrator_proxy",
+          "v5_transport_router_proxy"
+        ],
+        "best_rmse_baselines": [
+          "learned_v4_calibrator_proxy",
+          "v5_transport_router_proxy"
+        ],
+        "bootstrap": {
+          "v5_vs_legacy": {
+            "mae": {
+              "ci_high": -0.08180465203792023,
+              "ci_low": -0.20150870836830256,
+              "observed_delta": -0.14816284344501635
+            },
+            "rmse": {
+              "ci_high": -0.09840086647017464,
+              "ci_low": -0.2018217042644613,
+              "observed_delta": -0.15914146925156114
+            }
+          },
+          "v5_vs_metadata_only": {
+            "mae": {
+              "ci_high": -0.007111301787865315,
+              "ci_low": -0.29214222575653087,
+              "observed_delta": -0.1496267637721981
+            },
+            "rmse": {
+              "ci_high": -0.013193622449978341,
+              "ci_low": -0.3172139615434694,
+              "observed_delta": -0.20416016571890064
+            }
+          },
+          "v5_vs_phase_only_ablation": {
+            "mae": {
+              "ci_high": -0.07545906775103528,
+              "ci_low": -0.12270945327604749,
+              "observed_delta": -0.09908426051354138
+            },
+            "rmse": {
+              "ci_high": -0.07537962095467651,
+              "ci_low": -0.12237386283110044,
+              "observed_delta": -0.10160089575011037
+            }
+          },
+          "v5_vs_v4": {
+            "mae": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "observed_delta": 0.0
+            },
+            "rmse": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "observed_delta": 0.0
+            }
+          }
+        },
+        "family_beats_naive_and_metadata": true,
+        "family_led": true,
+        "legacy_mae": 0.16691855902382216,
+        "legacy_rmse": 0.1790474161281152,
+        "metadata_mae": 0.16838247935100392,
+        "metadata_rmse": 0.2240661125954547,
+        "phase_only_ablation_mae": 0.1178399760923472,
+        "phase_only_ablation_rmse": 0.12150684262666443,
+        "v4_mae": 0.018755715578805815,
+        "v4_rmse": 0.01990594687655406,
+        "v5_beats_legacy": true,
+        "v5_beats_metadata_only": true,
+        "v5_beats_v4": false,
+        "v5_mae": 0.018755715578805815,
+        "v5_rmse": 0.01990594687655406
+      },
+      "mars_fd": {
+        "best_mae_baselines": [
+          "v5_transport_router_proxy"
+        ],
+        "best_rmse_baselines": [
+          "v5_transport_router_proxy"
+        ],
+        "bootstrap": {
+          "v5_vs_legacy": {
+            "mae": {
+              "ci_high": -0.022063922551326203,
+              "ci_low": -0.07268647076757168,
+              "observed_delta": -0.04737709515058078
+            },
+            "rmse": {
+              "ci_high": -0.020937027508693532,
+              "ci_low": -0.07394558608316106,
+              "observed_delta": -0.04691706365391582
+            }
+          },
+          "v5_vs_metadata_only": {
+            "mae": {
+              "ci_high": -0.09575040142203718,
+              "ci_low": -0.1865194299517249,
+              "observed_delta": -0.14149132883680884
+            },
+            "rmse": {
+              "ci_high": -0.10922456950107844,
+              "ci_low": -0.1987238717790725,
+              "observed_delta": -0.15421032231652138
+            }
+          },
+          "v5_vs_phase_only_ablation": {
+            "mae": {
+              "ci_high": 3.862223033426031e-05,
+              "ci_low": -8.798590367578018e-05,
+              "observed_delta": -2.467471893929929e-05
+            },
+            "rmse": {
+              "ci_high": 5.686940149808512e-05,
+              "ci_low": -6.470976771097634e-05,
+              "observed_delta": -2.2263869323135843e-07
+            }
+          },
+          "v5_vs_v4": {
+            "mae": {
+              "ci_high": -0.023208518286094066,
+              "ci_low": -0.07554216246698166,
+              "observed_delta": -0.049488283742563116
+            },
+            "rmse": {
+              "ci_high": -0.02274467040047466,
+              "ci_low": -0.07755084506886846,
+              "observed_delta": -0.04969269690659009
+            }
+          }
+        },
+        "family_beats_naive_and_metadata": true,
+        "family_led": true,
+        "legacy_mae": 0.19204242496176088,
+        "legacy_rmse": 0.2254834129397106,
+        "metadata_mae": 0.28615665864798895,
+        "metadata_rmse": 0.33277667160231617,
+        "phase_only_ablation_mae": 0.1446900045301194,
+        "phase_only_ablation_rmse": 0.17856657192448802,
+        "v4_mae": 0.19415361355374322,
+        "v4_rmse": 0.22825904619238488,
+        "v5_beats_legacy": true,
+        "v5_beats_metadata_only": true,
+        "v5_beats_v4": true,
+        "v5_mae": 0.1446653298111801,
+        "v5_rmse": 0.1785663492857948
+      },
+      "mars_icme_transit": {
+        "best_mae_baselines": [
+          "v5_transport_router_proxy"
+        ],
+        "best_rmse_baselines": [
+          "v5_transport_router_proxy"
+        ],
+        "bootstrap": {
+          "v5_vs_legacy": {
+            "mae": {
+              "ci_high": 0.012228401950537282,
+              "ci_low": -0.15137128298283656,
+              "observed_delta": -0.07028483286875846
+            },
+            "rmse": {
+              "ci_high": 0.007956059955215065,
+              "ci_low": -0.14845864291050256,
+              "observed_delta": -0.07060449777395211
+            }
+          },
+          "v5_vs_metadata_only": {
+            "mae": {
+              "ci_high": -0.17693525051507725,
+              "ci_low": -0.3595856279329895,
+              "observed_delta": -0.27103671439032717
+            },
+            "rmse": {
+              "ci_high": -0.17062116555058815,
+              "ci_low": -0.34793676165151494,
+              "observed_delta": -0.2601680649813569
+            }
+          },
+          "v5_vs_phase_only_ablation": {
+            "mae": {
+              "ci_high": 0.0022562127723773436,
+              "ci_low": -0.0342440543510296,
+              "observed_delta": -0.01623272647825308
+            },
+            "rmse": {
+              "ci_high": -0.0022078057031675495,
+              "ci_low": -0.03001377746526819,
+              "observed_delta": -0.01812124607276619
+            }
+          },
+          "v5_vs_v4": {
+            "mae": {
+              "ci_high": 0.004135739663564388,
+              "ci_low": -0.16750925078469553,
+              "observed_delta": -0.08311764616776675
+            },
+            "rmse": {
+              "ci_high": -0.0041468180950551825,
+              "ci_low": -0.1640613846137429,
+              "observed_delta": -0.08466478270185887
+            }
+          }
+        },
+        "family_beats_naive_and_metadata": true,
+        "family_led": true,
+        "legacy_mae": 0.16780223180131362,
+        "legacy_rmse": 0.1980515200204573,
+        "metadata_mae": 0.36855411332288235,
+        "metadata_rmse": 0.38761508722786214,
+        "phase_only_ablation_mae": 0.11375012541080824,
+        "phase_only_ablation_rmse": 0.1455682683192714,
+        "v4_mae": 0.1806350451003219,
+        "v4_rmse": 0.21211180494836407,
+        "v5_beats_legacy": true,
+        "v5_beats_metadata_only": true,
+        "v5_beats_v4": true,
+        "v5_mae": 0.09751739893255516,
+        "v5_rmse": 0.1274470222465052
+      },
+      "msl": {
+        "best_mae_baselines": [
+          "learned_v4_calibrator_proxy",
+          "v5_transport_router_proxy"
+        ],
+        "best_rmse_baselines": [
+          "learned_v4_calibrator_proxy",
+          "v5_transport_router_proxy"
+        ],
+        "bootstrap": {
+          "v5_vs_legacy": {
+            "mae": {
+              "ci_high": -0.17383947168594097,
+              "ci_low": -0.29580072191912143,
+              "observed_delta": -0.23631035346444584
+            },
+            "rmse": {
+              "ci_high": -0.18229419294359508,
+              "ci_low": -0.29912767614644253,
+              "observed_delta": -0.24497085393117768
+            }
+          },
+          "v5_vs_metadata_only": {
+            "mae": {
+              "ci_high": -0.07464180813468638,
+              "ci_low": -0.21364671500066026,
+              "observed_delta": -0.14487045028399936
+            },
+            "rmse": {
+              "ci_high": -0.09537275905854578,
+              "ci_low": -0.22480437697317254,
+              "observed_delta": -0.16770368790537538
+            }
+          },
+          "v5_vs_phase_only_ablation": {
+            "mae": {
+              "ci_high": -0.04223918595801714,
+              "ci_low": -0.11755880535127583,
+              "observed_delta": -0.08244137907596069
+            },
+            "rmse": {
+              "ci_high": -0.04915897312121144,
+              "ci_low": -0.11841004095804414,
+              "observed_delta": -0.08770829356485854
+            }
+          },
+          "v5_vs_v4": {
+            "mae": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "observed_delta": 0.0
+            },
+            "rmse": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "observed_delta": 0.0
+            }
+          }
+        },
+        "family_beats_naive_and_metadata": true,
+        "family_led": true,
+        "legacy_mae": 0.24683581711328761,
+        "legacy_rmse": 0.25869141076297125,
+        "metadata_mae": 0.15539591393284113,
+        "metadata_rmse": 0.18142424473716895,
+        "phase_only_ablation_mae": 0.09296684272480245,
+        "phase_only_ablation_rmse": 0.1014288503966521,
+        "v4_mae": 0.010525463648841762,
+        "v4_rmse": 0.013720556831793565,
+        "v5_beats_legacy": true,
+        "v5_beats_metadata_only": true,
+        "v5_beats_v4": false,
+        "v5_mae": 0.010525463648841762,
+        "v5_rmse": 0.013720556831793565
+      }
+    },
+    "v4_gate_status": "validated_predictive_subdomain",
+    "v5_gate": {
+      "rule": "Keep the v4 predictive subdomain intact, make the v5 router the best direct and blind proxy on the Mars FD development benchmark, and require it to repeat that dominance on the untouched Mars ICME transit holdout.",
+      "status": "validated_unified_transport_router"
+    }
+  },
+  "reproducibility": {
+    "commands": [
+      "python scripts/run_mars_icme_transit_external_validation.py --output-dir docs/validation",
+      "python scripts/run_final_v5_validation.py --output-dir docs/validation",
+      "python scripts/build_validation_manifest_v5.py --output docs/validation/validation_manifest_v5.json",
+      "python -m pytest tests/galactic_cosmic_rays -q"
+    ],
+    "python_version": "3.12.6"
+  },
+  "status": "validated_unified_transport_router"
+}

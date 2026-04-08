@@ -1,0 +1,80 @@
+{
+  "media_type": "image",
+  "generated_at": "2026-03-29T22:23:47Z",
+  "original_prompt": "a pretty flower",
+  "enhanced_prompt": "A pretty flower, captured in a serene cinematic wide shot with a balanced, natural composition. The exquisite bloom is positioned precisely according to the golden ratio (\u03c6=1.\n\n[QUANTUM-ENTANGLED IMAGE DIRECTIVES]\nBackend: ibm_fez | Entropy: 0.5000 | Palette Shift: 0.43\nComposition phase bias 0.00, fractal gain 0.41.\nEntanglement Signature: {\"backend\": \"ibm_fez\", \"buffer\": {\"after\": 40, \"before\": 34, \"consumption_rate_per_minute\": 434.0, \"min_buffer_size\": 10}, \"circuit_signature\": {\"isa\": {\"classical_bits\": 5, \"depth\": 29, \"ops\": {\"barrier\": 1, \"cz\": 14, \"",
+  "model": "Cosmos-Native-12D-Entangled",
+  "backend": "native-12d",
+  "cst": {
+    "emotional_state": "NEUTRAL",
+    "dark_matter_w": 0.1,
+    "geometric_phase_rad": 0.0,
+    "informational_mass": 5.0,
+    "emeth_weights": {
+      "percussion": 0.33,
+      "strings": 0.33,
+      "brass": 0.34
+    },
+    "phi_composition": 1.618033988749895,
+    "quantum_entropy": 0.5
+  },
+  "quantum_state": {
+    "backend": "ibm_fez",
+    "connected": true,
+    "entropy": 0.5,
+    "life_force": 4077.618515293466,
+    "refill_phase": "complete",
+    "phase_bias": 0.0,
+    "temporal_cadence": 0.48,
+    "fractal_gain": 0.412,
+    "palette_shift": 0.43,
+    "entanglement_signature": "{\"backend\": \"ibm_fez\", \"buffer\": {\"after\": 40, \"before\": 34, \"consumption_rate_per_minute\": 434.0, \"min_buffer_size\": 10}, \"circuit_signature\": {\"isa\": {\"classical_bits\": 5, \"depth\": 29, \"ops\": {\"barrier\": 1, \"cz\": 14, \"",
+    "generation_seed": 2628675748,
+    "job_metadata": {
+      "job_id": "d74qcpa3qcgc73fqtc8g",
+      "status": "DONE",
+      "usage_estimation": {
+        "quantum_seconds": null
+      },
+      "metrics": {
+        "caller": "qiskit_ibm_runtime~sampler.py",
+        "qiskit_version": "qiskit_ibm_runtime-0.45.1,qiskit-2.3.1*,qiskit_aer-0.17.2",
+        "timestamps": {
+          "created": "2026-03-29T22:23:33.607181Z",
+          "finished": "2026-03-29T22:23:39.798877Z",
+          "running": "2026-03-29T22:23:34.7089Z"
+        },
+        "bss": {
+          "seconds": 3
+        },
+        "usage": {
+          "quantum_seconds": 3,
+          "seconds": 3
+        }
+      },
+      "created_at": "2026-03-29T15:23:33.607181-07:00",
+      "submitted_at": 1774823012.5358276,
+      "submitted_at_iso": "2026-03-29T22:23:32Z",
+      "completed_at": 1774823021.4929957,
+      "completed_at_iso": "2026-03-29T22:23:41Z",
+      "compile_and_submit_seconds": 0.0322,
+      "result_wait_seconds": 8.9572,
+      "wall_runtime_seconds": 8.9894,
+      "final_status": "DONE"
+    },
+    "debug_tail": [
+      "[CONNECT] Success! Backend: ibm_fez",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[CONNECT] Attempting connection with token (First 5): jwgFV...",
+      "[CONNECT] Success! Backend: ibm_fez",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[CONNECT] Attempting connection with token (First 5): jwgFV...",
+      "[CONNECT] Success! Backend: ibm_fez",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[CONNECT] Attempting connection with token (First 5): whJlw...",
+      "[CONNECT] Success! Backend: ibm_fez",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True",
+      "[INIT] Bridge Initialized. Token present: False. Qiskit Avail: True"
+    ]
+  }
+}

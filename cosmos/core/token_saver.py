@@ -82,7 +82,7 @@ class ResponseCache:
     def __init__(self, max_size: int = 100, ttl_hours: float = 24.0):
         self.max_size = max_size
         self.ttl_seconds = ttl_hours * 3600
-        self._cache: Ordereddict[str, tuple[str, float]] = Orderedany()
+        self._cache: OrderedDict[str, tuple[str, float]] = OrderedDict()
 
     def _make_key(self, prompt: str) -> str:
         """Create cache key from prompt."""

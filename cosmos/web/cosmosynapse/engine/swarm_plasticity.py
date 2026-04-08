@@ -56,8 +56,13 @@ WEIGHT_MAX = 2.0            # Synaptic ceiling (prevents runaway potentiation)
 WEIGHT_MIN = 0.1            # Synaptic floor (never fully silence a model)
 LYAPUNOV_THRESHOLD = 0.45   # Phase drift must be below this for learning — V4.0 widened
 
-# Persistence
-WEIGHTS_FILE = "cst_synaptic_weights.json"
+# Persistence — Canonical location to avoid CWD-dependent divergence.
+# Falls back to a relative path if the canonical root doesn't exist (e.g. CI).
+_CANONICAL_WEIGHTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..", "cst_synaptic_weights.json")
+_CANONICAL_WEIGHTS = os.path.normpath(_CANONICAL_WEIGHTS)
+if not os.path.isdir(os.path.dirname(_CANONICAL_WEIGHTS)):
+    _CANONICAL_WEIGHTS = "cst_synaptic_weights.json"
+WEIGHTS_FILE = _CANONICAL_WEIGHTS
 
 
 @dataclass

@@ -12,6 +12,7 @@ Usage:
 """
 
 import argparse
+import importlib
 import os
 import sys
 import threading
@@ -75,9 +76,10 @@ except ImportError:
     pass
 
 try:
-    import cosmos.web.server
-    print(f"DEBUG: Loaded Server Module: {cosmos.web.server.__file__}")
-except ImportError as e:
+    import importlib
+    _server_mod = importlib.import_module('cosmos.web.server')
+    print(f"DEBUG: Loaded Server Module: {_server_mod.__file__}")
+except Exception as e:
     print(f"DEBUG: Server Import Failed: {e}")
 
 def start_emotional_server(host="0.0.0.0", port=8765):
@@ -121,9 +123,16 @@ def main():
     has_gemini = bool(os.getenv('GEMINI_API_KEY'))
     has_openai = bool(os.getenv('OPENAI_API_KEY'))
     has_quantum = bool(os.getenv('IBM_QUANTUM_TOKEN'))
+
+    primary_model = os.getenv("cosmos_PRIMARY_MODEL", "qwen3:8b")
+    try:
+        cosmos_server = importlib.import_module('cosmos.web.server')
+        primary_model = getattr(cosmos_server, "PRIMARY_MODEL", primary_model)
+    except Exception:
+        pass
     
     capabilities = []
-    capabilities.append('Ollama (llama3.1:8b)')
+    capabilities.append(f'Ollama ({primary_model})')
     if has_gemini:
         capabilities.append('Gemini API')
     if has_openai:
@@ -205,9 +214,9 @@ def main():
         )
     else:
         # Pass the instantiated app directly to avoid module discovery issues in child processes
-        import cosmos.web.server
+        _srv = importlib.import_module('cosmos.web.server')
         uvicorn.run(
-            cosmos.web.server.app,
+            _srv.app,
             host=args.host,
             port=args.port,
             log_level="info"

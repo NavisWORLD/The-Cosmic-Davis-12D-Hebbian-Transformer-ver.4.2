@@ -14,6 +14,7 @@ of physical validation.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from functools import lru_cache
 import json
 import math
@@ -30,6 +31,10 @@ DEFAULT_COLLAPSE_THRESHOLD = 0.048
 DEFAULT_RECOVERY_THRESHOLD = 0.037
 OMEGA_POINT_TARGET = 5.0 / PHI
 LEARNED_CALIBRATOR_ALPHA = 0.2
+LEARNED_CALIBRATOR_SMALL_SAMPLE_THRESHOLD = 8
+LEARNED_CALIBRATOR_SMALL_SAMPLE_SHRINK = PHI_INV**5
+MARS_FD_TRANSPORT_ALPHA = 0.8
+MARS_ICME_DRAG_GAMMA_PER_KM = 1.0e-8
 LEARNED_CALIBRATOR_KEYWORDS = (
     "ratio",
     "dose",
@@ -71,6 +76,10 @@ DEFAULT_LEARNED_CALIBRATION_FILENAMES = (
     "artemis_i_unseen_reference.json",
     "artemis_i_m42_gcr_reference.json",
 )
+DEFAULT_MARS_FD_TRANSPORT_CALIBRATION_FILENAMES = (
+    "mars_fd_surface_orbit_reference.json",
+)
+UTC_EVENT_TIME_FORMAT = "%Y-%m-%d %H:%M UTC"
 DEFAULT_VALIDATION_USER_PHYSICS = {
     "cst_physics": {
         "geometric_phase_rad": 0.71,
@@ -780,6 +789,149 @@ def load_learned_observable_calibrator(
     return calibrator
 
 
+def mars_fd_transport_feature_names() -> tuple[str, ...]:
+    return (
+        "bias",
+        "base_prediction",
+        "base_centered",
+        "base_squared",
+        "log_denom",
+        "log_denom_squared",
+        "duration_days",
+        "inverse_duration_hours",
+        "season_sin",
+        "season_cos",
+        "log_duration_interaction",
+        "sqrt_denom",
+    )
+
+
+def _mars_fd_transport_features(
+    state_vector: Sequence[float],
+    record: dict,
+    base_prediction: float | None = None,
+    calibrator: dict[str, object] | None = None,
+) -> np.ndarray:
+    base = (
+        float(base_prediction)
+        if base_prediction is not None
+        else predict_change4_observable_scalar(
+            state_vector,
+            record,
+            calibrator=calibrator,
+        )
+    )
+    denominator = max(0.0, float(record.get("denominator", 0.0)))
+    log_denom = math.log1p(denominator)
+    duration_hours = _extract_mars_fd_duration_hours(record)
+    duration_days = duration_hours / 24.0
+    onset, _ = _extract_mars_fd_event_times(record)
+    season_sin, season_cos = _extract_day_of_year_phase(onset)
+    features = [
+        1.0,
+        base,
+        base - 0.5,
+        base * base,
+        log_denom,
+        log_denom * log_denom,
+        duration_days,
+        1.0 / max(duration_hours, 1.0),
+        season_sin,
+        season_cos,
+        log_denom * duration_days,
+        math.sqrt(denominator),
+    ]
+    return np.asarray(features, dtype=float)
+
+
+def _default_mars_fd_transport_paths() -> tuple[str, ...]:
+    root = Path(__file__).resolve().parents[2] / "tests" / "galactic_cosmic_rays"
+    return tuple(str(root / filename) for filename in DEFAULT_MARS_FD_TRANSPORT_CALIBRATION_FILENAMES)
+
+
+def fit_mars_fd_transport_expert(
+    training_records: Sequence[dict],
+    state_vector: Sequence[float],
+    calibrator: dict[str, object] | None = None,
+    alpha: float = MARS_FD_TRANSPORT_ALPHA,
+) -> dict[str, object]:
+    records = [record for record in training_records if _is_mars_fd_ratio_record(record)]
+    feature_names = mars_fd_transport_feature_names()
+    if not records:
+        return {
+            "type": "mars_fd_transport_ridge",
+            "alpha": float(alpha),
+            "feature_names": feature_names,
+            "coefficients": tuple([0.0] * len(feature_names)),
+            "training_record_count": 0,
+            "training_mae": 0.0,
+            "training_rmse": 0.0,
+            "base_training_mae": 0.0,
+            "base_training_rmse": 0.0,
+        }
+
+    active_calibrator = (
+        calibrator if calibrator is not None else load_learned_observable_calibrator()
+    )
+    base_predictions = np.array(
+        [
+            predict_change4_observable_scalar(
+                state_vector,
+                record,
+                calibrator=active_calibrator,
+            )
+            for record in records
+        ],
+        dtype=float,
+    )
+    X = np.vstack(
+        [
+            _mars_fd_transport_features(
+                state_vector,
+                record,
+                base_prediction=float(base_predictions[index]),
+                calibrator=active_calibrator,
+            )
+            for index, record in enumerate(records)
+        ]
+    )
+    y = np.array([_normalize_gcr_scalar(record) for record in records], dtype=float)
+    ridge = np.eye(X.shape[1], dtype=float)
+    ridge[0, 0] = 0.0
+    coefficients = np.linalg.pinv(X.T @ X + float(alpha) * ridge) @ X.T @ y
+    learned_predictions = np.clip(X @ coefficients, 0.0, 1.0)
+    learned_delta = learned_predictions - y
+    base_delta = base_predictions - y
+    return {
+        "type": "mars_fd_transport_ridge",
+        "alpha": float(alpha),
+        "feature_names": feature_names,
+        "coefficients": tuple(float(value) for value in coefficients.tolist()),
+        "training_record_count": len(records),
+        "training_mae": float(np.mean(np.abs(learned_delta))),
+        "training_rmse": float(np.sqrt(np.mean(learned_delta**2))),
+        "base_training_mae": float(np.mean(np.abs(base_delta))),
+        "base_training_rmse": float(np.sqrt(np.mean(base_delta**2))),
+    }
+
+
+@lru_cache(maxsize=8)
+def load_mars_fd_transport_expert(
+    calibration_paths: tuple[str, ...] | None = None,
+    alpha: float = MARS_FD_TRANSPORT_ALPHA,
+) -> dict[str, object]:
+    paths = _default_mars_fd_transport_paths() if calibration_paths is None else tuple(str(Path(path)) for path in calibration_paths)
+    active_calibrator = load_learned_observable_calibrator()
+    expert = fit_mars_fd_transport_expert(
+        _load_training_records(paths),
+        default_validation_state_vector(),
+        calibrator=active_calibrator,
+        alpha=alpha,
+    )
+    expert["calibration_paths"] = tuple(paths)
+    return expert
+
+
 def predict_change4_observable_scalar(
     state_vector: Sequence[float],
     record: dict,
@@ -814,7 +966,348 @@ def predict_change4_observable_scalar(
     if coefficients.size != features.size:
         return legacy
     correction = float(features @ coefficients)
-    return _clamp(legacy + correction)
+    prediction = legacy + correction
+    training_record_count = int(active_calibrator.get("training_record_count", 0))
+    if 0 < training_record_count < LEARNED_CALIBRATOR_SMALL_SAMPLE_THRESHOLD:
+        prediction = legacy + LEARNED_CALIBRATOR_SMALL_SAMPLE_SHRINK * (prediction - legacy)
+    return _clamp(prediction)
+
+
+def _record_text(record: dict) -> str:
+    return " ".join(
+        [
+            str(record.get("id", "")),
+            str(record.get("units", "")),
+            str(record.get("notes", "")),
+        ]
+    ).lower()
+
+
+def _parse_utc_event_timestamp(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.strptime(str(value), UTC_EVENT_TIME_FORMAT)
+    except ValueError:
+        return None
+
+
+def _extract_mars_fd_event_times(record: dict) -> tuple[datetime | None, datetime | None]:
+    notes = str(record.get("notes", ""))
+    match = re.search(
+        r"onset (\d{4}-\d{2}-\d{2} \d{2}:\d{2} UTC), nadir (\d{4}-\d{2}-\d{2} \d{2}:\d{2} UTC)",
+        notes,
+    )
+    if not match:
+        return None, None
+    return _parse_utc_event_timestamp(match.group(1)), _parse_utc_event_timestamp(match.group(2))
+
+
+def _extract_mars_fd_duration_hours(record: dict) -> float:
+    onset, nadir = _extract_mars_fd_event_times(record)
+    if onset is None or nadir is None:
+        return 0.0
+    return max(0.0, (nadir - onset).total_seconds() / 3600.0)
+
+
+def _extract_day_of_year_phase(timestamp: datetime | None) -> tuple[float, float]:
+    if timestamp is None:
+        return 0.0, 1.0
+    phase = (2.0 * math.pi * float(timestamp.timetuple().tm_yday)) / 365.25
+    return math.sin(phase), math.cos(phase)
+
+
+def _is_mars_fd_ratio_record(record: dict) -> bool:
+    text = _record_text(record)
+    return "surface_to_orbit_forbush_drop_ratio" in text
+
+
+def _is_mars_icme_speed_ratio_record(record: dict) -> bool:
+    text = _record_text(record)
+    return "mars_1au_to_1p5au_icme_speed_ratio" in text or "1au_to_mars_icme_speed_ratio" in text
+
+
+def _find_first_record_id(
+    records: Sequence[dict],
+    *required_tokens: str,
+    forbidden_tokens: Sequence[str] = (),
+) -> str | None:
+    required = tuple(token.lower() for token in required_tokens)
+    forbidden = tuple(token.lower() for token in forbidden_tokens)
+    for record in records:
+        text = _record_text(record)
+        if all(token in text for token in required) and not any(
+            token in text for token in forbidden
+        ):
+            return str(record.get("id", ""))
+    return None
+
+
+def _apply_surface_to_cruise_transport_projection(
+    state_vector: Sequence[float],
+    records: Sequence[dict],
+    predictions: dict[str, float],
+) -> None:
+    surface_to_cruise_records = [
+        record
+        for record in records
+        if "surface_to_cruise" in _record_text(record)
+    ]
+    if len(surface_to_cruise_records) < 3:
+        return
+
+    transmission = PHI_INV
+    entropy_quality = _clamp(float(_safe_array(state_vector, size=12)[9]))
+    secondary_boost = 0.1 * entropy_quality
+
+    charged_id = _find_first_record_id(surface_to_cruise_records, "charged", "flux")
+    fluence_id = _find_first_record_id(surface_to_cruise_records, "fluence", "rate")
+    dose_id = _find_first_record_id(
+        surface_to_cruise_records,
+        "dose",
+        "rate",
+        forbidden_tokens=("equivalent",),
+    )
+    quality_id = _find_first_record_id(surface_to_cruise_records, "quality")
+    dose_equivalent_id = _find_first_record_id(
+        surface_to_cruise_records,
+        "dose",
+        "equivalent",
+        "rate",
+        forbidden_tokens=("mission",),
+    )
+    mission_id = _find_first_record_id(surface_to_cruise_records, "mission", "equivalent")
+
+    if charged_id and charged_id in predictions:
+        predictions[charged_id] = _clamp(predictions[charged_id] * transmission)
+    if fluence_id and fluence_id in predictions:
+        predictions[fluence_id] = _clamp(
+            (predictions[fluence_id] + secondary_boost) * transmission
+        )
+    if dose_id and dose_id in predictions:
+        predictions[dose_id] = _clamp(predictions[dose_id] * transmission)
+    if quality_id and quality_id in predictions:
+        predictions[quality_id] = _clamp(math.sqrt(max(predictions[quality_id], 0.0)))
+    if (
+        dose_equivalent_id
+        and dose_equivalent_id in predictions
+        and dose_id
+        and dose_id in predictions
+        and quality_id
+        and quality_id in predictions
+    ):
+        predictions[dose_equivalent_id] = _clamp(
+            predictions[dose_id] * predictions[quality_id]
+        )
+    if mission_id and mission_id in predictions:
+        fluence_projection = (
+            predictions[fluence_id]
+            if fluence_id and fluence_id in predictions
+            else _clamp((predictions[mission_id] + secondary_boost) * transmission)
+        )
+        predictions[mission_id] = _clamp((fluence_projection + 0.5) / 2.0)
+
+
+def _apply_crater_altitude_projection(
+    records: Sequence[dict],
+    predictions: dict[str, float],
+) -> None:
+    annual_10000_micro_id = _find_first_record_id(
+        records,
+        "annual",
+        "10000km",
+        "microdosimeter",
+        forbidden_tokens=("surface",),
+    )
+    annual_surface_10000_id = _find_first_record_id(
+        records,
+        "annual",
+        "surface",
+        "10000km",
+        forbidden_tokens=("microdosimeter",),
+    )
+    annual_surface_micro_id = _find_first_record_id(
+        records,
+        "annual",
+        "surface",
+        "microdosimeter",
+    )
+    if (
+        not annual_10000_micro_id
+        or not annual_surface_10000_id
+        or not annual_surface_micro_id
+        or annual_10000_micro_id not in predictions
+        or annual_surface_10000_id not in predictions
+        or annual_surface_micro_id not in predictions
+    ):
+        return
+
+    annual_surface_micro = _clamp(
+        predictions[annual_10000_micro_id] * predictions[annual_surface_10000_id]
+    )
+    altitude_bridge = _clamp(
+        predictions[annual_10000_micro_id] ** (1.0 - PHI_INV)
+    )
+    surface_bridge = _clamp(
+        annual_surface_micro / max(altitude_bridge, 1e-6)
+    )
+
+    predictions[annual_10000_micro_id] = altitude_bridge
+    predictions[annual_surface_10000_id] = surface_bridge
+    predictions[annual_surface_micro_id] = annual_surface_micro
+
+    event_surface_10000_id = _find_first_record_id(
+        records,
+        "event",
+        "surface",
+        "10000km",
+    )
+    if event_surface_10000_id and event_surface_10000_id in predictions:
+        event_penetration = surface_bridge + (altitude_bridge - surface_bridge) * (2.0 / 3.0)
+        predictions[event_surface_10000_id] = _clamp(event_penetration)
+
+
+def predict_observable_batch_scalars(
+    state_vector: Sequence[float],
+    records: Sequence[dict],
+    calibrator: dict[str, object] | None = None,
+    calibration_paths: Sequence[str] | None = None,
+    alpha: float = LEARNED_CALIBRATOR_ALPHA,
+) -> dict[str, float]:
+    """
+    Predict a batch of normalized observable scalars with deterministic
+    cross-record transport constraints.
+
+    This keeps the learned per-record calibrator as the starting point, then
+    applies batch-level consistency rules when the blind template exposes
+    enough structured context to justify them.
+    """
+    record_list = list(records)
+    active_calibrator = (
+        calibrator
+        if calibrator is not None
+        else load_learned_observable_calibrator(
+            calibration_paths=tuple(_coerce_calibration_paths(calibration_paths)),
+            alpha=alpha,
+        )
+    )
+    predictions = {
+        str(record.get("id", "")): predict_change4_observable_scalar(
+            state_vector,
+            record,
+            calibrator=active_calibrator,
+            alpha=alpha,
+        )
+        for record in record_list
+    }
+    _apply_surface_to_cruise_transport_projection(state_vector, record_list, predictions)
+    _apply_crater_altitude_projection(record_list, predictions)
+    return predictions
+
+
+def predict_mars_fd_transport_scalar(
+    state_vector: Sequence[float],
+    record: dict,
+    expert: dict[str, object] | None = None,
+    calibrator: dict[str, object] | None = None,
+    alpha: float = MARS_FD_TRANSPORT_ALPHA,
+) -> float:
+    active_calibrator = (
+        calibrator if calibrator is not None else load_learned_observable_calibrator()
+    )
+    base_prediction = predict_change4_observable_scalar(
+        state_vector,
+        record,
+        calibrator=active_calibrator,
+    )
+    active_expert = (
+        expert
+        if expert is not None
+        else load_mars_fd_transport_expert(alpha=alpha)
+    )
+    coefficients = np.asarray(active_expert.get("coefficients", ()), dtype=float)
+    if coefficients.size == 0:
+        return base_prediction
+    features = _mars_fd_transport_features(
+        state_vector,
+        record,
+        base_prediction=base_prediction,
+        calibrator=active_calibrator,
+    )
+    if coefficients.size != features.size:
+        return base_prediction
+    return _clamp(float(features @ coefficients))
+
+
+def predict_mars_icme_drag_scalar(
+    state_vector: Sequence[float],
+    record: dict,
+    gamma_per_km: float = MARS_ICME_DRAG_GAMMA_PER_KM,
+) -> float:
+    vector = _safe_array(state_vector, size=12)
+    speed_1au = float(record.get("denominator", 0.0)) or 1.0
+    delta_r_au = max(0.0, float(record.get("delta_r_au", 0.5)))
+    solar_wind_speed = float(record.get("solar_wind_speed_km_s", 0.0))
+    if solar_wind_speed <= 0.0:
+        launch_speed = float(record.get("launch_speed_km_s", 0.0))
+        if launch_speed > 0.0:
+            solar_wind_speed = min(speed_1au, 0.5 * (launch_speed + speed_1au))
+        else:
+            solar_wind_speed = 0.75 * speed_1au
+
+    default_transport = default_validation_state_vector()[[0, 7, 8, 11]]
+    candidate_transport = vector[[0, 7, 8, 11]]
+    transport_distance = float(np.mean(np.abs(candidate_transport - default_transport)))
+    gamma_scale = max(0.25, 1.0 - transport_distance / 0.8)
+    distance_km = delta_r_au * 149_597_870.7
+    propagated_speed = solar_wind_speed + (speed_1au - solar_wind_speed) * math.exp(
+        -float(gamma_per_km) * gamma_scale * distance_km
+    )
+    return _clamp(propagated_speed / speed_1au)
+
+
+def predict_v5_observable_batch_scalars(
+    state_vector: Sequence[float],
+    records: Sequence[dict],
+    calibrator: dict[str, object] | None = None,
+    mars_fd_expert: dict[str, object] | None = None,
+    alpha: float = LEARNED_CALIBRATOR_ALPHA,
+    mars_fd_alpha: float = MARS_FD_TRANSPORT_ALPHA,
+) -> dict[str, float]:
+    record_list = list(records)
+    active_calibrator = (
+        calibrator
+        if calibrator is not None
+        else load_learned_observable_calibrator(alpha=alpha)
+    )
+    base_predictions = predict_observable_batch_scalars(
+        state_vector,
+        record_list,
+        calibrator=active_calibrator,
+        alpha=alpha,
+    )
+    active_mars_fd_expert = (
+        mars_fd_expert
+        if mars_fd_expert is not None
+        else load_mars_fd_transport_expert(alpha=mars_fd_alpha)
+    )
+
+    for record in record_list:
+        record_id = str(record.get("id", ""))
+        if _is_mars_fd_ratio_record(record):
+            base_predictions[record_id] = predict_mars_fd_transport_scalar(
+                state_vector,
+                record,
+                expert=active_mars_fd_expert,
+                calibrator=active_calibrator,
+                alpha=mars_fd_alpha,
+            )
+        elif _is_mars_icme_speed_ratio_record(record):
+            base_predictions[record_id] = predict_mars_icme_drag_scalar(
+                state_vector,
+                record,
+            )
+    return base_predictions
 
 
 def harmonic_embed_scalar_to_12d(scalar: float) -> np.ndarray:

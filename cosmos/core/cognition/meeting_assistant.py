@@ -10,7 +10,7 @@ This module provides intelligent meeting support:
 """
 
 import asyncio
-, Optional
+from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 

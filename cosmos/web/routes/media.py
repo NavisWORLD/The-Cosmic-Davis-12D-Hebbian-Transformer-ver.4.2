@@ -34,7 +34,7 @@ router = APIRouter()
 
 def _get_shared():
     """Import shared state from server module lazily."""
-    from cosmos.web import server
+    from Cosmos.web import server
     return server
 
 
@@ -394,7 +394,7 @@ async def analyze_code_api(request):
     """Analyze Python code for complexity, security issues, and patterns."""
     from fastapi import Request as FastAPIRequest
     try:
-        from cosmos.tools.code_analyzer import analyze_python_code, analyze_python_file, scan_code_security
+        from Cosmos.tools.code_analyzer import analyze_python_code, analyze_python_file, scan_code_security
 
         body = await request.json()
         code = body.get("code")
@@ -451,7 +451,7 @@ async def analyze_code_api(request):
 async def analyze_project_api(request):
     """Analyze an entire project directory."""
     try:
-        from cosmos.tools.code_analyzer import analyze_project
+        from Cosmos.tools.code_analyzer import analyze_project
 
         body = await request.json()
         directory = body.get("directory", "/workspace/Cosmos")
@@ -484,7 +484,7 @@ async def analyze_project_api(request):
 async def airllm_stats():
     """Get AirLLM side swarm statistics."""
     try:
-        from cosmos.core.airllm_swarm import get_airllm_swarm
+        from Cosmos.core.airllm_swarm import get_airllm_swarm
         swarm = get_airllm_swarm()
         if swarm:
             return swarm.get_stats()
@@ -497,7 +497,7 @@ async def airllm_stats():
 async def airllm_start():
     """Initialize and start the AirLLM side swarm."""
     try:
-        from cosmos.core.airllm_swarm import initialize_airllm_swarm
+        from Cosmos.core.airllm_swarm import initialize_airllm_swarm
         swarm = await initialize_airllm_swarm()
         return {"success": True, "message": "AirLLM side swarm started", "stats": swarm.get_stats()}
     except Exception as e:
@@ -508,7 +508,7 @@ async def airllm_start():
 async def airllm_stop():
     """Stop the AirLLM side swarm."""
     try:
-        from cosmos.core.airllm_swarm import get_airllm_swarm
+        from Cosmos.core.airllm_swarm import get_airllm_swarm
         swarm = get_airllm_swarm()
         if swarm:
             await swarm.stop()
@@ -522,7 +522,7 @@ async def airllm_stop():
 async def airllm_queue_task(request: AirLLMTaskRequest):
     """Queue a task for background processing by AirLLM."""
     try:
-        from cosmos.core.airllm_swarm import get_airllm_swarm, initialize_airllm_swarm
+        from Cosmos.core.airllm_swarm import get_airllm_swarm, initialize_airllm_swarm
 
         swarm = get_airllm_swarm()
         if not swarm:
@@ -548,7 +548,7 @@ async def airllm_queue_task(request: AirLLMTaskRequest):
 async def airllm_get_result(task_id: str):
     """Get result of a background task."""
     try:
-        from cosmos.core.airllm_swarm import get_airllm_swarm
+        from Cosmos.core.airllm_swarm import get_airllm_swarm
         swarm = get_airllm_swarm()
         if not swarm:
             return {"success": False, "message": "AirLLM swarm not running"}
@@ -568,13 +568,13 @@ async def airllm_get_result(task_id: str):
 async def generate_image_api(prompt: str):
     """Generate an image via integration tools and return the FileResponse directly."""
     try:
-        from cosmos.integration.image_gen.generator import get_image_generator
+        from Cosmos.integration.image_gen.generator import get_image_generator
         generator = get_image_generator()
         
         # Pull live IBM Quantum Entropy for Phera's creativity
         fez_entropy = 0.0
         try:
-            from cosmos.core.quantum_bridge import get_quantum_bridge
+            from Cosmos.core.quantum_bridge import get_quantum_bridge
             bridge = get_quantum_bridge()
             if bridge:
                 physics = {}

@@ -256,6 +256,16 @@ class EvolutionLoop:
         asyncio.create_task(self._task_discovery_loop())
         asyncio.create_task(self._persistence_loop())
         asyncio.create_task(self._quantum_accuracy_loop())
+        asyncio.create_task(self._entropy_heartbeat_loop())
+
+        # [RECURSIVE EVOLUTION]
+        try:
+            from Cosmos.core.evolution.recursive_self_evolution import get_rsee
+            rsee = get_rsee()
+            asyncio.create_task(rsee.start())
+            logger.info("Recursive Self-Evolution Engine (RSEE) started via EvolutionLoop")
+        except Exception as e:
+            logger.warning(f"RSEE failed to start: {e}")
 
         # Emit nexus signal for loop start
         await self._emit_nexus("EVOLUTION_CYCLE_STARTED", {
@@ -415,6 +425,61 @@ class EvolutionLoop:
 
             except Exception as e:
                 logger.error(f"Quantum accuracy loop error: {e}")
+                await asyncio.sleep(60)
+
+    async def _entropy_heartbeat_loop(self):
+        """
+        Keep the QuantumEntanglementBridge entropy buffer alive.
+
+        Every 120s:
+          1. Ensures the bridge singleton is initialized.
+          2. Checks buffer level; if low, triggers a proactive refill
+             using the latest physics from cst_sensory_bridge if available.
+          3. Emits a QUANTUM_ENTROPY_STATUS nexus signal with buffer stats.
+        """
+        logger.info("Entropy heartbeat loop started (120s interval)")
+
+        while self.running:
+            try:
+                await asyncio.sleep(120)
+
+                from Cosmos.core.quantum_bridge import get_quantum_bridge
+                bridge = get_quantum_bridge()
+
+                # Attempt connection if not yet connected
+                if not bridge.connected:
+                    bridge.connect()
+
+                # Get latest physics snapshot for parameterized refill
+                physics = bridge.last_physics or {}
+                try:
+                    from Cosmos.core.cst_sensory_bridge import get_cst_bridge
+                    cst = get_cst_bridge()
+                    if hasattr(cst, "get_latest_packet"):
+                        pkt = cst.get_latest_packet()
+                        if pkt:
+                            physics = pkt
+                except Exception:
+                    pass
+
+                # Check buffer and trigger refill if needed
+                buffer_level = len(bridge.entropy_buffer)
+                if buffer_level < bridge.min_buffer_size and not bridge.is_refilling:
+                    bridge._trigger_refill(physics or None)
+                    logger.info(
+                        f"[ENTROPY] Proactive refill triggered. Buffer was {buffer_level}"
+                    )
+
+                # Emit status signal
+                await self._emit_nexus("QUANTUM_ENTROPY_STATUS", {
+                    "buffer_level": buffer_level,
+                    "connected": bridge.connected,
+                    "is_refilling": bridge.is_refilling,
+                    "backend": getattr(bridge.backend, "name", "none"),
+                }, urgency=0.3)
+
+            except Exception as e:
+                logger.debug(f"Entropy heartbeat error (non-fatal): {e}")
                 await asyncio.sleep(60)
 
     async def _worker_loop(self):

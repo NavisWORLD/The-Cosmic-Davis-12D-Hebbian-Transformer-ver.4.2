@@ -1,0 +1,33 @@
+{
+  "backend": "ibm_fez",
+  "created": "2026-03-15T06:42:05.712232Z",
+  "estimated_running_time_seconds": 2.619243711,
+  "id": "d6r59fa0q0ls73ct1og0",
+  "cost": 600,
+  "params": {
+    "options": {},
+    "pubs": [
+      [
+        {
+          "__type__": "QuantumCircuit",
+          "__value__": "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"
+        },
+        {
+          "__type__": "ndarray",
+          "__value__": "eJyb7BfqGxDJyFDGUK2eklqcXKRupaBuk2ahrqOgnpZfVFKUmBefX5SSChJ3S8wpTgWKF2ckFqQC+RoGOpo6CrUKFAAuAFOzG1s="
+        },
+        null
+      ]
+    ],
+    "support_qiskit": true,
+    "version": 2
+  },
+  "program": {
+    "id": "sampler"
+  },
+  "state": {
+    "status": "Completed"
+  },
+  "status": "Completed",
+  "user_id": "IBMid-692001HZWJ"
+}

@@ -1,0 +1,31 @@
+🎤 Real-Time Audio Pipeline Started
+
+╔══════════════════════════════════════════════════════════════════╗
+║         🧠 cosmos FULL SYSTEM - 12D CST INTEGRATION         ║
+╠══════════════════════════════════════════════════════════════════╣
+║  MediaPipe:  ✅ 468 Landmarks  
+║  FastAPI:    ✅ Available
+║  API:        v4.0.0         
+╚══════════════════════════════════════════════════════════════════╝
+        
+
+╔══════════════════════════════════════════════════════════════════╗
+║                   🚀 FULL SYSTEM RUNNING                        ║
+╠══════════════════════════════════════════════════════════════════╣
+║                                                                  ║
+║  API Server:   http://localhost:8765                             ║
+║                                                                  ║
+║  Endpoints:                                                      ║
+║    GET  /              - Status                                  ║
+║    GET  /state         - Current cosmos_packet               ║
+║    GET  /stream        - SSE token stream                        ║
+║    WS   /ws            - WebSocket for cosmos AI             ║
+║    GET  /system_prompt - LLM steering prompt                     ║
+║                                                                  ║
+║  Camera:  Running                                             ║
+║                                                                  ║
+║  Connect cosmos AI to ws://localhost:8765/ws                 ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+        
+📷 Camera started. Press Q to quit.

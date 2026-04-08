@@ -271,7 +271,7 @@ class ContextProfileManager:
     def export_profile(self, profile_id: str) -> Optional[str]:
         """Export a profile as JSON."""
         if profile_id in self.profiles:
-            return json.dumps(asany(self.profiles[profile_id]), indent=2)
+            return json.dumps(asdict(self.profiles[profile_id]), indent=2)
         return None
 
     def import_profile(self, json_data: str) -> Optional[ContextProfile]:

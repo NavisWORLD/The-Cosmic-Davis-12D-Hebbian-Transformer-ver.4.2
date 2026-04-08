@@ -12,8 +12,7 @@ Patterns detected:
 - "need to fix/change..."
 """
 import re
-import logging
-, Optional
+from typing import List, Dict, Any, Optional
 from datetime import datetime
 from collections import Counter
 

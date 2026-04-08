@@ -1,0 +1,165 @@
+{
+  "baselines": {
+    "learned_calibrator_proxy": {
+      "mae": 0.011207102395483642,
+      "max_abs_error": 0.02749290245893199,
+      "predictions": [
+        0.4750453500113796,
+        0.4694984740773819,
+        0.43882463842602076,
+        0.8182798478909983,
+        0.35908135838206656,
+        0.48474923703869094
+      ],
+      "rmse": 0.014807939927634274
+    },
+    "legacy_heuristic_proxy": {
+      "mae": 0.24683581711328761,
+      "max_abs_error": 0.3526739130434784,
+      "predictions": [
+        0.7728,
+        0.675,
+        0.7005000000000001,
+        0.675,
+        0.7005000000000001,
+        0.7005000000000001
+      ],
+      "rmse": 0.25869141076297125
+    },
+    "lunar_bundle_mean": {
+      "mae": 0.10954753724308781,
+      "max_abs_error": 0.28578673917702735,
+      "predictions": [
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004
+      ],
+      "rmse": 0.14198642952041862
+    },
+    "lunar_bundle_weighted_mean": {
+      "mae": 0.13260050742863483,
+      "max_abs_error": 0.25120728389870683,
+      "predictions": [
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021
+      ],
+      "rmse": 0.1494785604945555
+    },
+    "midpoint_0_5": {
+      "mae": 0.10111915044662086,
+      "max_abs_error": 0.2984293193717278,
+      "predictions": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "rmse": 0.14127552913213917
+    },
+    "model_phase_proxy": {
+      "mae": 0.18762461800981603,
+      "max_abs_error": 0.4876966480375888,
+      "predictions": [
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139
+      ],
+      "rmse": 0.23485968985033556
+    }
+  },
+  "best_mae_baselines": [
+    "learned_calibrator_proxy"
+  ],
+  "best_rmse_baselines": [
+    "learned_calibrator_proxy"
+  ],
+  "label": "msl_v3",
+  "predictions_path": "docs\\validation\\blind_predictions_msl_v3.json",
+  "predictions_sha256": "1334b9d42becdcdb490313796736c02fd303ee02a3d7e09057af678fcbe2196a",
+  "records": [
+    {
+      "id": "msl_rad_2014_surface_to_cruise_charged_flux_ratio",
+      "learned_calibrator_raw_prediction": 0.4750453500113796,
+      "learned_calibrator_scalar": 0.4750453500113796,
+      "legacy_heuristic_raw_prediction": 0.7728,
+      "legacy_heuristic_scalar": 0.7728,
+      "model_phase_proxy_raw_prediction": 0.310732671334139,
+      "model_phase_proxy_scalar": 0.310732671334139,
+      "normalized_target": 0.4475524475524476,
+      "observed_value": 0.64
+    },
+    {
+      "id": "msl_rad_2014_surface_to_cruise_fluence_rate_ratio",
+      "learned_calibrator_raw_prediction": 0.4694984740773819,
+      "learned_calibrator_scalar": 0.4694984740773819,
+      "legacy_heuristic_raw_prediction": 0.675,
+      "legacy_heuristic_scalar": 0.675,
+      "model_phase_proxy_raw_prediction": 0.310732671334139,
+      "model_phase_proxy_scalar": 0.310732671334139,
+      "normalized_target": 0.47545219638242897,
+      "observed_value": 1.84
+    },
+    {
+      "id": "msl_rad_2014_surface_to_cruise_dose_rate_ratio",
+      "learned_calibrator_raw_prediction": 0.43882463842602076,
+      "learned_calibrator_scalar": 0.43882463842602076,
+      "legacy_heuristic_raw_prediction": 0.7005000000000001,
+      "legacy_heuristic_scalar": 0.7005000000000001,
+      "model_phase_proxy_raw_prediction": 0.310732671334139,
+      "model_phase_proxy_scalar": 0.310732671334139,
+      "normalized_target": 0.4375,
+      "observed_value": 0.21
+    },
+    {
+      "id": "msl_rad_2014_surface_to_cruise_quality_factor_ratio",
+      "learned_calibrator_raw_prediction": 0.8182798478909983,
+      "learned_calibrator_scalar": 0.8182798478909983,
+      "legacy_heuristic_raw_prediction": 0.675,
+      "legacy_heuristic_scalar": 0.675,
+      "model_phase_proxy_raw_prediction": 0.310732671334139,
+      "model_phase_proxy_scalar": 0.310732671334139,
+      "normalized_target": 0.7984293193717278,
+      "observed_value": 3.05
+    },
+    {
+      "id": "msl_rad_2014_surface_to_cruise_dose_equivalent_rate_ratio",
+      "learned_calibrator_raw_prediction": 0.35908135838206656,
+      "learned_calibrator_scalar": 0.35908135838206656,
+      "legacy_heuristic_raw_prediction": 0.7005000000000001,
+      "legacy_heuristic_scalar": 0.7005000000000001,
+      "model_phase_proxy_raw_prediction": 0.310732671334139,
+      "model_phase_proxy_scalar": 0.310732671334139,
+      "normalized_target": 0.34782608695652173,
+      "observed_value": 0.64
+    },
+    {
+      "id": "msl_rad_2014_surface_to_cruise_mission_dose_equivalent_ratio",
+      "learned_calibrator_raw_prediction": 0.48474923703869094,
+      "learned_calibrator_scalar": 0.48474923703869094,
+      "legacy_heuristic_raw_prediction": 0.7005000000000001,
+      "legacy_heuristic_scalar": 0.7005000000000001,
+      "model_phase_proxy_raw_prediction": 0.310732671334139,
+      "model_phase_proxy_scalar": 0.310732671334139,
+      "normalized_target": 0.48338368580060426,
+      "observed_value": 320.0
+    }
+  ],
+  "reproducibility": {
+    "command": "python scripts/score_blind_validation_predictions.py --predictions docs\\validation\\blind_predictions_msl_v3.json --revealed D:\\Cosmos\\tests\\galactic_cosmic_rays\\msl_rad_reference.json --output <output>",
+    "python_version": "3.12.6"
+  },
+  "revealed_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\msl_rad_reference.json",
+  "revealed_sha256": "13277438f861f68847aced6c06b8a05f9043d1df62b9e85fb4b964b1bfb0d971"
+}

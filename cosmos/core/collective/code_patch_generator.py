@@ -41,7 +41,7 @@ class CodePatch:
     rollback_commit: Optional[str] = None
     
     def to_any(self) -> dict:
-        return asany(self)
+        return asdict(self)
 
 
 class CodePatchGenerator:

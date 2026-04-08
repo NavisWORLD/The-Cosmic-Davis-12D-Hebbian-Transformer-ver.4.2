@@ -168,8 +168,8 @@ def render_markdown_summary(report: dict) -> str:
         "## Interpretation",
         (
             "The learned calibrator is stronger on the bundled lunar diagnostics overall, "
-            "but mixed on the strict Chang'e-4 held-out splits, and the MSL/RAD basket "
-            "remains the decisive external check."
+            "and the updated held-out Chang'e-4 splits plus the MSL/RAD basket now move "
+            "in the same direction."
         ),
         (
             "Right now the final gate stays closed because the independent external "

@@ -1014,8 +1014,11 @@ class GeminiBackend(LLMBackend):
         """Get or create Gemini client with lazy initialization."""
         if self._genai is None:
             try:
-                import google.generativeai as genai
-                
+                import warnings
+                with warnings.catch_warnings():
+                    warnings.filterwarnings("ignore", category=FutureWarning, module="google.generativeai")
+                    import google.generativeai as genai
+
                 # Get API key from env if not provided
                 import os
                 api_key = self.api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
@@ -1350,6 +1353,231 @@ class CascadeBackend(LLMBackend):
             embedding.append(val)
 
         return embedding
+
+
+class HermesCascadeBackend(CascadeBackend):
+    """
+    Hybrid Cascade for Hermes-4.3-36B integration.
+
+    Strategy:
+    1. Route simple/short queries to a fast LOCAL model (e.g. qwen3:8b via Ollama)
+    2. Estimate complexity using token count, keyword signals, and quantum entropy
+    3. If complexity > threshold OR local confidence is low, escalate to cloud Hermes-36B
+    4. Record escalation events to HermesRL for adaptive learning
+
+    This keeps response time low for simple chat while unlocking full 36B reasoning
+    for complex tasks — all without exceeding local hardware limits.
+    """
+
+    # Keywords that signal complex reasoning / code tasks
+    COMPLEXITY_KEYWORDS = frozenset({
+        "analyze", "explain", "implement", "refactor", "debug", "optimize",
+        "design", "architect", "recursive", "algorithm", "multi-step",
+        "fibonacci", "complexity", "trade-off", "compare", "evaluate",
+        "proof", "derive", "synthesize", "quantum", "12d", "hebbian",
+    })
+
+    def __init__(
+        self,
+        local_backend: LLMBackend,
+        cloud_backend: LLMBackend,
+        config: Optional[GenerationConfig] = None,
+        escalation_threshold: float = 0.65,
+    ):
+        # CascadeBackend expects a list; order = [fast, capable]
+        super().__init__([local_backend, cloud_backend], config)
+        self.local_backend = local_backend
+        self.cloud_backend = cloud_backend
+        self.escalation_threshold = escalation_threshold
+        self.min_tokens_before_escalation = 20
+        self._escalation_count = 0
+        self._local_count = 0
+
+    @property
+    def backend_type(self) -> BackendType:
+        return BackendType.OLLAMA  # Primary is local
+
+    def estimate_hermes_complexity(
+        self, prompt: str, q_entropy: float = 0.5
+    ) -> float:
+        """
+        Enhanced complexity estimation for Hermes cascade routing.
+
+        Signals:
+        - Token/word count (longer prompts tend to need deeper reasoning)
+        - Keyword density (code/analysis/multi-step keywords)
+        - Quantum entropy level (high entropy = chaotic state = need stronger model)
+        - Code block presence (triple backticks)
+
+        Returns float [0.0, 1.0]. Above self.escalation_threshold -> escalate.
+        """
+        words = prompt.lower().split()
+        word_count = len(words)
+
+        # 1. Length signal: 0-200 words -> 0.0-0.5
+        length_signal = min(0.5, word_count / 400.0)
+
+        # 2. Keyword density
+        keyword_hits = sum(1 for w in words if w in self.COMPLEXITY_KEYWORDS)
+        keyword_signal = min(0.4, keyword_hits * 0.08)
+
+        # 3. Code block presence
+        code_signal = 0.15 if "```" in prompt else 0.0
+
+        # 4. Quantum entropy injection: high entropy -> bias toward escalation
+        entropy_signal = max(0.0, (q_entropy - 0.5)) * 0.2
+
+        # 5. Multi-line / structured prompt bonus
+        line_count = prompt.count('\n')
+        structure_signal = min(0.1, line_count * 0.01)
+
+        complexity = (
+            length_signal
+            + keyword_signal
+            + code_signal
+            + entropy_signal
+            + structure_signal
+        )
+        return min(1.0, complexity)
+
+    async def generate(
+        self,
+        prompt: str,
+        config: Optional[GenerationConfig] = None,
+    ) -> GenerationResult:
+        """Generate with Hermes-aware cascade escalation."""
+        cfg = config or self.config
+
+        # Estimate complexity with quantum entropy if available
+        q_entropy = 0.5
+        try:
+            from Cosmos.core.quantum_bridge import get_quantum_bridge
+            bridge = get_quantum_bridge()
+            if bridge and bridge.connected:
+                q_entropy = bridge.get_entropy()
+        except Exception:
+            pass
+
+        complexity = self.estimate_hermes_complexity(prompt, q_entropy)
+
+        if complexity >= self.escalation_threshold:
+            # Direct to cloud -- complex task
+            logger.info(
+                f"[HERMES CASCADE] Escalating to cloud "
+                f"(complexity={complexity:.3f} >= {self.escalation_threshold})"
+            )
+            result = await self.cloud_backend.generate(prompt, cfg)
+            result.escalated = True
+            result.cascade_depth = 1
+            self._escalation_count += 1
+            self._record_escalation(prompt, complexity, q_entropy)
+            return result
+
+        # Start with local model
+        result = await self.local_backend.generate(prompt, cfg)
+        self._local_count += 1
+
+        # Check if local confidence is too low -> escalate
+        if result.confidence_score < 0.5:
+            logger.info(
+                f"[HERMES CASCADE] Local confidence too low "
+                f"({result.confidence_score:.3f}), escalating to cloud"
+            )
+            enhanced_prompt = (
+                f"{prompt}\n\n"
+                f"Previous attempt (low confidence): {result.text[:300]}..."
+            )
+            result = await self.cloud_backend.generate(enhanced_prompt, cfg)
+            result.escalated = True
+            result.cascade_depth = 1
+            self._escalation_count += 1
+            self._record_escalation(prompt, complexity, q_entropy)
+
+        return result
+
+    async def generate_stream(
+        self,
+        prompt: str,
+        config: Optional[GenerationConfig] = None,
+    ) -> AsyncIterator[StreamChunk]:
+        """Stream with potential mid-generation escalation to cloud."""
+        cfg = config or self.config
+
+        q_entropy = 0.5
+        try:
+            from Cosmos.core.quantum_bridge import get_quantum_bridge
+            bridge = get_quantum_bridge()
+            if bridge and bridge.connected:
+                q_entropy = bridge.get_entropy()
+        except Exception:
+            pass
+
+        complexity = self.estimate_hermes_complexity(prompt, q_entropy)
+
+        if complexity >= self.escalation_threshold:
+            # Stream directly from cloud
+            async for chunk in self.cloud_backend.generate_stream(prompt, cfg):
+                yield chunk
+            return
+
+        # Stream from local with escalation check
+        accumulated_text = ""
+        token_count = 0
+
+        async for chunk in self.local_backend.generate_stream(prompt, cfg):
+            accumulated_text += chunk.text
+            token_count += 1
+            yield chunk
+
+            # Mid-stream escalation check
+            if (
+                token_count >= self.min_tokens_before_escalation
+                and chunk.cumulative_confidence < 0.45
+            ):
+                logger.info(
+                    f"[HERMES CASCADE] Mid-stream escalation at token {token_count}"
+                )
+                continuation_prompt = f"{prompt}\n\n{accumulated_text}"
+                async for cont_chunk in self.cloud_backend.generate_stream(
+                    continuation_prompt, cfg
+                ):
+                    yield cont_chunk
+                self._escalation_count += 1
+                self._record_escalation(prompt, complexity, q_entropy)
+                break
+
+    def _record_escalation(
+        self, prompt: str, complexity: float, q_entropy: float
+    ):
+        """Record escalation to HermesRL for adaptive learning."""
+        try:
+            from Cosmos.integration.hermes_bridge import get_hermes_bridge
+            hb = get_hermes_bridge()
+            hb.rl.record_experience(
+                speaker="HermesCascade",
+                response=(
+                    f"[ESCALATION] complexity={complexity:.3f}, "
+                    f"q_entropy={q_entropy:.3f}, "
+                    f"prompt_preview={prompt[:100]}"
+                ),
+                coherence=complexity,
+                user_responded=True,
+            )
+        except Exception:
+            pass  # Hermes bridge is optional
+
+    def get_cascade_stats(self) -> dict:
+        """Return cascade usage statistics."""
+        total = self._local_count + self._escalation_count
+        return {
+            "local_count": self._local_count,
+            "escalation_count": self._escalation_count,
+            "total": total,
+            "escalation_rate": (
+                self._escalation_count / total if total > 0 else 0.0
+            ),
+            "escalation_threshold": self.escalation_threshold,
+        }
 
 
 class CosmosBackend(LLMBackend):

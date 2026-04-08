@@ -1,0 +1,133 @@
+{
+  "blind_protocol": {
+    "prediction_script": "D:\\Cosmos\\scripts\\generate_blind_validation_predictions.py",
+    "scoring_script": "D:\\Cosmos\\scripts\\score_blind_validation_predictions.py",
+    "template_sha256": {
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\crater_lro_blind_template.json": "4c482d2438abe6a71aa8deb8c05c927add1bf16a436f714dc9cb6076537ae16b",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\blind_templates\\msl_rad_blind_template.json": "1729fe488b02f45b8430c3297d61708234c17a29c75ea02fd883461d37e5ec9e"
+    }
+  },
+  "freeze_date": "2026-04-08",
+  "freeze_label": "cst_radiation_validation_v2",
+  "model": {
+    "learned_calibrator": {
+      "alpha": 0.2,
+      "calibration_paths": [
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\change4_lnd_reference.json",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_unseen_reference.json",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_m42_gcr_reference.json"
+      ],
+      "calibration_sha256": {
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_m42_gcr_reference.json": "52cf7c80e66a557e3fb1a3ec811f5b17153c49f3f28a4fe44cf238bf9d2ad465",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_unseen_reference.json": "3b16a15c465a278fccbe09f0c2386b637cd75b970cfef84ed84c39ad95057d1c",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\change4_lnd_reference.json": "77e313d2901c8578eb3be6e223c0771169403043ef29800751c6fade918da798"
+      },
+      "feature_names": [
+        "bias",
+        "legacy_scalar",
+        "legacy_centered",
+        "legacy_squared",
+        "has_ratio",
+        "has_fraction_scale",
+        "has_value",
+        "has_current_forecast",
+        "has_log_transform",
+        "scale_hint_log",
+        "kw_ratio",
+        "kw_dose",
+        "kw_equivalent",
+        "kw_flux",
+        "kw_fluence",
+        "kw_quality",
+        "kw_charged",
+        "kw_neutral",
+        "kw_albedo",
+        "kw_primary",
+        "kw_surface",
+        "kw_cruise",
+        "kw_storm",
+        "kw_shelter",
+        "kw_shield",
+        "kw_peak",
+        "kw_rotation",
+        "kw_cavity",
+        "kw_duration",
+        "kw_reduction",
+        "kw_gcr",
+        "kw_proton",
+        "kw_organ",
+        "kw_tissue",
+        "kw_absorbed",
+        "kw_total",
+        "kw_mission",
+        "kw_flyby",
+        "kw_low",
+        "kw_high",
+        "kw_count",
+        "kw_rate",
+        "kw_current",
+        "kw_forecast"
+      ],
+      "legacy_training_mae": 0.02188709127861746,
+      "legacy_training_rmse": 0.03192815917289068,
+      "training_mae": 0.010577694882032062,
+      "training_record_count": 19,
+      "training_rmse": 0.018472538221116372,
+      "type": "residual_ridge"
+    },
+    "module_path": "D:\\Cosmos\\cosmos\\core\\cst_critical_integration.py"
+  },
+  "reports": {
+    "change4_alignment": {
+      "heuristic_band": "interesting_correlation",
+      "overall_alignment": 0.6411443634675607
+    },
+    "crater_external": {
+      "best_mae_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "best_rmse_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "learned_mae": 0.018755715578805815,
+      "learned_rmse": 0.01990594687655406
+    },
+    "final_gate": {
+      "rule": "The learned calibrator must beat the legacy heuristic on both Chang'e-4 held-out splits and be among the best MAE and RMSE baselines on the independent MSL/RAD basket.",
+      "status": "generalized"
+    },
+    "msl_external": {
+      "best_mae_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "best_rmse_baselines": [
+        "learned_calibrator_proxy"
+      ],
+      "learned_mae": 0.010525463648841762,
+      "learned_rmse": 0.013720556831793565
+    }
+  },
+  "reproducibility": {
+    "commands": [
+      "python scripts/build_validation_manifest.py --output docs/validation/validation_manifest_v2.json",
+      "python scripts/generate_blind_validation_predictions.py --template tests/galactic_cosmic_rays/blind_templates/msl_rad_blind_template.json --output docs/validation/blind_predictions_msl_v2.json",
+      "python scripts/score_blind_validation_predictions.py --predictions docs/validation/blind_predictions_msl_v2.json --revealed tests/galactic_cosmic_rays/msl_rad_reference.json --output docs/validation/blind_scoring_msl_v2.json",
+      "python scripts/run_final_generalization_test.py --output-dir docs/validation",
+      "python -m pytest tests/galactic_cosmic_rays -q"
+    ],
+    "python_version": "3.12.6"
+  },
+  "status": "generalized",
+  "training_bundle": {
+    "paths": [
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\change4_lnd_reference.json",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_unseen_reference.json",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_m42_gcr_reference.json"
+    ],
+    "sha256": {
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_m42_gcr_reference.json": "52cf7c80e66a557e3fb1a3ec811f5b17153c49f3f28a4fe44cf238bf9d2ad465",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_unseen_reference.json": "3b16a15c465a278fccbe09f0c2386b637cd75b970cfef84ed84c39ad95057d1c",
+      "D:\\Cosmos\\tests\\galactic_cosmic_rays\\change4_lnd_reference.json": "77e313d2901c8578eb3be6e223c0771169403043ef29800751c6fade918da798"
+    }
+  }
+}

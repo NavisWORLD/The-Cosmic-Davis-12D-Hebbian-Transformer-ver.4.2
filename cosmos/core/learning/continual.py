@@ -13,7 +13,7 @@ Features:
 
 import random
 import asyncio
-, Optional
+from typing import Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from loguru import logger

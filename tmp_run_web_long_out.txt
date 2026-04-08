@@ -1,0 +1,30 @@
+    [INIT]  Testing torch import (10s timeout)...
+    [OK]    torch 2.6.0+cu124 loaded
+DEBUG: nexus.py: Loading module...
+DEBUG: nexus.py: Creating Nexus instance...
+DEBUG: nexus.py: Nexus instance created
+    [OK]    Orchestrator Routes Integrated
+    [OK]    Orchestrator Routes Integrated
+DEBUG: Loaded Server Module: D:\Cosmos\Cosmos\web\server.py
+
+    +==================================================================+
+    |             * COSMOS Neural Interface v3.0                    |
+    |                  + 12D CST Emotional Engine                      |
+    |                  + FULL LIVE MODE                                |
+    +==================================================================+
+    |  Web Interface:    http://localhost:8081                           |
+    |  Emotional API:    http://localhost:8765                           |
+    |  Mode:             FULL LIVE                                          |
+    +==================================================================+
+    |  Active Capabilities:                                            |
+    |    Ollama (qwen3:8b) | Gemini API | ChatGPT API | IBM Quantum Bridge |
+    +==================================================================+
+    |  Emotional Endpoints:                                            |
+    |    GET  /state         - Current cosmos_packet                 |
+    |    GET  /stream        - SSE token stream                        |
+    |    WS   /ws            - WebSocket tokens                        |
+    |    GET  /system_prompt - LLM steering prompt                     |
+    +==================================================================+
+    
+    [INIT]  Testing Quantum Bridge Connection...
+[QUANTUM] Attempting connection to IBM Quantum...

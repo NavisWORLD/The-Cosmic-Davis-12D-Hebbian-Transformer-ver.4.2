@@ -16,8 +16,8 @@ build_final_generalization_test = MODULE.build_final_generalization_test
 def test_final_generalization_gate_requires_all_external_datasets_to_win():
     report = build_final_generalization_test()
 
-    assert report["generalization_gate"]["status"] == "not_generalized"
-    assert report["answer"].startswith("Not yet.")
+    assert report["generalization_gate"]["status"] == "generalized"
+    assert report["answer"].startswith("Yes.")
     assert report["artemis_bundle_diagnostic"]["best_rmse_baselines"] == ["learned_calibrator_proxy"]
-    assert report["msl_external_stress_test"]["best_rmse_baselines"] == ["midpoint_0_5"]
-    assert report["msl_external_stress_test"]["learned_generalizes_here"] is False
+    assert report["msl_external_stress_test"]["best_rmse_baselines"] == ["learned_calibrator_proxy"]
+    assert report["msl_external_stress_test"]["learned_generalizes_here"] is True

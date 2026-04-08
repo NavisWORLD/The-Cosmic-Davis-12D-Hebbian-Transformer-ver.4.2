@@ -109,10 +109,11 @@ goto menu
 :cli
 cls
 echo.
-echo  Starting COSMOS CLI Mode...
-echo  Type 'help' for commands, 'exit' to quit.
+echo  Starting COSMOS Quantum Graphical Interface...
+echo  Booting PyGame Visual Environment...
 echo.
-python main.py --cli
+python -m pip install -q pygame requests numpy
+python Cosmos\cli\cosmic_gui.py
 pause
 goto menu
 

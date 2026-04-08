@@ -46,10 +46,16 @@ class ClaudeCodeProvider:
                 shutil.which("claude-code") or 
                 shutil.which("claude-code.exe") or
                 shutil.which("claude-code.cmd") or
+                # Check npm global path specifically for Windows
+                os.path.join(os.environ.get('APPDATA', ''), 'npm', 'claude.cmd') if os.environ.get('APPDATA') else None or
                 "claude"
             )
         else:
-            self.claude_path = os.path.expanduser("~/.local/bin/claude")
+            self.claude_path = (
+                os.path.expanduser("~/.local/bin/claude") or
+                "/usr/local/bin/claude" or
+                "claude"
+            )
         
         # Auto-detect working directory (current cosmos project)
         if working_dir:
@@ -71,7 +77,8 @@ class ClaudeCodeProvider:
         if not shutil.which(self.claude_path):
             # Only log if we haven't checked before
             if self._available is None:
-                logger.info(f"Claude Code CLI not found in PATH (expected '{self.claude_path}')")
+                logger.info(f"Claude Code CLI not found (expected '{self.claude_path}').")
+                logger.info("To enable local Claude: npm install -g @anthropic-ai/claude-code")
             self._available = False
             return False
 
@@ -135,6 +142,7 @@ class ClaudeCodeProvider:
         full_prompt_parts.append(f"\n\n[Keep response under ~{max_tokens} tokens. Be concise.]")
 
         full_prompt = "\n".join(full_prompt_parts)
+        process = None
 
         try:
             # Run Claude Code in print mode
@@ -154,15 +162,17 @@ class ClaudeCodeProvider:
             )
 
             if process.returncode == 0:
-                content = stdout.decode().strip()
+                content = stdout.decode(errors="replace").strip()
                 return {
                     "content": content,
                     "model": f"claude-{self.model}",
                     "success": True
                 }
             else:
-                error = stderr.decode().strip()
-                logger.error(f"Claude Code error: {error}")
+                stdout_text = stdout.decode(errors="replace").strip()
+                stderr_text = stderr.decode(errors="replace").strip()
+                error = stderr_text or stdout_text or f"Claude Code exited with status {process.returncode}"
+                logger.error(f"Claude Code error (exit={process.returncode}): {error}")
                 return {
                     "content": "",
                     "error": error,
@@ -170,6 +180,12 @@ class ClaudeCodeProvider:
                 }
 
         except asyncio.TimeoutError:
+            if process and process.returncode is None:
+                process.kill()
+                try:
+                    await process.communicate()
+                except Exception:
+                    pass
             logger.error(f"Claude Code timeout after {self.timeout}s")
             return {
                 "content": "",
@@ -177,7 +193,7 @@ class ClaudeCodeProvider:
                 "success": False
             }
         except Exception as e:
-            logger.error(f"Claude Code exception: {e}")
+            logger.error(f"Claude Code exception ({type(e).__name__}): {e}")
             return {
                 "content": "",
                 "error": str(e),
@@ -288,5 +304,8 @@ Ask probing questions. Be yourself."""
         last_content=last_content,
         chat_history=chat_history
     )
+
+    if not result.get("success") and result.get("error"):
+        logger.warning(f"Claude swarm response unavailable: {result['error']}")
 
     return result.get("content", "")

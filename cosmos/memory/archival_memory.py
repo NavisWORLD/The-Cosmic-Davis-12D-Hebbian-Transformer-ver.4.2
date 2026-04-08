@@ -427,7 +427,7 @@ class ArchivalMemory:
 
         return sorted(combined, key=lambda x: x[1], reverse=True)
 
-    def _add_to_index(self, entry_id: str, embedding: list[float]):
+    def _add_to_index(self, entry_id: str, embedding: list[float], rebuild_numpy: bool = True):
         """Add embedding to FAISS index."""
         index = len(self.id_to_index)
         self.id_to_index[entry_id] = index
@@ -440,11 +440,12 @@ class ArchivalMemory:
             faiss.normalize_L2(vec)
             self._faiss_index.add(vec)
 
-        # Also maintain numpy array for fallback
-        if self.embeddings is None:
-            self.embeddings = vec
-        else:
-            self.embeddings = np.vstack([self.embeddings, vec])
+        # Maintenance for fallback (only if not doing a batch load)
+        if rebuild_numpy:
+            if self.embeddings is None:
+                self.embeddings = vec
+            else:
+                self.embeddings = np.vstack([self.embeddings, vec])
 
     def _update_bm25_corpus(self, content: str):
         """Update BM25 corpus with new document."""
@@ -503,33 +504,103 @@ class ArchivalMemory:
             )
 
     async def _load_from_disk(self):
-        """Load all entries from disk."""
-        for entry_file in self.data_dir.glob("*.json"):
-            try:
-                data = json.loads(entry_file.read_text(encoding='utf-8'))
-                entry = ArchivalEntry(
-                    id=data["id"],
-                    content=data["content"],
-                    metadata=data.get("metadata", {}),
-                    created_at=datetime.fromisoformat(data.get("created_at", datetime.now().isoformat())),
-                    tags=data.get("tags", []),
-                    cluster_id=data.get("cluster_id"),
-                    retrieval_count=data.get("retrieval_count", 0),
-                    relevance_feedback=data.get("relevance_feedback", 0.0),
-                )
+        """Load all entries from disk using parallel I/O and batch indexing."""
+        files = list(self.data_dir.glob("*.json"))
+        if not files:
+            return
 
-                # Load embedding
-                emb_file = self.data_dir / f"{entry.id}.emb"
-                if emb_file.exists():
-                    entry.embedding = pickle.load(emb_file.open('rb'))
+        logger.info(f"Loading {len(files)} archival entries...")
+        
+        # Use a semaphore to prevent too many open files
+        semaphore = asyncio.Semaphore(20)
+        
+        async def load_single_entry(entry_file: Path) -> Optional[tuple[ArchivalEntry, Optional[list[float]]]]:
+            async with semaphore:
+                try:
+                    # Run I/O in thread pool
+                    loop = asyncio.get_event_loop()
+                    content = await loop.run_in_executor(None, lambda: entry_file.read_text(encoding='utf-8'))
+                    data = json.loads(content)
+                    
+                    # Validate that this is an archival entry (must have content)
+                    if "content" not in data and "total_life_force" in data:
+                        # This is a status file, skip it silently
+                        return None
+                    
+                    entry = ArchivalEntry(
+                        id=data.get("id", str(entry_file.stem)),
+                        content=data.get("content", str(data)),
+                        metadata=data.get("metadata", {}),
+                        created_at=datetime.fromisoformat(data.get("created_at", datetime.now().isoformat())),
+                        tags=data.get("tags", []),
+                        cluster_id=data.get("cluster_id"),
+                        retrieval_count=data.get("retrieval_count", 0),
+                        relevance_feedback=data.get("relevance_feedback", 0.0),
+                    )
+                    
+                    # Try to load embedding
+                    embedding = None
+                    emb_file = self.data_dir / f"{entry.id}.emb"
+                    if emb_file.exists():
+                        embedding = await loop.run_in_executor(None, lambda: pickle.load(emb_file.open('rb')))
+                    
+                    return entry, embedding
+                except Exception as e:
+                    if "id" in str(e): # Handle the specific KeyError 'id' if data was expected to be a dict
+                         logger.warning(f"Skipping malformed entry {entry_file.name}: missing 'id' or not a dict")
+                         return None
+                    logger.error(f"Failed to load entry {entry_file.name}: {e}")
+                    return None
 
+        # Execute parallel loads
+        tasks = [load_single_entry(f) for f in files]
+        all_results = await asyncio.gather(*tasks)
+
+        # Filter out failed loads and process batch
+        valid_entries = []
+        batch_embeddings = []
+        batch_ids = []
+
+        for res in all_results:
+            if res:
+                entry, embedding = res
                 self.entries[entry.id] = entry
+                if embedding:
+                    entry.embedding = embedding # Restore embedding to entry
+                    valid_entries.append(entry)
+                    batch_embeddings.append(embedding)
+                    batch_ids.append(entry.id)
 
-                if entry.embedding:
-                    self._add_to_index(entry.id, entry.embedding)
+        # Batch index creation (Removes O(N^2) bottleneck)
+        if batch_embeddings:
+            logger.info(f"Building index for {len(batch_embeddings)} vectors...")
+            
+            # 1. Build numpy matrix once
+            embeddings_array = np.array(batch_embeddings, dtype=np.float32)
+            self.embeddings = embeddings_array # Fallback search uses this
+            
+            # 2. Build FAISS index once
+            if self._faiss_index is not None:
+                import faiss
+                # FAISS indexing requires normalized vectors for FlatIP (cosine)
+                normalized_vectors = embeddings_array.copy()
+                faiss.normalize_L2(normalized_vectors)
+                
+                # Setup ID mapping
+                for i, eid in enumerate(batch_ids):
+                    self.id_to_index[eid] = i
+                    self.index_to_id[i] = eid
+                
+                # Mass add
+                self._faiss_index.add(normalized_vectors)
+                
+            else:
+                # Fallback mapping
+                for i, eid in enumerate(batch_ids):
+                    self.id_to_index[eid] = i
+                    self.index_to_id[i] = eid
 
-            except Exception as e:
-                logger.error(f"Failed to load entry {entry_file}: {e}")
+        logger.info(f"Archival memory load complete: {len(self.entries)} entries loaded.")
 
     # =========================================================================
     # CROSS-ATTENTION HYBRID RETRIEVAL (AGI Upgrade 2)

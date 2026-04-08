@@ -95,7 +95,7 @@ class BotEntry:
     metadata: dict = field(default_factory=dict)
 
     def to_any(self) -> dict:
-        return asany(self)
+        return asdict(self)
 
     def to_public_any(self) -> dict:
         """Return public info (no sensitive data)."""
@@ -134,7 +134,7 @@ class UserEntry:
     metadata: dict = field(default_factory=dict)
 
     def to_any(self) -> dict:
-        return asany(self)
+        return asdict(self)
 
     def to_public_any(self) -> dict:
         """Return public info (no sensitive data)."""

@@ -97,8 +97,8 @@ class InternalMonologue:
             self.STORAGE_PATH.parent.mkdir(parents=True, exist_ok=True)
             
             data = {
-                "thoughts": [asany(t) for t in self.thoughts[-self.max_thoughts:]],
-                "existence_context": asany(self.existence_context) if self.existence_context else None,
+                "thoughts": [asdict(t) for t in self.thoughts[-self.max_thoughts:]],
+                "existence_context": asdict(self.existence_context) if self.existence_context else None,
                 "saved_at": datetime.now().isoformat()
             }
             
@@ -217,9 +217,48 @@ class InternalMonologue:
     
     def generate_emotional_reflection(self, bot_name: str, emotional_state: dict) -> InternalThought:
         """Generate a reflection about current emotional state."""
-        emotion = emotional_state.get('derived_state', {}).get('primary_affect_label', 'NEUTRAL')
-        valence = emotional_state.get('cst_physics', {}).get('valence', 0.5)
-        arousal = emotional_state.get('cst_physics', {}).get('arousal', 0.5)
+        packet = emotional_state.get('cosmos_packet', emotional_state) if isinstance(emotional_state, dict) else {}
+        derived = packet.get('derived_state', {}) if isinstance(packet, dict) else {}
+        cst_physics = packet.get('cst_physics', {}) if isinstance(packet, dict) else {}
+        virtual_body = cst_physics.get('virtual_body', {}) if isinstance(cst_physics, dict) else {}
+        pad_vector = derived.get('pad_vector', {}) if isinstance(derived, dict) else {}
+
+        emotion = (
+            emotional_state.get('emotion')
+            if isinstance(emotional_state, dict) else None
+        ) or derived.get('primary_affect_label', 'NEUTRAL')
+
+        if isinstance(pad_vector, dict):
+            pad_valence = pad_vector.get('pleasure')
+            pad_arousal = pad_vector.get('arousal')
+        elif isinstance(pad_vector, (list, tuple)):
+            values = list(pad_vector) + [0.0, 0.0, 0.0]
+            pad_valence = values[0]
+            pad_arousal = values[1]
+        else:
+            pad_valence = None
+            pad_arousal = None
+
+        valence = 0.5
+        arousal = 0.5
+
+        if isinstance(emotional_state, dict):
+            valence = emotional_state.get('valence', pad_valence)
+            arousal = emotional_state.get('arousal', pad_arousal)
+
+        if valence is None:
+            valence = derived.get('pleasure', virtual_body.get('energy', 0.5))
+        if arousal is None:
+            arousal = derived.get('arousal', virtual_body.get('arousal', 0.5))
+
+        try:
+            valence = float(valence)
+        except (TypeError, ValueError):
+            valence = 0.5
+        try:
+            arousal = float(arousal)
+        except (TypeError, ValueError):
+            arousal = 0.5
         
         if valence > 0.6 and arousal > 0.6:
             reflection = f"I sense high positive energy in this interaction. The emotional resonance is strong."

@@ -8,8 +8,7 @@ It allows running the same prompt across different models (Ollama, xAI, Gemini)
 and fusing the results.
 """
 
-import asyncio
-, Callable
+from typing import List, Dict, Any, Optional, Callable
 from loguru import logger
 from Cosmos.core.nexus import nexus, Signal, SignalType
 

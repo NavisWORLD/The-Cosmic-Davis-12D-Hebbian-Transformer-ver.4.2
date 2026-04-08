@@ -7,7 +7,43 @@ Author: Cory Shane Davis (Implemented by Antigravity)
 
 import numpy as np
 import librosa
-import faiss
+# Guard: faiss import hangs on Windows when torch 2.8.0 DLL conflict is present.
+import os as _os
+import subprocess as _sp
+import sys as _sys
+
+def _import_probe_ok(test_code, timeout=5, cache_key=""):
+    if cache_key:
+        cached = _os.environ.get(f"_COSMOS_PROBE_{cache_key}")
+        if cached is not None:
+            return cached == "1"
+    try:
+        proc = _sp.Popen(
+            [_sys.executable, "-c", test_code],
+            stdout=_sp.PIPE, stderr=_sp.PIPE,
+            creationflags=getattr(_sp, 'CREATE_NO_WINDOW', 0),
+        )
+        stdout, _ = proc.communicate(timeout=timeout)
+        ok = b"OK" in stdout
+    except _sp.TimeoutExpired:
+        proc.kill(); proc.wait(); ok = False
+    except Exception:
+        ok = False
+    if cache_key:
+        _os.environ[f"_COSMOS_PROBE_{cache_key}"] = "1" if ok else "0"
+    return ok
+
+FAISS_AVAILABLE = False
+faiss = None
+if _import_probe_ok("import faiss; print('OK')", cache_key="FAISS"):
+    try:
+        import faiss
+        FAISS_AVAILABLE = True
+    except ImportError:
+        pass
+else:
+    print("[WARN] faiss import hangs (DLL conflict) — audio indexing disabled")
+
 from dataclasses import dataclass
 from typing import Tuple, Optional
 import hashlib
@@ -250,7 +286,7 @@ class SpectralMemory:
     
     def __init__(self):
         self.tokens = []
-        self.index = faiss.IndexFlatL2(12)
+        self.index = faiss.IndexFlatL2(12) if faiss is not None else None
         self.index_to_token = {}
     
     def add_token(self, token):

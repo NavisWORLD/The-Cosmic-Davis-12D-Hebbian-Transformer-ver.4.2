@@ -5870,7 +5870,7 @@ class QuantumConfig(BaseModel):
 async def configure_quantum_bridge(config: QuantumConfig):
     """Configure the Quantum Entanglement Bridge."""
     try:
-        from cosmos.core.quantum_bridge import get_quantum_bridge
+        from Cosmos.core.quantum_bridge import get_quantum_bridge
         bridge = get_quantum_bridge(config.token)
 
         # Treat providing a token as an explicit "enable" signal, even if the
@@ -5964,25 +5964,15 @@ async def configure_quantum_bridge(config: QuantumConfig):
 async def get_quantum_status():
     """Get current status of the Quantum Bridge."""
     try:
-        from cosmos.core.quantum_bridge import get_quantum_bridge
+        from Cosmos.core.quantum_bridge import get_quantum_bridge
         bridge = get_quantum_bridge()
-        
-        backend_name = "None"
-        is_simulator = True
-        
-        if bridge.backend:
-            backend_name = bridge.backend.name
-            # simplified check - real backends usually have > 30 qubits or specific names
-            # but we can trust the bridge logic
-            is_simulator = "sim" in backend_name.lower()
-
-        return JSONResponse({
+        return JSONResponse(bridge.get_status() if hasattr(bridge, "get_status") else {
             "active": bridge.connected,
             "simulation": not bridge.connected,
-            "backend": backend_name,
-            "realsim": is_simulator, # Distinguish between Local Sim and Cloud Sim
+            "backend": bridge.backend.name if bridge.backend else "None",
+            "realsim": bool(bridge.backend and "sim" in bridge.backend.name.lower()),
             "entropy_buffer_size": len(bridge.entropy_buffer),
-            "error": str(bridge.last_error) if bridge.last_error else None
+            "error": str(bridge.last_error) if bridge.last_error else None,
         })
     except Exception as e:
         return JSONResponse({"active": False, "simulation": True, "backend": "None", "entropy_buffer_size": 0, "error": str(e)})

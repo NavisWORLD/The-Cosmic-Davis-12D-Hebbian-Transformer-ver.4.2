@@ -1,0 +1,424 @@
+{
+  "answer": "Yes. The Chandrayaan-1 RADOM basket stays family-led, both structured proxies beat the naive and metadata-only baselines, and the learned proxy now edges the legacy heuristic on both MAE and RMSE.",
+  "baselines": {
+    "learned_calibrator_proxy": {
+      "mae": 0.19205459682847217,
+      "max_abs_error": 0.3759417973888456,
+      "predictions": [
+        0.6511473831406768,
+        0.6836341050811533,
+        0.6684976267961822,
+        0.7030520858418416,
+        0.6686057673568452,
+        0.703220838178539
+      ],
+      "rmse": 0.21631900399443874
+    },
+    "learned_phase_only_ablation": {
+      "mae": 0.27833347641093914,
+      "max_abs_error": 0.39708278345011006,
+      "predictions": [
+        0.5082289393945383,
+        0.4924213925434133,
+        0.5255791830500437,
+        0.5118393733041017,
+        0.5256873236107067,
+        0.512008125640799
+      ],
+      "rmse": 0.29807889302006185
+    },
+    "learned_reversed_state_ablation": {
+      "mae": 0.2446379774254829,
+      "max_abs_error": 0.3724168295932295,
+      "predictions": [
+        0.5673979527464906,
+        0.517087346400294,
+        0.584748196401996,
+        0.5365053271609823,
+        0.584856336962659,
+        0.5366740794976795
+      ],
+      "rmse": 0.26719824184426194
+    },
+    "learned_zero_state_ablation": {
+      "mae": 0.7254836373181943,
+      "max_abs_error": 0.8984168810637511,
+      "predictions": [
+        0.0,
+        0.0,
+        0.0010588790597895461,
+        0.010505275690460772,
+        0.001167019620452541,
+        0.010674028027158045
+      ],
+      "rmse": 0.7557188083707533
+    },
+    "legacy_heuristic_proxy": {
+      "mae": 0.19757040182040178,
+      "max_abs_error": 0.3928076923076924,
+      "predictions": [
+        0.675,
+        0.7005000000000001,
+        0.675,
+        0.7005000000000001,
+        0.675,
+        0.7005000000000001
+      ],
+      "rmse": 0.22121216214087064
+    },
+    "lunar_bundle_mean": {
+      "mae": 0.2850586816906015,
+      "max_abs_error": 0.3964483288962086,
+      "predictions": [
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004
+      ],
+      "rmse": 0.30470079379512627
+    },
+    "lunar_bundle_weighted_mean": {
+      "mae": 0.26200571150505453,
+      "max_abs_error": 0.3618688736178881,
+      "predictions": [
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021
+      ],
+      "rmse": 0.2811559658229014
+    },
+    "metadata_only_ridge": {
+      "mae": 0.27703897574126707,
+      "max_abs_error": 0.4131326457362979,
+      "predictions": [
+        0.4661052716966884,
+        0.4221234445562963,
+        0.5315093434242928,
+        0.4953221287761756,
+        0.5319169937793367,
+        0.4959582633546112
+      ],
+      "rmse": 0.2992568442078862
+    },
+    "midpoint_0_5": {
+      "mae": 0.2934870684870685,
+      "max_abs_error": 0.40909090909090906,
+      "predictions": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "rmse": 0.3138196343277553
+    },
+    "model_phase_proxy": {
+      "mae": 0.4196652875976425,
+      "max_abs_error": 0.59835823775677,
+      "predictions": [
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139
+      ],
+      "rmse": 0.470249794635056
+    }
+  },
+  "best_mae_baselines": [
+    "learned_calibrator_proxy"
+  ],
+  "best_rmse_baselines": [
+    "learned_calibrator_proxy"
+  ],
+  "bootstrap": {
+    "learned_vs_legacy": {
+      "mae": {
+        "ci_high": 0.0034020245188170206,
+        "ci_low": -0.015243813931555564,
+        "observed_delta": -0.005515804991929607
+      },
+      "rmse": {
+        "ci_high": 0.003587137672113383,
+        "ci_low": -0.011793588686046352,
+        "observed_delta": -0.004893158146431903
+      }
+    },
+    "learned_vs_metadata_only": {
+      "mae": {
+        "ci_high": 0.062311106875547334,
+        "ci_low": -0.18391570804687138,
+        "observed_delta": -0.0849843789127949
+      },
+      "rmse": {
+        "ci_high": 0.06628746987063311,
+        "ci_low": -0.18232473577030858,
+        "observed_delta": -0.08293784021344744
+      }
+    },
+    "learned_vs_midpoint": {
+      "mae": {
+        "ci_high": 0.02174999762435212,
+        "ci_low": -0.19156225625267403,
+        "observed_delta": -0.10143247165859634
+      },
+      "rmse": {
+        "ci_high": 0.03704918868572671,
+        "ci_low": -0.18863486905218949,
+        "observed_delta": -0.09750063033331655
+      }
+    },
+    "learned_vs_phase_only_ablation": {
+      "mae": {
+        "ci_high": 0.03314721731075945,
+        "ci_low": -0.17511462294053945,
+        "observed_delta": -0.08627887958246697
+      },
+      "rmse": {
+        "ci_high": 0.05168774398946965,
+        "ci_low": -0.17311055935087646,
+        "observed_delta": -0.08175988902562312
+      }
+    },
+    "learned_vs_zero_state_ablation": {
+      "mae": {
+        "ci_high": -0.28401495094291385,
+        "ci_low": -0.6841774560130515,
+        "observed_delta": -0.5334290404897222
+      },
+      "rmse": {
+        "ci_high": -0.3062243543366096,
+        "ci_low": -0.6804236293773215,
+        "observed_delta": -0.5393998043763146
+      }
+    }
+  },
+  "external_alignment": {
+    "official_cosine_similarity": 0.6025283613422568,
+    "official_overall_alignment": 0.5972333127441012,
+    "official_phase_distance": 0.4186518330503654
+  },
+  "family_beats_naive_and_metadata": true,
+  "family_led": true,
+  "fixture_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\chandrayaan1_radom_reference.json",
+  "fixture_sha256": "9a6b236ce4ff031140e129e15cb794b0ec80bb635ff010011dc7d6a9b4ed0ac8",
+  "learned_beats_metadata_only": true,
+  "learned_beats_midpoint": true,
+  "legacy_beats_metadata_only": true,
+  "legacy_beats_midpoint": true,
+  "metadata_only_ridge": {
+    "alpha": 0.2,
+    "coefficients": [
+      0.6631122986824263,
+      -0.0056876185229165835,
+      -0.007049245426400418,
+      0.012736863949326719,
+      2.8572742190397105e-14,
+      -2.4176158439566735e-15,
+      -0.007947439522287554,
+      -0.14357107519825302,
+      0.07282139412304242,
+      -0.006306244205981387,
+      0.030034855961608473,
+      -2.5717917508787175e-14,
+      1.945877517594246e-15,
+      0.13573787961282147,
+      -0.29823214471656007,
+      0.030034855961599532,
+      0.030034855961623586,
+      1.8874536828046668e-14,
+      2.2537753885938895e-15,
+      -0.036467224342665985,
+      -0.0364672243426847,
+      -0.0653630803253677,
+      -0.009246135753384588,
+      -0.04246043716652108,
+      -0.10285625008465481,
+      -0.23388604341600738,
+      -0.035722474484475644,
+      0.2711705830520085,
+      0.03003485596159354,
+      -6.137975993963732e-15,
+      -1.153151547065197e-15,
+      -0.04137089270655189,
+      -0.028349686627003004,
+      0.13414457847677322,
+      -0.12429183064933536,
+      -0.03407475193326902,
+      0.10524872249405912,
+      0.1310297933313391,
+      -0.06960646350848382,
+      0.0,
+      0.0
+    ],
+    "feature_names": [
+      "bias",
+      "has_ratio",
+      "has_fraction_scale",
+      "has_value",
+      "has_current_forecast",
+      "has_log_transform",
+      "scale_hint_log",
+      "kw_ratio",
+      "kw_dose",
+      "kw_equivalent",
+      "kw_flux",
+      "kw_fluence",
+      "kw_quality",
+      "kw_charged",
+      "kw_neutral",
+      "kw_albedo",
+      "kw_primary",
+      "kw_surface",
+      "kw_cruise",
+      "kw_storm",
+      "kw_shelter",
+      "kw_shield",
+      "kw_peak",
+      "kw_rotation",
+      "kw_cavity",
+      "kw_duration",
+      "kw_reduction",
+      "kw_gcr",
+      "kw_proton",
+      "kw_organ",
+      "kw_tissue",
+      "kw_absorbed",
+      "kw_total",
+      "kw_mission",
+      "kw_flyby",
+      "kw_low",
+      "kw_high",
+      "kw_count",
+      "kw_rate",
+      "kw_current",
+      "kw_forecast"
+    ],
+    "training_mae": 0.021668679968150636,
+    "training_record_count": 19,
+    "training_rmse": 0.02873686424462749,
+    "type": "metadata_only_ridge"
+  },
+  "model_vector": [
+    0.41083835502279087,
+    0.016202075972729782,
+    0.3703331650909664,
+    0.445557089250069,
+    0.17938012684093688,
+    0.05207810134091715,
+    0.2083124053636686,
+    0.23724468388640035,
+    0.16780721543184415,
+    0.45134354495461537,
+    0.1273020255000197,
+    0.3356144308636883
+  ],
+  "question": "Does the frozen 12D radiation model family carry signal into an independent Chandrayaan-1 RADOM Earth-Moon radiation basket?",
+  "records": [
+    {
+      "id": "chandrayaan1_inner_to_outer_belt_flux_ratio",
+      "learned_calibrator_prediction": 0.6511473831406768,
+      "legacy_heuristic_prediction": 0.675,
+      "metadata_only_prediction": 0.4661052716966884,
+      "normalized_target": 0.6,
+      "notes": "Inner radiation belt flux relative to outer radiation belt flux from the RADOM summary: ~9\u00d710^3 versus ~1.5\u00d710^4 particle cm^-2 s^-1.",
+      "observed_value": 9000.0,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2010-12-09",
+      "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+      "source_url": "https://arxiv.org/abs/1012.2014",
+      "units": "inner_to_outer_belt_flux_ratio"
+    },
+    {
+      "id": "chandrayaan1_outer_to_inner_belt_dose_ratio",
+      "learned_calibrator_prediction": 0.6836341050811533,
+      "legacy_heuristic_prediction": 0.7005000000000001,
+      "metadata_only_prediction": 0.4221234445562963,
+      "normalized_target": 0.3076923076923077,
+      "notes": "Outer radiation belt dose rate relative to inner radiation belt dose rate from the RADOM summary: ~4\u00d710^4 versus ~1.3\u00d710^5 \u00b5Gy h^-1.",
+      "observed_value": 40000.0,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2010-12-09",
+      "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+      "source_url": "https://arxiv.org/abs/1012.2014",
+      "units": "outer_to_inner_belt_dose_rate_ratio"
+    },
+    {
+      "id": "chandrayaan1_lunar_100km_to_transfer_flux_ratio",
+      "learned_calibrator_prediction": 0.6684976267961822,
+      "legacy_heuristic_prediction": 0.675,
+      "metadata_only_prediction": 0.5315093434242928,
+      "normalized_target": 0.8333333333333334,
+      "notes": "Average 100 km lunar-orbit flux relative to transfer-space flux from the RADOM summary.",
+      "observed_value": 2.5,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2010-12-09",
+      "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+      "source_url": "https://arxiv.org/abs/1012.2014",
+      "units": "lunar_100km_to_transfer_flux_ratio"
+    },
+    {
+      "id": "chandrayaan1_lunar_100km_to_transfer_dose_ratio",
+      "learned_calibrator_prediction": 0.7030520858418416,
+      "legacy_heuristic_prediction": 0.7005000000000001,
+      "metadata_only_prediction": 0.4953221287761756,
+      "normalized_target": 0.8333333333333334,
+      "notes": "Average 100 km lunar-orbit dose rate relative to transfer-space dose rate from the RADOM summary.",
+      "observed_value": 10.0,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2010-12-09",
+      "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+      "source_url": "https://arxiv.org/abs/1012.2014",
+      "units": "lunar_100km_to_transfer_dose_rate_ratio"
+    },
+    {
+      "id": "chandrayaan1_lunar_100km_to_lunar_200km_flux_ratio",
+      "learned_calibrator_prediction": 0.6686057673568452,
+      "legacy_heuristic_prediction": 0.675,
+      "metadata_only_prediction": 0.5319169937793367,
+      "normalized_target": 0.8928571428571429,
+      "notes": "Average 100 km lunar-orbit flux relative to 200 km lunar-orbit flux from the RADOM summary.",
+      "observed_value": 2.5,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2010-12-09",
+      "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+      "source_url": "https://arxiv.org/abs/1012.2014",
+      "units": "lunar_100km_to_lunar_200km_flux_ratio"
+    },
+    {
+      "id": "chandrayaan1_lunar_100km_to_lunar_200km_dose_ratio",
+      "learned_calibrator_prediction": 0.703220838178539,
+      "legacy_heuristic_prediction": 0.7005000000000001,
+      "metadata_only_prediction": 0.4959582633546112,
+      "normalized_target": 0.9090909090909091,
+      "notes": "Average 100 km lunar-orbit dose rate relative to 200 km lunar-orbit dose rate from the RADOM summary.",
+      "observed_value": 10.0,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2010-12-09",
+      "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+      "source_url": "https://arxiv.org/abs/1012.2014",
+      "units": "lunar_100km_to_lunar_200km_dose_rate_ratio"
+    }
+  ],
+  "reproducibility": {
+    "command": "python scripts/run_chandrayaan1_radom_external_validation.py --output-dir docs/validation",
+    "fixture_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\chandrayaan1_radom_reference.json",
+    "fixture_sha256": "9a6b236ce4ff031140e129e15cb794b0ec80bb635ff010011dc7d6a9b4ed0ac8",
+    "python_version": "3.12.6"
+  },
+  "targets": [
+    0.6,
+    0.3076923076923077,
+    0.8333333333333334,
+    0.8333333333333334,
+    0.8928571428571429,
+    0.9090909090909091
+  ]
+}

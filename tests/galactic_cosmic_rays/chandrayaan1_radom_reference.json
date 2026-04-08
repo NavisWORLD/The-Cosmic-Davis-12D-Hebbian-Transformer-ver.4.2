@@ -1,0 +1,68 @@
+[
+  {
+    "id": "chandrayaan1_inner_to_outer_belt_flux_ratio",
+    "published_date": "2010-12-09",
+    "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+    "source_url": "https://arxiv.org/abs/1012.2014",
+    "numerator": 9000.0,
+    "denominator": 15000.0,
+    "weight": 1.0,
+    "units": "inner_to_outer_belt_flux_ratio",
+    "notes": "Inner radiation belt flux relative to outer radiation belt flux from the RADOM summary: ~9×10^3 versus ~1.5×10^4 particle cm^-2 s^-1."
+  },
+  {
+    "id": "chandrayaan1_outer_to_inner_belt_dose_ratio",
+    "published_date": "2010-12-09",
+    "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+    "source_url": "https://arxiv.org/abs/1012.2014",
+    "numerator": 40000.0,
+    "denominator": 130000.0,
+    "weight": 1.0,
+    "units": "outer_to_inner_belt_dose_rate_ratio",
+    "notes": "Outer radiation belt dose rate relative to inner radiation belt dose rate from the RADOM summary: ~4×10^4 versus ~1.3×10^5 µGy h^-1."
+  },
+  {
+    "id": "chandrayaan1_lunar_100km_to_transfer_flux_ratio",
+    "published_date": "2010-12-09",
+    "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+    "source_url": "https://arxiv.org/abs/1012.2014",
+    "numerator": 2.5,
+    "denominator": 3.0,
+    "weight": 1.0,
+    "units": "lunar_100km_to_transfer_flux_ratio",
+    "notes": "Average 100 km lunar-orbit flux relative to transfer-space flux from the RADOM summary."
+  },
+  {
+    "id": "chandrayaan1_lunar_100km_to_transfer_dose_ratio",
+    "published_date": "2010-12-09",
+    "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+    "source_url": "https://arxiv.org/abs/1012.2014",
+    "numerator": 10.0,
+    "denominator": 12.0,
+    "weight": 1.0,
+    "units": "lunar_100km_to_transfer_dose_rate_ratio",
+    "notes": "Average 100 km lunar-orbit dose rate relative to transfer-space dose rate from the RADOM summary."
+  },
+  {
+    "id": "chandrayaan1_lunar_100km_to_lunar_200km_flux_ratio",
+    "published_date": "2010-12-09",
+    "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+    "source_url": "https://arxiv.org/abs/1012.2014",
+    "numerator": 2.5,
+    "denominator": 2.8,
+    "weight": 1.0,
+    "units": "lunar_100km_to_lunar_200km_flux_ratio",
+    "notes": "Average 100 km lunar-orbit flux relative to 200 km lunar-orbit flux from the RADOM summary."
+  },
+  {
+    "id": "chandrayaan1_lunar_100km_to_lunar_200km_dose_ratio",
+    "published_date": "2010-12-09",
+    "source": "Vadawale et al. 2010 Chandrayaan-1 RADOM paper",
+    "source_url": "https://arxiv.org/abs/1012.2014",
+    "numerator": 10.0,
+    "denominator": 11.0,
+    "weight": 1.0,
+    "units": "lunar_100km_to_lunar_200km_dose_rate_ratio",
+    "notes": "Average 100 km lunar-orbit dose rate relative to 200 km lunar-orbit dose rate from the RADOM summary."
+  }
+]

@@ -58,11 +58,20 @@ class DialogueMemory:
 
     def __init__(self, storage_path: Optional[Path] = None):
         if storage_path is None:
+            # Standardize on absolute project data path
+            from pathlib import Path
+            import sys
             import os
-            if os.path.exists("/workspace/cosmos_memory"):
-                storage_path = Path("/workspace/cosmos_memory/dialogue")
-            else:
-                storage_path = Path("data/dialogue_memory")
+            
+            # Identify project root
+            try:
+                from . import PROJECT_ROOT
+            except ImportError:
+                # Fallback if not imported via swarm
+                PROJECT_ROOT = Path("D:/Cosmos/Cosmos")
+            
+            storage_path = PROJECT_ROOT / "data" / "dialogue_memory"
+            
         self.storage_path = storage_path
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
@@ -171,9 +180,8 @@ class DialogueMemory:
             if agent == result.winning_agent:
                 stats["wins"] += 1
 
-        # Save periodically (every 10 exchanges)
-        if len(self._exchanges) % 10 == 0:
-            self._save_state()
+        # Save immediately to ensure durability (Epoch Diary continuity)
+        self._save_state()
 
         # AGI v1.8: Archive to long-term memory asynchronously
         asyncio.create_task(self._archive_to_long_term(exchange, result))

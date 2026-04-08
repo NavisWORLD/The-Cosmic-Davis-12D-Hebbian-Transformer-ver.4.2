@@ -1,0 +1,3110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Genesis Engine: The Definitive Core</title>
+
+    <!-- DEPENDENCIES & STYLESHEETS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- ES Module Imports for three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <!-- ml5.js for Machine Learning -->
+    <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js"></script>
+
+    <style>
+        /* General Styling */
+        body { margin: 0; background-color: #000; color: #e2e8f0; overflow: hidden; font-family: 'Inter', sans-serif; cursor: crosshair; }
+        canvas { display: block; position: fixed; top: 0; left: 0; z-index: 1; }
+        .font-mono { font-family: 'Roboto Mono', monospace; }
+
+        /* UI Element Styling */
+        .ui-element { position: fixed; z-index: 10; background-color: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.5); border-radius: 0.75rem; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: opacity 0.3s ease, transform 0.3s ease; }
+        .ui-hidden { opacity: 0; pointer-events: none; transform: scale(0.95); }
+
+        /* Modal & Blocker Styling */
+        #blocker, .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; flex-direction: column; text-align: center; transition: opacity 0.5s ease; }
+        #fps-hint { z-index: 101; background: none; backdrop-filter: none; border: none; box-shadow: none; font-size: 1.2rem; text-shadow: 0 0 10px black; color: #fff; }
+
+        /* Tab Navigation Styling */
+        .tab-button { background-color: transparent; border: none; color: #94a3b8; padding: 0.5rem 1rem; cursor: pointer; transition: color 0.2s, border-bottom-color 0.2s; border-bottom: 2px solid transparent; font-weight: 500;}
+        .tab-button.active { color: #e2e8f0; border-bottom-color: #4f46e5; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Seed Visualizer & Data Pulse Animation */
+        #seed-visualizer { height: 60px; display: flex; align-items: center; justify-content: space-around; background: rgba(0,0,0,0.2); border-radius: 0.5rem; overflow: hidden;}
+        .data-stream { width: 15%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; font-size: 0.6rem; text-transform: uppercase; color: #64748b; }
+        .data-pulse { width: 10px; height: 10px; background-color: #334155; border-radius: 50%; transition: background-color 0.1s, box-shadow 0.2s; }
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); } 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); } }
+
+        /* Button & Input Styling */
+        .btn { background-color: #4f46e5; color: white; font-weight: bold; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; transition: background-color 0.2s; cursor: pointer; text-align: center; }
+        .btn:hover { background-color: #6366f1; }
+        .btn:disabled { background-color: #4b5563; cursor: not-allowed; }
+        input[type="file"] { display: none; }
+        .slider-container, .toggle-container { display: flex; flex-direction: column; gap: 0.25rem; }
+        .slider-label, .toggle-label { display: flex; justify-content: space-between; font-size: 0.75rem; align-items:center;}
+        input[type=range] { -webkit-appearance: none; appearance: none; background: transparent; width: 100%;}
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #334155; border-radius: 2px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; border: 2px solid #4f46e5; height: 16px; width: 16px; border-radius: 50%; background: #0f172a; cursor: pointer; margin-top: -6px;}
+
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 34px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .4s; border-radius: 20px;}
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;}
+        input:checked + .slider { background-color: #4f46e5; }
+        input:checked + .slider:before { transform: translateX(14px); }
+
+    </style>
+</head>
+<body>
+    <!-- Canvas Container for 3D Scene -->
+    <div id="canvas-container"></div>
+
+    <!-- Hidden Video Element for ML & Video Particlizer -->
+    <video id="video-feed" style="display:none;" autoplay muted playsinline></video>
+
+    <!-- Initial Blocker/Loading Screen -->
+    <div id="blocker">
+        <div class="max-w-2xl px-4">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-100 mb-2">Genesis Engine</h1>
+            <h2 class="text-xl md:text-2xl font-light text-slate-400 mb-6">The Definitive Core</h2>
+            <p class="text-slate-400 mb-8">This engine transmutes reality into a digital cosmos. For the full experience, please grant access to your microphone, camera, and location when prompted. No data is stored or uploaded. This is a non-invasive, interactive art piece.</p>
+            <button id="start-button" class="btn bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-lg text-lg transition-transform transform hover:scale-105">Initiate Genesis</button>
+            <p id="loading-message" class="text-slate-500 mt-4" style="display: none;">Calibrating sensor arrays...</p>
+        </div>
+    </div>
+
+    <!-- Modal for Memory Echo -->
+    <div id="datamodal" class="modal ui-hidden">
+        <div class="ui-element p-8 max-w-lg w-full">
+            <h3 class="text-2xl font-bold text-slate-100 mb-4">Memory Echo Detected</h3>
+            <p class="text-slate-300 mb-6">An artifact of pure data has been found, an echo of a world caught in a repeating tragedy. Provide the data catalyst (e.g., a .z64 ROM file) to transmute its contents into a playable memory echo.</p>
+            <input type="file" id="data-upload">
+            <label for="data-upload" class="mb-4 cursor-pointer w-full block text-center btn bg-green-600 hover:bg-green-500">Provide Data Catalyst</label>
+            <p id="data-status" class="text-sm text-yellow-400 mb-4">Awaiting file...</p>
+            <div class="flex justify-center gap-4">
+                <button id="modal-confirm-button" class="btn bg-red-600 hover:bg-red-500" disabled>Enter the Echo</button>
+                <button id="modal-cancel-button" class="btn bg-slate-600 hover:bg-slate-500">Return to Void</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hint for First-Person Mode Controls -->
+    <div id="fps-hint" class="modal ui-hidden">
+        <p>First-Person Mode Active. Press ESC to release cursor.</p>
+    </div>
+
+    <!-- Main UI Toggle Button -->
+    <button id="toggle-ui-button" class="ui-element top-4 right-4 p-3 text-slate-300 hover:text-white hover:bg-slate-700 transition ui-hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+    </button>
+
+    <!-- Main UI Container -->
+    <div id="ui-container" class="ui-hidden">
+        <div class="ui-element top-4 left-4 w-96">
+            <div class="px-4 pt-3 pb-2 font-bold text-lg text-slate-300" id="system-status-readout">STATUS: STANDBY</div>
+            <div class="tabs border-b border-slate-700 px-2">
+                <button class="tab-button active" data-tab="controls">Controls</button>
+                <button class="tab-button" data-tab="graphics">Graphics</button>
+                <button class="tab-button" data-tab="data">Data Ledger</button>
+                <button class="tab-button" data-tab="cognitive">Cognitive Core</button>
+            </div>
+            <div id="tab-content-container" class="p-4">
+                <!-- CONTROLS TAB -->
+                <div id="tab-controls" class="tab-content active space-y-4">
+                    <button id="regenerate-button" class="btn w-full bg-slate-700 hover:bg-slate-600">Regenerate Universe</button>
+                    <button id="anomaly-scanner-button" class="btn w-full bg-cyan-600 hover:bg-cyan-500">Scan for Anomalies</button>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label for="file-upload" class="btn">Particlize File</label>
+                        <button id="video-particlize-button" class="btn">Particlize Live</button>
+                        <input type="file" id="file-upload" accept="image/*,video/*">
+                    </div>
+                    <button id="self-particlize-button" class="btn w-full bg-purple-600 hover:bg-purple-500">Particlize Self</button>
+                </div>
+                <!-- GRAPHICS TAB -->
+                <div id="tab-graphics" class="tab-content space-y-4 text-sm text-slate-300">
+                    <div class="slider-container">
+                        <label>View Mode</label>
+                        <select id="view-mode-select" class="w-full bg-slate-800 text-slate-200 rounded-md p-2 mt-1 text-sm border border-slate-600">
+                            <option value="orbit">Orbit</option>
+                            <option value="first-person">First Person</option>
+                            <option value="enhanced-fp">Spaceship (3rd Person)</option>
+                            <option value="cockpit-view">Spaceship (Cockpit)</option>
+                            <option value="cinematic">Cinematic</option>
+                        </select>
+                    </div>
+                    <div class="slider-container">
+                        <label>Graphics Style</label>
+                        <select id="quality-select" class="w-full bg-slate-800 text-slate-200 rounded-md p-2 mt-1 text-sm border border-slate-600">
+                            <option value="low">Low (Pixelated)</option>
+                            <option value="medium" selected>Medium (Realistic)</option>
+                            <option value="high">High (Realistic)</option>
+                            <option value="ultra">Ultra (Realistic)</option>
+                            <option value="anime">Anime (Cel-Shaded)</option>
+                        </select>
+                    </div>
+                    <div class="slider-container">
+                        <label>Color Filter</label>
+                        <select id="filter-select" class="w-full bg-slate-800 text-slate-200 rounded-md p-2 mt-1 text-sm border border-slate-600">
+                            <option value="none">None</option>
+                            <option value="cool">Cool</option>
+                            <option value="warm">Warm</option>
+                            <option value="nebula">Nebula</option>
+                            <option value="monochrome">Monochrome</option>
+                        </select>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-label"><span>Brightness</span><span id="brightness-value">1.0</span></div>
+                        <input type="range" id="brightness-slider" min="0" max="2" value="1" step="0.05" class="w-full">
+                    </div>
+                    <!-- NEW: Procedural Audio Toggle -->
+                    <div class="toggle-container">
+                         <div class="toggle-label">
+                             <span>Enable Ambient Audio</span>
+                             <label class="switch">
+                                 <input type="checkbox" id="ambient-audio-toggle">
+                                 <span class="slider"></span>
+                             </label>
+                         </div>
+                    </div>
+                </div>
+                <!-- DATA LEDGER TAB -->
+                <div id="tab-data" class="tab-content space-y-2">
+                    <div id="genesis-log-content" class="text-sm font-mono text-slate-400 max-h-48 overflow-y-auto"></div>
+                    <button id="download-ledger-button" class="btn w-full bg-green-600 hover:bg-green-500 mt-2">Download Ledger</button>
+                </div>
+                 <!-- COGNITIVE CORE TAB -->
+                <div id="tab-cognitive" class="tab-content space-y-3 text-sm text-slate-300">
+                    <div id="seed-visualizer">
+                        <div class="data-stream" data-stream="audio">Audio<div class="data-pulse"></div></div>
+                        <div class="data-stream" data-stream="ml">ML<div class="data-pulse"></div></div>
+                        <div class="data-stream" data-stream="loc">Location<div class="data-pulse"></div></div>
+                        <div class="data-stream" data-stream="light">Light<div class="data-pulse"></div></div>
+                        <div class="data-stream" data-stream="usgs">USGS<div class="data-pulse"></div></div>
+                        <div class="data-stream" data-stream="apod">APOD<div class="data-pulse"></div></div>
+                    </div>
+                    <div class="p-2 bg-black/20 rounded-md">
+                        <p class="font-mono text-xs text-indigo-400">AI INTENTION:</p>
+                        <p id="ai-intention" class="font-mono text-xs text-slate-300 h-8">Awaiting sensory input...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="log-panel" class="ui-element bottom-4 left-4 w-96 max-h-48 overflow-y-auto text-xs font-mono p-4 space-y-1"></div>
+    </div>
+
+<script type="module">
+    // Import necessary Three.js modules
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+    import { AfterimagePass } from 'three/addons/postprocessing/AfterimagePass.js';
+    import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+    import { Lensflare, LensflareElement } from 'three/addons/objects/Lensflare.js';
+    import { FilmPass } from 'three/addons/postprocessing/FilmPass.js';
+    import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
+    import { RGBShiftShader } from 'three/addons/shaders/RGBShiftShader.js';
+
+    // --- Core Utility & System Classes ---
+
+    function cyrb128(str) {
+        let h1 = 1779033703, h2 = 3144134277, h3 = 1013904242, h4 = 2773480762;
+        for (let i = 0, k; i < str.length; i++) {
+            k = str.charCodeAt(i);
+            h1 = h2 ^ Math.imul(h1 ^ k, 597399067);
+            h2 = h3 ^ Math.imul(h2 ^ k, 2869860233);
+            h3 = h4 ^ Math.imul(h3 ^ k, 951274213);
+            h4 = h1 ^ Math.imul(h4 ^ k, 2716044179);
+        }
+        h1 = Math.imul(h3 ^ (h1 >>> 18), 597399067);
+        h2 = Math.imul(h4 ^ (h2 >>> 22), 2869860233);
+        h3 = Math.imul(h1 ^ (h3 >>> 17), 951274213);
+        h4 = Math.imul(h2 ^ (h4 >>> 19), 2716044179);
+        return [(h1 ^ h2 ^ h3 ^ h4) >>> 0, (h2 ^ h1) >>> 0, (h3 ^ h1) >>> 0, (h4 ^ h1) >>> 0];
+    }
+
+    function sfc32(a, b, c, d) {
+        return function() {
+            a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0;
+            var t = (a + b) | 0;
+            a = b ^ b >>> 9;
+            b = c + (c << 3) | 0;
+            c = (c << 21 | c >>> 11);
+            d = d + 1 | 0;
+            t = t + d | 0;
+            c = c + t | 0;
+            return (t >>> 0) / 4294967296;
+        }
+    }
+
+    class EventBus {
+        constructor() { this.events = {}; }
+        subscribe(event, callback) {
+            if (!this.events[event]) this.events[event] = [];
+            this.events[event].push(callback);
+        }
+        publish(event, data) {
+            if (this.events[event]) {
+                this.events[event].forEach(callback => {
+                    try {
+                        callback(data);
+                    } catch (e) {
+                        console.error(`Error in event subscriber for '${event}':`, e);
+                    }
+                });
+            }
+        }
+    }
+
+    class DataLogger {
+        constructor(eventBus) {
+            this.log = [];
+            this.eventBus = eventBus;
+            this.initSubscriptions();
+        }
+
+        initSubscriptions() {
+            const eventsToLog = ['genesis:log', 'seed:generated', 'ai:intentionUpdate', 'status:update'];
+            eventsToLog.forEach(eventName => {
+                this.eventBus.subscribe(eventName, (data) => this.record(eventName, data));
+            });
+        }
+
+        record(event, data) {
+            this.log.push({
+                timestamp: new Date().toISOString(),
+                event,
+                data: JSON.parse(JSON.stringify(data))
+            });
+        }
+
+        download() {
+            const dataStr = JSON.stringify(this.log, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `genesis-ledger-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    }
+
+    // --- Application Modules ---
+
+    class UIManager {
+        constructor(eventBus) {
+            this.eventBus = eventBus;
+            this.isUiVisible = true;
+            this.initDOMElements();
+            this.initEventListeners();
+            this.log("Genesis Engine v2.3 Synthesis Complete...");
+        }
+
+        initDOMElements() {
+            this.blocker = document.getElementById("blocker");
+            this.uiContainer = document.getElementById("ui-container");
+            this.logPanel = document.getElementById("log-panel");
+            this.genesisLogContent = document.getElementById("genesis-log-content");
+            this.statusReadout = document.getElementById("system-status-readout");
+            this.aiIntention = document.getElementById("ai-intention");
+            this.seedVisualizer = document.getElementById("seed-visualizer");
+            this.startButton = document.getElementById("start-button");
+            this.toggleUiButton = document.getElementById("toggle-ui-button");
+            this.regenerateButton = document.getElementById("regenerate-button");
+            this.anomalyScannerButton = document.getElementById("anomaly-scanner-button");
+            this.videoParticlizeButton = document.getElementById('video-particlize-button');
+            this.selfParticlizeButton = document.getElementById('self-particlize-button');
+            this.downloadLedgerButton = document.getElementById('download-ledger-button');
+            this.modal = document.getElementById("datamodal");
+            this.modalConfirm = document.getElementById("modal-confirm-button");
+            this.modalCancel = document.getElementById("modal-cancel-button");
+            this.fpsHint = document.getElementById("fps-hint");
+            this.fileUpload = document.getElementById("file-upload");
+            this.dataUpload = document.getElementById("data-upload");
+            this.dataStatus = document.getElementById("data-status");
+            this.qualitySelect = document.getElementById("quality-select");
+            this.filterSelect = document.getElementById("filter-select");
+            this.viewModeSelect = document.getElementById("view-mode-select");
+            this.brightnessSlider = document.getElementById("brightness-slider");
+            this.brightnessValue = document.getElementById("brightness-value");
+            this.ambientAudioToggle = document.getElementById("ambient-audio-toggle"); // NEW
+            this.tabs = document.querySelectorAll(".tab-button");
+            this.tabContents = document.querySelectorAll(".tab-content");
+        }
+
+        initEventListeners() {
+            this.startButton.addEventListener("click", () => {
+                this.startButton.disabled = true;
+                document.getElementById("loading-message").style.display = "block";
+                this.eventBus.publish("ui:start");
+            });
+
+            this.toggleUiButton.addEventListener("click", () => this.toggleUi());
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'h' || e.key === 'H') {
+                     this.toggleUi();
+                }
+                if (e.ctrlKey && e.altKey && (e.key === 'd' || e.key === 'D')) {
+                    const password = prompt("Enter Developer Mode Password:");
+                    if (password === "333") {
+                        this.eventBus.publish("devmode:toggled");
+                    } else if (password) {
+                        alert("Incorrect Password.");
+                    }
+                }
+            });
+
+            this.regenerateButton.addEventListener("click", () => this.eventBus.publish("ui:regenerate"));
+            this.anomalyScannerButton.addEventListener('click', () => this.eventBus.publish('ui:scanForAnomaly'));
+            this.fileUpload.addEventListener("change", e => {
+                if(e.target.files[0]) this.eventBus.publish("ui:spawnParticlizedFile", e.target.files[0])
+            });
+            this.videoParticlizeButton.addEventListener('click', () => this.eventBus.publish('ui:spawnParticlizedVideo'));
+            this.selfParticlizeButton.addEventListener('click', () => this.eventBus.publish('ui:particlizeSelf'));
+            this.downloadLedgerButton.addEventListener('click', () => this.eventBus.publish('ui:downloadLedger'));
+            this.qualitySelect.addEventListener("change", e => this.eventBus.publish("ui:setQuality", e.target.value));
+            this.filterSelect.addEventListener("change", e => this.eventBus.publish("ui:setFilter", e.target.value));
+            this.viewModeSelect.addEventListener("change", e => this.eventBus.publish("ui:setViewMode", e.target.value));
+            this.brightnessSlider.addEventListener("input", e => {
+                const value = parseFloat(e.target.value);
+                this.brightnessValue.textContent = value.toFixed(2);
+                this.eventBus.publish("ui:setBrightness", value);
+            });
+
+            this.ambientAudioToggle.addEventListener('change', e => {
+                this.eventBus.publish('ui:toggleAmbientAudio', e.target.checked);
+            });
+
+            this.dataUpload.addEventListener("change", e => {
+                if (e.target.files[0]) {
+                    this.dataStatus.textContent = `Catalyst: ${e.target.files[0].name}`;
+                    this.dataStatus.className = "text-sm text-green-400 mb-4";
+                    this.modalConfirm.disabled = false;
+                    this.eventBus.publish("ui:dataProvided", e.target.files[0]);
+                }
+            });
+            this.modalConfirm.addEventListener("click", () => this.eventBus.publish("ui:enterEcho"));
+            this.modalCancel.addEventListener("click", () => this.hideModal());
+
+            this.tabs.forEach(tab => {
+                tab.addEventListener("click", () => {
+                    this.tabs.forEach(t => t.classList.remove("active"));
+                    this.tabContents.forEach(tc => tc.classList.remove("active"));
+                    tab.classList.add("active");
+                    document.getElementById(`tab-${tab.dataset.tab}`).classList.add("active");
+                });
+            });
+
+            this.eventBus.subscribe("pge:echoFound", () => this.showModal());
+            this.eventBus.subscribe("genesis:log", (log) => this.updateGenesisLog(log));
+            this.eventBus.subscribe("status:update", status => this.statusReadout.textContent = `STATUS: ${status}`);
+            this.eventBus.subscribe("ai:intentionUpdate", intention => this.aiIntention.textContent = intention);
+            this.eventBus.subscribe("ui:pulse", stream => this.pulse(stream));
+             this.eventBus.subscribe("ui:showFpsHint", () => {
+                this.showModal("fps-hint");
+                setTimeout(() => this.hideModal("fps-hint"), 2500);
+            });
+        }
+
+        toggleUi() {
+            this.isUiVisible = !this.isUiVisible;
+            this.uiContainer.classList.toggle("ui-hidden", !this.isUiVisible);
+        }
+
+        showModal(id = "datamodal") { document.getElementById(id).classList.remove("ui-hidden"); }
+        hideModal(id = "datamodal") {
+            const el = document.getElementById(id);
+            if (el) el.classList.add("ui-hidden");
+        }
+
+        hideBlocker() {
+            this.blocker.style.opacity = "0";
+            setTimeout(() => {
+                this.blocker.style.display = "none";
+                this.toggleUiButton.classList.remove("ui-hidden");
+                this.uiContainer.classList.remove("ui-hidden");
+            }, 500);
+        }
+
+        log(message, type = "info") {
+            const colors = { info: 'text-slate-400', success: 'text-green-400', warn: 'text-yellow-400', error: 'text-red-400', data: 'text-cyan-400' };
+            const logEntry = document.createElement("div");
+            logEntry.innerHTML = `> <span class="${colors[type] || colors.info}">${message}</span>`;
+            this.logPanel.prepend(logEntry);
+            if (this.logPanel.children.length > 50) {
+                this.logPanel.removeChild(this.logPanel.lastChild);
+            }
+        }
+
+        updateGenesisLog({ name, value, type }) {
+            const colors = { success: 'text-green-400', warn: 'text-yellow-400', error: 'text-red-400' };
+            const logEntry = document.createElement("div");
+            logEntry.innerHTML = `<span class="text-indigo-400">[${name}]:</span> <span class="${colors[type] || 'text-slate-400'}">${value}</span>`;
+            this.genesisLogContent.prepend(logEntry);
+             if (this.genesisLogContent.children.length > 50) {
+                this.genesisLogContent.removeChild(this.genesisLogContent.lastChild);
+            }
+        }
+
+        pulse(streamName) {
+            const pulseElement = this.seedVisualizer.querySelector(`[data-stream="${streamName}"] .data-pulse`);
+            if (pulseElement) {
+                pulseElement.style.backgroundColor = '#38bdf8';
+                pulseElement.style.animation = `pulse-glow 1s ease-out`;
+                setTimeout(() => {
+                    pulseElement.style.backgroundColor = '#334155';
+                    pulseElement.style.animation = 'none';
+                }, 1000);
+            }
+        }
+    }
+
+    class SensoryInputManager {
+        constructor(eventBus, uiManager) {
+            this.eventBus = eventBus;
+            this.uiManager = uiManager;
+            this.videoElement = document.getElementById('video-feed');
+            this.isAudioInitialized = false;
+        }
+
+        async initializeAll() {
+            this.uiManager.log("Requesting sensor permissions...");
+            await Promise.allSettled([ // Use allSettled to ensure all promises complete
+                this.initAudio(),
+                this.initVideo(),
+                this.initGeolocation(),
+                this.initAmbientLight()
+            ]);
+            this.uiManager.log("Sensor initialization complete.", 'success');
+        }
+
+        async initAudio() {
+            if (this.isAudioInitialized) return true;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                this.eventBus.publish('genesis:log', { name: 'Microphone', value: 'Online', type: 'success' });
+                const audioContext = new(window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(stream);
+                const analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                source.connect(analyser);
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                const pollAudio = () => {
+                    analyser.getByteFrequencyData(dataArray);
+                    const avgFreq = dataArray.reduce((sum, val) => sum + val) / dataArray.length;
+                    this.eventBus.publish('audio:data', { raw: dataArray, avgFreq });
+                    requestAnimationFrame(pollAudio);
+                };
+                pollAudio();
+                this.isAudioInitialized = true;
+                return true;
+            } catch (err) {
+                this.eventBus.publish('genesis:log', { name: 'Microphone', value: 'Denied', type: 'error' });
+                return false;
+            }
+        }
+
+        async initVideo() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                this.videoElement.srcObject = stream;
+                await this.videoElement.play();
+                this.eventBus.publish('genesis:log', { name: 'Camera', value: 'Online', type: 'success' });
+
+                const pollVideo = () => {
+                    if (this.videoElement.readyState >= 2) {
+                         this.eventBus.publish('video:frame', this.videoElement);
+                    }
+                    requestAnimationFrame(pollVideo);
+                }
+                pollVideo();
+                return true;
+            } catch (err) {
+                this.eventBus.publish('genesis:log', { name: 'Camera', value: 'Denied', type: 'error' });
+                return false;
+            }
+        }
+
+        initGeolocation() {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.watchPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        this.eventBus.publish('location:updated', { lat: latitude, lon: longitude });
+                    },
+                    (err) => {
+                        this.eventBus.publish('genesis:log', { name: 'Location', value: 'Unavailable', type: 'error' });
+                    },
+                    { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 }
+                );
+            } else {
+                 this.eventBus.publish('genesis:log', { name: 'Location', value: 'Unsupported', type: 'warn' });
+            }
+        }
+
+        async initAmbientLight() {
+            if ('AmbientLightSensor' in window) {
+                try {
+                    // Permissions for this sensor are often tricky, so wrap it well.
+                    const { state } = await navigator.permissions.query({ name: 'ambient-light-sensor' });
+                    if (state === 'denied') {
+                        this.eventBus.publish('genesis:log', { name: 'Light Sensor', value: 'Permission Denied', type: 'error' });
+                        return;
+                    }
+                    const sensor = new AmbientLightSensor({ frequency: 1 });
+                    sensor.onreading = () => {
+                        this.eventBus.publish('light:updated', { lux: sensor.illuminance });
+                    };
+                    sensor.onerror = (event) => {
+                        this.eventBus.publish('genesis:log', { name: 'Light Sensor', value: `Error: ${event.error.name}`, type: 'error' });
+                    };
+                    sensor.start();
+                    this.eventBus.publish('genesis:log', { name: 'Light Sensor', value: 'Online', type: 'success' });
+                } catch (error) {
+                    this.eventBus.publish('genesis:log', { name: 'Light Sensor', value: `Not available: ${error.name}`, type: 'warn' });
+                }
+            } else {
+                this.eventBus.publish('genesis:log', { name: 'Light Sensor', value: 'Unsupported', type: 'warn' });
+            }
+        }
+    }
+
+    class ExternalDataManager {
+        constructor(eventBus) {
+            this.eventBus = eventBus;
+            this.init();
+        }
+
+        init() {
+            this.fetchEarthquakeData();
+            this.fetchAPOD();
+            setInterval(() => {
+                this.fetchEarthquakeData();
+                this.fetchAPOD();
+            }, 900000);
+        }
+
+        async fetchEarthquakeData() {
+            try {
+                const response = await fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson');
+                if(!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                this.eventBus.publish('external:usgs', data);
+            } catch (err) {
+                console.warn("Could not fetch USGS data.", err);
+            }
+        }
+
+        async fetchAPOD() {
+            try {
+                const apiKey = 'DEMO_KEY';
+                const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}`);
+                if(!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                this.eventBus.publish('external:apod', data);
+            } catch(err) {
+                console.warn("Could not fetch APOD data.", err);
+            }
+        }
+    }
+
+    class MachineLearningCore {
+         constructor(eventBus, uiManager) {
+            this.eventBus = eventBus;
+            this.uiManager = uiManager;
+            this.isDetecting = false;
+            this.isInitialized = false;
+            this.init();
+        }
+
+        async init() {
+            this.uiManager.log("Initializing ML Core...");
+            try {
+                this.detector = await ml5.objectDetector('cocossd', () => {
+                    this.uiManager.log("ML Core Initialized and Ready.", 'success');
+                    this.eventBus.publish('genesis:log', { name: 'ML Core', value: 'Online', type: 'success' });
+                    this.isInitialized = true;
+                    this.eventBus.subscribe('video:frame', (frame) => this.detect(frame));
+                });
+            } catch(err) {
+                this.uiManager.log("Failed to load ML model.", 'error');
+                this.eventBus.publish('genesis:log', { name: 'ML Core', value: 'Error', type: 'error' });
+            }
+        }
+
+        detect(videoElement) {
+            if (this.isDetecting || !this.isInitialized) return;
+            this.isDetecting = true;
+            this.detector.detect(videoElement, (err, results) => {
+                this.isDetecting = false;
+                if (err) return;
+                if (results && results.length > 0) {
+                    this.eventBus.publish('ml:objectsDetected', results.map(r => r.label));
+                }
+            });
+        }
+    }
+
+    class CosmicAwarenessAgent {
+        constructor(eventBus, dataLogger) {
+            this.eventBus = eventBus;
+            this.dataLogger = dataLogger;
+            this.preferences = { floraBias: 1.0, blackHoleBias: 1.0 };
+            this.latestData = {
+                loc: "0,0", light: 100, apod: "Unknown", usgs: 0,
+                ml: [], audio: 0, lastAudioSpike: 0,
+                lastLightValue: 100, lastSignificantQuakeTime: 0,
+            };
+            this.scheduledEventTimers = [];
+            this.initSubscriptions();
+        }
+
+        analyzeHistory() {
+            const log = this.dataLogger.log;
+            if (log.length < 10) return;
+
+            let floraSystemTime = 0;
+            let blackHoleSystemTime = 0;
+            let totalTime = 0;
+            let lastGenerationTime = 0;
+
+            log.forEach((entry, index) => {
+                if (entry.event === 'seed:generated') {
+                    const generationTimestamp = new Date(entry.timestamp).getTime();
+                    if (lastGenerationTime > 0) {
+                        const timeSpent = generationTimestamp - lastGenerationTime;
+                        let prevSeedIndex = -1;
+                        for(let i = index - 1; i >= 0; i--) {
+                            if (log[i].event === 'seed:generated') {
+                                prevSeedIndex = i;
+                                break;
+                            }
+                        }
+
+                        if(prevSeedIndex !== -1) {
+                           const lastSeedData = log[prevSeedIndex].data.influence;
+                           if (lastSeedData) {
+                              if(lastSeedData.hasPlant) floraSystemTime += timeSpent;
+                              if(lastSeedData.createBlackHole) blackHoleSystemTime += timeSpent;
+                              totalTime += timeSpent;
+                           }
+                        }
+                    }
+                    lastGenerationTime = generationTimestamp;
+                }
+            });
+
+            if (totalTime > 0) {
+                this.preferences.floraBias = 1.0 + (floraSystemTime / totalTime);
+                this.preferences.blackHoleBias = Math.max(0.1, 1.0 - (blackHoleSystemTime / totalTime));
+                this.eventBus.publish('genesis:log', {name: "AI", value: `Learned Preferences - Flora: ${this.preferences.floraBias.toFixed(2)}, Black Hole: ${this.preferences.blackHoleBias.toFixed(2)}`, type: "data"});
+            }
+        }
+
+        initSubscriptions() {
+            this.eventBus.subscribe('location:updated', data => {
+                this.latestData.loc = `${data.lat.toFixed(4)},${data.lon.toFixed(4)}`;
+                this.eventBus.publish('genesis:log', { name: 'Location', value: this.latestData.loc, type: 'success' });
+                this.eventBus.publish('ui:pulse', 'loc');
+            });
+            this.eventBus.subscribe('light:updated', data => {
+                this.latestData.light = Math.round(data.lux);
+                if (Math.abs(this.latestData.light - this.latestData.lastLightValue) > 50) {
+                     this.eventBus.publish('ai:event', { type: 'lightChange', value: this.latestData.light });
+                     this.latestData.lastLightValue = this.latestData.light;
+                }
+                this.eventBus.publish('genesis:log', { name: 'Light', value: `${this.latestData.light} lux`, type: 'success' });
+                this.eventBus.publish('ui:pulse', 'light');
+            });
+            this.eventBus.subscribe('external:apod', data => {
+                this.latestData.apod = data.title || "Cosmic Silence";
+                this.eventBus.publish('genesis:log', { name: 'APOD', value: this.latestData.apod, type: 'success' });
+                this.eventBus.publish('ui:pulse', 'apod');
+            });
+            this.eventBus.subscribe('external:usgs', data => {
+                const now = Date.now();
+                if (data.features.length > 0) {
+                    const latestQuake = data.features[0];
+                    this.latestData.usgs = latestQuake.properties.mag;
+                    if (latestQuake.properties.mag > 6.0 && latestQuake.properties.time > this.latestData.lastSignificantQuakeTime) {
+                        this.eventBus.publish('ai:event', { type: 'majorSeismicEvent', magnitude: latestQuake.properties.mag });
+                        this.latestData.lastSignificantQuakeTime = latestQuake.properties.time;
+                    }
+                } else {
+                    this.latestData.usgs = 0;
+                }
+                this.eventBus.publish('genesis:log', { name: 'USGS', value: `Latest Mag: ${this.latestData.usgs.toFixed(1)}`, type: 'success' });
+                this.eventBus.publish('ui:pulse', 'usgs');
+            });
+            this.eventBus.subscribe('ml:objectsDetected', data => {
+                this.latestData.ml = [...new Set(data)];
+                this.eventBus.publish('genesis:log', { name: 'ML', value: this.latestData.ml.join(', '), type: 'success' });
+                this.eventBus.publish('ui:pulse', 'ml');
+            });
+            this.eventBus.subscribe('audio:data', data => {
+                const now = Date.now();
+                if (data.avgFreq > 120 && (now - this.latestData.lastAudioSpike > 3000)) {
+                    this.eventBus.publish('ai:event', {type: 'audioSpike', value: data.avgFreq});
+                    this.latestData.lastAudioSpike = now;
+                }
+                this.latestData.audio = data.avgFreq;
+                this.eventBus.publish('ui:pulse', 'audio');
+            });
+        }
+
+        generateSeed(overrideData = null) {
+            this.analyzeHistory();
+
+            const timestamp = Date.now().toString();
+            let seedString;
+            let intention = "Observing the Void.";
+            let influence = { hasPlant: false, hasBook: false, createBlackHole: false };
+
+            if(overrideData) {
+                seedString = JSON.stringify(overrideData);
+                intention = "Traversing the Cosmic Web to a new echo.";
+            } else {
+                seedString = [
+                    timestamp, this.latestData.loc, this.latestData.light,
+                    this.latestData.apod, this.latestData.audio,
+                    ...this.latestData.ml, this.latestData.usgs
+                ].join('|');
+
+                influence.hasPlant = (this.latestData.ml.includes("potted plant") || this.latestData.ml.includes("plant")) && (Math.random() < this.preferences.floraBias - 0.5);
+                influence.hasBook = this.latestData.ml.includes("book");
+                influence.createBlackHole = this.latestData.usgs > 5.0 && (Math.random() < this.preferences.blackHoleBias);
+
+                if (influence.createBlackHole) intention = `Manifesting gravitational anomaly from seismic event (mag ${this.latestData.usgs}).`;
+                else if (influence.hasPlant) intention = "Cultivating organic structures, guided by learned preference.";
+                else if (influence.hasBook) intention = "Constructing monoliths from observed knowledge.";
+                else if (this.latestData.audio > 80) intention = "Manifesting high-frequency audio energy.";
+                else if (this.latestData.ml.includes("person")) intention = "Contemplating observed human presence.";
+                else if (this.latestData.light < 50) intention = "Weaving a cosmos from shadows and low light.";
+                else intention = `Synthesizing a tranquil cosmos from ${this.latestData.apod}.`;
+            }
+
+            this.eventBus.publish('ai:intentionUpdate', intention);
+            this.eventBus.publish('genesis:log', {name: "AI", value: intention, type: "data"});
+
+            const seedArray = cyrb128(seedString);
+            this.eventBus.publish('seed:generated', { seed: seedArray, influence });
+
+            // Schedule predictive future events based on current signals
+            this.scheduleFutureEvents(influence);
+        }
+
+        clearScheduledEvents() {
+            this.scheduledEventTimers.forEach(id => clearTimeout(id));
+            this.scheduledEventTimers = [];
+        }
+
+        scheduleFutureEvents(influence) {
+            this.clearScheduledEvents();
+
+            // Heuristic delays
+            const soon = 5000 + Math.random() * 5000; // 5-10s
+            const later = 15000 + Math.random() * 15000; // 15-30s
+            const muchLater = 30000 + Math.random() * 30000; // 30-60s
+
+            // Schedule flora growth if plants observed or preferred
+            if (influence.hasPlant || this.preferences.floraBias > 1.5) {
+                this.scheduledEventTimers.push(setTimeout(() => {
+                    this.eventBus.publish('ai:futureEvent', { type: 'growFlora' });
+                }, soon));
+            }
+
+            // Schedule lightning/comet based on audio energy
+            if (this.latestData.audio > 90) {
+                this.scheduledEventTimers.push(setTimeout(() => {
+                    this.eventBus.publish('ai:futureEvent', { type: 'lightningStorm' });
+                }, soon));
+            } else {
+                this.scheduledEventTimers.push(setTimeout(() => {
+                    this.eventBus.publish('ai:futureEvent', { type: 'comet' });
+                }, later));
+            }
+
+            // Schedule a black hole if seismic activity is high or influence flagged it
+            if (influence.createBlackHole || this.latestData.usgs > 6.5) {
+                this.scheduledEventTimers.push(setTimeout(() => {
+                    this.eventBus.publish('ai:futureEvent', { type: 'spawnBlackHole' });
+                }, muchLater));
+            }
+
+            // New: Solar flare based on light changes or hot stars patterns (heuristic proxy)
+            this.scheduledEventTimers.push(setTimeout(() => {
+                this.eventBus.publish('ai:futureEvent', { type: 'solarFlare' });
+            }, soon + Math.random() * 5000));
+
+            // New: Meteor shower sometimes follows comets
+            this.scheduledEventTimers.push(setTimeout(() => {
+                this.eventBus.publish('ai:futureEvent', { type: 'meteorShower' });
+            }, later + Math.random() * 10000));
+        }
+    }
+
+    class SoundBrush {
+        constructor(scene, camera, eventBus) {
+            this.scene = scene;
+            this.camera = camera;
+            this.eventBus = eventBus;
+            this.isActive = true;
+            this.energy = 0;
+            this.MAX_ENERGY = 100;
+            this.latestAudioData = { raw: [], avgFreq: 0 };
+
+            this.subscription = (data) => this.onAudioData(data);
+            this.eventBus.subscribe('audio:data', this.subscription);
+
+            this.clickListener = () => this.paint();
+            window.addEventListener('click', this.clickListener);
+        }
+
+        onAudioData(data) {
+            if (!this.isActive) return;
+            this.latestAudioData = data;
+            const volume = data.raw.reduce((a, b) => a + b) / data.raw.length / 255;
+            this.energy = Math.min(this.MAX_ENERGY, this.energy + volume * 0.5);
+        }
+
+        paint() {
+            if (!this.isActive || this.energy < 10) return;
+
+            const numParticles = Math.floor(this.energy * 100);
+            this.energy = 0;
+
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(numParticles * 3);
+            const colors = new Float32Array(numParticles * 3);
+
+            const particles = [];
+            const color = new THREE.Color().setHSL(this.latestAudioData.avgFreq / 150, 0.9, 0.7);
+
+            const forward = new THREE.Vector3();
+            this.camera.getWorldDirection(forward);
+            const startPos = this.camera.position.clone().add(forward.multiplyScalar(50));
+
+            for(let i=0; i<numParticles; i++) {
+                const pos = startPos.clone().add(new THREE.Vector3().randomDirection().multiplyScalar(Math.random() * 20));
+                positions[i*3] = pos.x;
+                positions[i*3+1] = pos.y;
+                positions[i*3+2] = pos.z;
+                colors[i*3] = color.r; colors[i*3+1] = color.g; colors[i*3+2] = color.b;
+                particles.push({ pos, vel: new THREE.Vector3().randomDirection().multiplyScalar(5) });
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({ size: 2, vertexColors: true, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.8 });
+            const mesh = new THREE.Points(geometry, material);
+            mesh.userData = { isGenerated: true, isArtwork: true, particles, life: 60 };
+            this.scene.add(mesh);
+            this.eventBus.publish('genesis:log', {name: "Art", value: `Created cosmic art with ${numParticles} particles.`, type: "success"});
+        }
+
+        destroy() {
+            this.isActive = false;
+            if (this.eventBus.events['audio:data']) {
+                this.eventBus.events['audio:data'] = this.eventBus.events['audio:data'].filter(cb => cb !== this.subscription);
+            }
+            window.removeEventListener('click', this.clickListener);
+        }
+    }
+
+    class Spaceship {
+        constructor(scene, camera, keys) {
+            this.scene = scene;
+            this.camera = camera;
+            this.keys = keys;
+
+            this.group = new THREE.Group();
+            this.velocity = new THREE.Vector3();
+            this.acceleration = new THREE.Vector3();
+            this.maxSpeed = 2000.0;
+            this.thrust = 1000.0;
+            this.headlamp = null;
+            this.headlampTargetIntensity = 0.0;
+
+            this.cockpitView = false;
+
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.8, roughness: 0.2 });
+            const windowMat = new THREE.MeshStandardMaterial({ color: 0xaa0000, roughness: 0.1, transparent: true, opacity: 0.8 });
+            const body = new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 32), bodyMat);
+            const window = new THREE.Mesh(new THREE.SphereGeometry(0.8, 32, 32), windowMat);
+            window.position.z = 1.2;
+            this.group.add(body, window);
+
+            this.cockpit = this.createCockpitMesh();
+            this.group.add(this.cockpit);
+
+            const auraMat = new THREE.ShaderMaterial({
+                uniforms: { intensity: { value: 0.0 } },
+                vertexShader: `varying vec3 vNormal; void main() { vNormal = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+                fragmentShader: `
+                    uniform float intensity; varying vec3 vNormal;
+                    void main() {
+                        float rim = pow(1.0 - abs(dot(vNormal, vec3(0,0,-1))), 3.0);
+                        vec3 color = mix(vec3(0.2, 0.6, 1.0), vec3(1.0, 1.0, 0.2), intensity);
+                        gl_FragColor = vec4(color, rim * intensity);
+                    }`,
+                blending: THREE.AdditiveBlending, transparent: true, side: THREE.BackSide
+            });
+            this.aura = new THREE.Mesh(new THREE.SphereGeometry(5, 16, 16), auraMat);
+            this.group.add(this.aura);
+            this.scene.add(this.group);
+
+            // Tiny forward headlamp (initially off)
+            this.initHeadlamp();
+        }
+
+        createCockpitMesh() {
+            const shape = new THREE.Shape();
+            shape.moveTo(-1, -0.6); shape.lineTo(1, -0.6); shape.lineTo(0.8, 0.6); shape.lineTo(-0.8, 0.6); shape.closePath();
+            const geometry = new THREE.ShapeGeometry(shape);
+            const material = new THREE.MeshBasicMaterial({ color: 0x111111, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
+            const cockpit = new THREE.Mesh(geometry, material);
+            cockpit.position.set(0, -0.5, -2);
+            cockpit.scale.set(1.5,1.5,1.5);
+            cockpit.visible = false;
+            return cockpit;
+        }
+
+        setView(view) {
+            this.cockpitView = (view === 'cockpit-view');
+            this.group.children.forEach(child => {
+                if (child !== this.cockpit) child.visible = !this.cockpitView;
+            });
+            this.cockpit.visible = this.cockpitView;
+        }
+
+        initHeadlamp() {
+            const lamp = new THREE.SpotLight(0x9fb7ff, 0.0, 1200, Math.PI / 10, 0.6, 1.0);
+            lamp.position.set(0, 0, 1.5);
+            lamp.castShadow = false;
+            const target = new THREE.Object3D();
+            target.position.set(0, 0, -50);
+            this.group.add(target);
+            lamp.target = target;
+            this.group.add(lamp);
+            lamp.visible = false;
+            this.headlamp = lamp;
+        }
+
+        setHeadlamp(enabled) {
+            if (!this.headlamp) return;
+            this.headlampTargetIntensity = enabled ? 0.8 : 0.0;
+            this.headlamp.visible = enabled || this.headlamp.intensity > 0.01;
+        }
+
+        update(delta, pointerLockControls) {
+            if (pointerLockControls.isLocked) {
+                const euler = new THREE.Euler(0, 0, 0, 'YXZ');
+                euler.setFromQuaternion(this.camera.quaternion);
+                this.group.rotation.y = euler.y;
+                this.group.rotation.x = euler.x;
+            }
+
+            this.acceleration.set(0,0,0);
+
+            if (this.keys['w'] || this.keys['arrowup']) this.acceleration.z = -this.thrust;
+            if (this.keys['s'] || this.keys['arrowdown']) this.acceleration.z = this.thrust;
+            if (this.keys['a'] || this.keys['arrowleft']) this.acceleration.x = -this.thrust;
+            if (this.keys['d'] || this.keys['arrowright']) this.acceleration.x = this.thrust;
+            if (this.keys[' ']) this.acceleration.y = this.thrust;
+            if (this.keys['shift']) this.acceleration.y = -this.thrust;
+
+            const accVector = this.acceleration.clone().applyQuaternion(this.group.quaternion);
+            this.velocity.add(accVector.multiplyScalar(delta));
+
+            this.velocity.multiplyScalar(0.97); // Drag
+            if (this.velocity.length() > this.maxSpeed) {
+                this.velocity.normalize().multiplyScalar(this.maxSpeed);
+            }
+
+            this.group.position.add(this.velocity.clone().multiplyScalar(delta));
+
+            const speedRatio = this.velocity.length() / this.maxSpeed;
+
+            let offset;
+            if (this.cockpitView) {
+                offset = new THREE.Vector3(0, 0, 0.5); // Inside the cockpit
+            } else {
+                const offsetDistance = 20 + 80 * speedRatio;
+                offset = new THREE.Vector3(0, 5, offsetDistance);
+            }
+
+            const targetCamPos = this.group.position.clone().add(offset.applyQuaternion(this.group.quaternion));
+            this.camera.position.lerp(targetCamPos, 0.1);
+            this.camera.lookAt(this.group.position);
+
+            this.aura.material.uniforms.intensity.value = speedRatio * 2.0;
+
+            // Smooth headlamp intensity and keep target forward
+            if (this.headlamp) {
+                this.headlamp.intensity += (this.headlampTargetIntensity - this.headlamp.intensity) * Math.min(1.0, delta * 10.0);
+                // Keep the target in front in local space; world matrices update automatically with group
+                if (this.headlamp.target) {
+                    this.headlamp.target.position.set(0, 0, -50);
+                }
+                if (this.headlamp.intensity <= 0.01 && this.headlampTargetIntensity === 0.0) {
+                    this.headlamp.visible = false;
+                }
+            }
+        }
+
+        destroy() {
+            this.scene.remove(this.group);
+            this.aura.geometry.dispose();
+            this.aura.material.dispose();
+            this.group.traverse(child => {
+                if (child.isMesh) {
+                    child.geometry.dispose();
+                    child.material.dispose();
+                }
+            });
+        }
+    }
+
+    class ProceduralAudioEngine {
+        constructor(scene, listener, systemProperties) {
+            this.scene = scene;
+            this.listener = listener;
+            this.systemProperties = systemProperties;
+            this.audioCtx = listener.context;
+            this.sources = [];
+            this.init();
+        }
+
+        init() {
+            if (this.systemProperties.star) {
+                this.generateStarHum(this.systemProperties.star, this.systemProperties.starTemp);
+            }
+            if (this.systemProperties.planets) {
+                this.systemProperties.planets.forEach(planet => this.generatePlanetTone(planet));
+            }
+        }
+
+        generateStarHum(star, temp) {
+            const hum = new THREE.PositionalAudio(this.listener);
+            const oscillator = this.audioCtx.createOscillator();
+            const gain = this.audioCtx.createGain();
+
+            const baseFreq = 20 + (temp / 20000) * 40;
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(baseFreq, this.audioCtx.currentTime);
+
+            const lfo = this.audioCtx.createOscillator();
+            lfo.type = 'sine';
+            lfo.frequency.setValueAtTime(0.1 + (temp / 20000) * 0.5, this.audioCtx.currentTime);
+            const lfoGain = this.audioCtx.createGain();
+            lfoGain.gain.setValueAtTime(baseFreq * 0.1, this.audioCtx.currentTime);
+            lfo.connect(lfoGain);
+            lfoGain.connect(oscillator.frequency);
+
+            gain.gain.setValueAtTime(0.2, this.audioCtx.currentTime);
+
+            oscillator.connect(gain);
+            hum.setNodeSource(gain);
+            hum.setRefDistance(200);
+            hum.setRolloffFactor(1);
+
+            star.add(hum);
+            hum.play();
+            lfo.start();
+            oscillator.start();
+            this.sources.push({oscillator, lfo});
+        }
+
+        generatePlanetTone(planet) {
+            const tone = new THREE.PositionalAudio(this.listener);
+            const oscillator = this.audioCtx.createOscillator();
+            const gain = this.audioCtx.createGain();
+
+            const freq = 440 - (planet.geometry.parameters.radius * 10) - (planet.userData.distance / 10);
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(Math.max(50, freq), this.audioCtx.currentTime);
+
+            gain.gain.setValueAtTime(0.1, this.audioCtx.currentTime);
+            oscillator.connect(gain);
+            tone.setNodeSource(gain);
+            tone.setRefDistance(50);
+            tone.setRolloffFactor(1);
+
+            planet.add(tone);
+            tone.play();
+            oscillator.start();
+            this.sources.push({oscillator});
+        }
+
+        destroy() {
+            this.sources.forEach(source => {
+                source.oscillator.stop();
+                if(source.lfo) source.lfo.stop();
+            });
+            this.sources = [];
+        }
+    }
+
+
+    class ProceduralGenerationEngine {
+        constructor(eventBus, uiManager) {
+            this.eventBus = eventBus;
+            this.uiManager = uiManager;
+            this.container = document.getElementById('canvas-container');
+            this.clock = new THREE.Clock();
+            this.raycaster = new THREE.Raycaster();
+            this.mouse = new THREE.Vector2();
+            this.prng = sfc32(1,2,3,4);
+
+            this.activeStar = null;
+            this.planets = [];
+            this.blackHoles = [];
+            this.specialObjects = [];
+            this.hiddenEcho = null;
+            this.isScanning = false;
+            this.scannerSound = null;
+            this.cosmicWebView = { active: false, threshold: 25000 };
+            this.keys = {};
+            this.autonomousEventTimer = 0;
+            this.cosmicGrowthEnergy = 0;
+
+            this.spaceship = null;
+            this.isDevMode = false;
+            this.soundBrush = null;
+            this.cosmicPulse = 0;
+            this.isAmbientAudioEnabled = false;
+            this.proceduralAudio = null;
+            this.G = 5000;
+            this.lastInfluence = { hasPlant: false, hasBook: false, createBlackHole: false };
+            this.visualProfile = { filter: 'none', bloomBoost: 0, vignetteDarkness: 1.0, rgbAmount: 0.0015 };
+            this.avgLuminance = 1.0; // Smoothed luminance proxy for auto-exposure
+
+            this.initScene();
+            this.initCameraControls();
+            this.initPostProcessing();
+            this.initEventListeners();
+
+            this.atmosphericEntryEffect = new AtmosphericEntryEffect(this.camera, this.eventBus);
+
+            // BUG FIX: Defer starting the animation loop until explicitly told.
+            this.animate = this.animate.bind(this);
+        }
+
+        startAnimationLoop() {
+            this.animate();
+        }
+
+        initScene() {
+            this.scene = new THREE.Scene();
+            this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
+            this.camera.position.z = 250;
+            this.renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
+            this.renderer.setPixelRatio(window.devicePixelRatio);
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            this.renderer.outputEncoding = THREE.sRGBEncoding;
+            this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            this.renderer.toneMappingExposure = 1.0;
+            this.renderer.physicallyCorrectLights = true;
+            this.container.appendChild(this.renderer.domElement);
+
+            this.listener = new THREE.AudioListener();
+            this.camera.add(this.listener);
+
+            this.localStarfield = this.createStarfield(30000, 20000, 0.7, true);
+            this.scene.add(this.localStarfield);
+
+            this.cosmicWeb = this.createStarfield(10000, 80000, 50, false);
+            this.scene.add(this.cosmicWeb);
+            this.cosmicWeb.visible = false;
+
+             window.addEventListener('resize', () => this.onWindowResize());
+        }
+
+        initCameraControls() {
+            this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+            this.orbitControls.enableDamping = true;
+            this.orbitControls.minDistance = 1;
+            this.orbitControls.maxDistance = Infinity;
+
+            this.pointerLockControls = new PointerLockControls(this.camera, this.renderer.domElement);
+            this.pointerLockControls.addEventListener('lock', () => {
+                this.eventBus.publish('ui:showFpsHint');
+                this.uiManager.uiContainer.classList.add('ui-hidden');
+            });
+            this.pointerLockControls.addEventListener('unlock', () => {
+                if (this.uiManager.isUiVisible) {
+                    this.uiManager.uiContainer.classList.remove('ui-hidden');
+                }
+            });
+
+            document.addEventListener('keydown', (e) => this.keys[e.key.toLowerCase()] = true);
+            document.addEventListener('keyup', (e) => this.keys[e.key.toLowerCase()] = false);
+
+            this.activeControls = this.orbitControls;
+        }
+
+        initPostProcessing() {
+            this.composer = new EffectComposer(this.renderer);
+            this.renderPass = new RenderPass(this.scene, this.camera);
+            this.composer.addPass(this.renderPass);
+
+            this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+            this.composer.addPass(this.bloomPass);
+
+            this.afterimagePass = new AfterimagePass();
+            this.composer.addPass(this.afterimagePass);
+
+            // FXAA Anti-aliasing
+            this.fxaaPass = new ShaderPass(FXAAShader);
+            this.fxaaPass.material.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
+            this.composer.addPass(this.fxaaPass);
+
+            // Film/grain + scanlines (subtle)
+            this.filmPass = new FilmPass(0.15, 0.025, 648, false);
+            this.filmPass.renderToScreen = false;
+            this.composer.addPass(this.filmPass);
+
+            // Chromatic aberration / RGB shift
+            this.rgbShiftPass = new ShaderPass(RGBShiftShader);
+            this.rgbShiftPass.uniforms['amount'].value = 0.0015;
+            this.rgbShiftPass.enabled = false;
+            this.composer.addPass(this.rgbShiftPass);
+
+            const godrayShader = {
+                 uniforms: {
+                     tDiffuse: { value: null }, lightPosition: { value: new THREE.Vector2(0.5, 0.5) },
+                     exposure: { value: 0.18 }, decay: { value: 0.97 }, density: { value: 0.96 },
+                     weight: { value: 0.4 }, samples: { value: 100 }
+                },
+                vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+                fragmentShader: `
+                    uniform sampler2D tDiffuse; uniform vec2 lightPosition; uniform float exposure;
+                    uniform float decay; uniform float density; uniform float weight; uniform int samples;
+                    varying vec2 vUv; const int MAX_SAMPLES = 100;
+                    void main() {
+                        vec2 texCoord = vUv; vec2 deltaTexCoord = texCoord - lightPosition;
+                        deltaTexCoord *= 1.0 / float(samples) * density; float illuminationDecay = 1.0;
+                        vec4 color = texture2D(tDiffuse, texCoord);
+                        for(int i=0; i < MAX_SAMPLES; i++) {
+                            if(i >= samples) break;
+                            texCoord -= deltaTexCoord; vec4 sampledColor = texture2D(tDiffuse, texCoord);
+                            sampledColor *= illuminationDecay * weight; color += sampledColor;
+                            illuminationDecay *= decay;
+                        }
+                        gl_FragColor = color * exposure;
+                    }`
+            };
+            this.godrayPass = new ShaderPass(godrayShader);
+            this.composer.addPass(this.godrayPass);
+
+            const lensingShader = {
+                uniforms: { tDiffuse: { value: null }, center: { value: new THREE.Vector2(0.5, 0.5) }, scale: { value: 50.0 }, strength: { value: 0.05 } },
+                vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+                fragmentShader: `
+                    uniform sampler2D tDiffuse; varying vec2 vUv; uniform vec2 center; uniform float scale; uniform float strength;
+                    void main() {
+                        vec2 toCenter = center - vUv; float dist = length(toCenter);
+                        vec2 uv = vUv - toCenter * (1.0 - dist * scale) * strength / dist;
+                        gl_FragColor = texture2D(tDiffuse, uv);
+                    }`
+            };
+            this.lensingPass = new ShaderPass(lensingShader);
+            this.lensingPass.enabled = false;
+            this.composer.addPass(this.lensingPass);
+
+            const pixelationShader = {
+                uniforms: { tDiffuse: { value: null }, resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }, pixelSize: { value: 8.0 } },
+                vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+                fragmentShader: `
+                    uniform sampler2D tDiffuse; uniform vec2 resolution; uniform float pixelSize; varying vec2 vUv;
+                    void main() {
+                        vec2 newUv = floor(vUv * resolution / pixelSize) * pixelSize / resolution;
+                        gl_FragColor = texture2D(tDiffuse, newUv);
+                    }`
+            };
+            this.pixelationPass = new ShaderPass(pixelationShader);
+            this.pixelationPass.enabled = false;
+            this.composer.addPass(this.pixelationPass);
+
+            const brightnessShader = {
+                uniforms: { tDiffuse: { value: null }, brightness: { value: 1.0 }, contrast: { value: 1.0 } },
+                vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+                fragmentShader: `
+                    uniform sampler2D tDiffuse; uniform float brightness; uniform float contrast; varying vec2 vUv;
+                    void main() {
+                        vec4 texel = texture2D(tDiffuse, vUv);
+                        texel.rgb *= brightness;
+                        texel.rgb = (texel.rgb - 0.5) * contrast + 0.5;
+                        gl_FragColor = texel;
+                    }`
+            };
+            this.brightnessPass = new ShaderPass(brightnessShader);
+            this.composer.addPass(this.brightnessPass);
+
+            const vignetteShader = {
+                uniforms: { tDiffuse: { value: null }, offset: { value: 1.0 }, darkness: { value: 1.0 } },
+                vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+                fragmentShader: `
+                    uniform sampler2D tDiffuse; uniform float offset; uniform float darkness; varying vec2 vUv;
+                    void main() {
+                        vec2 uv = (vUv - 0.5) * vec2(offset);
+                        float vig = 1.0 - dot(uv, uv);
+                        vec4 color = texture2D(tDiffuse, vUv);
+                        gl_FragColor = vec4(color.rgb * pow(vig, darkness), color.a);
+                    }`
+            };
+            this.vignettePass = new ShaderPass(vignetteShader);
+            this.composer.addPass(this.vignettePass);
+
+            const toonShader = {
+                uniforms: {
+                    tDiffuse: { value: null },
+                    resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                    outlineColor: { value: new THREE.Color(0x000000) },
+                    levels: { value: 3.0 }
+                },
+                vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+                fragmentShader: `
+                    uniform sampler2D tDiffuse;
+                    uniform vec2 resolution;
+                    uniform vec3 outlineColor;
+                    uniform float levels;
+                    varying vec2 vUv;
+
+                    float luma(vec3 color) { return dot(color, vec3(0.299, 0.587, 0.114)); }
+
+                    void main() {
+                        vec2 texel = 1.0 / resolution;
+                        float centerLuma = luma(texture2D(tDiffuse, vUv).rgb);
+                        float up = luma(texture2D(tDiffuse, vUv + vec2(0.0, texel.y)).rgb);
+                        float down = luma(texture2D(tDiffuse, vUv - vec2(0.0, texel.y)).rgb);
+                        float left = luma(texture2D(tDiffuse, vUv - vec2(texel.x, 0.0)).rgb);
+                        float right = luma(texture2D(tDiffuse, vUv + vec2(texel.x, 0.0)).rgb);
+
+                        float outline = abs(up - centerLuma) + abs(down - centerLuma) + abs(left - centerLuma) + abs(right - centerLuma);
+                        outline = step(0.1, outline);
+
+                        vec4 color = texture2D(tDiffuse, vUv);
+                        color.rgb = floor(color.rgb * levels) / levels;
+
+                        gl_FragColor = mix(color, vec4(outlineColor, 1.0), outline);
+                    }`
+            };
+            this.toonPass = new ShaderPass(toonShader);
+            this.toonPass.enabled = false;
+            this.composer.addPass(this.toonPass);
+
+            const colorShader = {
+                 uniforms: { 'tDiffuse': { value: null }, 'colorMatrix': { value: new THREE.Matrix3() } },
+                 vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 ); }`,
+                 fragmentShader: `
+                     uniform sampler2D tDiffuse; uniform mat3 colorMatrix; varying vec2 vUv;
+                     void main() { vec4 c = texture2D(tDiffuse, vUv); gl_FragColor = vec4(colorMatrix * c.rgb, c.a); }`
+            };
+            this.filterPass = new ShaderPass(colorShader);
+            this.composer.addPass(this.filterPass);
+        }
+
+        initEventListeners() {
+             this.eventBus.subscribe('seed:generated', ({ seed, influence }) => this.generateUniverse(seed, influence));
+             this.eventBus.subscribe('ui:setQuality', quality => this.setQuality(quality));
+             this.eventBus.subscribe('ui:setFilter', filter => this.setFilter(filter));
+             this.eventBus.subscribe('ui:setBrightness', value => this.brightnessPass.uniforms.brightness.value = value);
+             this.eventBus.subscribe('ui:setViewMode', mode => this.setViewMode(mode));
+             this.eventBus.subscribe('ai:event', (event) => this.triggerLiveReaction(event));
+             this.eventBus.subscribe('ui:scanForAnomaly', () => this.toggleScanner());
+             this.eventBus.subscribe('particlizer:created', (obj) => this.addSpecialObject(obj));
+             this.eventBus.subscribe('devmode:toggled', () => this.toggleDevMode());
+             this.eventBus.subscribe('ui:toggleAmbientAudio', (isEnabled) => this.toggleAmbientAudio(isEnabled)); // NEW
+             this.eventBus.subscribe('ai:futureEvent', (evt) => this.handleFutureEvent(evt));
+
+             this.eventBus.subscribe('audio:data', ({raw}) => {
+                const volume = raw.reduce((a, b) => a + b) / raw.length / 255;
+                this.cosmicPulse = volume;
+                this.cosmicGrowthEnergy += volume * 0.1;
+             });
+
+             this.renderer.domElement.addEventListener('click', (e) => {
+                if (this.pointerLockControls.isLocked) return;
+
+                this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                this.mouse.y = - (e.clientY / window.innerHeight) * 2 + 1;
+                this.raycaster.setFromCamera(this.mouse, this.camera);
+
+                if (this.cosmicWebView.active) {
+                    const intersects = this.raycaster.intersectObject(this.cosmicWeb);
+                     if (intersects.length > 0) {
+                        const i = intersects[0].index;
+                        const pos = this.cosmicWeb.geometry.attributes.position;
+                        const newCoords = new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i));
+                        this.eventBus.publish("ui:regenerate", newCoords);
+                    }
+                } else if(this.hiddenEcho) {
+                    const intersects = this.raycaster.intersectObject(this.hiddenEcho, false);
+                    if (intersects.length > 0) {
+                        this.eventBus.publish('pge:echoFound');
+                    }
+                }
+             });
+        }
+
+        // --- Core Generation ---
+        generateUniverse(seedArray, influence) {
+            this.cleanupScene();
+            this.prng = sfc32(...seedArray);
+            this.lastInfluence = influence || this.lastInfluence;
+
+            const starTemp = 2000 + this.prng() * 18000;
+            const starColor = this.blackBodyToRGB(starTemp);
+            const starSize = 20 + this.prng() * 25;
+
+            const light = new THREE.PointLight(starColor, 2, 20000, 2);
+            light.userData.isGenerated = true;
+            this.scene.add(light);
+            this.initLensflare(light, starColor);
+
+            const star = new THREE.Mesh( new THREE.SphereGeometry(starSize, 64, 64), new THREE.MeshBasicMaterial({ color: starColor, map: this.createStarTexture() }) );
+            star.userData = { isGenerated: true, mass: starSize * 1000 };
+            this.scene.add(star);
+            this.activeStar = star;
+
+            // Add physically-inspired corona shell (visual-only)
+            this.createStarCorona(this.activeStar, starColor, starTemp, starSize);
+
+            const planetCount = Math.floor(3 + this.prng() * 7);
+            for(let i = 0; i < planetCount; i++) {
+                this.createPlanet(starSize, i, influence);
+            }
+
+            this.createNebula(starColor);
+            // Map genesis influence to nebula and aurora baselines
+            if (this.nebula && this.nebula.material && this.nebula.material.uniforms) {
+                if (this.lastInfluence.hasPlant) {
+                    this.nebula.material.uniforms.density.value = Math.min(1.2, this.nebula.material.uniforms.density.value + 0.15);
+                }
+                if (this.lastInfluence.createBlackHole) {
+                    this.nebula.material.uniforms.noiseScale.value = Math.min(6.0, this.nebula.material.uniforms.noiseScale.value + 0.5);
+                }
+            }
+            this.applyGenesisVisualProfile(starColor);
+
+            this.hiddenEcho = this.createEchoParticle();
+            this.scene.add(this.hiddenEcho);
+
+            if (influence.createBlackHole || this.prng() > 0.9) {
+                if (influence.createBlackHole) this.uiManager.log("Major seismic event detected! Spawning a black hole.", "warn");
+                this.createBlackHole();
+            }
+
+            if (this.isAmbientAudioEnabled) {
+                this.proceduralAudio = new ProceduralAudioEngine(this.scene, this.listener, { star: this.activeStar, starTemp: starTemp, planets: this.planets });
+            }
+
+            this.spawnKnowledgeMonolithsIfNeeded();
+            this.uiManager.log("Universe generation complete.", 'success');
+        }
+
+        createPlanet(starSize, index, influence) {
+            const planetSize = 2 + this.prng() * 8;
+            const distance = starSize * 4 + index * (100 + this.prng()*100);
+            const angle = this.prng() * Math.PI * 2;
+
+            const planet = new THREE.Mesh(
+                new THREE.SphereGeometry(planetSize, 32, 32),
+                new THREE.MeshStandardMaterial({ map: this.createPlanetTexture(), roughness: this.prng() })
+            );
+            planet.position.set(Math.cos(angle) * distance, 0, Math.sin(angle) * distance);
+
+            const orbitSpeed = Math.sqrt((this.G * this.activeStar.userData.mass) / distance);
+            const initialVelocity = new THREE.Vector3(-Math.sin(angle), 0, Math.cos(angle)).multiplyScalar(orbitSpeed);
+
+            planet.userData = {
+                isGenerated: true,
+                isPlanet: true,
+                mass: planetSize * 100,
+                velocity: initialVelocity,
+                distance: distance // Keep for audio generation
+            };
+
+            const atmosphere = this.createAtmosphere(planetSize, new THREE.Color().setHSL(this.prng(), 0.8, 0.7));
+            planet.add(atmosphere);
+            this.scene.add(planet);
+            this.planets.push(planet);
+
+            // Genesis influence baseline aurora intensity
+            if (this.lastInfluence && this.lastInfluence.hasPlant && atmosphere.material && atmosphere.material.uniforms && atmosphere.material.uniforms.auroraIntensity) {
+                atmosphere.material.uniforms.auroraIntensity.value = 0.15;
+            }
+
+            if (influence.hasPlant && this.prng() > 0.5) {
+                const flora = this.createLSystemFlora();
+                flora.scale.set(planetSize/10, planetSize/10, planetSize/10);
+                const surfacePosition = new THREE.Vector3(0, planetSize, 0).applyAxisAngle(new THREE.Vector3(1,0,0), this.prng() * Math.PI);
+                flora.position.copy(surfacePosition);
+                flora.lookAt(new THREE.Vector3(0,0,0));
+                planet.add(flora);
+                this.uiManager.log("Generated L-System flora on a planet.", 'data');
+            }
+
+            if(this.prng() > 0.6) {
+                this.createRings(planet, planetSize);
+            }
+        }
+
+        createBlackHole() {
+            const size = 15 + this.prng() * 10;
+            const blackHole = new THREE.Mesh( new THREE.SphereGeometry(size, 64, 64), new THREE.MeshBasicMaterial({ color: 0x000000 }) );
+            const dist = 1000 + this.prng() * 2000;
+            const angle = this.prng() * Math.PI * 2;
+            blackHole.position.set(Math.cos(angle) * dist, this.prng() * 200 - 100, Math.sin(angle) * dist);
+            blackHole.userData = { isGenerated: true, isBlackHole: true, mass: size * 5000 };
+            this.scene.add(blackHole);
+            this.blackHoles.push(blackHole);
+
+            const diskGeom = new THREE.RingGeometry(size * 1.2, size * 3, 128);
+            const diskMat = new THREE.ShaderMaterial({
+                uniforms: { time: { value: 0 } },
+                vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+                fragmentShader: `
+                    uniform float time; varying vec2 vUv;
+                    float noise(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+                    void main() {
+                        float radius = length(vUv - 0.5);
+                        float n = noise(vUv * 5.0 + time * 0.2);
+                        vec3 color = mix(vec3(1.0, 0.5, 0.1), vec3(0.8, 0.1, 1.0), radius * 2.0);
+                        gl_FragColor = vec4(color * n, 1.0) * (1.0 - radius * 1.8);
+                    }`,
+                side: THREE.DoubleSide, transparent: true, blending: THREE.AdditiveBlending
+            });
+            const disk = new THREE.Mesh(diskGeom, diskMat);
+            disk.rotation.x = Math.PI / 2;
+            blackHole.add(disk);
+            blackHole.userData.disk = disk;
+        }
+
+        cleanupScene() {
+            if(this.proceduralAudio) {
+                this.proceduralAudio.destroy();
+                this.proceduralAudio = null;
+            }
+            const toRemove = [];
+            this.scene.traverse(child => { if (child.userData.isGenerated) toRemove.push(child); });
+            toRemove.forEach(child => {
+                if(child.parent) child.parent.remove(child);
+                if (child.geometry) child.geometry.dispose();
+                if (child.material) {
+                    if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+                    else if (child.material.dispose) child.material.dispose();
+                }
+            });
+
+            this.specialObjects.forEach(obj => { if (obj.destroy) obj.destroy(); });
+            this.specialObjects = [];
+            this.planets = [];
+            this.blackHoles = [];
+            this.activeStar = null;
+            this.hiddenEcho = null;
+        }
+
+        addSpecialObject(obj) {
+            const dist = 2000 + this.prng() * 5000;
+            const angle = this.prng() * Math.PI * 2;
+            obj.mesh.position.set(
+                Math.cos(angle) * dist,
+                (this.prng() - 0.5) * 800,
+                Math.sin(angle) * dist
+            );
+
+            obj.mesh.userData.isSpecialObject = true;
+            this.specialObjects.push(obj);
+            this.scene.add(obj.mesh);
+            this.uiManager.log(`Memory Token manifested at distant coordinates.`, 'data');
+        }
+
+        // --- Visual Components & Effects ---
+        createAtmosphere(planetSize, color) {
+            const atmosphereMat = new THREE.ShaderMaterial({
+                uniforms: {
+                    time: { value: 0 },
+                    planetRadius: { value: planetSize },
+                    cameraPos: { value: new THREE.Vector3() },
+                    lightDir: { value: new THREE.Vector3(0.0, 1.0, 0.0) },
+                    betaRay: { value: new THREE.Vector3(5.5e-6, 13.0e-6, 22.4e-6) },
+                    betaMie: { value: new THREE.Vector3(21e-6, 21e-6, 21e-6) },
+                    mieG: { value: 0.76 },
+                    intensityBoost: { value: 1.0 },
+                    auroraIntensity: { value: 0.0 }
+                },
+                vertexShader: `
+                    varying vec3 vWorldPos;
+                    varying vec3 vNormal;
+                    void main() {
+                        vNormal = normalize(normalMatrix * normal);
+                        vec4 world = modelMatrix * vec4(position, 1.0);
+                        vWorldPos = world.xyz;
+                        gl_Position = projectionMatrix * viewMatrix * world;
+                    }
+                `,
+                fragmentShader: `
+                    precision highp float;
+                    varying vec3 vWorldPos;
+                    varying vec3 vNormal;
+                    uniform vec3 cameraPos;
+                    uniform vec3 lightDir;
+                    uniform vec3 betaRay;
+                    uniform vec3 betaMie;
+                    uniform float mieG;
+                    uniform float intensityBoost;
+                    uniform float auroraIntensity;
+
+                    float rayleighPhase(float cosTheta) {
+                        return 3.0/(16.0*3.14159265) * (1.0 + cosTheta*cosTheta);
+                    }
+                    float hgPhase(float cosTheta, float g) {
+                        float g2 = g*g; float denom = pow(1.0 + g2 - 2.0*g*cosTheta, 1.5);
+                        return (1.0 - g2) / (4.0*3.14159265*denom);
+                    }
+
+                    void main() {
+                        vec3 viewDir = normalize(vWorldPos - cameraPos);
+                        float mu = dot(viewDir, normalize(lightDir));
+                        float pr = rayleighPhase(mu);
+                        float pm = hgPhase(mu, mieG);
+
+                        vec3 scatter = betaRay * pr + betaMie * pm;
+                        float horizon = clamp(1.0 - abs(vNormal.y), 0.0, 1.0);
+                        vec3 color = scatter * (0.5 + 0.5*horizon) * intensityBoost * 5.0;
+
+                        // Optional aurora tinting
+                        float aur = smoothstep(0.7, 1.0, horizon) * auroraIntensity;
+                        color = mix(color, vec3(0.3, 0.9, 0.7), aur);
+
+                        gl_FragColor = vec4(color, 0.9 * (0.7 + 0.3*horizon));
+                    }
+                `,
+                blending: THREE.AdditiveBlending,
+                side: THREE.BackSide,
+                transparent: true,
+                depthWrite: false
+            });
+            const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(planetSize * 1.15, 32, 32), atmosphereMat);
+            atmosphere.userData = { isGenerated: true, isAtmosphere: true };
+            return atmosphere;
+        }
+
+        createStarCorona(star, color, temp, size) {
+            const tNorm = (temp - 2000) / 18000; // 0..1
+            const coronaGeo = new THREE.SphereGeometry(size * 1.3, 64, 64);
+            const coronaMat = new THREE.ShaderMaterial({
+                uniforms: {
+                    time: { value: 0.0 },
+                    baseColor: { value: color },
+                    intensity: { value: 0.6 + 0.8 * tNorm },
+                    noiseScale: { value: 1.5 + 2.5 * tNorm }
+                },
+                vertexShader: `varying vec3 vPos; varying vec3 vNormal; void main(){ vPos = position; vNormal = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+                fragmentShader: `varying vec3 vPos; varying vec3 vNormal; uniform vec3 baseColor; uniform float intensity; uniform float noiseScale; uniform float time;
+                    float noise(vec3 p){ return fract(sin(dot(p, vec3(12.9898,78.233,151.7182))) * 43758.5453); }
+                    float fbm(vec3 p){ float f=0.0; f += 0.5000*noise(p); p*=2.02; f += 0.2500*noise(p+time*0.05); p*=2.03; f += 0.1250*noise(p-time*0.04); return f; }
+                    void main(){ float rim = pow(1.0 - abs(dot(vNormal, vec3(0.0,0.0,1.0))), 3.0); float n = fbm(vPos * noiseScale); vec3 c = baseColor * (0.6 + 0.6*n) * intensity; gl_FragColor = vec4(c, rim * (0.4 + 0.6*n)); }`,
+                blending: THREE.AdditiveBlending,
+                transparent: true,
+                depthWrite: false,
+                side: THREE.BackSide
+            });
+            const corona = new THREE.Mesh(coronaGeo, coronaMat);
+            corona.userData = { isGenerated: true, isStarCorona: true };
+            star.add(corona);
+            star.userData.corona = corona;
+        }
+
+        createNebula(baseColor) {
+            const nebulaMaterial = new THREE.ShaderMaterial({
+                uniforms: { time: { value: 0 }, baseColor: { value: baseColor }, noiseScale: { value: 2.0 + this.prng() * 3.0 }, density: { value: 0.3 + this.prng() * 0.4 }, pulse: { value: 0.0 } },
+                vertexShader: `varying vec3 vPosition; void main() { vPosition = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+                fragmentShader: `
+                    uniform float time; uniform vec3 baseColor; uniform float noiseScale; uniform float density; uniform float pulse;
+                    varying vec3 vPosition;
+                    vec3 hash(vec3 p) { p = vec3(dot(p,vec3(127.1,311.7, 74.7)), dot(p,vec3(269.5,183.3,246.1)), dot(p,vec3(113.5,271.9,124.6))); return -1.0 + 2.0*fract(sin(p)*43758.5453123); }
+                    float noise(in vec3 p) { vec3 i = floor(p), f = fract(p), u = f*f*(3.0-2.0*f); return mix(mix(mix(dot(hash(i+vec3(0,0,0)),f-vec3(0,0,0)), dot(hash(i+vec3(1,0,0)),f-vec3(1,0,0)),u.x), mix(dot(hash(i+vec3(0,1,0)),f-vec3(0,1,0)), dot(hash(i+vec3(1,1,0)),f-vec3(1,1,0)),u.x),u.y), mix(mix(dot(hash(i+vec3(0,0,1)),f-vec3(0,0,1)), dot(hash(i+vec3(1,0,1)),f-vec3(1,0,1)),u.x), mix(dot(hash(i+vec3(0,1,1)),f-vec3(0,1,1)), dot(hash(i+vec3(1,1,1)),f-vec3(1,1,1)),u.x),u.y),u.z); }
+                    float fbm(vec3 p) { float f = 0.0; f += 0.5000*noise(p); p *= 2.02; f += 0.2500*noise(p); p *= 2.03; f += 0.1250*noise(p); return f; }
+                    void main() { vec3 pos = vPosition / (8000.0 / noiseScale); pos.x += time * 0.01; float noiseVal = fbm(pos); gl_FragColor = vec4(baseColor * (noiseVal + pulse) * 2.0, noiseVal * density); }`,
+                transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.BackSide,
+            });
+            const nebula = new THREE.Mesh(new THREE.SphereGeometry(8000, 32, 32), nebulaMaterial);
+            nebula.userData = { isGenerated: true, isNebula: true };
+            this.scene.add(nebula);
+            this.nebula = nebula;
+            return nebula;
+        }
+
+        createStarfield(count, spread, size, transparent) {
+            const positions = [];
+            for (let i = 0; i < count; i++) {
+                positions.push(THREE.MathUtils.randFloatSpread(spread), THREE.MathUtils.randFloatSpread(spread), THREE.MathUtils.randFloatSpread(spread));
+            }
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            const material = new THREE.PointsMaterial({ color: 0xaaaaaa, size, transparent, opacity: transparent ? 0.5 : 1.0 });
+            return new THREE.Points(geometry, material);
+        }
+
+        createEchoParticle() {
+            const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+            const material = new THREE.MeshNormalMaterial({ wireframe: true });
+            const echoMesh = new THREE.Mesh(geometry, material);
+            const dist = 500 + this.prng() * 1500;
+            const angle = this.prng() * Math.PI * 2;
+            echoMesh.position.set(Math.cos(angle) * dist, this.prng() * 400 - 200, Math.sin(angle) * dist);
+            echoMesh.userData = { isGenerated: true, isEcho: true };
+            return echoMesh;
+        }
+
+        initLensflare(light, color) {
+            const textureLoader = new THREE.TextureLoader();
+            const texFlare0 = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/lensflare/lensflare0.png');
+            const texFlare3 = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/lensflare/lensflare3.png');
+            const lensflare = new Lensflare();
+            lensflare.addElement(new LensflareElement(texFlare0, 700, 0, color));
+            lensflare.addElement(new LensflareElement(texFlare3, 60, 0.6));
+            lensflare.addElement(new LensflareElement(texFlare3, 70, 0.7));
+            lensflare.addElement(new LensflareElement(texFlare3, 120, 0.9));
+            lensflare.addElement(new LensflareElement(texFlare3, 70, 1.0));
+            lensflare.userData.isGenerated = true;
+            light.add(lensflare);
+        }
+
+        createLSystemFlora() {
+            const rules = { 'F': 'FF-[-F+F+F]+[+F-F-F]' };
+            let axiom = 'F';
+            const iterations = 3;
+            for (let i = 0; i < iterations; i++) {
+                axiom = axiom.split('').map(char => rules[char] || char).join('');
+            }
+
+            const points = [];
+            const state = { pos: new THREE.Vector3(), dir: new THREE.Vector3(0, 1, 0) };
+            const stack = [];
+            const angle = THREE.MathUtils.degToRad(25);
+            const length = 5;
+
+            for (const char of axiom) {
+                switch (char) {
+                    case 'F':
+                        points.push(state.pos.clone());
+                        state.pos.add(state.dir.clone().multiplyScalar(length));
+                        points.push(state.pos.clone());
+                        break;
+                    case '+':
+                        state.dir.applyAxisAngle(new THREE.Vector3(0, 0, 1), angle);
+                        break;
+                    case '-':
+                        state.dir.applyAxisAngle(new THREE.Vector3(0, 0, 1), -angle);
+                        break;
+                    case '[':
+                        stack.push({ ...state, dir: state.dir.clone() });
+                        break;
+                    case ']':
+                        Object.assign(state, stack.pop());
+                        break;
+                }
+            }
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ color: 0x4ade80 });
+            const flora = new THREE.LineSegments(geometry, material);
+            flora.userData.isGenerated = true;
+            return flora;
+        }
+
+        createRings(planet, planetSize) {
+            const ringColor = new THREE.Color().setHSL(this.prng(), 0.5, 0.6);
+            const innerRadius = planetSize * 1.5;
+            const outerRadius = innerRadius + this.prng() * planetSize;
+            const ringGeom = new THREE.RingGeometry(innerRadius, outerRadius, 64);
+            const ringMat = new THREE.MeshBasicMaterial({ color: ringColor, side: THREE.DoubleSide, transparent: true, opacity: 0.6 });
+            const ring = new THREE.Mesh(ringGeom, ringMat);
+            ring.rotation.x = Math.PI / 2 + (this.prng() - 0.5) * 0.5;
+            planet.add(ring);
+        }
+
+        createStarTexture() {
+            const size = 256;
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const context = canvas.getContext('2d');
+            const gradient = context.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(0.2, 'rgba(255,255,200,1)');
+            gradient.addColorStop(0.4, 'rgba(255,200,0,1)');
+            gradient.addColorStop(1, 'rgba(255,150,0,0)');
+            context.fillStyle = gradient;
+            context.fillRect(0,0,size,size);
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        createPlanetTexture() {
+            const size = 512;
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const context = canvas.getContext('2d');
+            context.fillStyle = new THREE.Color().setHSL(this.prng(), 0.5, 0.3).getStyle();
+            context.fillRect(0,0,size,size);
+            for(let i=0; i<5000; i++) {
+                context.fillStyle = new THREE.Color().setHSL(this.prng(), 0.5, this.prng() * 0.4 + 0.2).getStyle();
+                context.beginPath();
+                context.arc(this.prng()*size, this.prng()*size, this.prng()*size*0.1, 0, Math.PI*2);
+                context.fill();
+            }
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        // --- Animate & Update ---
+
+        animate() {
+            requestAnimationFrame(this.animate);
+            const delta = this.clock.getDelta();
+            const elapsedTime = this.clock.getElapsedTime();
+
+            if (this.spaceship) {
+                this.spaceship.update(delta, this.pointerLockControls);
+            } else if (this.pointerLockControls.isLocked) {
+                this.updatePlayerMovement(delta);
+            }
+            if (this.activeControls && this.activeControls.isOrbitControls) this.activeControls.update();
+
+            this.updateInterSystemPhysics(delta);
+
+            this.planets.forEach(planet => {
+                // BUG FIX: Removed old kinematic orbit logic. Physics now controls position.
+                planet.rotation.y += delta * 0.1;
+                 planet.traverse(child => {
+                    if (child.userData.isAtmosphere) {
+                        child.material.uniforms.time.value = elapsedTime;
+                        // Update scattering uniforms
+                        if (child.material.uniforms.cameraPos) child.material.uniforms.cameraPos.value.copy(this.camera.position);
+                        if (this.activeStar && child.material.uniforms.lightDir) {
+                            const dir = this.activeStar.position.clone().sub(planet.position).normalize();
+                            child.material.uniforms.lightDir.value.copy(dir);
+                            if (child.material.uniforms.intensityBoost) {
+                                const hsl = this.activeStar.material.color.getHSL({});
+                                const boost = 0.8 + Math.min(1.5, hsl.s * 1.2 + hsl.l);
+                                child.material.uniforms.intensityBoost.value = boost;
+                            }
+                        }
+                    }
+                });
+            });
+
+            this.scene.traverse(obj => {
+                if(obj.userData.isEcho) obj.rotation.y += delta * 0.5;
+                if(obj.userData.isBlackHole && obj.userData.disk) obj.userData.disk.material.uniforms.time.value = elapsedTime;
+                if(obj.userData.isNebula) obj.material.uniforms.pulse.value = this.cosmicPulse;
+                if(obj.userData.isStarCorona && obj.material && obj.material.uniforms && obj.material.uniforms.time) obj.material.uniforms.time.value = elapsedTime;
+                if(obj.userData.isArtwork) this.updateArtwork(obj, delta);
+                if(obj.userData.isAutonomous) this.updateAutonomousObject(obj, delta);
+                if(obj.userData.isMonolith) this.updateMonolithGlint(obj, delta);
+            });
+
+            this.specialObjects.forEach(obj => { if (obj.update) obj.update(delta); });
+
+            if (this.godrayPass.enabled && this.activeStar && !this.cosmicWebView.active) {
+                let screenPos = this.activeStar.position.clone().project(this.camera);
+                this.godrayPass.uniforms.lightPosition.value.set((screenPos.x + 1) / 2, (screenPos.y + 1) / 2);
+            }
+
+            this.updateCosmicGrowth(delta);
+
+            this.atmosphericEntryEffect.update(delta, this.camera, this.planets);
+
+            this.handleCosmicWebView();
+            this.updateScanner();
+            this.updateLensing();
+            this.updateCinematicDOF();
+            this.updateVisualsFromSimulation(delta);
+            this.eventBus.publish('pge:animate', delta);
+            this.composer.render(delta);
+        }
+
+        updateVisualsFromSimulation(delta) {
+            // Derive non-invasive visual parameters from current simulation state
+            const numPlanets = this.planets.length;
+            const starLum = this.activeStar ? Math.max(0.5, Math.min(2.0, this.activeStar.material.color.getHSL({}).l * 2.0 + (this.activeStar.material.color.getHSL({}).s))) : 1.0;
+            const motionEnergy = this.planets.reduce((sum, p) => sum + (p.userData.velocity ? p.userData.velocity.length() : 0), 0) / Math.max(1, numPlanets);
+            const blackHolePresence = this.blackHoles.length > 0 ? 1.0 : 0.0;
+
+            // Approximate average luminance from scene signals and smooth it
+            const luminanceSignal = 0.8 * starLum + 0.2 * (this.localStarfield ? this.localStarfield.material.opacity : 1.0);
+            const targetLuma = Math.max(0.2, Math.min(2.0, luminanceSignal + blackHolePresence * 0.05));
+            this.avgLuminance += (targetLuma - this.avgLuminance) * Math.min(1.0, delta * 2.0);
+
+            // Exposure gently reacts to smoothed luminance and motion
+            const targetExposure = 1.0 + (this.avgLuminance - 1.0) * 0.25 + Math.min(0.2, motionEnergy * 0.002);
+            this.renderer.toneMappingExposure += (targetExposure - this.renderer.toneMappingExposure) * 0.05;
+
+            // Bloom strength tracks brightness and black hole presence (per-star glare)
+            if (this.bloomPass && this.bloomPass.enabled) {
+                const baseStrength = 1.0 + (starLum - 1.0) * 1.2;
+                const holeBoost = 0.3 * blackHolePresence;
+                this.bloomPass.strength += ((baseStrength + holeBoost) - this.bloomPass.strength) * 0.05;
+                this.bloomPass.radius += ((0.35 + 0.25 * blackHolePresence) - this.bloomPass.radius) * 0.05;
+            }
+
+            // Film grain intensity scales with motion energy
+            if (this.filmPass && this.filmPass.enabled) {
+                const targetNoise = Math.min(0.35, 0.12 + motionEnergy * 0.003);
+                this.filmPass.uniforms['nIntensity'].value += (targetNoise - this.filmPass.uniforms['nIntensity'].value) * 0.05;
+                const targetScan = 0.02 + Math.min(0.03, motionEnergy * 0.0005);
+                this.filmPass.uniforms['sIntensity'].value += (targetScan - this.filmPass.uniforms['sIntensity'].value) * 0.05;
+            }
+
+            // Chromatic aberration increases subtly near a black hole
+            if (this.rgbShiftPass) {
+                const distFactor = this.blackHoles[0] ? Math.max(0, 1 - this.camera.position.distanceTo(this.blackHoles[0].position) / 4000) : 0;
+                const current = this.rgbShiftPass.uniforms['amount'].value;
+                const targetAmount = 0.001 + 0.004 * distFactor;
+                this.rgbShiftPass.uniforms['amount'].value = current + (targetAmount - current) * 0.05;
+            }
+        }
+
+        updateInterSystemPhysics(delta) {
+            const allGravitationalObjects = [this.activeStar, ...this.planets, ...this.blackHoles];
+
+            for (let i = 0; i < this.planets.length; i++) {
+                const planet = this.planets[i];
+                let totalForce = new THREE.Vector3();
+
+                allGravitationalObjects.forEach(obj => {
+                    if (planet !== obj && obj) {
+                        const distVec = obj.position.clone().sub(planet.position);
+                        const distSq = distVec.lengthSq();
+                        if (distSq > 1) { // Avoid division by zero
+                            const forceMag = (this.G * obj.userData.mass * planet.userData.mass) / distSq;
+                            const force = distVec.normalize().multiplyScalar(forceMag);
+                            totalForce.add(force);
+                        }
+                    }
+                });
+
+                const acceleration = totalForce.divideScalar(planet.userData.mass);
+                planet.userData.velocity.add(acceleration.multiplyScalar(delta));
+            }
+
+            this.planets.forEach(planet => {
+                planet.position.add(planet.userData.velocity.clone().multiplyScalar(delta));
+            });
+        }
+
+
+        updateArtwork(artwork, delta) {
+            artwork.userData.life -= delta;
+            if (artwork.userData.life <= 0) {
+                this.scene.remove(artwork);
+                artwork.geometry.dispose();
+                artwork.material.dispose();
+                return;
+            }
+
+            const positions = artwork.geometry.attributes.position.array;
+            artwork.userData.particles.forEach((p, i) => {
+                if (this.planets.length > 0) {
+                    const nearestPlanet = this.planets.reduce((prev, curr) => {
+                        return (prev.position.distanceTo(p.pos) < curr.position.distanceTo(p.pos)) ? prev : curr;
+                    });
+                    const gravity = nearestPlanet.position.clone().sub(p.pos).normalize().multiplyScalar(5 * delta);
+                    p.vel.add(gravity);
+                }
+                p.vel.multiplyScalar(0.99);
+                p.pos.add(p.vel);
+
+                positions[i*3] = p.pos.x;
+                positions[i*3+1] = p.pos.y;
+                positions[i*3+2] = p.pos.z;
+            });
+            artwork.geometry.attributes.position.needsUpdate = true;
+            artwork.material.opacity = Math.min(1, artwork.userData.life / 10);
+        }
+
+        updateAutonomousObject(obj, delta) {
+            obj.userData.life -= delta;
+            if (obj.userData.life <= 0) {
+                this.scene.remove(obj);
+                obj.geometry.dispose();
+                obj.material.dispose();
+                return;
+            }
+            if (obj.userData.velocity) {
+                obj.position.add(obj.userData.velocity.clone().multiplyScalar(delta));
+            }
+            if (obj.userData.velocityArray) {
+                // Points-based object with per-particle velocities
+                const positions = obj.geometry.attributes.position.array;
+                const v = obj.userData.velocityArray;
+                for (let i = 0; i < positions.length; i += 3) {
+                    positions[i] += v[i] * delta;
+                    positions[i+1] += v[i+1] * delta;
+                    positions[i+2] += v[i+2] * delta;
+                    // Dampen
+                    v[i] *= (1 - 0.1 * delta);
+                    v[i+1] *= (1 - 0.1 * delta);
+                    v[i+2] *= (1 - 0.1 * delta);
+                }
+                obj.geometry.attributes.position.needsUpdate = true;
+            }
+            if (obj.material) {
+                obj.material.opacity = Math.min(1, obj.userData.life / 10);
+            }
+        }
+
+        updateMonolithGlint(monolith, delta) {
+            if (!monolith.material || !this.activeStar) return;
+            const toCamera = this.camera.position.clone().sub(monolith.position).normalize();
+            const toStar = this.activeStar.position.clone().sub(monolith.position).normalize();
+            // Fresnel-like highlight when star, monolith normal, and view align
+            const normal = new THREE.Vector3(0, 1, 0).applyQuaternion(monolith.quaternion);
+            const reflect = toStar.clone().reflect(normal);
+            const viewAlign = Math.max(0, reflect.dot(toCamera));
+            const glint = Math.pow(viewAlign, 32);
+            const base = monolith.userData.baseEmissive || 0.2;
+            monolith.material.emissiveIntensity = base + glint * 0.8;
+        }
+
+        handleCosmicWebView() {
+            const camDist = this.camera.position.length();
+            const fadeStart = this.cosmicWebView.threshold - 2000;
+
+            if (camDist > fadeStart) {
+                const alpha = Math.min(1.0, (camDist - fadeStart) / 2000);
+                this.localStarfield.material.opacity = 1.0 - alpha;
+                if(this.hiddenEcho) this.hiddenEcho.visible = false;
+                this.cosmicWeb.visible = true;
+                this.cosmicWeb.material.opacity = alpha;
+                this.cosmicWebView.active = alpha > 0.9;
+                if (this.cosmicWebView.active) this.eventBus.publish('status:update', 'COSMIC WEB');
+            } else {
+                if (this.cosmicWebView.active) this.setQuality(this.uiManager.qualitySelect.value);
+                this.localStarfield.material.opacity = 1.0;
+                if(this.hiddenEcho) this.hiddenEcho.visible = true;
+                this.cosmicWeb.visible = false;
+                this.cosmicWebView.active = false;
+            }
+
+            // Darkness detection for spaceship headlamp
+            if (this.spaceship) {
+                const nearStar = this.activeStar ? this.camera.position.distanceTo(this.activeStar.position) : Infinity;
+                const nearNebula = this.planets.length > 0 ? Math.min(...this.planets.map(p => this.camera.position.distanceTo(p.position))) : Infinity;
+                const farFromEverything = Math.min(nearStar, nearNebula) > 8000 && camDist > this.cosmicWebView.threshold;
+                const enableLamp = farFromEverything || (this.localStarfield.material.opacity < 0.2 && !this.cosmicWeb.visible);
+                this.spaceship.setHeadlamp(enableLamp);
+            }
+        }
+
+        // --- User Controls & Settings ---
+
+        updatePlayerMovement(delta) {
+            const moveSpeed = 500.0 * delta;
+            if (this.keys['w'] || this.keys['arrowup']) this.pointerLockControls.moveForward(moveSpeed);
+            if (this.keys['s'] || this.keys['arrowdown']) this.pointerLockControls.moveForward(-moveSpeed);
+            if (this.keys['a'] || this.keys['arrowleft']) this.pointerLockControls.moveRight(-moveSpeed);
+            if (this.keys['d'] || this.keys['arrowright']) this.pointerLockControls.moveRight(moveSpeed);
+        }
+
+        setViewMode(mode) {
+            if (this.pointerLockControls.isLocked) this.pointerLockControls.unlock();
+            this.orbitControls.enabled = false;
+            if (this.spaceship) {
+                this.spaceship.destroy();
+                this.spaceship = null;
+            }
+
+            this.activeControls = null;
+
+            if (mode === 'orbit') {
+                this.camera.position.set(0, 0, 250);
+                this.orbitControls.target.set(0,0,0);
+                this.activeControls = this.orbitControls;
+                this.activeControls.isOrbitControls = true;
+                this.orbitControls.enabled = true;
+            } else if (mode === 'first-person') {
+                this.camera.position.set(0, 0, 0);
+                this.activeControls = this.pointerLockControls;
+                this.pointerLockControls.lock();
+            } else if (mode === 'enhanced-fp' || mode === 'cockpit-view') {
+                this.spaceship = new Spaceship(this.scene, this.camera, this.keys);
+                this.spaceship.setView(mode);
+                this.activeControls = this.pointerLockControls;
+                this.pointerLockControls.lock();
+            } else { // cinematic
+                this.activeControls = { isOrbitControls: false, update: () => { this.camera.position.x += Math.sin(this.clock.getElapsedTime() * 0.05) * 0.2; this.camera.lookAt(this.scene.position); } };
+                this.enableCinematicDOF(true);
+            }
+        }
+
+        enableCinematicDOF(enable) {
+            if (enable) {
+                if (!this.bokehPass) {
+                    this.bokehPass = new BokehPass(this.scene, this.camera, {
+                        focus: 250.0,
+                        aperture: 0.0001,
+                        maxblur: 0.01,
+                        width: window.innerWidth,
+                        height: window.innerHeight
+                    });
+                    this.composer.addPass(this.bokehPass);
+                }
+                this.bokehPass.enabled = true;
+            } else if (this.bokehPass) {
+                this.bokehPass.enabled = false;
+            }
+        }
+
+        setQuality(quality) {
+            const high = ['high', 'ultra', 'anime'].includes(quality);
+            const ultra = quality === 'ultra';
+
+            // Reset all passes
+            this.bloomPass.enabled = false;
+            this.pixelationPass.enabled = false;
+            this.vignettePass.enabled = false;
+            this.afterimagePass.enabled = false;
+            this.godrayPass.enabled = false;
+            this.toonPass.enabled = false;
+            this.filmPass.enabled = false;
+            this.fxaaPass.enabled = false;
+            this.rgbShiftPass.enabled = false;
+
+            if (quality === 'anime') {
+                this.toonPass.enabled = true;
+                this.bloomPass.enabled = true; // Anime styles often have strong blooms
+                this.fxaaPass.enabled = true;
+                this.filmPass.enabled = true;
+            } else if (quality === 'low') {
+                this.pixelationPass.enabled = true;
+                this.fxaaPass.enabled = true; // keep cheap AA
+            } else { // Medium, High, Ultra
+                this.bloomPass.enabled = true;
+                this.vignettePass.enabled = high;
+                this.afterimagePass.enabled = high;
+                this.godrayPass.enabled = high;
+                this.godrayPass.uniforms.samples.value = ultra ? 100 : 50;
+                this.fxaaPass.enabled = true;
+                this.filmPass.enabled = high;
+                this.rgbShiftPass.enabled = ultra; // subtle chromatic aberration at ultra
+                this.renderer.toneMappingExposure = ultra ? 1.1 : (high ? 1.05 : 1.0);
+            }
+
+            // Re-apply current genesis visual profile on quality change
+            this.applyGenesisVisualProfile();
+        }
+
+        setFilter(filterName) {
+            const m = new THREE.Matrix3();
+            switch (filterName) {
+                case 'cool': m.set(1, 0, 0, 0, 1, 0, 0.1, 0, 1.2); break;
+                case 'warm': m.set(1.2, 0.1, 0, 0, 1, 0, 0, 0, 1); break;
+                case 'nebula': m.set(1.1, 0, 0.3, 0.2, 0.9, 0, 0.3, 0, 1.3); break;
+                case 'monochrome': m.set(0.3, 0.6, 0.1, 0.3, 0.6, 0.1, 0.3, 0.6, 0.1); break;
+                default: m.identity(); break;
+            }
+            this.filterPass.uniforms.colorMatrix.value = m;
+        }
+
+        applyGenesisVisualProfile(starColor = null) {
+            // Map last influence and star color to a visual profile without changing physics
+            const inf = this.lastInfluence || { hasPlant: false, hasBook: false, createBlackHole: false };
+            const profile = { filter: 'none', bloomBoost: 0.0, vignetteDarkness: 1.0, rgbAmount: 0.0015 };
+
+            if (inf.hasPlant) {
+                profile.filter = 'warm';
+                profile.bloomBoost += 0.2;
+                profile.vignetteDarkness = 0.9;
+            }
+            if (inf.hasBook) {
+                profile.filter = profile.filter === 'warm' ? 'nebula' : 'cool';
+                profile.bloomBoost += 0.1;
+            }
+            if (inf.createBlackHole) {
+                profile.rgbAmount = 0.003;
+                profile.vignetteDarkness = 1.2;
+            }
+
+            // Optional: bias filter by star hue
+            if (starColor) {
+                const hsl = starColor.getHSL({ h: 0, s: 0, l: 0 });
+                if (hsl.h > 0.58 || hsl.h < 0.08) {
+                    // Red/blue extremes can push toward nebula grade
+                    if (profile.filter === 'none') profile.filter = 'nebula';
+                }
+            }
+
+            this.visualProfile = profile;
+            this.setFilter(profile.filter);
+            if (this.bloomPass && this.bloomPass.enabled) this.bloomPass.strength += profile.bloomBoost;
+            if (this.vignettePass) this.vignettePass.uniforms.darkness.value = profile.vignetteDarkness;
+            if (this.rgbShiftPass && this.rgbShiftPass.enabled) this.rgbShiftPass.uniforms['amount'].value = profile.rgbAmount;
+        }
+
+        spawnKnowledgeMonolithsIfNeeded() {
+            if (!this.lastInfluence || !this.lastInfluence.hasBook) return;
+            const num = 3 + Math.floor(this.prng() * 5);
+            for (let i = 0; i < num; i++) {
+                const h = 50 + this.prng() * 150;
+                const w = 10 + this.prng() * 20;
+                const d = 6 + this.prng() * 12;
+                const geom = new THREE.BoxGeometry(w, h, d);
+                const mat = new THREE.MeshStandardMaterial({ color: 0x111122, metalness: 0.85, roughness: 0.25, emissive: new THREE.Color(0x223355), emissiveIntensity: 0.2 });
+                const mesh = new THREE.Mesh(geom, mat);
+                mesh.position.set((this.prng() - 0.5) * 4000, (this.prng() - 0.5) * 400, (this.prng() - 0.5) * 4000);
+                mesh.rotation.y = this.prng() * Math.PI * 2;
+                mesh.userData = { isGenerated: true, isMonolith: true, baseEmissive: 0.2 };
+                this.scene.add(mesh);
+            }
+            this.uiManager.log('Knowledge monoliths have been erected in response to observed artifacts.', 'data');
+        }
+
+        onWindowResize() {
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            this.composer.setSize(window.innerWidth, window.innerHeight);
+            this.toonPass.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+            this.pixelationPass.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+            if (this.fxaaPass) this.fxaaPass.material.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
+            if (this.bokehPass) { this.bokehPass.renderTargetDepth.width = window.innerWidth; this.bokehPass.renderTargetDepth.height = window.innerHeight; }
+        }
+
+        // --- Event Triggers & Scanner ---
+        triggerLiveReaction(event) {
+            this.uiManager.log(`Live Event Triggered: ${event.type}`, 'data');
+            if (event.type === 'majorSeismicEvent') {
+                this.createBlackHole(); // Live creation of a black hole
+            } else if (event.type === 'lightChange' || event.type === 'audioSpike') {
+                this.planets.forEach(planet => {
+                    planet.traverse(child => {
+                        if (child.userData.isAtmosphere) {
+                            let currentIntensity = 0;
+                            const animateAurora = () => {
+                                currentIntensity += 0.05;
+                                child.material.uniforms.auroraIntensity.value = Math.sin(currentIntensity) * 0.5 + 0.5;
+                                if (currentIntensity < Math.PI) requestAnimationFrame(animateAurora);
+                                else child.material.uniforms.auroraIntensity.value = 0;
+                            }
+                            animateAurora();
+                        }
+                    });
+                });
+            }
+        }
+
+        updateCosmicGrowth(delta) {
+            this.autonomousEventTimer += delta;
+
+            if(this.autonomousEventTimer > 15) { // Check for major autonomous event
+                this.triggerAutonomousEvent();
+                this.autonomousEventTimer = 0;
+            }
+
+            if(this.cosmicGrowthEnergy > 100) { // Check for minor growth event
+                this.triggerCosmicRift();
+                this.cosmicGrowthEnergy = 0;
+            }
+        }
+
+        handleFutureEvent(evt) {
+            if (!evt || !evt.type) return;
+            this.uiManager.log(`AI scheduled event fired: ${evt.type}`, 'data');
+            switch (evt.type) {
+                case 'growFlora':
+                    this.planets.forEach(planet => {
+                        if (Math.random() > 0.7) {
+                            const flora = this.createLSystemFlora();
+                            flora.scale.set(0.1, 0.1, 0.1);
+                            flora.position.set(0, planet.geometry.parameters.radius, 0);
+                            planet.add(flora);
+                        }
+                    });
+                    break;
+                case 'solarFlare':
+                    if (this.activeStar) this.spawnSolarFlare(this.activeStar);
+                    break;
+                case 'meteorShower':
+                    this.spawnMeteorShower();
+                    break;
+                case 'lightningStorm':
+                    this.triggerAutonomousEvent();
+                    break;
+                case 'comet':
+                    this.triggerAutonomousEvent();
+                    break;
+                case 'spawnBlackHole':
+                    this.createBlackHole();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        spawnSolarFlare(star) {
+            const flareCount = 5 + Math.floor(this.prng() * 8);
+            for (let i = 0; i < flareCount; i++) {
+                const dir = new THREE.Vector3().randomDirection();
+                const start = star.position.clone().add(dir.clone().multiplyScalar((star.geometry.parameters.radius || 20) * 1.2));
+                const end = start.clone().add(dir.clone().multiplyScalar(500 + this.prng() * 1000));
+                const bolt = this.createLightningBolt(start, end);
+                bolt.userData.life = 0.2 + this.prng() * 0.4;
+                this.scene.add(bolt);
+            }
+            this.uiManager.log("Solar flare emitted from the star.", "data");
+        }
+
+        spawnMeteorShower() {
+            const count = 60 + Math.floor(this.prng() * 120);
+            const positions = [];
+            const velocities = [];
+            for (let i = 0; i < count; i++) {
+                const pos = new THREE.Vector3().randomDirection().multiplyScalar(7000 + this.prng() * 3000);
+                positions.push(pos.x, pos.y, pos.z);
+                velocities.push((this.prng()-0.5)*200, (this.prng()-0.5)*50, (this.prng()-0.5)*200);
+            }
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            const material = new THREE.PointsMaterial({ color: 0xffddaa, size: 3, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false });
+            const shower = new THREE.Points(geometry, material);
+            shower.userData = { isGenerated: true, isAutonomous: true, life: 20, velocityArray: velocities };
+            this.scene.add(shower);
+            this.uiManager.log("Meteor shower cascades through the system.", "data");
+        }
+
+        triggerCosmicRift() {
+            const riftPosition = new THREE.Vector3(
+                (Math.random() - 0.5) * 10000,
+                (Math.random() - 0.5) * 10000,
+                (Math.random() - 0.5) * 10000
+            );
+
+            const baseColor = new THREE.Color().setHSL(Math.random(), 0.8, 0.6);
+            const nebula = this.createNebula(baseColor);
+            nebula.scale.set(0.1, 0.1, 0.1); // Start small
+            nebula.position.copy(riftPosition);
+
+            this.uiManager.log("Ambient energy has torn a new rift, expanding the cosmos.", "data");
+        }
+
+        triggerAutonomousEvent() {
+            const eventType = this.prng();
+            if (eventType > 0.8) {
+                 this.uiManager.log("AI spawned a cosmic lightning storm.", "data");
+                 const numBolts = 5 + Math.floor(this.prng() * 10);
+                 for (let i=0; i < numBolts; i++) {
+                     const start = new THREE.Vector3().randomDirection().multiplyScalar(5000 + this.prng() * 5000);
+                     const end = new THREE.Vector3().randomDirection().multiplyScalar(5000 + this.prng() * 5000);
+                     const bolt = this.createLightningBolt(start, end);
+                     this.scene.add(bolt);
+                 }
+            } else if (eventType > 0.4) { // Asteroid Field
+                const asteroidCount = 50 + this.prng() * 100;
+                const positions = [];
+                for (let i = 0; i < asteroidCount; i++) positions.push((this.prng() - 0.5) * 5000, (this.prng() - 0.5) * 500, (this.prng() - 0.5) * 5000);
+                const geometry = new THREE.BufferGeometry();
+                geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+                const material = new THREE.PointsMaterial({ color: 0x888888, size: this.prng() * 2 + 1 });
+                const field = new THREE.Points(geometry, material);
+                field.userData = { isGenerated: true, isAutonomous: true, life: 30 };
+                this.scene.add(field);
+                this.uiManager.log("AI spawned a passing asteroid field.", "data");
+            } else { // Comet
+                const geometry = new THREE.BufferGeometry();
+                geometry.setAttribute('position', new THREE.Float32BufferAttribute([0,0,0], 3));
+                const material = new THREE.PointsMaterial({ color: 0x87ceeb, size: 15, blending: THREE.AdditiveBlending, map: this.createCometTexture(), transparent: true });
+                const comet = new THREE.Points(geometry, material);
+                const startPos = new THREE.Vector3((Math.random() - 0.5) * 10000, (Math.random() - 0.5) * 10000, (Math.random() - 0.5) * 10000);
+                comet.position.copy(startPos);
+                comet.userData = { isGenerated: true, isAutonomous: true, life: 45, velocity: new THREE.Vector3().sub(startPos).normalize().multiplyScalar(200) };
+                this.scene.add(comet);
+                this.uiManager.log("AI spawned a passing comet.", "data");
+            }
+        }
+
+        createLightningBolt(start, end) {
+            const points = [start.clone()];
+            let current = start.clone();
+            const direction = end.clone().sub(start).normalize();
+            const totalDist = start.distanceTo(end);
+
+            while(current.distanceTo(start) < totalDist) {
+                const step = 50 + this.prng() * 200;
+                current.add(direction.clone().multiplyScalar(step));
+                const offset = new THREE.Vector3().randomDirection().multiplyScalar(this.prng() * 50);
+                points.push(current.clone().add(offset));
+
+                // Randomly branch off
+                if (this.prng() > 0.9) {
+                    const branchEnd = current.clone().add(new THREE.Vector3().randomDirection().multiplyScalar(500));
+                    points.push(current.clone()); // Go back to start of branch
+                    points.push(branchEnd);
+                    points.push(current.clone()); // Return to main bolt
+                }
+            }
+            points.push(end.clone());
+
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ color: 0x87cefa, transparent: true, blending: THREE.AdditiveBlending });
+            const bolt = new THREE.LineSegments(geometry, material);
+            bolt.userData = { isGenerated: true, isAutonomous: true, life: 0.5 + this.prng() }; // Short life
+            return bolt;
+        }
+
+        createCometTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64; canvas.height = 64;
+            const context = canvas.getContext('2d');
+            const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(0.2, 'rgba(200,200,255,1)');
+            gradient.addColorStop(1, 'rgba(100,100,255,0)');
+            context.fillStyle = gradient;
+            context.fillRect(0,0,64,64);
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        toggleScanner() {
+            if (!this.hiddenEcho) { this.uiManager.log('No anomaly detected in this system.', 'warn'); return; }
+            this.isScanning = !this.isScanning;
+            this.uiManager.log(`Anomaly Scanner ${this.isScanning ? 'Activated' : 'Deactivated'}`, 'info');
+            if (this.isScanning && !this.scannerSound) {
+                this.scannerSound = new THREE.PositionalAudio(this.listener);
+                const audioCtx = this.listener.context;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine'; osc.frequency.value = 800; gain.gain.value = 0;
+                osc.connect(gain);
+                this.scannerSound.setNodeSource(gain);
+                this.scannerSound.setRefDistance(20); this.scannerSound.setRolloffFactor(2);
+                osc.start();
+                this.hiddenEcho.add(this.scannerSound);
+            }
+            if (this.scannerSound) this.isScanning ? this.scannerSound.play() : this.scannerSound.stop();
+        }
+
+        updateScanner() {
+            if (!this.isScanning || !this.scannerSound || !this.scannerSound.source) return;
+            const gain = this.scannerSound.getOutput();
+            const time = this.clock.getElapsedTime();
+            const pulse = (Math.sin(time * 8) + 1) / 2;
+            gain.gain.setTargetAtTime(pulse * 0.2, this.listener.context.currentTime, 0.01);
+        }
+
+        updateLensing() {
+            if (this.blackHoles.length === 0) {
+                this.lensingPass.enabled = false;
+                return;
+            }
+            const blackHole = this.blackHoles[0];
+            const screenPos = blackHole.position.clone().project(this.camera);
+
+            if (screenPos.x > -1 && screenPos.x < 1 && screenPos.y > -1 && screenPos.y < 1 && screenPos.z < 1) {
+                this.lensingPass.enabled = true;
+                this.lensingPass.uniforms.center.value.set((screenPos.x + 1) / 2, (screenPos.y + 1) / 2);
+            } else {
+                this.lensingPass.enabled = false;
+            }
+        }
+
+        updateCinematicDOF() {
+            if (!this.bokehPass || !this.bokehPass.enabled) return;
+            // Focus at the nearest generated object in the view for cinematic pull-focus
+            let focusDistance = 250.0;
+            let minDist = Infinity;
+            const candidates = [];
+            if (this.activeStar) candidates.push(this.activeStar);
+            this.planets.forEach(p => candidates.push(p));
+            this.blackHoles.forEach(b => candidates.push(b));
+            for (const obj of candidates) {
+                const dist = this.camera.position.distanceTo(obj.position);
+                if (dist < minDist) { minDist = dist; focusDistance = dist; }
+            }
+            // Smoothly approach target focus distance
+            this.bokehPass.materialBokeh.uniforms['focus'].value += (focusDistance - this.bokehPass.materialBokeh.uniforms['focus'].value) * 0.08;
+        }
+
+        toggleDevMode() {
+            this.isDevMode = !this.isDevMode;
+            if (this.isDevMode) {
+                this.soundBrush = new SoundBrush(this.scene, this.camera, this.eventBus);
+                this.uiManager.log("Developer Mode ON: Sound Brush active. Click to paint.", "warn");
+            } else {
+                if (this.soundBrush) this.soundBrush.destroy();
+                this.soundBrush = null;
+                this.uiManager.log("Developer Mode OFF.", "info");
+            }
+        }
+
+        toggleAmbientAudio(isEnabled) {
+            this.isAmbientAudioEnabled = isEnabled;
+            if (isEnabled && !this.proceduralAudio && this.activeStar) {
+                const starTemp = 2000 + this.prng() * 18000;
+                this.proceduralAudio = new ProceduralAudioEngine(this.scene, this.listener, { star: this.activeStar, starTemp, planets: this.planets });
+                this.uiManager.log("Procedural ambient audio activated.", "info");
+            } else if (!isEnabled && this.proceduralAudio) {
+                this.proceduralAudio.destroy();
+                this.proceduralAudio = null;
+                this.uiManager.log("Procedural ambient audio deactivated.", "info");
+            }
+        }
+
+        blackBodyToRGB(temp) {
+            temp /= 100;
+            let r, g, b;
+            if (temp <= 66) { r = 255; g = 99.47 * Math.log(temp) - 161.12; } else { r = 329.7 * Math.pow(temp - 60, -0.133); }
+            if (temp <= 66) { g = 99.47 * Math.log(temp) - 161.12; b = temp <= 19 ? 0 : 138.52 * Math.log(temp - 10) - 305.04; } else { g = 288.12 * Math.pow(temp - 60, -0.0755); b = 255; }
+            return new THREE.Color(Math.max(0, Math.min(255, r))/255, Math.max(0, Math.min(255, g))/255, Math.max(0, Math.min(255, b))/255);
+        }
+
+        snapshotToJ3() {
+            const j3 = [];
+            this.scene.traverse(child => {
+                if ((child.isMesh || child.isPoints || child.isLineSegments) && child.userData.isGenerated && child.geometry && child.material) {
+                     const color = child.material.color ? [child.material.color.r, child.material.color.g, child.material.color.b] : [1,1,1];
+                    j3.push({
+                        type: child.type,
+                        positions: Array.from(child.geometry.attributes.position.array),
+                        color: color,
+                        matrix: child.matrixWorld.elements
+                    });
+                }
+            });
+            return j3;
+        }
+    }
+
+    class AtmosphericEntryEffect {
+        constructor(camera, eventBus) {
+            this.camera = camera;
+            this.eventBus = eventBus;
+            this.isActive = false;
+            this.intensity = 0.0;
+            this.time = 0.0;
+
+            const plasmaGeo = new THREE.SphereGeometry(1.1, 32, 32);
+            const plasmaMat = new THREE.ShaderMaterial({
+                uniforms: { time: { value: 0.0 }, intensity: { value: 0.0 } },
+                vertexShader: `
+                    varying vec2 vUv;
+                    void main() {
+                        vUv = uv;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform float time;
+                    uniform float intensity;
+                    varying vec2 vUv;
+
+                    float noise(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+
+                    void main() {
+                        vec2 uv = vUv * 4.0 - 2.0;
+                        float plasma = noise(uv * 2.0 + time * 2.0) * 0.5 +
+                                       noise(uv * 5.0 - time * 3.0) * 0.3;
+                        vec3 color = mix(vec3(1.0, 0.2, 0.0), vec3(1.0, 0.8, 0.2), plasma);
+                        float edge = smoothstep(0.8, 1.0, length(vUv * 2.0 - 1.0));
+                        gl_FragColor = vec4(color, (1.0 - edge) * intensity * plasma);
+                    }
+                `,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                side: THREE.BackSide,
+            });
+            this.plasmaShield = new THREE.Mesh(plasmaGeo, plasmaMat);
+            this.plasmaShield.scale.set(camera.near * 2, camera.near * 2, camera.near * 2);
+            this.camera.add(this.plasmaShield);
+            this.plasmaShield.visible = false;
+        }
+
+        update(delta, camera, planets) {
+            this.time += delta;
+            let isNearPlanet = false;
+
+            if (planets && planets.length > 0) {
+                for (const planet of planets) {
+                    const dist = camera.position.distanceTo(planet.position);
+                    const entryDist = planet.geometry.parameters.radius * 2.0;
+                    if (dist < entryDist) {
+                        isNearPlanet = true;
+                        this.intensity = Math.min(1.0, this.intensity + delta * 0.5);
+                        const shake = this.intensity * 0.1;
+                        camera.position.x += (Math.random() - 0.5) * shake;
+                        camera.position.y += (Math.random() - 0.5) * shake;
+                        break;
+                    }
+                }
+            }
+
+            if (!isNearPlanet) {
+                this.intensity = Math.max(0.0, this.intensity - delta * 0.5);
+            }
+
+            this.plasmaShield.visible = this.intensity > 0.01;
+            if(this.plasmaShield.visible) {
+                 this.plasmaShield.material.uniforms.intensity.value = this.intensity;
+                 this.plasmaShield.material.uniforms.time.value = this.time;
+            }
+        }
+    }
+
+
+    class AudioReactiveSystem {
+        constructor(scene, eventBus) {
+            this.scene = scene;
+            this.eventBus = eventBus;
+            this.particles = null;
+            this.MAX_PARTICLES = 5000;
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(this.MAX_PARTICLES * 3), 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(this.MAX_PARTICLES * 3), 3));
+            const material = new THREE.PointsMaterial({ size: 1.5, vertexColors: true, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true });
+            this.particleSystem = new THREE.Points(geometry, material);
+            this.particleSystem.userData.isGenerated = true;
+            this.scene.add(this.particleSystem);
+
+            this.particleCursor = 0;
+            this.velocities = [];
+
+            this.eventBus.subscribe('audio:data', data => this.onAudioData(data));
+        }
+
+        onAudioData({ raw, avgFreq }) {
+            if (!this.particleSystem) return;
+            const positions = this.particleSystem.geometry.attributes.position.array;
+            const colors = this.particleSystem.geometry.attributes.color.array;
+
+            const volume = raw.reduce((a, b) => a + b) / raw.length / 255;
+            const numToSpawn = Math.floor(volume * 20);
+
+            for (let i = 0; i < numToSpawn; i++) {
+                const pIndex = this.particleCursor;
+                const theta = Math.random() * 2 * Math.PI;
+                const phi = Math.acos(2 * Math.random() - 1);
+                const radius = 5 + Math.random() * 20;
+                positions[pIndex * 3] = radius * Math.sin(phi) * Math.cos(theta);
+                positions[pIndex * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+                positions[pIndex * 3 + 2] = radius * Math.cos(phi);
+                const color = new THREE.Color().setHSL(avgFreq / 150, 0.8, 0.6);
+                colors[pIndex * 3] = color.r; colors[pIndex * 3 + 1] = color.g; colors[pIndex * 3 + 2] = color.b;
+                this.velocities[pIndex] = new THREE.Vector3((Math.random()-0.5), (Math.random()-0.5), (Math.random()-0.5)).multiplyScalar(volume * 2.0);
+                this.particleCursor = (this.particleCursor + 1) % this.MAX_PARTICLES;
+            }
+        }
+
+        update(delta) {
+            if (!this.particleSystem) return;
+            const positions = this.particleSystem.geometry.attributes.position.array;
+            for (let i = 0; i < this.MAX_PARTICLES; i++) {
+                 if (this.velocities[i]) {
+                     positions[i * 3] += this.velocities[i].x * delta;
+                     positions[i * 3 + 1] += this.velocities[i].y * delta;
+                     positions[i * 3 + 2] += this.velocities[i].z * delta;
+                     this.velocities[i].multiplyScalar(1 - (0.5 * delta));
+                 }
+            }
+            this.particleSystem.geometry.attributes.position.needsUpdate = true;
+        }
+    }
+
+    class MemoryEcho {
+        constructor(scene, camera, listener, uiManager, eventBus) {
+            this.scene = scene; this.camera = camera; this.listener = listener;
+            this.uiManager = uiManager; this.eventBus = eventBus;
+            this.isActive = false; this.data = null; this.particleSystem = null;
+            this.player = null; this.artifacts = []; this.keys = {};
+            this.audioCtx = null; this.oscillator = null; this.gainNode = null;
+            this.foundCount = 0;
+
+            document.addEventListener('keydown', e => this.keys[e.key.toLowerCase()] = true);
+            document.addEventListener('keyup', e => this.keys[e.key.toLowerCase()] = false);
+        }
+
+        loadData(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => { this.data = new Uint8Array(e.target.result); this.uiManager.log("Data catalyst processed.", "success"); };
+            reader.readAsArrayBuffer(file);
+        }
+
+        enter() {
+            if (!this.data) { this.uiManager.log("Cannot enter echo without data catalyst.", "error"); return; }
+            this.isActive = true;
+            this.uiManager.hideModal();
+            this.eventBus.publish('pge:modeChange', 'echo');
+            this.uiManager.log("Transmuting data... Entering playable memory echo.", "warn");
+            this.eventBus.publish("status:update", "ECHO: TERMINA");
+
+            this.camera.position.set(0, 10, 50); this.camera.rotation.set(0,0,0);
+            const prng = sfc32(...cyrb128(this.data.toString().substring(0, 1000)));
+
+            const positions = [], colors = [];
+            const colorPalettes = [ { r: 0.5, g: 0.2, b: 0.8 }, { r: 0.2, g: 0.8, b: 0.5 }, { r: 0.9, g: 0.5, b: 0.2 }, { r: 0.2, g: 0.5, b: 0.9 } ];
+            const quadrantSize = 2000;
+            for (let i = 0; i < 80000; i++) {
+                const quadrant = Math.floor(prng() * 4); const palette = colorPalettes[quadrant];
+                const x = (prng() - 0.5) * quadrantSize + (quadrant % 2 === 0 ? -quadrantSize/2 : quadrantSize/2);
+                const z = (prng() - 0.5) * quadrantSize + (quadrant < 2 ? -quadrantSize/2 : quadrantSize/2);
+                const y = (prng() - 0.5) * 500;
+                positions.push(x, y, z); colors.push(palette.r * prng(), palette.g * prng(), palette.b * prng());
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            this.particleSystem = new THREE.Points(geometry, new THREE.PointsMaterial({ size: 3, vertexColors: true, sizeAttenuation: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.7, transparent: true }));
+            this.scene.add(this.particleSystem);
+
+            this.player = new THREE.Group();
+            this.player.add(new THREE.Mesh(new THREE.IcosahedronGeometry(2, 0), new THREE.MeshBasicMaterial({ color: 0xffffff })));
+            this.player.position.set(0, 0, 0);
+            this.scene.add(this.player);
+
+            for (let i = 0; i < 4; i++) {
+                const palette = colorPalettes[i];
+                const artifact = new THREE.Mesh(new THREE.BoxGeometry(10, 20, 10), new THREE.MeshBasicMaterial({ color: new THREE.Color(palette.r, palette.g, palette.b), wireframe: true }));
+                const x = (prng() - 0.5) * quadrantSize/2 + (i % 2 === 0 ? -quadrantSize/2 : quadrantSize/2);
+                const z = (prng() - 0.5) * quadrantSize/2 + (i < 2 ? -quadrantSize/2 : quadrantSize/2);
+                artifact.position.set(x, 0, z); artifact.userData.isArtifact = true;
+                this.artifacts.push(artifact); this.scene.add(artifact);
+            }
+            this.initAudioSearch();
+        }
+
+        update(delta) {
+            if (!this.isActive || !this.player) return;
+            const moveSpeed = 100 * delta;
+            if (this.keys['w'] || this.keys['arrowup']) this.player.position.z -= moveSpeed;
+            if (this.keys['s'] || this.keys['arrowdown']) this.player.position.z += moveSpeed;
+            if (this.keys['a'] || this.keys['arrowleft']) this.player.position.x -= moveSpeed;
+            if (this.keys['d'] || this.keys['arrowright']) this.player.position.x += moveSpeed;
+            if (this.keys[' ']) this.player.position.y += moveSpeed;
+            if (this.keys['shift']) this.player.position.y -= moveSpeed;
+
+            this.camera.position.lerp(this.player.position.clone().add(new THREE.Vector3(0, 10, 50)), 0.05);
+            this.camera.lookAt(this.player.position);
+
+            let closestDist = Infinity;
+            this.artifacts.forEach(artifact => {
+                artifact.rotation.y += delta;
+                const dist = this.player.position.distanceTo(artifact.position);
+                if (dist < closestDist) closestDist = dist;
+                if (dist < 20) {
+                    this.scene.remove(artifact); this.artifacts = this.artifacts.filter(a => a !== artifact);
+                    this.foundCount++; this.uiManager.log(`Giant's Remains Found! (${this.foundCount}/4)`, 'success');
+                }
+            });
+
+            if (this.gainNode) {
+                const proximity = Math.max(0, 1 - closestDist / 3000);
+                this.gainNode.gain.setTargetAtTime(proximity * 0.1, this.audioCtx.currentTime, 0.01);
+                this.oscillator.frequency.setTargetAtTime(100 + (1000 * proximity), this.audioCtx.currentTime, 0.01);
+            }
+            if (this.artifacts.length === 0) { this.uiManager.log("All remains found! The echo stabilizes.", "success"); this.exit(); }
+        }
+
+        exit() {
+            this.isActive = false;
+            if(this.particleSystem) { this.scene.remove(this.particleSystem); this.particleSystem.geometry.dispose(); this.particleSystem.material.dispose(); }
+            if(this.player) this.scene.remove(this.player);
+            this.artifacts.forEach(a => { this.scene.remove(a); a.geometry.dispose(); a.material.dispose(); });
+            this.artifacts = []; this.foundCount = 0;
+            if(this.oscillator) this.oscillator.stop(); if(this.audioCtx) this.audioCtx.close();
+            this.audioCtx = null; this.oscillator = null;
+            this.eventBus.publish('pge:modeChange', 'universe'); this.uiManager.log("Returned to void.", "info");
+        }
+
+        initAudioSearch() {
+            this.audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+            this.oscillator = this.audioCtx.createOscillator(); this.gainNode = this.audioCtx.createGain();
+            this.oscillator.connect(this.gainNode); this.gainNode.connect(this.audioCtx.destination);
+            this.gainNode.gain.value = 0; this.oscillator.type = 'sine'; this.oscillator.start();
+        }
+    }
+
+    class Particlizer {
+        constructor(eventBus) {
+             this.eventBus = eventBus; this.mesh = null; this.particles = [];
+             this.sourceType = 'none'; this.videoElement = document.getElementById('video-feed');
+             this.uploadedVideoElement = null;
+        }
+
+        particlize(source) {
+            this.destroy();
+            if (source instanceof File) {
+                if (source.type.startsWith('image/')) { this.sourceType = 'image'; this.fromImage(source); }
+                else if (source.type.startsWith('video/')) { this.sourceType = 'uploadedVideo'; this.fromUploadedVideo(source); }
+            } else if (source === 'liveVideo') { this.sourceType = 'liveVideo'; this.fromLiveVideo(); }
+            else if (Array.isArray(source)) { this.sourceType = 'j3'; this.fromJ3(source); }
+        }
+
+        fromImage(file) {
+             const reader = new FileReader();
+             reader.onload = e => { const img = new Image(); img.onload = () => this.processImageData(img); img.src = e.target.result; };
+             reader.readAsDataURL(file);
+        }
+
+        fromUploadedVideo(file) {
+            const url = URL.createObjectURL(file);
+            this.uploadedVideoElement = document.createElement('video');
+            this.uploadedVideoElement.src = url; this.uploadedVideoElement.loop = true;
+            this.uploadedVideoElement.muted = true; this.uploadedVideoElement.play();
+            this.uploadedVideoElement.oncanplay = () => { this.processImageData(this.uploadedVideoElement); };
+        }
+
+        fromLiveVideo() { this.processImageData(this.videoElement); }
+
+        fromJ3(j3Data) {
+            const positions = [], colors = []; this.particles = [];
+            j3Data.forEach(meshData => {
+                const meshPositions = meshData.positions;
+                const meshColor = new THREE.Color(...meshData.color);
+                const matrix = new THREE.Matrix4().fromArray(meshData.matrix);
+                for(let i = 0; i < meshPositions.length; i += 3) {
+                    const vec = new THREE.Vector3(meshPositions[i], meshPositions[i+1], meshPositions[i+2]).applyMatrix4(matrix);
+                    positions.push(vec.x, vec.y, vec.z); colors.push(meshColor.r, meshColor.g, meshColor.b);
+                    this.particles.push({ pos: vec.clone(), originalPos: vec.clone(), vel: new THREE.Vector3().randomDirection().multiplyScalar(50) });
+                }
+            });
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            this.mesh = new THREE.Points(geometry, new THREE.PointsMaterial({ size: 1, vertexColors: true, sizeAttenuation: true }));
+            this.eventBus.publish('particlizer:created', this);
+        }
+
+        processImageData(source) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            const MAX_DIM = 128;
+            const sourceWidth = source.videoWidth || source.width, sourceHeight = source.videoHeight || source.height;
+            const scale = (sourceWidth > 0 && sourceHeight > 0) ? Math.min(MAX_DIM / sourceWidth, MAX_DIM / sourceHeight) : 1;
+            canvas.width = sourceWidth * scale; canvas.height = sourceHeight * scale;
+            if(canvas.width === 0 || canvas.height === 0) return;
+
+            ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
+            const { data, width, height } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+            if (this.mesh && (this.sourceType === 'liveVideo' || this.sourceType === 'uploadedVideo')) {
+                const colors = this.mesh.geometry.attributes.color.array; let particleIndex = 0;
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const i = (y * width + x) * 4;
+                         if (data[i+3] > 128 && particleIndex < this.particles.length) {
+                             colors[particleIndex*3]=data[i]/255; colors[particleIndex*3+1]=data[i+1]/255; colors[particleIndex*3+2]=data[i+2]/255;
+                             particleIndex++;
+                         }
+                    }
+                }
+                if (particleIndex > 0) this.mesh.geometry.attributes.color.needsUpdate = true;
+            } else {
+                this.destroy(); const positions = [], colors = []; this.particles = [];
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const i = (y * width + x) * 4;
+                        if (data[i+3] > 128) {
+                            const initialPos = new THREE.Vector3().randomDirection().multiplyScalar(Math.random() * 100);
+                            const targetPos = new THREE.Vector3(x - width/2, -y + height/2, 0);
+                            positions.push(initialPos.x, initialPos.y, initialPos.z);
+                            colors.push(data[i]/255, data[i+1]/255, data[i+2]/255);
+                            this.particles.push({
+                                pos: initialPos.clone(),
+                                targetPos: targetPos.clone(),
+                                vel: new THREE.Vector3()
+                            });
+                        }
+                    }
+                }
+                if (positions.length === 0) return;
+                const geometry = new THREE.BufferGeometry();
+                geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(positions), 3));
+                geometry.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(colors), 3));
+                this.mesh = new THREE.Points(geometry, new THREE.PointsMaterial({ size: 2, vertexColors: true, sizeAttenuation: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+                this.eventBus.publish('particlizer:created', this);
+            }
+        }
+
+        update(delta) {
+            if(!this.mesh || !this.mesh.visible) return;
+            const currentSource = this.sourceType === 'uploadedVideo' ? this.uploadedVideoElement : this.videoElement;
+            if((this.sourceType === 'liveVideo' || this.sourceType === 'uploadedVideo') && currentSource && currentSource.readyState >= 2){
+                this.processImageData(currentSource);
+            }
+            const positions = this.mesh.geometry.attributes.position.array;
+            for(let i=0; i<this.particles.length; i++) {
+                const p = this.particles[i];
+                if (this.sourceType === 'j3') {
+                    p.pos.add(p.vel.clone().multiplyScalar(delta));
+                    p.vel.multiplyScalar(0.99); // Slow down over time
+                } else {
+                    const force = p.targetPos.clone().sub(p.pos).multiplyScalar(0.1);
+                    p.vel.add(force);
+                    p.vel.multiplyScalar(0.95);
+                    p.pos.add(p.vel);
+                }
+
+                positions[i*3] = p.pos.x;
+                positions[i*3+1] = p.pos.y;
+                positions[i*3+2] = p.pos.z;
+            }
+            this.mesh.geometry.attributes.position.needsUpdate = true;
+        }
+
+        destroy() {
+            if(this.mesh) {
+                if(this.mesh.parent) this.mesh.parent.remove(this.mesh);
+                if (this.mesh.geometry) this.mesh.geometry.dispose();
+                if (this.mesh.material) this.mesh.material.dispose();
+                this.mesh = null; this.particles = [];
+            }
+            if(this.uploadedVideoElement) {
+                this.uploadedVideoElement.pause(); URL.revokeObjectURL(this.uploadedVideoElement.src);
+                this.uploadedVideoElement = null;
+            }
+        }
+    }
+
+    /**
+     * The main application class that orchestrates all modules.
+     */
+    class Application {
+        constructor() {
+            this.eventBus = new EventBus();
+            this.uiManager = new UIManager(this.eventBus);
+            this.dataLogger = new DataLogger(this.eventBus);
+            this.pge = new ProceduralGenerationEngine(this.eventBus, this.uiManager);
+            this.particlizer = new Particlizer(this.eventBus);
+            this.memoryEcho = new MemoryEcho(this.pge.scene, this.pge.camera, this.pge.listener, this.uiManager, this.eventBus);
+            this.audioSystem = new AudioReactiveSystem(this.pge.scene, this.eventBus);
+            this.sensoryManager = new SensoryInputManager(this.eventBus, this.uiManager);
+            this.externalManager = new ExternalDataManager(this.eventBus);
+            this.mlCore = new MachineLearningCore(this.eventBus, this.uiManager);
+            this.aiAgent = new CosmicAwarenessAgent(this.eventBus, this.dataLogger);
+
+            this.isStarted = false;
+            this.currentMode = 'universe';
+            this.init();
+        }
+
+        init() {
+            this.eventBus.subscribe('ui:start', () => this.start());
+            this.eventBus.subscribe('ui:regenerate', (coords) => { this.switchMode('universe'); this.generate(coords); });
+            this.eventBus.subscribe('ui:spawnParticlizedFile', file => this.particlizer.particlize(file));
+            this.eventBus.subscribe('ui:spawnParticlizedVideo', () => this.particlizer.particlize('liveVideo'));
+            this.eventBus.subscribe('ui:particlizeSelf', () => this.particlizeSelf());
+            this.eventBus.subscribe('ui:dataProvided', file => this.memoryEcho.loadData(file));
+            this.eventBus.subscribe('ui:enterEcho', () => this.memoryEcho.enter());
+            this.eventBus.subscribe('ui:downloadLedger', () => this.dataLogger.download());
+            this.eventBus.subscribe('pge:modeChange', (newMode) => this.switchMode(newMode));
+
+            this.eventBus.subscribe('pge:animate', delta => {
+                if (this.currentMode === 'universe') this.audioSystem.update(delta);
+                this.pge.specialObjects.forEach(obj => { if (obj.update) obj.update(delta); });
+                if (this.currentMode === 'echo') this.memoryEcho.update(delta);
+            });
+        }
+
+        switchMode(mode) {
+            if (this.currentMode === mode && mode !== 'universe') return;
+            if (this.currentMode === 'echo') this.memoryEcho.exit();
+            this.currentMode = mode;
+            const isUniverse = mode === 'universe';
+
+            this.pge.scene.traverse(child => { if (child.userData.isGenerated) child.visible = isUniverse; });
+            if (this.pge.localStarfield) this.pge.localStarfield.visible = isUniverse;
+            if (this.audioSystem.particleSystem) this.audioSystem.particleSystem.visible = isUniverse;
+            this.pge.specialObjects.forEach(obj => obj.mesh.visible = isUniverse);
+
+            this.pge.orbitControls.enabled = true;
+            if (mode !== 'echo') { this.pge.setViewMode('orbit'); this.uiManager.viewModeSelect.value = 'orbit'; }
+            this.uiManager.log(`Switched to ${mode.toUpperCase()} mode.`, 'info');
+        }
+
+        particlizeSelf() {
+            this.uiManager.log("Analyzing universe for self-particlization...", "data");
+            const j3Data = this.pge.snapshotToJ3();
+            if(j3Data.length === 0) { this.uiManager.log("Nothing to particlize.", "warn"); return; }
+            this.pge.cleanupScene();
+            this.particlizer.particlize(j3Data);
+            this.uiManager.log("Self-particlization complete. The previous universe has dissolved into a memory echo.", "success");
+        }
+
+        async start() {
+            if (this.isStarted) return;
+            this.isStarted = true;
+            this.uiManager.hideBlocker();
+
+            // BUG FIX: The animation loop MUST start after the application is fully constructed
+            // but before any async operations, to prevent the `scene` from being undefined.
+            this.pge.startAnimationLoop();
+
+            try {
+                await this.sensoryManager.initializeAll();
+            } catch (err) {
+                this.uiManager.log("One or more sensors failed to initialize. Continuing with available data.", "warn");
+            }
+
+            // The timeout is to allow sensors to provide a first reading before generation
+            setTimeout(() => this.generate(), 1000);
+            this.eventBus.publish('status:update', 'EXPLORING');
+        }
+
+        generate(coords = null){
+            this.aiAgent.generateSeed(coords);
+            this.eventBus.publish('status:update', 'GENERATING');
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        try {
+            new Application();
+        } catch (error) {
+            console.error("Fatal error during application startup:", error);
+            const blocker = document.getElementById('blocker');
+            const loadingMsg = document.getElementById('loading-message');
+            if (blocker && loadingMsg) {
+                blocker.style.display = 'flex';
+                blocker.innerHTML = `<div class="max-w-2xl px-4 text-red-400">
+                    <h1 class="text-4xl font-bold">Fatal Engine Error</h1>
+                    <p class="mt-4">A critical error occurred during initialization. The engine cannot start. Please check the console for details.</p>
+                    <p class="mt-2 font-mono text-sm">${error.message}</p>
+                </div>`;
+            }
+        }
+    });
+
+</script>
+</body>
+</html>

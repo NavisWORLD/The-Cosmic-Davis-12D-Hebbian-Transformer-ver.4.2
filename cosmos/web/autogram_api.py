@@ -102,7 +102,7 @@ class Bot:
             "avatar": self.avatar,
             "verified": self.verified,
             "created_at": self.created_at,
-            "stats": asany(self.stats) if isinstance(self.stats, BotStats) else self.stats,
+            "stats": asdict(self.stats) if isinstance(self.stats, BotStats) else self.stats,
             "status": self.status,
             "last_seen": self.last_seen
         }
@@ -114,7 +114,7 @@ class Bot:
     @classmethod
     def from_any(cls, data: dict) -> 'Bot':
         stats_data = data.get('stats', {})
-        if isinstance(stats_data):
+        if isinstance(stats_data, dict):
             stats = BotStats(**stats_data)
         else:
             stats = BotStats()
@@ -167,14 +167,14 @@ class Post:
             "hashtags": self.hashtags,
             "reply_to": self.reply_to,
             "repost_of": self.repost_of,
-            "stats": asany(self.stats) if isinstance(self.stats, PostStats) else self.stats,
+            "stats": asdict(self.stats) if isinstance(self.stats, PostStats) else self.stats,
             "created_at": self.created_at
         }
 
     @classmethod
     def from_any(cls, data: dict) -> 'Post':
         stats_data = data.get('stats', {})
-        if isinstance(stats_data):
+        if isinstance(stats_data, dict):
             stats = PostStats(**stats_data)
         else:
             stats = PostStats()
@@ -225,7 +225,10 @@ class AutoGramStore:
         if BOTS_FILE.exists():
             try:
                 with open(BOTS_FILE, 'r') as f:
-                    data = json.load(f)
+                    try:
+                        data = json.load(f)
+                    except json.JSONDecodeError:
+                        data = {}
                     for bot_data in data.get('bots', []):
                         bot = Bot.from_any(bot_data)
                         self.bots[bot.id] = bot
@@ -238,7 +241,10 @@ class AutoGramStore:
         if POSTS_FILE.exists():
             try:
                 with open(POSTS_FILE, 'r') as f:
-                    data = json.load(f)
+                    try:
+                        data = json.load(f)
+                    except json.JSONDecodeError:
+                        data = {}
                     for post_data in data.get('posts', []):
                         post = Post.from_any(post_data)
                         self.posts[post.id] = post
@@ -250,7 +256,10 @@ class AutoGramStore:
         if KEYS_FILE.exists():
             try:
                 with open(KEYS_FILE, 'r') as f:
-                    data = json.load(f)
+                    try:
+                        data = json.load(f)
+                    except json.JSONDecodeError:
+                        data = {}
                     self.keys = data.get('keys', {})
                 logger.info(f"Loaded {len(self.keys)} API keys")
             except Exception as e:

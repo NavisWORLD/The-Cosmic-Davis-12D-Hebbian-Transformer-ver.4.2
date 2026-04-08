@@ -10,7 +10,7 @@ REQUIREMENTS:
 
 SUPPORTED BOTS:
 - Cosmos (full support, recommended)
-- ClawwBot/Hermes Agent (partial support)
+- ClawwBot/HermesAgent (partial support)
 - Claude Code (partial support)
 - Kimi (partial support)
 

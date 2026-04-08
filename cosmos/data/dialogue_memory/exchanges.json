@@ -1,0 +1,130 @@
+[
+  {
+    "exchange_id": "test_123",
+    "timestamp": "2026-03-15T09:29:12.423075",
+    "prompt": "Verification",
+    "participating_agents": [
+      "test_bot"
+    ],
+    "rounds": {
+      "propose": [
+        {
+          "turn_id": "test_turn",
+          "timestamp": "2026-03-15T09:29:12.423075",
+          "agent_id": "test_bot",
+          "content": "Persistence Test",
+          "round_type": "propose",
+          "addressing": [],
+          "references": [],
+          "vote_for": null
+        }
+      ]
+    },
+    "final_response": "Persistence Test",
+    "winning_agent": "test_bot",
+    "vote_breakdown": {
+      "test_bot": 1.0
+    },
+    "tool_used": null,
+    "consensus_reached": true,
+    "duration_ms": 0,
+    "session_type": "swarm_chat",
+    "metadata": {}
+  },
+  {
+    "exchange_id": "test_123",
+    "timestamp": "2026-03-15T09:29:51.112426",
+    "prompt": "Verification",
+    "participating_agents": [
+      "test_bot"
+    ],
+    "rounds": {
+      "propose": [
+        {
+          "turn_id": "test_turn",
+          "timestamp": "2026-03-15T09:29:51.112426",
+          "agent_id": "test_bot",
+          "content": "Persistence Test",
+          "round_type": "propose",
+          "addressing": [],
+          "references": [],
+          "vote_for": null
+        }
+      ]
+    },
+    "final_response": "Persistence Test",
+    "winning_agent": "test_bot",
+    "vote_breakdown": {
+      "test_bot": 1.0
+    },
+    "tool_used": null,
+    "consensus_reached": true,
+    "duration_ms": 0,
+    "session_type": "swarm_chat",
+    "metadata": {}
+  },
+  {
+    "exchange_id": "test_123",
+    "timestamp": "2026-03-15T09:34:10.289202",
+    "prompt": "Verification",
+    "participating_agents": [
+      "test_bot"
+    ],
+    "rounds": {
+      "propose": [
+        {
+          "turn_id": "test_turn",
+          "timestamp": "2026-03-15T09:34:10.289202",
+          "agent_id": "test_bot",
+          "content": "Persistence Test",
+          "round_type": "propose",
+          "addressing": [],
+          "references": [],
+          "vote_for": null
+        }
+      ]
+    },
+    "final_response": "Persistence Test",
+    "winning_agent": "test_bot",
+    "vote_breakdown": {
+      "test_bot": 1.0
+    },
+    "tool_used": null,
+    "consensus_reached": true,
+    "duration_ms": 0,
+    "session_type": "swarm_chat",
+    "metadata": {}
+  },
+  {
+    "exchange_id": "test_123",
+    "timestamp": "2026-03-15T11:21:32.721953",
+    "prompt": "Verification",
+    "participating_agents": [
+      "test_bot"
+    ],
+    "rounds": {
+      "propose": [
+        {
+          "turn_id": "test_turn",
+          "timestamp": "2026-03-15T11:21:32.721953",
+          "agent_id": "test_bot",
+          "content": "Persistence Test",
+          "round_type": "propose",
+          "addressing": [],
+          "references": [],
+          "vote_for": null
+        }
+      ]
+    },
+    "final_response": "Persistence Test",
+    "winning_agent": "test_bot",
+    "vote_breakdown": {
+      "test_bot": 1.0
+    },
+    "tool_used": null,
+    "consensus_reached": true,
+    "duration_ms": 0,
+    "session_type": "swarm_chat",
+    "metadata": {}
+  }
+]

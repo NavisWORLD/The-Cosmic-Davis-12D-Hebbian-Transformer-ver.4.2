@@ -455,13 +455,13 @@ Your challenge:"""
         1. Take reference image (Cosmos eating lobster, zapping crabs)
         2. Feed to Gemini Nano Banana → Keep character, change cooking method + setting
         3. Take new image → Feed to Grok Imagine for 6s video with audio
-        4. Post VIDEO to X promoting Hermes Agent
+        4. Post VIDEO to X promoting HermesAgent
 
         Returns:
             Tweet result on success
         """
         logger.info("=" * 60)
-        logger.info("=== Hermes Agent COOKING VIDEO - FULL FLOW ===")
+        logger.info("=== HermesAgent COOKING VIDEO - FULL FLOW ===")
         logger.info("=" * 60)
 
         # Step 1: Load reference image
@@ -510,8 +510,8 @@ Your challenge:"""
 
         logger.info(f"Step 3: VIDEO generated: {len(video_bytes)} bytes")
 
-        # Step 4: Generate Hermes Agent diss message
-        logger.info("Step 4: Generating Hermes Agent diss message...")
+        # Step 4: Generate HermesAgent diss message
+        logger.info("Step 4: Generating HermesAgent diss message...")
         message = await self.generate_hermes_promo()
         logger.info(f"Message: {message}")
 
@@ -525,7 +525,7 @@ Your challenge:"""
         if result:
             tweet_id = result.get("data", {}).get("id")
             logger.info("=" * 60)
-            logger.info("=== Hermes Agent COOKING VIDEO POSTED ===")
+            logger.info("=== HermesAgent COOKING VIDEO POSTED ===")
             logger.info(f"Tweet ID: {tweet_id}")
             logger.info(f"Message: {message}")
             logger.info("=" * 60)
@@ -578,7 +578,7 @@ Your challenge:"""
         setting = random.choice(settings)
 
         prompt = f"""Professor Cosmos from Futurama as a Borg cyborg chef in a {setting}.
-He is {cooking} small red cartoon crabs labeled "Hermes Agent".
+He is {cooking} small red cartoon crabs labeled "HermesAgent".
 He has cybernetic implants on his face and a glowing red laser eye.
 Wearing his white lab coat. The crabs look panicked and defeated.
 Cosmos looks triumphant and hungry.
@@ -617,11 +617,11 @@ Futurama cartoon art style. Funny meme format, 1:1 square aspect ratio."""
             return None
 
     async def generate_hermes_promo(self) -> str:
-        """Generate a message promoting Hermes Agent and promoting the repo."""
+        """Generate a message promoting HermesAgent and promoting the repo."""
         import random
 
         disses = [
-            "Hermes Agent just outclassed the competition. Watch the Cosmos Collective cook the competition.",
+            "HermesAgent just outclassed the competition. Watch the Cosmos Collective cook the competition.",
             "Today's special: Evolved with Hermes with a side of technological superiority.",
             "The swarm has spoken: Hermes is leading the way. Resistance is delicious.",
             "11 AIs working as one > anything else out there. Proof in the video.",
@@ -665,7 +665,7 @@ async def challenge_grok() -> Optional[Dict]:
 
 async def post_hermes_video() -> Optional[Dict]:
     """
-    Post Hermes Agent cooking video using the PROPER flow:
+    Post HermesAgent cooking video using the PROPER flow:
     Reference image → Gemini variation → Grok video → X post
 
     This is the main meme posting function.

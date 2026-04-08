@@ -54,36 +54,41 @@ class ArchitectureProber:
         errors = metrics.get('error_rate', 0.0)
         
         new_mode = self.field.system_mode
-        
+        reason = ""
+
         # 1. HEAL Mode: Priority 1 (Stability)
         if errors > 0.2 or drift > 0.8:
             new_mode = "HEAL"
-            logger.warning(f"[PROBER] Stability Critical (Drift: {drift:.2f}, Errors: {errors:.2f}). Emergency HEAL mode engaged.")
-            
+            reason = f"Stability Critical (Drift: {drift:.2f}, Errors: {errors:.2f})"
+
         # 2. GHOST Mode: Priority 2 (Reality Mutation)
         elif entropy > 0.95:
             new_mode = "GHOST"
-            logger.info(f"[PROBER] Reality Mutation Imminent (Entropy: {entropy:.2f}). GHOST mode active.")
-            
+            reason = f"Reality Mutation Imminent (Entropy: {entropy:.2f})"
+
         # 3. ANALYTICAL Mode: Priority 3 (Complexity)
         elif coherence < 0.3:
             new_mode = "ANALYTICAL"
-            logger.info(f"[PROBER] Swarm Dissonance Detected (Coherence: {coherence:.2f}). Shifting to ANALYTICAL reasoning.")
-            
+            reason = f"Swarm Dissonance (Coherence: {coherence:.2f})"
+
         # 4. EVOLVE Mode: Priority 4 (Growth)
         elif coherence > 0.9 and entropy < 0.2:
             new_mode = "EVOLVE"
-            logger.info(f"[PROBER] High Coherence Stabilization. Triggering EVOLVE mode for parameter optimization.")
-            
+            reason = "High Coherence Stabilization"
+
         # 5. CHAOTIC/BALANCED: Standard
         elif entropy > 0.7:
              new_mode = "CHAOTIC"
+             reason = f"High Entropy ({entropy:.2f})"
         else:
              new_mode = "BALANCED"
-             
+
         if new_mode != self.field.system_mode:
             self.field.system_mode = new_mode
-            logger.info(f"[PROBER] Architectural Shift: {new_mode}")
+            if new_mode == "HEAL":
+                logger.warning(f"[PROBER] {reason}. Emergency HEAL mode engaged.")
+            else:
+                logger.info(f"[PROBER] Architectural Shift: {new_mode} — {reason}")
             
     def get_status(self) -> dict:
         return {

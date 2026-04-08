@@ -1,12 +1,12 @@
 """
-Cosmos Hermes Agent compatibility Layer
+Cosmos HermesAgent compatibility Layer
 ========================================
 
 Universal adapter for running Hermes skills and tools in Cosmos.
 
 This Shadow Layer provides:
 - Skill parser (reads SKILL.md format)
-- Tool mapper (translates Hermes Agent calls to Cosmos agents)
+- Tool mapper (translates HermesAgent calls to Cosmos agents)
 - Device nodes (camera, screen, location, notifications)
 - Visual canvas (A2UI-compatible live workspace)
 - Voice interface (speech-to-text, text-to-speech)
@@ -21,22 +21,22 @@ Architecture:
            ↓
     Cosmos Swarm / Agent Execution
            ↓
-    Return result in Hermes Agent format
+    Return result in HermesAgent format
 
 "Two claws are better than one." - The Collective
 """
 
 from .hermes_adapter import (
-    Hermes AgentAdapter,
-    get_Hermes Agent_adapter,
-    invoke_Hermes Agent_tool,
-    load_Hermes Agent_skill,
-    Hermes AgentToolResult,
-    # Hermes Hub Marketplace
-    Hermes HubClient,
-    get_Hermes Hub_client,
-    search_Hermes Hub_skills,
-    download_Hermes Hub_skill,
+    HermesAgentAdapter,
+    get_HermesAgent_adapter,
+    invoke_HermesAgent_tool,
+    load_HermesAgent_skill,
+    HermesAgentToolResult,
+    # HermesHub Marketplace
+    HermesHubClient,
+    get_HermesHub_client,
+    search_HermesHub_skills,
+    download_HermesHub_skill,
     install_and_load_skill,
 )
 
@@ -81,7 +81,7 @@ except ImportError:
     VOICE_AVAILABLE = False
 
 from .task_routing import (
-    Hermes AgentTaskType,
+    HermesAgentTaskType,
     ModelCapability,
     MODEL_REGISTRY,
     TASK_ROUTING,
@@ -89,8 +89,8 @@ from .task_routing import (
     get_best_model_for_task,
     get_models_for_task,
     get_fallback_chain,
-    classify_Hermes Agent_tool,
-    route_Hermes Agent_task,
+    classify_HermesAgent_tool,
+    route_HermesAgent_task,
     get_model_for_channel,
     get_routing_summary,
 )
@@ -106,16 +106,16 @@ from .model_invoker import (
 
 __all__ = [
     # Main adapter
-    "Hermes AgentAdapter",
-    "get_Hermes Agent_adapter",
-    "invoke_Hermes Agent_tool",
-    "load_Hermes Agent_skill",
-    "Hermes AgentToolResult",
-    # Hermes Hub Marketplace
-    "Hermes HubClient",
-    "get_Hermes Hub_client",
-    "search_Hermes Hub_skills",
-    "download_Hermes Hub_skill",
+    "HermesAgentAdapter",
+    "get_HermesAgent_adapter",
+    "invoke_HermesAgent_tool",
+    "load_HermesAgent_skill",
+    "HermesAgentToolResult",
+    # HermesHub Marketplace
+    "HermesHubClient",
+    "get_HermesHub_client",
+    "search_HermesHub_skills",
+    "download_HermesHub_skill",
     "install_and_load_skill",
     # Device nodes
     "DeviceNode",
@@ -141,7 +141,7 @@ __all__ = [
     "start_voice_wake",
     "stop_voice_wake",
     # Task routing
-    "Hermes AgentTaskType",
+    "HermesAgentTaskType",
     "ModelCapability",
     "MODEL_REGISTRY",
     "TASK_ROUTING",
@@ -149,8 +149,8 @@ __all__ = [
     "get_best_model_for_task",
     "get_models_for_task",
     "get_fallback_chain",
-    "classify_Hermes Agent_tool",
-    "route_Hermes Agent_task",
+    "classify_HermesAgent_tool",
+    "route_HermesAgent_task",
     "get_model_for_channel",
     "get_routing_summary",
     # Model invoker

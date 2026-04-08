@@ -42,13 +42,13 @@ MultiVoiceSystem = None
 try:
     from Cosmos.core.collective.deliberation import DeliberationRoom
     HAS_COSMOS = True
-    logger.info("Cosmos collective deliberation loaded")
+    logger.info("[OK] Cosmos collective deliberation loaded")
 except Exception as e:
     logger.warning(f"Deliberation not available: {e}")
 
 try:
     from Cosmos.integration.multi_voice import MultiVoiceSystem
-    logger.info("Multi-voice TTS system loaded")
+    logger.info("[OK] Multi-voice TTS system loaded")
 except Exception as e:
     MultiVoiceSystem = None
     logger.debug(f"Multi-voice TTS not available: {e}")

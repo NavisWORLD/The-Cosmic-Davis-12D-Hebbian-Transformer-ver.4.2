@@ -41,6 +41,10 @@ class TandemHandoffRequest(BaseModel):
     session_id: str
     context_summary: str
 
+class UpgradeRequest(BaseModel):
+    module: str = "cosmos_swarm_orchestrator.py"
+    goal: str = "Improve code quality, performance, and integrate the newest user requests."
+
 
 # =============================================================================
 # ROUTES
@@ -295,4 +299,35 @@ async def orchestrator_efficiency():
         return JSONResponse(
             status_code=500,
             content={"error": f"Efficiency metrics error: {str(e)}"},
+        )
+
+@router.post("/upgrade")
+async def orchestrator_upgrade(body: UpgradeRequest):
+    """
+    Trigger HermesAgent to propose and apply upgrades to Cosmos core files.
+    """
+    try:
+        from Cosmos.web.cosmosynapse.engine.rsm_engine import RSMEngine
+        import asyncio
+        engine = RSMEngine()
+        # Baseline lyapunov drift 
+        lyapunov_drift = 0.1
+        
+        # Run in thread pool — hermes_propose_edit is blocking (calls run_conversation)
+        proposals, summary = await asyncio.to_thread(
+            engine.hermes_propose_edit,
+            filename=body.module,
+            goal=body.goal,
+            lyapunov_drift=lyapunov_drift
+        )
+        return JSONResponse(content={
+            "success": True,
+            "summary": summary,
+            "proposals_count": len(proposals)
+        })
+    except Exception as e:
+        logger.error(f"Orchestrator upgrade error: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"Upgrade error: {str(e)}"},
         )

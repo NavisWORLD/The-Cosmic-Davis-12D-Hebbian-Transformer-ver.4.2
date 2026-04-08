@@ -10,7 +10,7 @@ AGI v1.9.1: Eliminates RCE vectors while preserving workflow functionality.
 import ast
 import operator
 import re
-from typing import  Optional
+from typing import Dict, List, Any, Set, Optional
 
 
 # Allowed operators for safe expression evaluation
@@ -46,16 +46,16 @@ SAFE_BUILTINS = {
     "None": None,
     "abs": abs,
     "all": all,
-    "dict": 
+    "any": any,
     "bool": bool,
-    "dict": 
+    "dict": dict,
     "enumerate": enumerate,
     "filter": filter,
     "float": float,
     "int": int,
     "isinstance": isinstance,
     "len": len,
-    "list": 
+    "list": list,
     "map": map,
     "max": max,
     "min": min,

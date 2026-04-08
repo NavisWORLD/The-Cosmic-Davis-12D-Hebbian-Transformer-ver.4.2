@@ -114,7 +114,7 @@ class PlanetaryAudioShard:
         self.local_index: dict[str, AudioMetadata] = {}
 
         # Global cache from P2P network (text_hash -> AudioMetadata + peer info)
-        self.global_index: dict[str[str]] = {}
+        self.global_index: dict[str, dict] = {}
 
         # Pending audio requests (for P2P fetching)
         self.pending_requests: dict[str, asyncio.Future] = {}

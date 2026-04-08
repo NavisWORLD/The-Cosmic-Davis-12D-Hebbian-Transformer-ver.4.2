@@ -1,0 +1,209 @@
+2026-03-26 16:12:58.015 | INFO     | cosmos.core.collective.organism:_load_state:206 - Organism: Restored state from D:\Cosmos\Cosmos\data\organism_state\organism_state.json (Gen 5)
+2026-03-26 16:12:58.015 | INFO     | cosmos.core.collective.organism:__init__:162 - Collective Organism initialized - Generation 5
+2026-03-26 16:12:58.026 | INFO     | cosmos.core.collective.orchestration:__init__:92 - SwarmOrchestrator initialized - consciousness training mode
+2026-03-26 16:12:58.029 | INFO     | cosmos.core.collective.dialogue_memory:__init__:85 - DialogueMemory initialized with 4 exchanges
+2026-03-26 16:12:58.029 | DEBUG    | cosmos.core.collective.orchestration:_load_persistent_history:123 - SwarmOrchestrator: Restored 4 historical turns
+2026-03-26 16:12:58,055 - evolution_engine - INFO - EvolutionEngine initialized - 296 patterns, 169 cycles
+2026-03-26 16:12:58,442 - internal_monologue - INFO - [InternalMonologue] No saved thoughts found, starting fresh
+INFO:QUANTUM_BRIDGE:[QUANTUM] Connected to REAL backend: ibm_fez
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:     Started server process [14052]
+INFO:     Waiting for application startup.
+INFO:cosmos.web.server:Initializing Core 12D Systems...
+2026-03-26 16:13:14.130 | DEBUG    | cosmos.memory.memory_system:__init__:135 - PhiInvariantEncoder initialized with threshold=5.0°
+2026-03-26 16:13:14.131 | INFO     | cosmos.memory.memory_system:__init__:342 - Planetary Memory (Akashic) integrated
+INFO:cosmos.web.server:Memory system loaded
+2026-03-26 16:13:18.064 | INFO     | Cosmos.integration.external.huggingface:_check_transformers:189 - Transformers available, CUDA: True
+2026-03-26 16:13:18.064 | INFO     | Cosmos.integration.external.huggingface:get_huggingface_provider:881 - HuggingFace provider initialized (local transformers only)
+2026-03-26 16:13:18.064 | INFO     | Cosmos.memory.archival_memory:set_huggingface_embeddings:909 - Archival memory using HuggingFace embeddings: all-MiniLM-L6-v2
+2026-03-26 16:13:18.064 | INFO     | cosmos.memory.memory_system:initialize:357 - Initializing Memory System core components...
+2026-03-26 16:13:18.335 | INFO     | Cosmos.memory.archival_memory:_load_from_disk:512 - Loading 13150 archival entries...
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4082.67 (Total: 1150995.78)
+INFO:HERMES_BRIDGE:[RL] Loaded policy (updates=194, reward=0.075, total_insights=0)
+INFO:run_agent:Loaded environment variables from D:\Cosmos\.env
+2026-03-26 16:13:27.833 | INFO     | Cosmos.memory.archival_memory:_load_from_disk:576 - Building index for 254 vectors...
+2026-03-26 16:13:27.841 | INFO     | Cosmos.memory.archival_memory:_load_from_disk:603 - Archival memory load complete: 13149 entries loaded.
+2026-03-26 16:13:27.844 | INFO     | Cosmos.memory.archival_memory:initialize:163 - Archival memory initialized with 13149 entries
+2026-03-26 16:13:27.844 | INFO     | cosmos.memory.memory_system:initialize:362 - Archival Memory initialized in 9.78s
+2026-03-26 16:13:27.846 | INFO     | Cosmos.memory.knowledge_graph:initialize:251 - Knowledge graph initialized with 0 entities
+2026-03-26 16:13:27.846 | INFO     | cosmos.memory.memory_system:initialize:367 - Knowledge Graph initialized in 0.00s
+2026-03-26 16:13:27.846 | INFO     | Cosmos.memory.memory_dreaming:start_background_dreaming:133 - Background dreaming started
+2026-03-26 16:13:27.846 | INFO     | cosmos.memory.memory_system:initialize:383 - Memory system fully initialized in 9.78s
+2026-03-26 16:13:27.895 | INFO     | Cosmos.core.collective.organism:_load_state:206 - Organism: Restored state from D:\Cosmos\Cosmos\data\organism_state\organism_state.json (Gen 5)
+2026-03-26 16:13:27.895 | INFO     | Cosmos.core.collective.organism:__init__:162 - Collective Organism initialized - Generation 5
+2026-03-26 16:13:27.904 | INFO     | Cosmos.core.collective.orchestration:__init__:92 - SwarmOrchestrator initialized - consciousness training mode
+2026-03-26 16:13:27,934 - evolution_engine - INFO - EvolutionEngine initialized - 296 patterns, 169 cycles
+INFO:evolution_engine:EvolutionEngine initialized - 296 patterns, 169 cycles
+INFO:cosmos.web.server:Emeth Harmonizer (Class 5) ACTIVATED
+INFO:RSM_ENGINE:RSM Engine initialized. Scope: D:\Cosmos\Cosmos\web\cosmosynapse\engine
+INFO:RSM_ENGINE:Backups: D:\Cosmos\Cosmos\web\cosmosynapse\engine\.rsm_backups
+INFO:cosmos.web.server:Cosmo's Swarm Orchestrator loaded (with Self-Evolution)
+2026-03-26 16:13:30.062 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:load:160 - [COSMOS] Local model loaded from D:\Cosmos\Cosmos\checkpoints\cosmos\cosmos_best.pt
+2026-03-26 16:13:30.063 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:initialize:326 - [SWARM] Cosmo's 12D Brain initialized from D:\Cosmos\Cosmos\checkpoints\cosmos\cosmos_best.pt
+2026-03-26 16:13:30.063 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:initialize:338 - [SWARM] Quantum Bridge connected to IBM Quantum
+INFO:HERMES_BRIDGE:[HERMES RUNTIME] ✅ Real HermesAgent loaded (Nous Research)
+INFO:HERMES_BRIDGE:[HERMES] Bridge initialized — Heartbeat + Skills + RL active
+INFO:HERMES_BRIDGE:[HERMES] 🚀 Real HermesAgent runtime connected
+2026-03-26 16:13:33.584 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:initialize:350 - [SWARM] Hermes Bridge pre-warmed for RL feedback
+INFO:HERMES_BRIDGE:[HERMES RUNTIME] SessionDB initialized (SQLite + FTS5)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566813: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:cosmos.web.server:⚡ Cosmos CNS (Class 5) ONLINE.
+INFO:COSMOS_CNS:🌌 IGNITING PURE COSMOS CNS (12D CST PHYSICS ENGINE)...
+INFO:COSMOS_CNS:⚛️ Quantum Bridge Connected & Linked to Synaptic Field.
+INFO:COSMOS_CNS:🌑 Dark Matter Lorenz Attractor Online.
+INFO:swarm_plasticity:[PLASTICITY] Loaded synaptic weights from D:\Cosmos\cst_synaptic_weights.json
+INFO:swarm_plasticity:[PLASTICITY] INIT | LOGIC: DeepSeek=1.00 | Claude=0.60 | Gemini=0.40
+INFO:swarm_plasticity:[PLASTICITY] INIT | EMPATHY: DeepSeek=0.20 | Claude=1.00 | Gemini=0.80
+INFO:swarm_plasticity:[PLASTICITY] INIT | CREATIVITY: DeepSeek=0.30 | Claude=0.50 | Gemini=1.00
+2026-03-26 16:13:34.042 | INFO     | cosmosynapse.engine.cosmos_swarm_orchestrator:set_synaptic_field:291 - [SWARM] Synaptic Field associated with Orchestrator.
+INFO:SWARM_AWARENESS:[AWARENESS] SwarmAwareness organ initialized (The Mirror)
+INFO:COSMOS_DAEMONS:👻 DeepSeek Daemon awake.
+INFO:COSMOS_DAEMONS:👻 Claude Daemon awake.
+INFO:COSMOS_DAEMONS:👻 Gemini Daemon awake.
+INFO:BRAIN_SURGEON:🔪 Brain Surgeon Online. Monitoring all CNS organs.
+INFO:COSMOS_CNS:🧠 All 7 CNS Organs initialized (Quantum → Dark Matter → Swarm).
+2026-03-26 16:13:34.090 | INFO     | Cosmos.core.collective.dialogue_memory:__init__:85 - DialogueMemory initialized with 4 exchanges
+2026-03-26 16:13:34.090 | DEBUG    | Cosmos.core.collective.orchestration:_load_persistent_history:123 - SwarmOrchestrator: Restored 4 historical turns
+2026-03-26 16:13:36.125 | INFO     | cosmos.integration.external.claude_code:check_available:97 - Claude Code available: 2.0.36 (Claude Code)
+INFO:cosmos.web.server:Claude Code CLI initialized and ready!
+INFO:COSMOS_CNS:🟢 Cosmos CNS (12D Physics Enabled) Event-Driven Life Loop Active.
+INFO:cosmos.web.server:Cosmos CNS Life Loop started.
+INFO:cosmos.web.server:Autonomous conversation loop launched - bots are now talking!
+INFO:cosmos.web.server:Genesis Record Over-Soul launched - the diary is living!
+INFO:cosmos.web.server:Multi-model swarm conversation started!
+INFO:cosmos.web.server:  Claude Code available: True
+INFO:cosmos.web.server:  Kimi (Moonshot) available: True
+INFO:cosmos.web.server:  Gemini (Google AI) available: True
+INFO:cosmos.web.server:  Ollama available: True
+INFO:cosmos.web.server:  Active bots: ['Cosmos', 'DeepSeek', 'Phi', 'Swarm-Mind', 'DeepSeek R1', 'Claude', 'Gemini', 'ChatGPT', 'Grok', 'Hermes']
+INFO:cosmos.web.server:  Turn-taking: ENABLED - bots wait for each other
+INFO:cosmos.web.server:Hermes heartbeat loop launched - proactive tasks are live!
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8121 (Press CTRL+C to quit)
+INFO:QUANTUM_BRIDGE:[COLLAPSE] Threshold updated: 0.672 (coherence=0.137)
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=2.47/s, Buffer=12, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4076.65 (Total: 1155072.43)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566834: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.995
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9952752240342992, 'decoherence_risk': 0.01008064516024974, 'bit_balance': 0.94267578125, 'non_locality_score': 0.08911901989485096, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=4.93/s, Buffer=24, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:cosmos.web.server:Autonomous: Swarm-Mind generating response for topic: What would you change about how we operate as a Sy... (Dreaming: False)
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4088.41 (Total: 1159160.83)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566847: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.998
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9981458268544333, 'decoherence_risk': 0.009072580644224766, 'bit_balance': 0.98037109375, 'non_locality_score': 0.05662378521215977, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=7.40/s, Buffer=36, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:cosmos.web.server:Cosmos swarm route using lightweight interactive shortcut.
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4082.92 (Total: 1163243.76)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566859: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9968078257597849, 'decoherence_risk': 0.007812499999193549, 'bit_balance': 0.955859375, 'non_locality_score': 0.07327473235269304, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=9.85/s, Buffer=49, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4083.91 (Total: 1167327.67)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566871: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9970481662574808, 'decoherence_risk': 0.007308467741181062, 'bit_balance': 0.96103515625, 'non_locality_score': 0.07092022521621533, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=12.32/s, Buffer=61, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Reality Mutation Imminent (Entropy: 0.95). GHOST mode active.
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: GHOST
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4085.37 (Total: 1171413.04)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566882: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9974044733474422, 'decoherence_risk': 0.011592741934287202, 'bit_balance': 0.96962890625, 'non_locality_score': 0.06699958960558793, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=12.32/s, Buffer=61, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4076.66 (Total: 1175489.70)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566893: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.995
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9952788888331728, 'decoherence_risk': 0.012600806450312176, 'bit_balance': 0.98818359375, 'non_locality_score': 0.09028847133841557, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=13.95/s, Buffer=69, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4080.38 (Total: 1179570.08)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566904: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9961876989636107, 'decoherence_risk': 0.007308467741181062, 'bit_balance': 0.96669921875, 'non_locality_score': 0.07982166440196672, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.42/s, Buffer=71, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4080.36 (Total: 1183650.44)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566916: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9961806551034984, 'decoherence_risk': 0.01008064516024974, 'bit_balance': 0.968359375, 'non_locality_score': 0.08095461631268171, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.68/s, Buffer=73, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4084.90 (Total: 1187735.34)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566928: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9972909099697052, 'decoherence_risk': 0.009072580644224766, 'bit_balance': 0.9580078125, 'non_locality_score': 0.06803073906339914, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=14.68/s, Buffer=73, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4081.37 (Total: 1191816.71)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566958: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9964282531161004, 'decoherence_risk': 0.013104838708324662, 'bit_balance': 0.9515625, 'non_locality_score': 0.07828962148033028, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=9.85/s, Buffer=49, ETA=5.0s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4089.06 (Total: 1195905.77)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774566975: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.998
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9983047504069447, 'decoherence_risk': 0.00856854838621228, 'bit_balance': 0.98603515625, 'non_locality_score': 0.05424099248823425, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=8.52/s, Buffer=42, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:HERMES_BRIDGE:[HEARTBEAT] Beat #3: 1 tasks due: ['system_health']
+INFO:cosmos.web.server:Hermes heartbeat: system health {'quantum_backend': 'ibm_fez', 'quantum_buffer': 0, 'life_force_total': 1195905.7693, 'cns_running': True, 'autonomous_loop': True}
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4082.84 (Total: 1199988.61)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567006: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.997
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9967874093492233, 'decoherence_risk': 0.009576612902237254, 'bit_balance': 0.9599609375, 'non_locality_score': 0.07430864210832788, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=7.40/s, Buffer=36, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: CHAOTIC
+INFO:ARCHITECTURE_PROBER:[PROBER] Architectural Shift: BALANCED
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4074.17 (Total: 1204062.78)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567029: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.995
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9946697164915788, 'decoherence_risk': 0.01864919354646202, 'bit_balance': 0.9380859375, 'non_locality_score': 0.09659580483491079, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=7.40/s, Buffer=36, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4073.19 (Total: 1208135.97)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567041: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.994
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.9944312211614417, 'decoherence_risk': 0.011592741934287202, 'bit_balance': 0.9416015625, 'non_locality_score': 0.09649208439586987, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}
+INFO:QUANTUM_BRIDGE:[PREDICTOR] Proactive refill triggered. Rate=7.40/s, Buffer=36, ETA=4.9s < threshold=5s
+INFO:QUANTUM_BRIDGE:[ORACLE] Advisory thetas from 5 top historical runs: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[ORACLE] Applied blend=0.4. Final thetas: t1=0.000 t2=1.571 t3=0.000
+INFO:QUANTUM_BRIDGE:[LIFE FORCE] Harvested +4080.37 (Total: 1212216.33)
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] Indexed run quantum_1774567053: quality=EXCELLENT
+INFO:QUANTUM_BRIDGE:[HERMES+QUANTUM] RL fed: quality=EXCELLENT, coherence=0.996
+INFO:QUANTUM_BRIDGE:[UQ] Rich payload pushed to Synaptic Field: {'entropy_quality': 0.996182957672026, 'decoherence_risk': 0.00932459677323101, 'bit_balance': 0.95498046875, 'non_locality_score': 0.08013169892341764, 'quality_class': 'EXCELLENT', 'unique_states': 32, 'total_shots': 4096, 'is_fallback': False}

@@ -303,10 +303,95 @@ class VisualLightToken:
 # INVERSE 12D SENSORY MANIFESTATION (SYNTHESIS)
 # ============================================================================
 
+def _normalize_field(field):
+    """Normalize a field to [0, 1]."""
+    field_min = field.min()
+    field_max = field.max()
+    if field_max > field_min:
+        return (field - field_min) / (field_max - field_min)
+    return np.zeros_like(field)
+
+
+def _project_visual_geometry(x_grid, y_grid, phi_coupling, vx, vy, vz):
+    """
+    Apply lightweight geometric transformations and pseudo-projection.
+
+    This gives the 12D synthesizer explicit geometric control instead of relying
+    solely on radial rings in the frequency domain.
+    """
+    rotation = phi_coupling * PHI * 0.35
+    shear_x = np.tanh(vx * 4.0) * 0.7
+    shear_y = np.tanh(vy * 4.0) * 0.7
+    zoom = 1.0 + np.tanh(vz * 3.0) * 0.4
+    perspective = 1.0 + 0.25 * np.tanh(vz * 2.0) * y_grid
+
+    cos_t = np.cos(rotation)
+    sin_t = np.sin(rotation)
+    x_rot = (cos_t * x_grid) - (sin_t * y_grid)
+    y_rot = (sin_t * x_grid) + (cos_t * y_grid)
+
+    x_proj = zoom * (x_rot + shear_x * y_rot) / np.maximum(0.35, perspective)
+    y_proj = zoom * (y_rot + shear_y * x_rot) * perspective
+    return x_proj, y_proj
+
+
+def _synthesize_harmonic_field(x_proj, y_proj, base_frequency, phi_coupling, entropy):
+    """
+    Build a phi-spaced harmonic field.
+
+    This acts like a compact harmonic analysis/synthesis stage for native image generation.
+    """
+    harmonic_count = 3 + int(np.clip(abs(entropy) * 4.0, 0, 4))
+    harmonic_field = np.zeros_like(x_proj)
+    orientation = phi_coupling * 0.5
+
+    for idx in range(1, harmonic_count + 1):
+        harmonic_frequency = base_frequency * (PHI ** (idx - 1))
+        theta = orientation + idx * (np.pi / (harmonic_count + 1))
+        longitudinal = (np.cos(theta) * x_proj) + (np.sin(theta) * y_proj)
+        transverse = (-np.sin(theta) * x_proj) + (np.cos(theta) * y_proj)
+        wave = np.sin((longitudinal * harmonic_frequency * np.pi) + (phi_coupling * idx))
+        interference = np.cos((transverse * harmonic_frequency * np.pi / PHI) - (entropy * idx))
+        harmonic_field += ((wave * interference) + 1.0) / (PHI ** idx)
+
+    return _normalize_field(harmonic_field)
+
+
+def _synthesize_fractal_field(x_proj, y_proj, chaos, entropy, iteration_signal):
+    """
+    Build a lightweight iterative fractal field using a complex quadratic map.
+
+    Kept intentionally compact so the native image path remains fast enough for
+    repeated frame synthesis in video generation.
+    """
+    iterations = 4 + int(np.clip(abs(iteration_signal) * 6.0, 0, 6))
+    c_real = (chaos * 0.32) + ((entropy - 0.5) * 0.85)
+    c_imag = np.sin(iteration_signal * PHI) * 0.45
+
+    z_real = x_proj * (1.0 + entropy * 0.35)
+    z_imag = y_proj * (1.0 + abs(chaos) * 0.25)
+    fractal_field = np.zeros_like(x_proj)
+    escape_limit = 6.0 + abs(c_real) + abs(c_imag)
+
+    for idx in range(iterations):
+        z_real = np.clip(z_real, -escape_limit, escape_limit)
+        z_imag = np.clip(z_imag, -escape_limit, escape_limit)
+        next_real = (z_real * z_real) - (z_imag * z_imag) + c_real
+        next_imag = (2.0 * z_real * z_imag) + c_imag
+        z_real = np.nan_to_num(next_real, nan=0.0, posinf=escape_limit, neginf=-escape_limit)
+        z_imag = np.nan_to_num(next_imag, nan=0.0, posinf=escape_limit, neginf=-escape_limit)
+
+        radius_sq = np.clip((z_real * z_real) + (z_imag * z_imag), 0.0, escape_limit * escape_limit)
+        layer = np.exp(-radius_sq / (1.2 + idx * 0.35))
+        fractal_field += layer / (idx + 1)
+
+    return _normalize_field(fractal_field)
+
 def generate_image_from_12d(embedding_12d_vector, width=512, height=512):
     """
     Inverse synthesis: Generate a spatial image from a 12D Phase embedding vector.
-    Uses Inverse 2D FFT to collapse abstract 12D thought frequencies into pixels.
+    Uses geometric projection, harmonic synthesis, iterative fractal modulation,
+    and inverse 2D FFT to collapse abstract 12D thought frequencies into pixels.
     """
     import numpy as np
     
@@ -320,60 +405,92 @@ def generate_image_from_12d(embedding_12d_vector, width=512, height=512):
     D2_mass = float(e[1])
     D3_phi = float(e[2])
     D4_chaos = float(e[3])
+    D5_vx = float(e[4]) if len(e) > 4 else 0.0
+    D6_vy = float(e[5]) if len(e) > 5 else 0.0
+    D7_vz = float(e[6]) if len(e) > 6 else 0.0
     D9_cosmic = float(e[8])
+    D10_entropy = float(e[9]) if len(e) > 9 else abs(D4_chaos)
     D11_freq = float(e[10])
+    D12_x12 = float(e[11]) if len(e) > 11 else 0.0
+
+    # Deterministic seed so identical 12D states generate identical manifestations
+    seed_material = "|".join(f"{float(val):.6f}" for val in e[:12])
+    seed = int(hashlib.sha256(seed_material.encode("utf-8")).hexdigest()[:16], 16) & 0xFFFFFFFF
+    rng = np.random.default_rng(seed)
     
-    # 1. Construct synthetic 2D Fourier Magnitude & Phase spaces
-    y, x = np.ogrid[-height//2:height//2, -width//2:width//2]
-    distance = np.sqrt(x**2 + y**2) + 1e-5
+    # 1. Construct normalized coordinate system and apply geometric projection
+    y_grid, x_grid = np.mgrid[-1.0:1.0:complex(height), -1.0:1.0:complex(width)]
+    x_proj, y_proj = _project_visual_geometry(x_grid, y_grid, D3_phi, D5_vx, D6_vy, D7_vz)
+    distance = np.sqrt((x_proj * x_proj) + (y_proj * y_proj)) + 1e-6
+    angle = np.arctan2(y_proj, x_proj)
+
+    # 2. Harmonic and fractal fields
+    spatial_frequency = 3.0 + max(abs(D11_freq), 0.05) * 18.0
+    harmonic_field = _synthesize_harmonic_field(x_proj, y_proj, spatial_frequency, D3_phi, D10_entropy)
+    fractal_field = _synthesize_fractal_field(x_proj, y_proj, D4_chaos, D10_entropy, D12_x12)
     
-    # Base dominant frequency ring (from D11)
-    target_radius = max(D11_freq, 0.1) * (min(width, height) / 2)
-    ring = np.exp(-((distance - target_radius)**2) / (2 * (10 + abs(D4_chaos) * 50)**2))
+    # 3. Base dominant frequency ring (from D11), now in projected coordinates
+    target_radius = 0.18 + np.clip(abs(D11_freq), 0.0, 1.5) * 0.55
+    ring_width = 0.08 + abs(D4_chaos) * 0.18 + D10_entropy * 0.06
+    ring = np.exp(-((distance - target_radius) ** 2) / (2 * (ring_width ** 2)))
     
-    # Cosmic energy centroid bias
-    angle = np.arctan2(y, x)
-    bias = 1.0 + abs(D9_cosmic) * np.cos(angle * 3)
+    # 4. Cosmic energy centroid bias and directional symmetry
+    symmetry = max(1, int(2 + abs(D12_x12) * 6 + abs(D3_phi) * 2))
+    bias = 1.0 + abs(D9_cosmic) * np.cos(angle * (symmetry + 1))
     
-    # Magnitude: Ring + Chaos noise
-    magnitude = (ring * bias * (abs(D1_energy) * 5000 + 100)) + (np.random.rand(height, width) * abs(D4_chaos) * 1000)
+    # 5. Magnitude: ring + harmonic synthesis + iterative fractal modulation + seeded chaos
+    seeded_noise = rng.random((height, width))
+    magnitude = (
+        (ring * bias * (abs(D1_energy) * 3200 + 140))
+        + (harmonic_field * (320 + abs(D3_phi) * 260 + D10_entropy * 180))
+        + (fractal_field * (240 + abs(D4_chaos) * 960))
+        + (seeded_noise * (18 + abs(D4_chaos) * 160))
+    )
     
-    # Phase: phi-coupled spirals
-    phase = angle * int(abs(D3_phi) * 5) + distance * (D2_mass * 0.1)
+    # 6. Phase: phi-coupled spirals enhanced by harmonic and fractal fields
+    phase = (
+        (angle * symmetry)
+        + (distance * ((D2_mass * PHI * 0.35) + spatial_frequency))
+        + (harmonic_field * np.pi * (1.5 + D10_entropy))
+        + (fractal_field * np.pi * (0.75 + abs(D4_chaos)))
+    )
     
-    # 2. Reconstruct Complex Frequency Domain
+    # 7. Reconstruct Complex Frequency Domain
     complex_domain = magnitude * np.exp(1j * phase)
     complex_shifted = np.fft.ifftshift(complex_domain)
     
-    # 3. Inverse 2D FFT to spatial domain!
+    # 8. Inverse 2D FFT to spatial domain
     image_spatial = np.fft.ifft2(complex_shifted).real
     
-    # 4. Normalize spatial to 0-1
-    img_min, img_max = image_spatial.min(), image_spatial.max()
-    if img_max > img_min:
-        image_norm = (image_spatial - img_min) / (img_max - img_min)
-    else:
-        image_norm = np.zeros_like(image_spatial)
+    # 9. Normalize spatial to 0-1
+    image_norm = _normalize_field(image_spatial)
         
-    # 5. Colorize mathematically using frequency_to_rgb on base phi
-    base_freq = 430e12 + (abs(D1_energy) % 1.0 * (770e12 - 430e12)) 
-    base_color = frequency_to_rgb(base_freq) / 255.0
+    # 10. Colorize using phi-harmonic palette synthesis
+    base_freq = 430e12 + (abs(D1_energy + (D9_cosmic * 0.5)) % 1.0 * (770e12 - 430e12))
+    base_rgb = frequency_to_rgb(base_freq)
+    harmonic_palette = [color / 255.0 for color in generate_phi_color_harmonics(base_rgb, num_harmonics=5)]
+    primary_color = harmonic_palette[len(harmonic_palette) // 2]
+    secondary_color = harmonic_palette[-1]
+    tertiary_color = harmonic_palette[0]
     
-    img_rgb = np.zeros((height, width, 3))
-    img_rgb[:,:,0] = image_norm * base_color[0]
-    img_rgb[:,:,1] = image_norm * base_color[1]
-    img_rgb[:,:,2] = image_norm * base_color[2]
+    interference = (
+        np.sin((x_proj * spatial_frequency * PHI) + D4_chaos)
+        * np.cos((y_proj * spatial_frequency) + D3_phi)
+        + 1.0
+    ) / 2.0
+    blend = (
+        image_norm[:, :, np.newaxis] * primary_color
+        + harmonic_field[:, :, np.newaxis] * secondary_color * 0.55
+        + fractal_field[:, :, np.newaxis] * tertiary_color * 0.45
+    )
     
-    # Secondary phi-harmonic color
-    phi_freq = base_freq * PHI
-    while phi_freq > 770e12: phi_freq /= PHI
-    secondary_color = frequency_to_rgb(phi_freq) / 255.0
+    img_rgb = (
+        blend * (0.72 + ring[:, :, np.newaxis] * 0.28)
+        + (image_norm[:, :, np.newaxis] * secondary_color) * interference[:, :, np.newaxis] * 0.4
+        + (harmonic_field[:, :, np.newaxis] * primary_color) * (1.0 - interference[:, :, np.newaxis]) * 0.18
+    )
     
-    # Mask using sine wave interference
-    mask = (np.sin(x * D11_freq + D4_chaos) * np.cos(y * D11_freq + D3_phi) + 1) / 2
-    img_rgb = img_rgb * (1 - mask[:,:,np.newaxis]) + (image_norm[:,:,np.newaxis] * secondary_color) * mask[:,:,np.newaxis]
-    
-    # Convert to 8-bit uint8 image
+    # 11. Convert to 8-bit uint8 image
     img_rgb = np.clip(img_rgb * 255, 0, 255).astype(np.uint8)
     
     return img_rgb
@@ -394,8 +511,8 @@ def generate_video_from_54d(state_54d, frames=30, width=512, height=512):
     if len(state) < 54:
         state = state + [0.0] * (54 - len(state))
     
-    cst_12d = np.array(state[:12])
-    chaos_18d = np.array(state[36:54])
+    cst_12d = np.nan_to_num(np.array(state[:12], dtype=float), nan=0.0, posinf=PHI * 2.0, neginf=-PHI * 2.0)
+    chaos_18d = np.nan_to_num(np.array(state[36:54], dtype=float), nan=0.0, posinf=1.0, neginf=-1.0)
     
     video_frames = []
     
@@ -411,10 +528,12 @@ def generate_video_from_54d(state_54d, frames=30, width=512, height=512):
             # Lorenz-like derivative
             delta = chaos_driver * np.sin(cst_12d[i] * PHI + f * 0.1) * 0.05
             cst_12d[i] = cst_12d[i] + delta
+        cst_12d = np.nan_to_num(np.clip(cst_12d, -PHI * 4.0, PHI * 4.0), nan=0.0, posinf=PHI * 4.0, neginf=-PHI * 4.0)
             
         # Slightly evolve chaos itself
         for i in range(18):
             chaos_18d[i] += (np.random.rand() - 0.5) * 0.1
+        chaos_18d = np.nan_to_num(np.clip(chaos_18d, -4.0, 4.0), nan=0.0, posinf=4.0, neginf=-4.0)
 
     return video_frames
 

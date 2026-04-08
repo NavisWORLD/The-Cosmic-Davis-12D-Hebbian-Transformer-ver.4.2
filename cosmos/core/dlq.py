@@ -109,8 +109,8 @@ class DeadLetterQueue:
         self._total_retry_success: int = 0
         self._total_retry_failed: int = 0
         self._total_permanent_failures: int = 0
-        self._failures_by_type: dict[str, int] = defaultany(int)
-        self._failures_by_reason: dict[str, int] = defaultany(int)
+        self._failures_by_type: dict[str, int] = defaultdict(int)
+        self._failures_by_reason: dict[str, int] = defaultdict(int)
 
         # Retry handler - set by Nexus when integrating
         self._retry_handler: Optional[Callable[[DeadLetterEntry], Awaitable[bool]]] = None

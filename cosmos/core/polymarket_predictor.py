@@ -125,9 +125,9 @@ class Prediction:
     resolved_at: Optional[str] = None
 
     def to_any(self) -> dict:
-        d = asany(self)
+        d = asdict(self)
         d['outcome'] = self.outcome.value
-        d['signals'] = [asany(s) for s in self.signals]
+        d['signals'] = [asdict(s) for s in self.signals]
         # Add direction for UI
         d['direction'] = self.predicted_outcome
         # Add current price for UI
@@ -231,7 +231,7 @@ class PolymarketPredictor:
                 }, f, indent=2)
 
             with open(self.stats_file, 'w') as f:
-                json.dump(asany(self.stats), f, indent=2)
+                json.dump(asdict(self.stats), f, indent=2)
         except Exception as e:
             logger.error(f"Failed to save data: {e}")
 

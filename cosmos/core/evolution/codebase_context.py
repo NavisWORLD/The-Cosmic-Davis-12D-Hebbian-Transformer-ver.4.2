@@ -1,4 +1,5 @@
 import os
+import time
 from pathlib import Path
 from typing import   Optional
 from loguru import logger
@@ -9,6 +10,9 @@ class CodebaseContext:
     Allows reading files, scanning structure, and searching logic.
     """
     
+    _shared_tree_cache: dict[tuple[str, int], tuple[float, str]] = {}
+    _shared_tree_cache_ttl_s = 30.0
+
     def __init__(self, project_root: Path = None):
         # Default to 3 levels up from this file: cosmos/core/evolution -> cosmos root
         self.project_root = project_root or Path(__file__).parent.parent.parent.parent
@@ -28,6 +32,13 @@ class CodebaseContext:
         """
         Generate a tree view of the codebase for the LLM context.
         """
+        cache_key = (str(self.project_root), max_depth)
+        cached = self._shared_tree_cache.get(cache_key)
+        if cached:
+            cached_at, cached_tree = cached
+            if cached_tree is not None and (time.time() - cached_at) < self._shared_tree_cache_ttl_s:
+                return cached_tree
+
         tree_lines = []
         try:
             # Walk from cosmos/ and cosmosynapse/ if they exist
@@ -56,7 +67,9 @@ class CodebaseContext:
                     else:
                         tree_lines.append(f"{indent}📄 {path.name}")
                         
-            return "\n".join(tree_lines)
+            tree = "\n".join(tree_lines)
+            self._shared_tree_cache[cache_key] = (time.time(), tree)
+            return tree
         except Exception as e:
             logger.error(f"Failed to scan file tree: {e}")
             return "Error scanning codebase structure."

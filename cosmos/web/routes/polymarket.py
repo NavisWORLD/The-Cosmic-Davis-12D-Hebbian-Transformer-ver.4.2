@@ -47,7 +47,7 @@ async def get_polymarket_stats():
         stats = predictor.get_stats()
 
         return {
-            "stats": asany(stats),
+            "stats": asdict(stats),
             "updated_at": datetime.now().isoformat()
         }
     except Exception as e:

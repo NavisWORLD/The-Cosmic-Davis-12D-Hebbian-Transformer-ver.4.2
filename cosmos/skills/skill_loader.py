@@ -3,7 +3,7 @@ Cosmos Skill Loader
 =======================
 
 Loads and manages skills for the collective.
-Compatible with Hermes Agent Skill Document format.
+Compatible with HermesAgent Skill Document format.
 """
 
 import os
