@@ -29,6 +29,70 @@ SOPHIA_POINT = PHI_INV
 DEFAULT_COLLAPSE_THRESHOLD = 0.048
 DEFAULT_RECOVERY_THRESHOLD = 0.037
 OMEGA_POINT_TARGET = 5.0 / PHI
+LEARNED_CALIBRATOR_ALPHA = 0.2
+LEARNED_CALIBRATOR_KEYWORDS = (
+    "ratio",
+    "dose",
+    "equivalent",
+    "flux",
+    "fluence",
+    "quality",
+    "charged",
+    "neutral",
+    "albedo",
+    "primary",
+    "surface",
+    "cruise",
+    "storm",
+    "shelter",
+    "shield",
+    "peak",
+    "rotation",
+    "cavity",
+    "duration",
+    "reduction",
+    "gcr",
+    "proton",
+    "organ",
+    "tissue",
+    "absorbed",
+    "total",
+    "mission",
+    "flyby",
+    "low",
+    "high",
+    "count",
+    "rate",
+    "current",
+    "forecast",
+)
+DEFAULT_LEARNED_CALIBRATION_FILENAMES = (
+    "change4_lnd_reference.json",
+    "artemis_i_unseen_reference.json",
+    "artemis_i_m42_gcr_reference.json",
+)
+DEFAULT_VALIDATION_USER_PHYSICS = {
+    "cst_physics": {
+        "geometric_phase_rad": 0.71,
+        "phase_velocity": 0.028,
+        "entanglement_score": 0.64,
+    },
+    "bio_signatures": {
+        "intensity": 0.77,
+        "arousal": 0.31,
+        "valence": 0.09,
+    },
+    "cst_metrics": {
+        "x12_avg": 0.58,
+        "ci_b": 0.41,
+        "ci_c": 0.29,
+    },
+}
+DEFAULT_VALIDATION_METRICS = {
+    "entropy_quality": 0.78,
+    "decoherence_risk": 0.22,
+}
+DEFAULT_VALIDATION_DARK_MATTER_W = 0.36
 
 
 @dataclass(frozen=True)
@@ -474,15 +538,58 @@ def _normalize_gcr_scalar(record: dict) -> float:
     return _clamp(value / normalizer if normalizer else 0.0)
 
 
-def predict_change4_observable_scalar(
+def default_validation_state_vector() -> np.ndarray:
+    """Return the canonical 12D validation probe used by the radiation harness."""
+    return build_12d_state_vector(
+        DEFAULT_VALIDATION_USER_PHYSICS,
+        metrics=DEFAULT_VALIDATION_METRICS,
+        dark_matter_w=DEFAULT_VALIDATION_DARK_MATTER_W,
+    )
+
+
+def _record_descriptor_text(record: dict) -> str:
+    return " ".join(
+        [
+            str(record.get("id", "")),
+            str(record.get("units", "")),
+            str(record.get("notes", "")),
+        ]
+    ).lower()
+
+
+def _observable_scale_hint(record: dict) -> float:
+    for key in ("denominator", "normalizer", "forecast"):
+        if key in record:
+            return float(math.log1p(abs(float(record.get(key, 0.0)))))
+    return 0.0
+
+
+def observable_calibrator_feature_names() -> tuple[str, ...]:
+    names = [
+        "bias",
+        "legacy_scalar",
+        "legacy_centered",
+        "legacy_squared",
+        "has_ratio",
+        "has_fraction_scale",
+        "has_value",
+        "has_current_forecast",
+        "has_log_transform",
+        "scale_hint_log",
+    ]
+    names.extend(f"kw_{keyword}" for keyword in LEARNED_CALIBRATOR_KEYWORDS)
+    return tuple(names)
+
+
+def predict_legacy_observable_scalar(
     state_vector: Sequence[float],
     record: dict,
 ) -> float:
     """
-    Build a record-conditioned scalar from the 12D state.
+    Legacy record-conditioned scalar from the 12D state.
 
-    This is an engineering heuristic for observable-specific diagnostics.
-    It is intentionally separate from the canonical harmonic alignment score.
+    This rule-based baseline is preserved for diagnostics, but runtime
+    predictions should go through the learned calibrator below.
     """
     vector = _safe_array(state_vector, size=12)
     phase = _clamp(float(vector[0]))
@@ -538,6 +645,176 @@ def predict_change4_observable_scalar(
         return _clamp(phase * 0.50 + entanglement * 0.25 + intensity * 0.25)
 
     return _clamp(np.mean([phase, entanglement, intensity, x12_avg]))
+
+
+def _observable_calibrator_features(
+    state_vector: Sequence[float],
+    record: dict,
+    legacy_scalar: float | None = None,
+) -> np.ndarray:
+    legacy = (
+        float(legacy_scalar)
+        if legacy_scalar is not None
+        else predict_legacy_observable_scalar(state_vector, record)
+    )
+    text = _record_descriptor_text(record)
+    features = [
+        1.0,
+        legacy,
+        legacy - 0.5,
+        legacy * legacy,
+        float("ratio" in record),
+        float("numerator" in record and "denominator" in record),
+        float("value" in record),
+        float("current" in record and "forecast" in record),
+        float(str(record.get("transform", "linear")).lower() == "log"),
+        _observable_scale_hint(record),
+    ]
+    features.extend(float(keyword in text) for keyword in LEARNED_CALIBRATOR_KEYWORDS)
+    return np.asarray(features, dtype=float)
+
+
+def fit_observable_calibrator(
+    training_records: Sequence[dict],
+    state_vector: Sequence[float],
+    alpha: float = LEARNED_CALIBRATOR_ALPHA,
+) -> dict[str, object]:
+    """
+    Fit a deterministic residual-ridge calibrator over observable metadata.
+
+    The model learns a correction on top of the legacy scalar so the runtime
+    path is learned, reproducible, and still anchored to the existing 12D
+    mapping rather than replacing it wholesale.
+    """
+    records = list(training_records)
+    feature_names = observable_calibrator_feature_names()
+    if not records:
+        return {
+            "type": "residual_ridge",
+            "alpha": float(alpha),
+            "feature_names": feature_names,
+            "coefficients": tuple([0.0] * len(feature_names)),
+            "training_record_count": 0,
+            "training_mae": 0.0,
+            "training_rmse": 0.0,
+            "legacy_training_mae": 0.0,
+            "legacy_training_rmse": 0.0,
+        }
+
+    legacy_predictions = np.array(
+        [predict_legacy_observable_scalar(state_vector, record) for record in records],
+        dtype=float,
+    )
+    X = np.vstack(
+        [
+            _observable_calibrator_features(
+                state_vector,
+                record,
+                legacy_scalar=float(legacy_predictions[index]),
+            )
+            for index, record in enumerate(records)
+        ]
+    )
+    y = np.array([_normalize_gcr_scalar(record) for record in records], dtype=float)
+    residual = y - legacy_predictions
+    ridge = np.eye(X.shape[1], dtype=float)
+    ridge[0, 0] = 0.0
+    coefficients = np.linalg.pinv(X.T @ X + float(alpha) * ridge) @ X.T @ residual
+    learned_predictions = np.clip(legacy_predictions + X @ coefficients, 0.0, 1.0)
+    learned_delta = learned_predictions - y
+    legacy_delta = legacy_predictions - y
+    return {
+        "type": "residual_ridge",
+        "alpha": float(alpha),
+        "feature_names": feature_names,
+        "coefficients": tuple(float(value) for value in coefficients.tolist()),
+        "training_record_count": len(records),
+        "training_mae": float(np.mean(np.abs(learned_delta))),
+        "training_rmse": float(np.sqrt(np.mean(learned_delta**2))),
+        "legacy_training_mae": float(np.mean(np.abs(legacy_delta))),
+        "legacy_training_rmse": float(np.sqrt(np.mean(legacy_delta**2))),
+    }
+
+
+def _default_learned_calibration_paths() -> tuple[str, ...]:
+    root = Path(__file__).resolve().parents[2] / "tests" / "galactic_cosmic_rays"
+    return tuple(str(root / filename) for filename in DEFAULT_LEARNED_CALIBRATION_FILENAMES)
+
+
+def _coerce_calibration_paths(calibration_paths: Sequence[str] | None) -> tuple[str, ...]:
+    if calibration_paths is None:
+        return _default_learned_calibration_paths()
+    return tuple(str(Path(path)) for path in calibration_paths)
+
+
+def _load_training_records(calibration_paths: Sequence[str]) -> list[dict]:
+    records: list[dict] = []
+    for path_str in calibration_paths:
+        path = Path(path_str)
+        if not path.exists():
+            continue
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if isinstance(payload, list):
+            records.extend(record for record in payload if isinstance(record, dict))
+    return records
+
+
+@lru_cache(maxsize=8)
+def load_learned_observable_calibrator(
+    calibration_paths: tuple[str, ...] | None = None,
+    alpha: float = LEARNED_CALIBRATOR_ALPHA,
+) -> dict[str, object]:
+    """
+    Load the default learned calibrator trained on the locked lunar bundle.
+    """
+    paths = _coerce_calibration_paths(calibration_paths)
+    calibrator = fit_observable_calibrator(
+        _load_training_records(paths),
+        default_validation_state_vector(),
+        alpha=alpha,
+    )
+    calibrator["calibration_paths"] = tuple(paths)
+    return calibrator
+
+
+def predict_change4_observable_scalar(
+    state_vector: Sequence[float],
+    record: dict,
+    calibrator: dict[str, object] | None = None,
+    calibration_paths: Sequence[str] | None = None,
+    alpha: float = LEARNED_CALIBRATOR_ALPHA,
+) -> float:
+    """
+    Predict a normalized scalar with the learned residual-ridge calibrator.
+
+    The legacy heuristic is retained as the baseline feature map, but the
+    returned value is the learned calibrator output rather than the old
+    hand-authored scalar.
+    """
+    legacy = predict_legacy_observable_scalar(state_vector, record)
+    active_calibrator = (
+        calibrator
+        if calibrator is not None
+        else load_learned_observable_calibrator(
+            calibration_paths=tuple(_coerce_calibration_paths(calibration_paths)),
+            alpha=alpha,
+        )
+    )
+    coefficients = np.asarray(active_calibrator.get("coefficients", ()), dtype=float)
+    if coefficients.size == 0:
+        return legacy
+    features = _observable_calibrator_features(
+        state_vector,
+        record,
+        legacy_scalar=legacy,
+    )
+    if coefficients.size != features.size:
+        return legacy
+    correction = float(features @ coefficients)
+    return _clamp(legacy + correction)
 
 
 def harmonic_embed_scalar_to_12d(scalar: float) -> np.ndarray:

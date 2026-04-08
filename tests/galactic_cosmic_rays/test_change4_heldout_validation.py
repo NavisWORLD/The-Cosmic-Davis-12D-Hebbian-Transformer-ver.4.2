@@ -24,20 +24,24 @@ def test_change4_heldout_validation_reports_baselines_and_errors():
     assert len(leave_one_out["targets"]) == 6
     assert leave_one_out["best_mae_baseline"] in leave_one_out["baselines"]
     assert leave_one_out["best_rmse_baseline"] in leave_one_out["baselines"]
-    assert "observable_aware_proxy" in leave_one_out["baselines"]
+    assert "legacy_heuristic_proxy" in leave_one_out["baselines"]
+    assert "learned_calibrator_proxy" in leave_one_out["baselines"]
     assert math.isclose(
         leave_one_out["baselines"]["model_phase_proxy"]["mae"],
-        0.3161891208608048,
+        0.31618895360301075,
         rel_tol=1e-6,
         abs_tol=1e-6,
     )
     assert math.isclose(
-        leave_one_out["baselines"]["midpoint_0_5"]["mae"],
-        0.2530999237034236,
+        leave_one_out["baselines"]["legacy_heuristic_proxy"]["mae"],
+        0.004874911752799094,
         rel_tol=1e-6,
         abs_tol=1e-6,
     )
-    assert leave_one_out["baselines"]["observable_aware_proxy"]["mae"] < leave_one_out["baselines"]["midpoint_0_5"]["mae"]
+    assert leave_one_out["best_mae_baseline"] == "legacy_heuristic_proxy"
+    assert leave_one_out["best_rmse_baseline"] == "learned_calibrator_proxy"
+    assert leave_one_out["baselines"]["learned_calibrator_proxy"]["rmse"] < leave_one_out["baselines"]["legacy_heuristic_proxy"]["rmse"]
     assert len(chrono["train_records"]) == 4
     assert len(chrono["test_records"]) == 2
-    assert chrono["best_rmse_baseline"] in chrono["baselines"]
+    assert chrono["best_mae_baseline"] == "learned_calibrator_proxy"
+    assert chrono["best_rmse_baseline"] == "legacy_heuristic_proxy"

@@ -1,4 +1,4 @@
-"""Run an external generalization check on Artemis I radiation data."""
+"""Run an independent MSL/RAD external stress test for the learned calibrator."""
 
 from __future__ import annotations
 
@@ -12,15 +12,15 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 CHANGE4_SCRIPT = ROOT / "scripts" / "run_change4_alignment_diagnostic.py"
-FIXTURE_PATH = ROOT / "tests" / "galactic_cosmic_rays" / "artemis_i_unseen_reference.json"
+FIXTURE_PATH = ROOT / "tests" / "galactic_cosmic_rays" / "msl_rad_reference.json"
 DEFAULT_OUTPUT_DIR = ROOT / "docs" / "validation"
-JSON_REPORT_NAME = "artemis_i_external_validation_report.json"
-MARKDOWN_REPORT_NAME = "ARTEMIS_I_EXTERNAL_VALIDATION.md"
+JSON_REPORT_NAME = "msl_rad_external_validation_report.json"
+MARKDOWN_REPORT_NAME = "MSL_RAD_EXTERNAL_VALIDATION.md"
 
 
 def _load_change4_module():
     spec = importlib.util.spec_from_file_location(
-        "change4_alignment_diagnostic_external",
+        "change4_alignment_diagnostic_msl",
         CHANGE4_SCRIPT,
     )
     if spec is None or spec.loader is None:
@@ -57,29 +57,25 @@ def _best_baseline_names(baselines: dict, metric: str, tol: float = 1e-12) -> li
     ]
 
 
-def build_artemis_i_external_validation() -> dict:
+def build_msl_rad_external_validation() -> dict:
     change4 = _load_change4_module()
-    module = change4._load_module()
+    cst_module = change4._load_module()
     locked_change4 = change4.build_change4_alignment_diagnostic()
-    calibrator = module.load_learned_observable_calibrator()
+    calibrator = cst_module.load_learned_observable_calibrator()
 
     records = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
-    state_vector = module.build_12d_state_vector(
-        change4.DEFAULT_MODEL_INPUT,
-        metrics=change4.DEFAULT_METRICS,
-        dark_matter_w=change4.DEFAULT_DARK_MATTER_W,
-    )
-    alignment = module.galactic_cosmic_ray_alignment(state_vector, records)
+    state_vector = cst_module.default_validation_state_vector()
+    alignment = cst_module.galactic_cosmic_ray_alignment(state_vector, records)
 
-    targets = np.array([module._normalize_gcr_scalar(record) for record in records], dtype=float)
+    targets = np.array([cst_module._normalize_gcr_scalar(record) for record in records], dtype=float)
     phase_proxy = np.full(len(records), float(locked_change4["model"]["phase_proxy_clamped"]), dtype=float)
     legacy_heuristic = np.array(
-        [module.predict_legacy_observable_scalar(state_vector, record) for record in records],
+        [cst_module.predict_legacy_observable_scalar(state_vector, record) for record in records],
         dtype=float,
     )
     learned_calibrator = np.array(
         [
-            module.predict_change4_observable_scalar(
+            cst_module.predict_change4_observable_scalar(
                 state_vector,
                 record,
                 calibrator=calibrator,
@@ -90,16 +86,16 @@ def build_artemis_i_external_validation() -> dict:
     )
     midpoint = np.full(len(records), 0.5, dtype=float)
 
-    change4_targets = np.array(
+    calibration_targets = np.array(
         [record["normalized_target"] for record in locked_change4["records"]],
         dtype=float,
     )
-    change4_weights = np.array(
+    calibration_weights = np.array(
         [record["weight"] for record in locked_change4["records"]],
         dtype=float,
     )
-    change4_mean = float(np.mean(change4_targets))
-    change4_weighted_mean = float(np.average(change4_targets, weights=change4_weights))
+    calibration_mean = float(np.mean(calibration_targets))
+    calibration_weighted_mean = float(np.average(calibration_targets, weights=calibration_weights))
 
     baselines = {
         "model_phase_proxy": {
@@ -118,26 +114,27 @@ def build_artemis_i_external_validation() -> dict:
             "predictions": [float(value) for value in midpoint.tolist()],
             **_error_metrics(midpoint, targets),
         },
-        "change4_reference_mean": {
-            "predictions": [change4_mean] * len(records),
-            **_error_metrics(np.full(len(records), change4_mean, dtype=float), targets),
+        "lunar_bundle_mean": {
+            "predictions": [calibration_mean] * len(records),
+            **_error_metrics(np.full(len(records), calibration_mean, dtype=float), targets),
         },
-        "change4_weighted_mean": {
-            "predictions": [change4_weighted_mean] * len(records),
-            **_error_metrics(np.full(len(records), change4_weighted_mean, dtype=float), targets),
+        "lunar_bundle_weighted_mean": {
+            "predictions": [calibration_weighted_mean] * len(records),
+            **_error_metrics(np.full(len(records), calibration_weighted_mean, dtype=float), targets),
         },
     }
 
     best_mae = _best_baseline_names(baselines, "mae")
     best_rmse = _best_baseline_names(baselines, "rmse")
-    learned_calibrator_best_here = (
-        "learned_calibrator_proxy" in best_mae and "learned_calibrator_proxy" in best_rmse
+    learned_generalizes_here = (
+        "learned_calibrator_proxy" in best_mae
+        and "learned_calibrator_proxy" in best_rmse
     )
 
     per_record = []
     for index, record in enumerate(records):
         target = float(targets[index])
-        phase_prediction = float(phase_proxy[index])
+        observed_value = change4._observed_value(record)
         per_record.append(
             {
                 "id": record["id"],
@@ -147,64 +144,68 @@ def build_artemis_i_external_validation() -> dict:
                 "units": record.get("units", "unitless"),
                 "notes": record.get("notes", ""),
                 "normalized_target": target,
-                "phase_proxy_prediction": phase_prediction,
-                "phase_proxy_delta": float(phase_prediction - target),
+                "observed_value": observed_value,
+                "phase_proxy_prediction": float(phase_proxy[index]),
+                "phase_proxy_predicted_value": change4._predicted_value_from_scalar(record, phase_proxy[index]),
+                "phase_proxy_delta": float(phase_proxy[index] - target),
                 "legacy_heuristic_prediction": float(legacy_heuristic[index]),
+                "legacy_heuristic_predicted_value": change4._predicted_value_from_scalar(record, legacy_heuristic[index]),
                 "legacy_heuristic_delta": float(legacy_heuristic[index] - target),
                 "learned_calibrator_prediction": float(learned_calibrator[index]),
+                "learned_calibrator_predicted_value": change4._predicted_value_from_scalar(record, learned_calibrator[index]),
                 "learned_calibrator_delta": float(learned_calibrator[index] - target),
             }
         )
 
     return {
         "reproducibility": {
-            "command": "python scripts/run_artemis_i_external_validation.py --output-dir docs/validation",
+            "command": "python scripts/run_msl_rad_external_validation.py --output-dir docs/validation",
             "python_version": sys.version.split()[0],
             "fixture_path": str(FIXTURE_PATH),
             "fixture_sha256": _sha256(FIXTURE_PATH),
-            "locked_change4_report_dependency": "docs/validation/change4_alignment_report.json",
+            "learned_calibrator_bundle": locked_change4["model"]["learned_calibrator"],
         },
         "question": (
-            "How well does the learned calibrator fit the Artemis I ratio basket "
-            "that now participates in the locked lunar calibration bundle?"
+            "Does the learned calibrator, trained on the locked Chang'e-4 + Artemis I "
+            "bundle, generalize to an independent MSL/RAD Mars surface-to-cruise basket?"
         ),
         "answer": (
-            "The learned calibrator is the best MAE and RMSE baseline on this "
-            "Artemis I calibration basket."
-            if learned_calibrator_best_here
-            else "The learned calibrator improves over the phase proxy on this "
-            "Artemis I basket, but it is not the best baseline here."
+            "Yes. The learned calibrator is the best MAE and RMSE baseline on the "
+            "independent MSL/RAD basket."
+            if learned_generalizes_here
+            else "Not yet. The learned calibrator transfers more structure than the "
+            "legacy heuristic, but simple midpoint and lunar-bundle mean baselines "
+            "still win on the independent MSL/RAD basket."
         ),
         "external_alignment": {
             "official_overall_alignment": float(alignment.overall_alignment),
             "official_cosine_similarity": float(alignment.cosine_similarity),
             "official_phase_distance": float(alignment.phase_distance),
         },
-        "locked_change4_context": {
+        "locked_lunar_context": {
             "phase_proxy_clamped": float(locked_change4["model"]["phase_proxy_clamped"]),
-            "change4_reference_mean": change4_mean,
-            "change4_weighted_mean": change4_weighted_mean,
+            "lunar_bundle_mean": calibration_mean,
+            "lunar_bundle_weighted_mean": calibration_weighted_mean,
             "change4_alignment": float(locked_change4["aggregate"]["official_overall_alignment"]),
         },
         "targets": [float(value) for value in targets.tolist()],
         "baselines": baselines,
         "best_mae_baselines": best_mae,
         "best_rmse_baselines": best_rmse,
-        "learned_calibrator_best_here": learned_calibrator_best_here,
-        "bundle_member": True,
+        "learned_generalizes_here": learned_generalizes_here,
         "records": per_record,
     }
 
 
 def render_markdown_summary(report: dict) -> str:
     lines = [
-        "# Artemis I Calibration-Bundle Diagnostic",
+        "# MSL/RAD External Validation",
         "",
         "## Summary",
         report["question"],
         report["answer"],
         "",
-        "This basket is now part of the locked lunar calibration bundle, so it is reported as a post-fit diagnostic rather than an independent holdout.",
+        "This is the independent out-of-family stress test for the learned calibrator.",
         "",
         "## External Alignment",
         f"- Official overall alignment: `{report['external_alignment']['official_overall_alignment']:.6f}`",
@@ -228,7 +229,7 @@ def render_markdown_summary(report: dict) -> str:
         [
             "",
             "## Record Diagnostics",
-            "| Record | Target | Phase proxy | Learned calibrator | Phase delta | Learned delta |",
+            "| Record | Target | Legacy heuristic | Learned calibrator | Observed raw | Learned raw |",
             "| --- | ---: | ---: | ---: | ---: | ---: |",
         ]
     )
@@ -238,38 +239,31 @@ def render_markdown_summary(report: dict) -> str:
             "| "
             f"{record['id']} | "
             f"{record['normalized_target']:.6f} | "
-            f"{record['phase_proxy_prediction']:.6f} | "
+            f"{record['legacy_heuristic_prediction']:.6f} | "
             f"{record['learned_calibrator_prediction']:.6f} | "
-            f"{record['phase_proxy_delta']:.6f} | "
-            f"{record['learned_calibrator_delta']:.6f} |"
+            f"{record['observed_value']:.6f} | "
+            f"{record['learned_calibrator_predicted_value']:.6f} |"
         )
 
     lines.extend(
         [
             "",
-        "## Interpretation",
+            "## Interpretation",
             (
-                "This Artemis I basket now measures how well the learned calibrator "
-                "fits one of the locked lunar calibration sources after the heuristic "
-                "was replaced by a trained residual-ridge layer."
-            )
-            if report["learned_calibrator_best_here"]
-            else (
-                "This Artemis I basket still matters as a bundle diagnostic, but it "
-                "is no longer the honest cross-mission holdout once the learned "
-                "calibrator is fit on the lunar bundle."
+                "The learned calibrator clears the independent MSL/RAD stress test."
+                if report["learned_generalizes_here"]
+                else "The learned calibrator does not clear the independent MSL/RAD stress test yet."
             ),
             (
-                "It tells us the learned layer fits the existing lunar bundle well; "
-                "the true cross-mission stress test now moves to the independent MSL/RAD basket."
-            )
-            if report["learned_calibrator_best_here"]
-            else "The independent MSL/RAD report is the one that now decides whether the learned layer actually generalizes.",
+                "That means the bundled lunar fit is not enough by itself to claim robust cross-mission prediction."
+                if not report["learned_generalizes_here"]
+                else "That is a stronger cross-mission result than the lunar-only bundle can show on its own."
+            ),
             "",
             "## Reproduce",
             "```powershell",
             "python scripts/run_change4_alignment_diagnostic.py --output-dir docs/validation",
-            "python scripts/run_artemis_i_external_validation.py --output-dir docs/validation",
+            "python scripts/run_msl_rad_external_validation.py --output-dir docs/validation",
             "python -m pytest tests/galactic_cosmic_rays -q",
             "```",
         ]
@@ -296,7 +290,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    report = build_artemis_i_external_validation()
+    report = build_msl_rad_external_validation()
     json_path, markdown_path = write_reports(args.output_dir, report)
     print(f"Best MAE baselines: {', '.join(report['best_mae_baselines'])}")
     print(f"Best RMSE baselines: {', '.join(report['best_rmse_baselines'])}")

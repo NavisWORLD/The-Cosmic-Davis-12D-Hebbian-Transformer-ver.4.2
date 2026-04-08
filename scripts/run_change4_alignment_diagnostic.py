@@ -67,6 +67,26 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _calibration_metadata(calibrator: dict) -> dict:
+    paths = [Path(path) for path in calibrator.get("calibration_paths", ())]
+    return {
+        "type": calibrator.get("type", "unknown"),
+        "alpha": float(calibrator.get("alpha", 0.0)),
+        "training_record_count": int(calibrator.get("training_record_count", 0)),
+        "training_mae": float(calibrator.get("training_mae", 0.0)),
+        "training_rmse": float(calibrator.get("training_rmse", 0.0)),
+        "legacy_training_mae": float(calibrator.get("legacy_training_mae", 0.0)),
+        "legacy_training_rmse": float(calibrator.get("legacy_training_rmse", 0.0)),
+        "feature_names": list(calibrator.get("feature_names", ())),
+        "calibration_paths": [str(path) for path in paths],
+        "calibration_sha256": {
+            str(path): _sha256(path)
+            for path in paths
+            if path.exists()
+        },
+    }
+
+
 def _observable_kind(record: dict) -> str:
     if "ratio" in record:
         return "ratio"
@@ -144,6 +164,7 @@ def build_change4_alignment_diagnostic(
         dark_matter_w=DEFAULT_DARK_MATTER_W,
     )
     alignment = module.galactic_cosmic_ray_alignment(state_vector, records)
+    calibrator = module.load_learned_observable_calibrator()
 
     weights = np.array([float(record.get("weight", 1.0)) for record in records], dtype=float)
     if float(weights.sum()) <= 0.0:
@@ -172,9 +193,18 @@ def build_change4_alignment_diagnostic(
         observed_value = _observed_value(record)
         predicted_value = _predicted_value_from_scalar(record, phase_proxy_clamped)
         raw_delta = float(predicted_value - observed_value)
-        observable_aware_scalar = float(module.predict_change4_observable_scalar(state_vector, record))
-        observable_aware_predicted_value = _predicted_value_from_scalar(record, observable_aware_scalar)
-        observable_aware_raw_delta = float(observable_aware_predicted_value - observed_value)
+        legacy_scalar = float(module.predict_legacy_observable_scalar(state_vector, record))
+        legacy_predicted_value = _predicted_value_from_scalar(record, legacy_scalar)
+        legacy_raw_delta = float(legacy_predicted_value - observed_value)
+        learned_scalar = float(
+            module.predict_change4_observable_scalar(
+                state_vector,
+                record,
+                calibrator=calibrator,
+            )
+        )
+        learned_predicted_value = _predicted_value_from_scalar(record, learned_scalar)
+        learned_raw_delta = float(learned_predicted_value - observed_value)
 
         record_results.append(
             {
@@ -192,10 +222,14 @@ def build_change4_alignment_diagnostic(
                 "observed_value": observed_value,
                 "predicted_value_from_phase_proxy": predicted_value,
                 "raw_delta": raw_delta,
-                "observable_aware_scalar_prediction": observable_aware_scalar,
-                "observable_aware_normalized_delta": float(observable_aware_scalar - target_scalar),
-                "predicted_value_from_observable_aware_proxy": observable_aware_predicted_value,
-                "observable_aware_raw_delta": observable_aware_raw_delta,
+                "legacy_heuristic_scalar_prediction": legacy_scalar,
+                "legacy_heuristic_normalized_delta": float(legacy_scalar - target_scalar),
+                "predicted_value_from_legacy_heuristic": legacy_predicted_value,
+                "legacy_heuristic_raw_delta": legacy_raw_delta,
+                "learned_calibrator_scalar_prediction": learned_scalar,
+                "learned_calibrator_normalized_delta": float(learned_scalar - target_scalar),
+                "predicted_value_from_learned_calibrator": learned_predicted_value,
+                "learned_calibrator_raw_delta": learned_raw_delta,
                 "record_cosine_similarity": cosine_similarity,
                 "record_phase_delta": phase_delta,
                 "record_alignment_score": local_alignment,
@@ -217,6 +251,7 @@ def build_change4_alignment_diagnostic(
             "normalized_state_vector": [float(value) for value in model_vector.tolist()],
             "phase_proxy_raw": phase_proxy_raw,
             "phase_proxy_clamped": phase_proxy_clamped,
+            "learned_calibrator": _calibration_metadata(calibrator),
         },
         "dataset": {
             "fixture_path": str(fixture_path),
@@ -302,13 +337,14 @@ def render_markdown_summary(diagnostic: dict) -> str:
             "overall alignment above remains the canonical aggregate score."
         ),
         (
-            "An additional observable-aware proxy is included as a calibration aid. "
-            "It is useful for engineering diagnostics, but it should not be confused "
-            "with the canonical harmonic alignment score."
+            "The legacy heuristic is preserved as a baseline, and a learned "
+            "residual-ridge calibrator is fit on the locked Chang'e-4 + Artemis I "
+            "bundle for engineering diagnostics. That learned layer is useful, but "
+            "it should not be confused with the canonical harmonic alignment score."
         ),
         "",
-        "| Record | Observed | Phase proxy | Obs-aware proxy | Phase delta | Obs-aware delta | Normalized target |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Record | Observed | Phase proxy | Legacy heuristic | Learned calibrator | Phase delta | Learned delta | Normalized target |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
 
     for record in diagnostic["records"]:
@@ -317,9 +353,10 @@ def render_markdown_summary(diagnostic: dict) -> str:
             f"{record['id']} | "
             f"{record['observed_value']:.6f} | "
             f"{record['predicted_value_from_phase_proxy']:.6f} | "
-            f"{record['predicted_value_from_observable_aware_proxy']:.6f} | "
+            f"{record['predicted_value_from_legacy_heuristic']:.6f} | "
+            f"{record['predicted_value_from_learned_calibrator']:.6f} | "
             f"{record['raw_delta']:.6f} | "
-            f"{record['observable_aware_raw_delta']:.6f} | "
+            f"{record['learned_calibrator_raw_delta']:.6f} | "
             f"{record['normalized_target']:.6f} | "
         )
 

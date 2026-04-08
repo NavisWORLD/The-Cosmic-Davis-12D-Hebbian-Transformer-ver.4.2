@@ -1,0 +1,297 @@
+{
+  "answer": "Not yet. The learned calibrator transfers more structure than the legacy heuristic, but simple midpoint and lunar-bundle mean baselines still win on the independent MSL/RAD basket.",
+  "baselines": {
+    "learned_calibrator_proxy": {
+      "mae": 0.24387407676524456,
+      "max_abs_error": 0.35601887435931845,
+      "predictions": [
+        0.7662395224250699,
+        0.6792644886324828,
+        0.6975526302185042,
+        0.6671819093735827,
+        0.7038449613158402,
+        0.6768098646934277
+      ],
+      "rmse": 0.2556420938405319
+    },
+    "legacy_heuristic_proxy": {
+      "mae": 0.24683581711328761,
+      "max_abs_error": 0.3526739130434784,
+      "predictions": [
+        0.7728,
+        0.675,
+        0.7005000000000001,
+        0.675,
+        0.7005000000000001,
+        0.7005000000000001
+      ],
+      "rmse": 0.25869141076297125
+    },
+    "lunar_bundle_mean": {
+      "mae": 0.10954753724308781,
+      "max_abs_error": 0.28578673917702735,
+      "predictions": [
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004
+      ],
+      "rmse": 0.14198642952041862
+    },
+    "lunar_bundle_weighted_mean": {
+      "mae": 0.13260050742863483,
+      "max_abs_error": 0.25120728389870683,
+      "predictions": [
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021
+      ],
+      "rmse": 0.1494785604945555
+    },
+    "midpoint_0_5": {
+      "mae": 0.10111915044662086,
+      "max_abs_error": 0.2984293193717278,
+      "predictions": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "rmse": 0.14127552913213917
+    },
+    "model_phase_proxy": {
+      "mae": 0.18762461800981603,
+      "max_abs_error": 0.4876966480375888,
+      "predictions": [
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139
+      ],
+      "rmse": 0.23485968985033556
+    }
+  },
+  "best_mae_baselines": [
+    "midpoint_0_5"
+  ],
+  "best_rmse_baselines": [
+    "midpoint_0_5"
+  ],
+  "external_alignment": {
+    "official_cosine_similarity": 0.5337976362065061,
+    "official_overall_alignment": 0.6034420726524257,
+    "official_phase_distance": 0.187624618009816
+  },
+  "learned_generalizes_here": false,
+  "locked_lunar_context": {
+    "change4_alignment": 0.6411443634675607,
+    "lunar_bundle_mean": 0.5126425801947004,
+    "lunar_bundle_weighted_mean": 0.547222035473021,
+    "phase_proxy_clamped": 0.310732671334139
+  },
+  "question": "Does the learned calibrator, trained on the locked Chang'e-4 + Artemis I bundle, generalize to an independent MSL/RAD Mars surface-to-cruise basket?",
+  "records": [
+    {
+      "id": "msl_rad_2014_surface_to_cruise_charged_flux_ratio",
+      "learned_calibrator_delta": 0.31868707487262227,
+      "learned_calibrator_predicted_value": 1.09572251706785,
+      "learned_calibrator_prediction": 0.7662395224250699,
+      "legacy_heuristic_delta": 0.32524755244755243,
+      "legacy_heuristic_predicted_value": 1.105104,
+      "legacy_heuristic_prediction": 0.7728,
+      "normalized_target": 0.4475524475524476,
+      "notes": "Charged-particle flux on the Mars surface relative to MSL cruise, from Table 1.",
+      "observed_value": 0.64,
+      "phase_proxy_delta": -0.1368197762183086,
+      "phase_proxy_predicted_value": 0.44434772000781875,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2014-01-24",
+      "source": "Science 2014 MSL/RAD Table 1",
+      "source_url": "https://www.scienceintheclassroom.org/sites/default/files/research-papers/1244797.full_.pdf",
+      "units": "mars_surface_to_cruise_charged_particle_flux_ratio"
+    },
+    {
+      "id": "msl_rad_2014_surface_to_cruise_fluence_rate_ratio",
+      "learned_calibrator_delta": 0.20381229225005382,
+      "learned_calibrator_predicted_value": 2.6287535710077083,
+      "learned_calibrator_prediction": 0.6792644886324828,
+      "legacy_heuristic_delta": 0.19954780361757107,
+      "legacy_heuristic_predicted_value": 2.6122500000000004,
+      "legacy_heuristic_prediction": 0.675,
+      "normalized_target": 0.47545219638242897,
+      "notes": "Fluence rate on the Mars surface relative to MSL cruise, from Table 1.",
+      "observed_value": 1.84,
+      "phase_proxy_delta": -0.16471952504828996,
+      "phase_proxy_predicted_value": 1.202535438063118,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2014-01-24",
+      "source": "Science 2014 MSL/RAD Table 1",
+      "source_url": "https://www.scienceintheclassroom.org/sites/default/files/research-papers/1244797.full_.pdf",
+      "units": "mars_surface_to_cruise_fluence_rate_ratio"
+    },
+    {
+      "id": "msl_rad_2014_surface_to_cruise_dose_rate_ratio",
+      "learned_calibrator_delta": 0.2600526302185042,
+      "learned_calibrator_predicted_value": 0.33482526250488204,
+      "learned_calibrator_prediction": 0.6975526302185042,
+      "legacy_heuristic_delta": 0.2630000000000001,
+      "legacy_heuristic_predicted_value": 0.33624000000000004,
+      "legacy_heuristic_prediction": 0.7005000000000001,
+      "normalized_target": 0.4375,
+      "notes": "Tissue-like absorbed dose rate on the Mars surface relative to MSL cruise, from Table 1.",
+      "observed_value": 0.21,
+      "phase_proxy_delta": -0.126767328665861,
+      "phase_proxy_predicted_value": 0.14915168224038672,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2014-01-24",
+      "source": "Science 2014 MSL/RAD Table 1",
+      "source_url": "https://www.scienceintheclassroom.org/sites/default/files/research-papers/1244797.full_.pdf",
+      "units": "mars_surface_to_cruise_dose_rate_ratio"
+    },
+    {
+      "id": "msl_rad_2014_surface_to_cruise_quality_factor_ratio",
+      "learned_calibrator_delta": -0.1312474099981451,
+      "learned_calibrator_predicted_value": 2.5486348938070855,
+      "learned_calibrator_prediction": 0.6671819093735827,
+      "legacy_heuristic_delta": -0.12342931937172774,
+      "legacy_heuristic_predicted_value": 2.5785,
+      "legacy_heuristic_prediction": 0.675,
+      "normalized_target": 0.7984293193717278,
+      "notes": "Average quality factor on the Mars surface relative to MSL cruise, from Table 1.",
+      "observed_value": 3.05,
+      "phase_proxy_delta": -0.4876966480375888,
+      "phase_proxy_predicted_value": 1.186998804496411,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2014-01-24",
+      "source": "Science 2014 MSL/RAD Table 1",
+      "source_url": "https://www.scienceintheclassroom.org/sites/default/files/research-papers/1244797.full_.pdf",
+      "units": "mars_surface_to_cruise_quality_factor_ratio"
+    },
+    {
+      "id": "msl_rad_2014_surface_to_cruise_dose_equivalent_rate_ratio",
+      "learned_calibrator_delta": 0.35601887435931845,
+      "learned_calibrator_predicted_value": 1.295074728821146,
+      "learned_calibrator_prediction": 0.7038449613158402,
+      "legacy_heuristic_delta": 0.3526739130434784,
+      "legacy_heuristic_predicted_value": 1.2889200000000003,
+      "legacy_heuristic_prediction": 0.7005000000000001,
+      "normalized_target": 0.34782608695652173,
+      "notes": "Dose-equivalent rate on the Mars surface relative to MSL cruise, from Table 1.",
+      "observed_value": 0.64,
+      "phase_proxy_delta": -0.03709341562238272,
+      "phase_proxy_predicted_value": 0.5717481152548158,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2014-01-24",
+      "source": "Science 2014 MSL/RAD Table 1",
+      "source_url": "https://www.scienceintheclassroom.org/sites/default/files/research-papers/1244797.full_.pdf",
+      "units": "mars_surface_to_cruise_dose_equivalent_rate_ratio"
+    },
+    {
+      "id": "msl_rad_2014_surface_to_cruise_mission_dose_equivalent_ratio",
+      "learned_calibrator_delta": 0.19342617889282349,
+      "learned_calibrator_predicted_value": 448.04813042704916,
+      "learned_calibrator_prediction": 0.6768098646934277,
+      "legacy_heuristic_delta": 0.21711631419939587,
+      "legacy_heuristic_predicted_value": 463.7310000000001,
+      "legacy_heuristic_prediction": 0.7005000000000001,
+      "normalized_target": 0.48338368580060426,
+      "notes": "Surface-stay dose-equivalent contribution relative to the two 180-day cruise legs, from Table 1.",
+      "observed_value": 320.0,
+      "phase_proxy_delta": -0.17265101446646525,
+      "phase_proxy_predicted_value": 205.70502842320002,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2014-01-24",
+      "source": "Science 2014 MSL/RAD Table 1",
+      "source_url": "https://www.scienceintheclassroom.org/sites/default/files/research-papers/1244797.full_.pdf",
+      "units": "mars_surface_to_cruise_mission_dose_equivalent_ratio"
+    }
+  ],
+  "reproducibility": {
+    "command": "python scripts/run_msl_rad_external_validation.py --output-dir docs/validation",
+    "fixture_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\msl_rad_reference.json",
+    "fixture_sha256": "13277438f861f68847aced6c06b8a05f9043d1df62b9e85fb4b964b1bfb0d971",
+    "learned_calibrator_bundle": {
+      "alpha": 0.2,
+      "calibration_paths": [
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\change4_lnd_reference.json",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_unseen_reference.json",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_m42_gcr_reference.json"
+      ],
+      "calibration_sha256": {
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_m42_gcr_reference.json": "52cf7c80e66a557e3fb1a3ec811f5b17153c49f3f28a4fe44cf238bf9d2ad465",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_unseen_reference.json": "3b16a15c465a278fccbe09f0c2386b637cd75b970cfef84ed84c39ad95057d1c",
+        "D:\\Cosmos\\tests\\galactic_cosmic_rays\\change4_lnd_reference.json": "77e313d2901c8578eb3be6e223c0771169403043ef29800751c6fade918da798"
+      },
+      "feature_names": [
+        "bias",
+        "legacy_scalar",
+        "legacy_centered",
+        "legacy_squared",
+        "has_ratio",
+        "has_fraction_scale",
+        "has_value",
+        "has_current_forecast",
+        "has_log_transform",
+        "scale_hint_log",
+        "kw_ratio",
+        "kw_dose",
+        "kw_equivalent",
+        "kw_flux",
+        "kw_fluence",
+        "kw_quality",
+        "kw_charged",
+        "kw_neutral",
+        "kw_albedo",
+        "kw_primary",
+        "kw_surface",
+        "kw_cruise",
+        "kw_storm",
+        "kw_shelter",
+        "kw_shield",
+        "kw_peak",
+        "kw_rotation",
+        "kw_cavity",
+        "kw_duration",
+        "kw_reduction",
+        "kw_gcr",
+        "kw_proton",
+        "kw_organ",
+        "kw_tissue",
+        "kw_absorbed",
+        "kw_total",
+        "kw_mission",
+        "kw_flyby",
+        "kw_low",
+        "kw_high",
+        "kw_count",
+        "kw_rate",
+        "kw_current",
+        "kw_forecast"
+      ],
+      "legacy_training_mae": 0.02188709127861746,
+      "legacy_training_rmse": 0.03192815917289068,
+      "training_mae": 0.010577694882032062,
+      "training_record_count": 19,
+      "training_rmse": 0.018472538221116372,
+      "type": "residual_ridge"
+    },
+    "python_version": "3.12.6"
+  },
+  "targets": [
+    0.4475524475524476,
+    0.47545219638242897,
+    0.4375,
+    0.7984293193717278,
+    0.34782608695652173,
+    0.48338368580060426
+  ]
+}

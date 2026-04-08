@@ -48,19 +48,42 @@ def _round_floats(values: list[float]) -> list[float]:
 
 def build_change4_heldout_validation() -> dict:
     module = _load_alignment_module()
+    cst_module = module._load_module()
     diagnostic = module.build_change4_alignment_diagnostic()
+    raw_records = json.loads(module.FIXTURE_PATH.read_text(encoding="utf-8"))
+    state_vector = cst_module.default_validation_state_vector()
     records = diagnostic["records"]
 
-    targets = np.array([record["normalized_target"] for record in records], dtype=float)
-    weights = np.array([record["weight"] for record in records], dtype=float)
+    targets = np.array(
+        [cst_module._normalize_gcr_scalar(record) for record in raw_records],
+        dtype=float,
+    )
+    weights = np.array([float(record.get("weight", 1.0)) for record in raw_records], dtype=float)
     model_predictions = np.array(
         [record["model_scalar_prediction"] for record in records],
         dtype=float,
     )
-    observable_aware_predictions = np.array(
-        [record["observable_aware_scalar_prediction"] for record in records],
+    legacy_predictions = np.array(
+        [
+            cst_module.predict_legacy_observable_scalar(state_vector, record)
+            for record in raw_records
+        ],
         dtype=float,
     )
+    learned_calibrator_predictions = []
+    for index, record in enumerate(raw_records):
+        training_records = raw_records[:index] + raw_records[index + 1 :]
+        calibrator = cst_module.fit_observable_calibrator(training_records, state_vector)
+        learned_calibrator_predictions.append(
+            float(
+                cst_module.predict_change4_observable_scalar(
+                    state_vector,
+                    record,
+                    calibrator=calibrator,
+                )
+            )
+        )
+    learned_calibrator_predictions = np.array(learned_calibrator_predictions, dtype=float)
     midpoint_predictions = np.full_like(targets, 0.5)
 
     loo_mean_predictions = []
@@ -74,14 +97,24 @@ def build_change4_heldout_validation() -> dict:
     loo_weighted_predictions = np.array(loo_weighted_predictions, dtype=float)
 
     sorted_records = sorted(records, key=lambda record: (record["published_date"], record["id"]))
-    sorted_targets = np.array([record["normalized_target"] for record in sorted_records], dtype=float)
-    sorted_weights = np.array([record["weight"] for record in sorted_records], dtype=float)
+    sorted_raw_records = sorted(
+        raw_records,
+        key=lambda record: (record["published_date"], record["id"]),
+    )
+    sorted_targets = np.array(
+        [cst_module._normalize_gcr_scalar(record) for record in sorted_raw_records],
+        dtype=float,
+    )
+    sorted_weights = np.array([float(record.get("weight", 1.0)) for record in sorted_raw_records], dtype=float)
     sorted_model_predictions = np.array(
         [record["model_scalar_prediction"] for record in sorted_records],
         dtype=float,
     )
-    sorted_observable_aware_predictions = np.array(
-        [record["observable_aware_scalar_prediction"] for record in sorted_records],
+    sorted_legacy_predictions = np.array(
+        [
+            cst_module.predict_legacy_observable_scalar(state_vector, record)
+            for record in sorted_raw_records
+        ],
         dtype=float,
     )
     test_mask = np.array(
@@ -94,7 +127,24 @@ def build_change4_heldout_validation() -> dict:
 
     chronological_targets = sorted_targets[test_mask]
     chronological_model_predictions = sorted_model_predictions[test_mask]
-    chronological_observable_aware_predictions = sorted_observable_aware_predictions[test_mask]
+    chronological_legacy_predictions = sorted_legacy_predictions[test_mask]
+    chronological_train_records = [record for record in sorted_raw_records if record["published_date"] < "2026-01-01"]
+    chronological_test_records = [record for record in sorted_raw_records if record["published_date"] >= "2026-01-01"]
+    chronological_calibrator = cst_module.fit_observable_calibrator(
+        chronological_train_records,
+        state_vector,
+    )
+    chronological_learned_predictions = np.array(
+        [
+            cst_module.predict_change4_observable_scalar(
+                state_vector,
+                record,
+                calibrator=chronological_calibrator,
+            )
+            for record in chronological_test_records
+        ],
+        dtype=float,
+    )
     train_mean = float(np.mean(sorted_targets[train_mask]))
     train_weighted_mean = float(
         np.average(sorted_targets[train_mask], weights=sorted_weights[train_mask])
@@ -110,9 +160,13 @@ def build_change4_heldout_validation() -> dict:
                 "predictions": _round_floats(model_predictions.tolist()),
                 **_error_metrics(model_predictions, targets),
             },
-            "observable_aware_proxy": {
-                "predictions": _round_floats(observable_aware_predictions.tolist()),
-                **_error_metrics(observable_aware_predictions, targets),
+            "legacy_heuristic_proxy": {
+                "predictions": _round_floats(legacy_predictions.tolist()),
+                **_error_metrics(legacy_predictions, targets),
+            },
+            "learned_calibrator_proxy": {
+                "predictions": _round_floats(learned_calibrator_predictions.tolist()),
+                **_error_metrics(learned_calibrator_predictions, targets),
             },
             "midpoint_0_5": {
                 "predictions": _round_floats(midpoint_predictions.tolist()),
@@ -153,9 +207,13 @@ def build_change4_heldout_validation() -> dict:
                 "predictions": _round_floats(chronological_model_predictions.tolist()),
                 **_error_metrics(chronological_model_predictions, chronological_targets),
             },
-            "observable_aware_proxy": {
-                "predictions": _round_floats(chronological_observable_aware_predictions.tolist()),
-                **_error_metrics(chronological_observable_aware_predictions, chronological_targets),
+            "legacy_heuristic_proxy": {
+                "predictions": _round_floats(chronological_legacy_predictions.tolist()),
+                **_error_metrics(chronological_legacy_predictions, chronological_targets),
+            },
+            "learned_calibrator_proxy": {
+                "predictions": _round_floats(chronological_learned_predictions.tolist()),
+                **_error_metrics(chronological_learned_predictions, chronological_targets),
             },
             "midpoint_0_5": {
                 "predictions": _round_floats(chronological_midpoint.tolist()),
@@ -216,10 +274,10 @@ def render_markdown_summary(report: dict) -> str:
             "prediction beat simple baselines on held-out normalized Chang'e-4/LND targets?"
         ),
         (
-            "Answer: the original constant phase proxy does not. A second "
-            "observable-aware heuristic can reduce error sharply, but because it is "
-            "a hand-authored, record-conditioned calibration, it should not be "
-            "treated as independent predictive validation."
+            "Answer: the original constant phase proxy does not. The new learned "
+            "residual-ridge calibrator materially improves over the phase proxy and "
+            "the preserved legacy heuristic, but it still needs out-of-family "
+            "stress testing before it can be called predictive."
         ),
         "",
         "## Leave-One-Out Baselines",
@@ -271,9 +329,10 @@ def render_markdown_summary(report: dict) -> str:
                 "baselines across the full dataset."
             ),
             (
-                "The observable-aware proxy is useful as an engineering calibration "
-                "layer, but because it is hand-shaped around observable families, it "
-                "is still calibration rather than proof of prediction."
+                "The learned calibrator is fit by refitting a residual-ridge model on "
+                "each training split, so these errors are stricter than the old "
+                "in-sample heuristic report. That still makes this a calibration "
+                "result, not proof of external prediction."
             ),
             "",
             "## Reproduce",

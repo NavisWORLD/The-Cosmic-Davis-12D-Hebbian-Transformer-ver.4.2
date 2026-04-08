@@ -18,10 +18,11 @@ def test_artemis_i_external_validation_is_honest_about_generalization():
     report = build_artemis_i_external_validation()
 
     assert report["external_alignment"]["official_overall_alignment"] > 0.5
-    assert report["generalized_here"] is True
-    assert report["answer"].startswith("Yes, within this unseen Artemis I basket.")
+    assert report["bundle_member"] is True
+    assert report["learned_calibrator_best_here"] is True
+    assert report["answer"].startswith("The learned calibrator is the best")
     assert len(report["records"]) == 6
-    assert "observable_aware_proxy" in report["baselines"]
+    assert "learned_calibrator_proxy" in report["baselines"]
     assert math.isclose(
         report["baselines"]["model_phase_proxy"]["mae"],
         0.2797746090149557,
@@ -29,10 +30,10 @@ def test_artemis_i_external_validation_is_honest_about_generalization():
         abs_tol=1e-6,
     )
     assert math.isclose(
-        report["baselines"]["observable_aware_proxy"]["mae"],
-        0.013578753402350869,
+        report["baselines"]["learned_calibrator_proxy"]["mae"],
+        0.0015477755617966799,
         rel_tol=1e-6,
         abs_tol=1e-6,
     )
-    assert report["baselines"]["observable_aware_proxy"]["mae"] < report["baselines"]["model_phase_proxy"]["mae"]
-    assert "observable_aware_proxy" in report["best_rmse_baselines"]
+    assert report["baselines"]["learned_calibrator_proxy"]["mae"] < report["baselines"]["legacy_heuristic_proxy"]["mae"]
+    assert "learned_calibrator_proxy" in report["best_rmse_baselines"]

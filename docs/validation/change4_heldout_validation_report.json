@@ -1,6 +1,24 @@
 {
   "chronological_holdout_2026": {
     "baselines": {
+      "learned_calibrator_proxy": {
+        "mae": 0.0051830124321506285,
+        "max_abs_error": 0.00974005511853715,
+        "predictions": [
+          0.06835370425304484,
+          0.7097400551185371
+        ],
+        "rmse": 0.006901467664010087
+      },
+      "legacy_heuristic_proxy": {
+        "mae": 0.006538608588858193,
+        "max_abs_error": 0.007500000000000062,
+        "predictions": [
+          0.07330495168499705,
+          0.7075
+        ],
+        "rmse": 0.006608908814903371
+      },
       "midpoint_0_5": {
         "mae": 0.3161361327463596,
         "max_abs_error": 0.43227226549271924,
@@ -19,15 +37,6 @@
         ],
         "rmse": 0.32448455470860305
       },
-      "observable_aware_proxy": {
-        "mae": 0.006538608588858193,
-        "max_abs_error": 0.007500000000000062,
-        "predictions": [
-          0.07330495168499705,
-          0.7075
-        ],
-        "rmse": 0.006608908814903371
-      },
       "train_mean": {
         "mae": 0.3161361327463596,
         "max_abs_error": 0.5093042021579497,
@@ -40,17 +49,17 @@
       },
       "train_weighted_mean": {
         "mae": 0.3161361327463596,
-        "max_abs_error": 0.5269251460704425,
+        "max_abs_error": 0.5269251460704423,
         "predictions": [
-          0.5946528805777233,
-          0.5946528805777233
+          0.594652880577723,
+          0.594652880577723
         ],
-        "rmse": 0.3799658702646388,
-        "train_scalar": 0.5946528805777233
+        "rmse": 0.3799658702646387,
+        "train_scalar": 0.594652880577723
       }
     },
-    "best_mae_baseline": "observable_aware_proxy",
-    "best_rmse_baseline": "observable_aware_proxy",
+    "best_mae_baseline": "learned_calibrator_proxy",
+    "best_rmse_baseline": "legacy_heuristic_proxy",
     "test_records": [
       {
         "id": "change4_lnd_2026_cavity_duration",
@@ -88,6 +97,19 @@
   },
   "leave_one_out": {
     "baselines": {
+      "learned_calibrator_proxy": {
+        "mae": 0.00579894748403337,
+        "max_abs_error": 0.014768452101303287,
+        "predictions": [
+          0.7094602286239418,
+          0.06508903022446609,
+          0.6992684521013033,
+          0.7691618416828424,
+          0.20980573046712842,
+          0.6367338746148107
+        ],
+        "rmse": 0.0075182466949830044
+      },
       "leave_one_out_mean": {
         "mae": 0.2986627807793883,
         "max_abs_error": 0.5338978148249036,
@@ -107,12 +129,25 @@
         "predictions": [
           0.5090275443412763,
           0.6188706091805454,
-          0.5150210314481741,
-          0.5042686569484015,
-          0.6019720571189652,
+          0.515021031448174,
+          0.5042686569484016,
+          0.6019720571189653,
           0.5268561408207573
         ],
-        "rmse": 0.31800435330766913
+        "rmse": 0.3180043533076692
+      },
+      "legacy_heuristic_proxy": {
+        "mae": 0.004874911752799094,
+        "max_abs_error": 0.016000000000000125,
+        "predictions": [
+          0.7075,
+          0.07330495168499705,
+          0.7005000000000001,
+          0.7728,
+          0.211,
+          0.64
+        ],
+        "rmse": 0.007564947082228451
       },
       "midpoint_0_5": {
         "mae": 0.25309984404772373,
@@ -139,23 +174,10 @@
           0.310732671334139
         ],
         "rmse": 0.3371708077389109
-      },
-      "observable_aware_proxy": {
-        "mae": 0.004874911752799094,
-        "max_abs_error": 0.016000000000000125,
-        "predictions": [
-          0.7075,
-          0.07330495168499705,
-          0.7005000000000001,
-          0.7728,
-          0.211,
-          0.64
-        ],
-        "rmse": 0.007564947082228451
       }
     },
-    "best_mae_baseline": "observable_aware_proxy",
-    "best_rmse_baseline": "observable_aware_proxy",
+    "best_mae_baseline": "legacy_heuristic_proxy",
+    "best_rmse_baseline": "learned_calibrator_proxy",
     "targets": [
       0.7,
       0.06772773450728073,
