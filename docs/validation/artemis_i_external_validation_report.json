@@ -1,0 +1,185 @@
+{
+  "answer": "Not yet. It improves over the constant phase proxy, but it does not beat the simplest carryover baselines on aggregate external error.",
+  "baselines": {
+    "change4_reference_mean": {
+      "mae": 0.1646300716697708,
+      "max_abs_error": 0.27222446172780146,
+      "predictions": [
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004
+      ],
+      "rmse": 0.1944474233783897
+    },
+    "change4_weighted_mean": {
+      "mae": 0.1646300716697708,
+      "max_abs_error": 0.306803917006122,
+      "predictions": [
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021
+      ],
+      "rmse": 0.18772709086117864
+    },
+    "midpoint_0_5": {
+      "mae": 0.1646300716697708,
+      "max_abs_error": 0.27419354838709675,
+      "predictions": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "rmse": 0.19835780417106078
+    },
+    "model_phase_proxy": {
+      "mae": 0.2797746090149557,
+      "max_abs_error": 0.46346087705295774,
+      "predictions": [
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139
+      ],
+      "rmse": 0.31710553049497886
+    },
+    "observable_aware_proxy": {
+      "mae": 0.16857451611421528,
+      "max_abs_error": 0.43458188153310107,
+      "predictions": [
+        0.675,
+        0.675,
+        0.7075,
+        0.7005000000000001,
+        0.7005000000000001,
+        0.7005000000000001
+      ],
+      "rmse": 0.2169306736922221
+    }
+  },
+  "best_mae_baselines": [
+    "midpoint_0_5",
+    "change4_reference_mean",
+    "change4_weighted_mean"
+  ],
+  "best_rmse_baselines": [
+    "change4_weighted_mean"
+  ],
+  "external_alignment": {
+    "official_cosine_similarity": 0.47892551681025564,
+    "official_overall_alignment": 0.5451100314262227,
+    "official_phase_distance": 0.25633642472587576
+  },
+  "locked_change4_context": {
+    "change4_alignment": 0.6411443634675607,
+    "change4_reference_mean": 0.5126425801947004,
+    "change4_weighted_mean": 0.547222035473021,
+    "phase_proxy_clamped": 0.310732671334139
+  },
+  "question": "Does the locked Chang'e-4 calibrated proxy generalize to an unseen Artemis I lunar-radiation basket?",
+  "records": [
+    {
+      "id": "artemis_i_inner_belt_peak_shield_ratio",
+      "normalized_target": 0.24041811846689895,
+      "notes": "Peak inner-belt absorbed dose rates spanned about 69 to 287 uGy/min across shielded Artemis I locations.",
+      "observable_aware_delta": 0.43458188153310107,
+      "observable_aware_prediction": 0.675,
+      "phase_proxy_delta": 0.07031455286724006,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2024-10-03",
+      "source": "Nature Artemis I lunar mission paper",
+      "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+      "units": "storm_shelter_to_low_shield_peak_dose_rate_ratio"
+    },
+    {
+      "id": "artemis_i_hsu1_hsu2_peak_ratio",
+      "normalized_target": 0.46689895470383275,
+      "notes": "The two HERA detector locations recorded about 134 and 287 uGy/min peak inner-belt dose rates.",
+      "observable_aware_delta": 0.2081010452961673,
+      "observable_aware_prediction": 0.675,
+      "phase_proxy_delta": -0.15616628336969374,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2024-10-03",
+      "source": "Nature Artemis I lunar mission paper",
+      "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+      "units": "hsu1_to_hsu2_peak_dose_rate_ratio"
+    },
+    {
+      "id": "artemis_i_gcr_lunar_flyby_reduction_ratio",
+      "normalized_target": 0.6666666666666666,
+      "notes": "The paper reports about a one-third decrease in GCR dose equivalent during lunar fly-bys, represented here as a residual ratio of two-thirds.",
+      "observable_aware_delta": 0.04083333333333339,
+      "observable_aware_prediction": 0.7075,
+      "phase_proxy_delta": -0.3559339953325276,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2024-10-03",
+      "source": "Nature Artemis I lunar mission paper",
+      "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+      "units": "post_reduction_gcr_ratio"
+    },
+    {
+      "id": "artemis_i_gcr_dose_equivalent_rate_ratio",
+      "normalized_target": 0.7741935483870968,
+      "notes": "Artemis I GCR dose equivalent rates were reported as 0.96 to 1.24 mSv/day across shielded locations.",
+      "observable_aware_delta": -0.07369354838709663,
+      "observable_aware_prediction": 0.7005000000000001,
+      "phase_proxy_delta": -0.46346087705295774,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2024-10-03",
+      "source": "Nature Artemis I lunar mission paper",
+      "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+      "units": "low_to_high_gcr_dose_equivalent_rate_ratio"
+    },
+    {
+      "id": "artemis_i_total_mission_dose_equivalent_ratio",
+      "normalized_target": 0.7542372881355932,
+      "notes": "Total Artemis I mission dose equivalents were reported as 26.7 to 35.4 mSv.",
+      "observable_aware_delta": -0.053737288135593086,
+      "observable_aware_prediction": 0.7005000000000001,
+      "phase_proxy_delta": -0.4435046168014542,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2024-10-03",
+      "source": "Nature Artemis I lunar mission paper",
+      "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+      "units": "low_to_high_total_mission_dose_equivalent_ratio"
+    },
+    {
+      "id": "artemis_i_rotation_dose_drop_ratio",
+      "normalized_target": 0.5,
+      "notes": "The paper describes an approximately factor-of-two reduction in directional belt-pass dose from spacecraft orientation changes.",
+      "observable_aware_delta": 0.20050000000000012,
+      "observable_aware_prediction": 0.7005000000000001,
+      "phase_proxy_delta": -0.189267328665861,
+      "phase_proxy_prediction": 0.310732671334139,
+      "published_date": "2024-10-03",
+      "source": "Nature Artemis I lunar mission paper",
+      "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+      "units": "rotation_dose_drop_ratio"
+    }
+  ],
+  "reproducibility": {
+    "command": "python scripts/run_artemis_i_external_validation.py --output-dir docs/validation",
+    "fixture_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\artemis_i_unseen_reference.json",
+    "fixture_sha256": "3b16a15c465a278fccbe09f0c2386b637cd75b970cfef84ed84c39ad95057d1c",
+    "locked_change4_report_dependency": "docs/validation/change4_alignment_report.json",
+    "python_version": "3.12.6"
+  },
+  "targets": [
+    0.24041811846689895,
+    0.46689895470383275,
+    0.6666666666666666,
+    0.7741935483870968,
+    0.7542372881355932,
+    0.5
+  ]
+}

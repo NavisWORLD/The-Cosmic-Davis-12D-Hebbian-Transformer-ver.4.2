@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - **Chang'e-4 / LND empirical validation harness**: Added a source-backed lunar radiation reference fixture, deterministic alignment tests, and a reproducible diagnostic runner that reports per-record sub-comparisons, aggregate alignment scores, and exact reproduction commands.
 - **Validation documentation bundle**: Added `docs/validation/` output paths for the Chang'e-4 empirical summary and a Zenodo-ready publication update note tied to record `10.5281/zenodo.17574447`.
 - **Held-out baseline validation**: Added a separate reproducible report that compares the 12D phase proxy against midpoint and leave-one-out mean baselines so predictive performance can be judged independently from the harmonic alignment score.
+- **External Artemis I generalization check**: Added an unseen lunar-mission validation basket from the Artemis I radiation paper to test whether the locked Chang'e-4 calibration generalizes outside the original six-record family.
 
 ## [2.9.4] - 2026-03-01
 

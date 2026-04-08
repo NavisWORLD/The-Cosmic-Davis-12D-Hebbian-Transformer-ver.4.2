@@ -24,12 +24,17 @@ Files to include in the Zenodo update:
 - `tests/galactic_cosmic_rays/test_change4_alignment.py`
 - `tests/galactic_cosmic_rays/test_change4_diagnostic.py`
 - `tests/galactic_cosmic_rays/test_change4_heldout_validation.py`
+- `tests/galactic_cosmic_rays/artemis_i_unseen_reference.json`
+- `tests/galactic_cosmic_rays/test_artemis_i_external_validation.py`
 - `scripts/run_change4_alignment_diagnostic.py`
 - `scripts/run_change4_heldout_validation.py`
+- `scripts/run_artemis_i_external_validation.py`
 - `docs/validation/change4_alignment_report.json`
 - `docs/validation/CHANGE4_EMPIRICAL_VALIDATION.md`
 - `docs/validation/change4_heldout_validation_report.json`
 - `docs/validation/CHANGE4_HELDOUT_VALIDATION.md`
+- `docs/validation/artemis_i_external_validation_report.json`
+- `docs/validation/ARTEMIS_I_EXTERNAL_VALIDATION.md`
 
 Suggested note for the Zenodo description:
 
@@ -46,7 +51,15 @@ constant proxy on both MAE and RMSE. The update also includes an
 observable-aware heuristic calibration layer that reduces error sharply, but
 because it is hand-authored around observable families it should be presented
 as calibration support rather than independent predictive evidence.
+
+An external Artemis I validation bundle is also included to test cross-mission
+generalization on an unseen lunar-radiation basket. In that external check,
+the observable-aware proxy improves materially over the original constant phase
+proxy, but it still does not beat the simplest carryover baselines on aggregate
+external error. That result argues for caution: the current model shows
+alignment-bearing structure, but not a credible generalization claim yet.
 Reproduction commands are documented in
 `docs/validation/CHANGE4_EMPIRICAL_VALIDATION.md`,
-`docs/validation/CHANGE4_HELDOUT_VALIDATION.md`, and the associated JSON
+`docs/validation/CHANGE4_HELDOUT_VALIDATION.md`,
+`docs/validation/ARTEMIS_I_EXTERNAL_VALIDATION.md`, and the associated JSON
 reports.

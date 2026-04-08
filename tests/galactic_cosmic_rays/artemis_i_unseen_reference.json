@@ -1,0 +1,66 @@
+[
+  {
+    "id": "artemis_i_inner_belt_peak_shield_ratio",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "numerator": 69.0,
+    "denominator": 287.0,
+    "weight": 1.0,
+    "units": "storm_shelter_to_low_shield_peak_dose_rate_ratio",
+    "notes": "Peak inner-belt absorbed dose rates spanned about 69 to 287 uGy/min across shielded Artemis I locations."
+  },
+  {
+    "id": "artemis_i_hsu1_hsu2_peak_ratio",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "numerator": 134.0,
+    "denominator": 287.0,
+    "weight": 1.0,
+    "units": "hsu1_to_hsu2_peak_dose_rate_ratio",
+    "notes": "The two HERA detector locations recorded about 134 and 287 uGy/min peak inner-belt dose rates."
+  },
+  {
+    "id": "artemis_i_gcr_lunar_flyby_reduction_ratio",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "ratio": 0.6666666666666666,
+    "weight": 1.0,
+    "units": "post_reduction_gcr_ratio",
+    "notes": "The paper reports about a one-third decrease in GCR dose equivalent during lunar fly-bys, represented here as a residual ratio of two-thirds."
+  },
+  {
+    "id": "artemis_i_gcr_dose_equivalent_rate_ratio",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "numerator": 0.96,
+    "denominator": 1.24,
+    "weight": 1.0,
+    "units": "low_to_high_gcr_dose_equivalent_rate_ratio",
+    "notes": "Artemis I GCR dose equivalent rates were reported as 0.96 to 1.24 mSv/day across shielded locations."
+  },
+  {
+    "id": "artemis_i_total_mission_dose_equivalent_ratio",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "numerator": 26.7,
+    "denominator": 35.4,
+    "weight": 1.0,
+    "units": "low_to_high_total_mission_dose_equivalent_ratio",
+    "notes": "Total Artemis I mission dose equivalents were reported as 26.7 to 35.4 mSv."
+  },
+  {
+    "id": "artemis_i_rotation_dose_drop_ratio",
+    "published_date": "2024-10-03",
+    "source": "Nature Artemis I lunar mission paper",
+    "source_url": "https://elib.dlr.de/206522/1/ME-SBA-2024-George-Berger-et-al-Nature%20634%2C%2048-52_s41586-024-07927-7.pdf",
+    "ratio": 0.5,
+    "weight": 1.0,
+    "units": "rotation_dose_drop_ratio",
+    "notes": "The paper describes an approximately factor-of-two reduction in directional belt-pass dose from spacecraft orientation changes."
+  }
+]
