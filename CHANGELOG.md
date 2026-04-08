@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- **Chang'e-4 / LND empirical validation harness**: Added a source-backed lunar radiation reference fixture, deterministic alignment tests, and a reproducible diagnostic runner that reports per-record sub-comparisons, aggregate alignment scores, and exact reproduction commands.
+- **Validation documentation bundle**: Added `docs/validation/` output paths for the Chang'e-4 empirical summary and a Zenodo-ready publication update note tied to record `10.5281/zenodo.17574447`.
+
 ## [2.9.4] - 2026-03-01
 
 ### Added

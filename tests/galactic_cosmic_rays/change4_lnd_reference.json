@@ -1,0 +1,67 @@
+[
+  {
+    "id": "change4_lnd_2026_cavity_low_energy_reduction",
+    "published_date": "2026-03-25",
+    "source": "Research Square preprint for Science Advances paper",
+    "source_url": "https://www.researchsquare.com/article/rs-5447254/v1",
+    "ratio": 0.7,
+    "weight": 1.0,
+    "units": "normalized count-rate ratio",
+    "notes": "Chang'E-4/LND showed an approximately 30% reduction in lower-energy GCR count rate during lunar phase 8-10 h_M in the prenoon cavity."
+  },
+  {
+    "id": "change4_lnd_2026_cavity_duration",
+    "published_date": "2026-03-25",
+    "source": "Research Square preprint for Science Advances paper",
+    "source_url": "https://www.researchsquare.com/article/rs-5447254/v1",
+    "numerator": 2.0,
+    "denominator": 29.53,
+    "weight": 0.65,
+    "units": "days per lunar revolution",
+    "notes": "The Moon spends roughly two days of each lunar revolution in the lower-radiation cavity."
+  },
+  {
+    "id": "change4_lnd_2024_dose_equivalent",
+    "published_date": "2024-03-11",
+    "source": "55th LPSC 2024 abstract 1144",
+    "source_url": "https://www.hou.usra.edu/meetings/lpsc2024/pdf/1144.pdf",
+    "value": 1369.0,
+    "normalizer": 2000.0,
+    "weight": 0.95,
+    "units": "uSv/day",
+    "notes": "Average dose equivalent measured by LND during the first two lunar days after landing in early 2019."
+  },
+  {
+    "id": "change4_lnd_2024_charged_fraction",
+    "published_date": "2024-03-11",
+    "source": "55th LPSC 2024 abstract 1144",
+    "source_url": "https://www.hou.usra.edu/meetings/lpsc2024/pdf/1144.pdf",
+    "numerator": 10.2,
+    "denominator": 13.2,
+    "weight": 0.8,
+    "units": "charged/total final dose rate",
+    "notes": "Quiet-time charged-particle final dose rate relative to total final dose rate in silicon."
+  },
+  {
+    "id": "change4_lnd_2021_neutral_fraction",
+    "published_date": "2021-05-01",
+    "source": "Chinese Journal of Space Science",
+    "source_url": "https://cjss.ac.cn/en/article/doi/10.11728/cjss2021.03.439",
+    "numerator": 2.67,
+    "denominator": 12.66,
+    "weight": 0.7,
+    "units": "neutral/total absorbed dose rate",
+    "notes": "Two-year Chang'E-4/LND neutral-particle absorbed dose rate relative to total absorbed dose rate in silicon."
+  },
+  {
+    "id": "change4_lnd_2022_albedo_primary_ratio",
+    "published_date": "2022-09-13",
+    "source": "Frontiers in Astronomy and Space Sciences",
+    "source_url": "https://www.frontiersin.org/journals/astronomy-and-space-sciences/articles/10.3389/fspas.2022.974946/full",
+    "ratio": 0.64,
+    "weight": 0.9,
+    "units": "albedo/primary proton flux ratio",
+    "notes": "LND albedo-to-primary proton flux ratio between 64.7 and 76.7 MeV."
+  }
+]
+

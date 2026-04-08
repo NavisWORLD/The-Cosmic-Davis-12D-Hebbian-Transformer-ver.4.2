@@ -1,0 +1,193 @@
+{
+  "aggregate": {
+    "heuristic_band": "interesting_correlation",
+    "heuristic_summary": "The current 12D probe shows a real mid-strength correlation signal, but not enough evidence to call the model predictive.",
+    "official_cosine_similarity": 0.588829120910268,
+    "official_overall_alignment": 0.6411443634675607,
+    "official_phase_distance": 0.20190990886056143,
+    "weighted_record_alignment_mean": 0.5789528903614649
+  },
+  "dataset": {
+    "fixture_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\change4_lnd_reference.json",
+    "fixture_sha256": "77e313d2901c8578eb3be6e223c0771169403043ef29800751c6fade918da798",
+    "record_count": 6,
+    "reference_mean_scalar": 0.5126425801947004
+  },
+  "model": {
+    "dark_matter_w": 0.36,
+    "input": {
+      "bio_signatures": {
+        "arousal": 0.31,
+        "intensity": 0.77,
+        "valence": 0.09
+      },
+      "cst_metrics": {
+        "ci_b": 0.41,
+        "ci_c": 0.29,
+        "x12_avg": 0.58
+      },
+      "cst_physics": {
+        "entanglement_score": 0.64,
+        "geometric_phase_rad": 0.71,
+        "phase_velocity": 0.028
+      }
+    },
+    "metrics": {
+      "decoherence_risk": 0.22,
+      "entropy_quality": 0.78
+    },
+    "name": "12D CST harmonic alignment probe",
+    "normalized_state_vector": [
+      0.41083835502279087,
+      0.016202075972729782,
+      0.3703331650909664,
+      0.445557089250069,
+      0.17938012684093688,
+      0.05207810134091715,
+      0.2083124053636686,
+      0.23724468388640035,
+      0.16780721543184415,
+      0.45134354495461537,
+      0.1273020255000197,
+      0.3356144308636883
+    ],
+    "phase_proxy_clamped": 0.310732671334139,
+    "phase_proxy_raw": 0.310732671334139,
+    "state_vector": [
+      0.71,
+      0.028,
+      0.64,
+      0.77,
+      0.31,
+      0.09,
+      0.36,
+      0.41,
+      0.29,
+      0.78,
+      0.22,
+      0.58
+    ]
+  },
+  "records": [
+    {
+      "id": "change4_lnd_2026_cavity_low_energy_reduction",
+      "model_scalar_prediction": 0.310732671334139,
+      "normalized_delta": -0.38926732866586095,
+      "normalized_target": 0.7,
+      "notes": "Chang'E-4/LND showed an approximately 30% reduction in lower-energy GCR count rate during lunar phase 8-10 h_M in the prenoon cavity.",
+      "observable_kind": "ratio",
+      "observed_value": 0.7,
+      "predicted_value_from_phase_proxy": 0.310732671334139,
+      "published_date": "2026-03-25",
+      "raw_delta": -0.38926732866586095,
+      "record_alignment_score": 0.5429845374689185,
+      "record_cosine_similarity": 0.5204018261805117,
+      "record_phase_delta": 0.38926732866586095,
+      "source": "Research Square preprint for Science Advances paper",
+      "source_url": "https://www.researchsquare.com/article/rs-5447254/v1",
+      "units": "normalized count-rate ratio",
+      "weight": 0.2
+    },
+    {
+      "id": "change4_lnd_2026_cavity_duration",
+      "model_scalar_prediction": 0.310732671334139,
+      "normalized_delta": 0.24300493682685828,
+      "normalized_target": 0.06772773450728073,
+      "notes": "The Moon spends roughly two days of each lunar revolution in the lower-radiation cavity.",
+      "observable_kind": "numerator",
+      "observed_value": 2.0,
+      "predicted_value_from_phase_proxy": 9.175935784497126,
+      "published_date": "2026-03-25",
+      "raw_delta": 7.175935784497126,
+      "record_alignment_score": 0.7633499791357986,
+      "record_cosine_similarity": 0.7654682844566842,
+      "record_phase_delta": 0.24300493682685828,
+      "source": "Research Square preprint for Science Advances paper",
+      "source_url": "https://www.researchsquare.com/article/rs-5447254/v1",
+      "units": "days per lunar revolution",
+      "weight": 0.13
+    },
+    {
+      "id": "change4_lnd_2024_dose_equivalent",
+      "model_scalar_prediction": 0.310732671334139,
+      "normalized_delta": -0.373767328665861,
+      "normalized_target": 0.6845,
+      "notes": "Average dose equivalent measured by LND during the first two lunar days after landing in early 2019.",
+      "observable_kind": "value",
+      "observed_value": 1369.0,
+      "predicted_value_from_phase_proxy": 621.465342668278,
+      "published_date": "2024-03-11",
+      "raw_delta": -747.534657331722,
+      "record_alignment_score": 0.547169599439711,
+      "record_cosine_similarity": 0.5208152421415683,
+      "record_phase_delta": 0.373767328665861,
+      "source": "55th LPSC 2024 abstract 1144",
+      "source_url": "https://www.hou.usra.edu/meetings/lpsc2024/pdf/1144.pdf",
+      "units": "uSv/day",
+      "weight": 0.19
+    },
+    {
+      "id": "change4_lnd_2024_charged_fraction",
+      "model_scalar_prediction": 0.310732671334139,
+      "normalized_delta": -0.4619946013931337,
+      "normalized_target": 0.7727272727272727,
+      "notes": "Quiet-time charged-particle final dose rate relative to total final dose rate in silicon.",
+      "observable_kind": "numerator",
+      "observed_value": 10.2,
+      "predicted_value_from_phase_proxy": 4.101671261610635,
+      "published_date": "2024-03-11",
+      "raw_delta": -6.098328738389364,
+      "record_alignment_score": 0.5407311029640433,
+      "record_cosine_similarity": 0.5416396710831023,
+      "record_phase_delta": 0.4619946013931337,
+      "source": "55th LPSC 2024 abstract 1144",
+      "source_url": "https://www.hou.usra.edu/meetings/lpsc2024/pdf/1144.pdf",
+      "units": "charged/total final dose rate",
+      "weight": 0.16
+    },
+    {
+      "id": "change4_lnd_2021_neutral_fraction",
+      "model_scalar_prediction": 0.310732671334139,
+      "normalized_delta": 0.09983219740048974,
+      "normalized_target": 0.21090047393364927,
+      "notes": "Two-year Chang'E-4/LND neutral-particle absorbed dose rate relative to total absorbed dose rate in silicon.",
+      "observable_kind": "numerator",
+      "observed_value": 2.67,
+      "predicted_value_from_phase_proxy": 3.9338756190902,
+      "published_date": "2021-05-01",
+      "raw_delta": 1.2638756190902,
+      "record_alignment_score": 0.5818309342303376,
+      "record_cosine_similarity": 0.47571864477394676,
+      "record_phase_delta": 0.09983219740048974,
+      "source": "Chinese Journal of Space Science",
+      "source_url": "https://cjss.ac.cn/en/article/doi/10.11728/cjss2021.03.439",
+      "units": "neutral/total absorbed dose rate",
+      "weight": 0.13999999999999999
+    },
+    {
+      "id": "change4_lnd_2022_albedo_primary_ratio",
+      "model_scalar_prediction": 0.310732671334139,
+      "normalized_delta": -0.329267328665861,
+      "normalized_target": 0.64,
+      "notes": "LND albedo-to-primary proton flux ratio between 64.7 and 76.7 MeV.",
+      "observable_kind": "ratio",
+      "observed_value": 0.64,
+      "predicted_value_from_phase_proxy": 0.310732671334139,
+      "published_date": "2022-09-13",
+      "raw_delta": -0.329267328665861,
+      "record_alignment_score": 0.5510275245554893,
+      "record_cosine_similarity": 0.5111258089626061,
+      "record_phase_delta": 0.329267328665861,
+      "source": "Frontiers in Astronomy and Space Sciences",
+      "source_url": "https://www.frontiersin.org/journals/astronomy-and-space-sciences/articles/10.3389/fspas.2022.974946/full",
+      "units": "albedo/primary proton flux ratio",
+      "weight": 0.18
+    }
+  ],
+  "reproducibility": {
+    "command": "python scripts/run_change4_alignment_diagnostic.py --output-dir docs/validation",
+    "module_path": "D:\\Cosmos\\Cosmos\\core\\cst_critical_integration.py",
+    "python_version": "3.12.6",
+    "script_path": "D:\\Cosmos\\scripts\\run_change4_alignment_diagnostic.py"
+  }
+}

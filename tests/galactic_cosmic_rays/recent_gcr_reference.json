@@ -1,0 +1,47 @@
+[
+  {
+    "id": "ams_total_events_2026_03_30",
+    "published_date": "2026-03-30",
+    "source": "AMS @ SSDC",
+    "source_url": "https://www.ssdc.asi.it/ams/",
+    "value": 262061101077,
+    "normalizer": 1000000000000,
+    "transform": "log",
+    "weight": 1.0,
+    "units": "events",
+    "notes": "AMS reported 262,061,101,077 collected cosmic-ray events on its official mission page."
+  },
+  {
+    "id": "ams_lithium_isotope_ratio_2025_05_20",
+    "published_date": "2025-05-20",
+    "source": "AMS publication: The Origin of Lithium Isotopes in Cosmic Rays",
+    "source_url": "https://ams02.web.cern.ch/physics/origin-lithium-isotopes-cosmic-rays",
+    "numerator": 970000,
+    "denominator": 1040000,
+    "weight": 0.95,
+    "units": "6Li/7Li sample ratio",
+    "notes": "AMS reported about 9.7e5 6Li and 1.04e6 7Li nuclei collected from May 2011 to October 2023."
+  },
+  {
+    "id": "jwst_l2_gcr_rate_2026_02_02",
+    "published_date": "2026-02-02",
+    "source": "arXiv: Galactic cosmic ray experience of NIRSpec in the first three years of JWST operations at L2",
+    "source_url": "https://arxiv.org/abs/2602.02134",
+    "current": 2.3,
+    "forecast": 4.3,
+    "weight": 0.9,
+    "units": "ions cm^-2 s^-1",
+    "notes": "The paper reports a current GCR hit rate near 2.3 ions cm^-2 s^-1 and forecasts ~4.3 by early 2027 as solar modulation declines."
+  },
+  {
+    "id": "esa_gcr_simulator_2026_03_13",
+    "published_date": "2026-03-13",
+    "source": "ESA cosmic ray simulator for deep-space radiation reproduction",
+    "source_url": "https://www.esa.int/ESA_Multimedia/Images/2026/03/A_cosmic_ray_simulator_for_extreme_science_on_Earth",
+    "ratio": 0.9,
+    "weight": 0.85,
+    "units": "fraction of c",
+    "notes": "ESA reported charged atoms accelerated to around 90% of the speed of light to reproduce the deep-space cosmic-ray spectrum."
+  }
+]
+
