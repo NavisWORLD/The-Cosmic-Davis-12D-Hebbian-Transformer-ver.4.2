@@ -1,0 +1,46 @@
+[
+  {
+    "id": "crater_annual_10000km_to_microdosimeter_ratio",
+    "published_date": "2011-11-05",
+    "source": "Schwadron et al. 2011 CRaTER paper",
+    "source_url": "https://prediccs.sr.unh.edu/papers/schwadron2011JE003978.pdf",
+    "numerator": 16.5,
+    "denominator": 18.9,
+    "weight": 1.0,
+    "units": "annual_10000km_to_microdosimeter_dose_rate_ratio",
+    "notes": "Annualized D1-D2 silicon dose rate at about 10,000 km altitude relative to the CRaTER microdosimeter annualized dose rate."
+  },
+  {
+    "id": "crater_annual_surface_to_10000km_ratio",
+    "published_date": "2011-11-05",
+    "source": "Schwadron et al. 2011 CRaTER paper",
+    "source_url": "https://prediccs.sr.unh.edu/papers/schwadron2011JE003978.pdf",
+    "numerator": 8.3,
+    "denominator": 16.5,
+    "weight": 1.0,
+    "units": "annual_surface_to_10000km_dose_rate_ratio",
+    "notes": "Annualized D1-D2 silicon dose rate at the lunar surface relative to the annualized rate at about 10,000 km altitude."
+  },
+  {
+    "id": "crater_annual_surface_to_microdosimeter_ratio",
+    "published_date": "2011-11-05",
+    "source": "Schwadron et al. 2011 CRaTER paper",
+    "source_url": "https://prediccs.sr.unh.edu/papers/schwadron2011JE003978.pdf",
+    "numerator": 8.3,
+    "denominator": 18.9,
+    "weight": 1.0,
+    "units": "annual_surface_to_microdosimeter_dose_rate_ratio",
+    "notes": "Annualized D1-D2 silicon dose rate at the lunar surface relative to the CRaTER microdosimeter annualized dose rate."
+  },
+  {
+    "id": "crater_june7_surface_to_10000km_event_ratio",
+    "published_date": "2011-11-05",
+    "source": "Schwadron et al. 2011 CRaTER paper",
+    "source_url": "https://prediccs.sr.unh.edu/papers/schwadron2011JE003978.pdf",
+    "numerator": 1.4,
+    "denominator": 1.9,
+    "weight": 1.0,
+    "units": "surface_to_10000km_event_dose_ratio",
+    "notes": "June 7 2011 event dose at the lunar surface relative to the modeled/observed event dose at about 10,000 km altitude."
+  }
+]

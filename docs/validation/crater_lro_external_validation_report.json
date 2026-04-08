@@ -1,0 +1,125 @@
+{
+  "answer": "The learned calibrator slightly beats the preserved legacy heuristic on MAE, but it does not win RMSE against the simple midpoint baseline.",
+  "baselines": {
+    "learned_calibrator_proxy": {
+      "mae": 0.16597115647212154,
+      "max_abs_error": 0.2378929416568319,
+      "predictions": [
+        0.6770463808102717,
+        0.6773173343675992,
+        0.6770463808102711,
+        0.6811069445744011
+      ],
+      "rmse": 0.17922016557493697
+    },
+    "legacy_heuristic_proxy": {
+      "mae": 0.16691855902382216,
+      "max_abs_error": 0.2358465608465608,
+      "predictions": [
+        0.675,
+        0.675,
+        0.675,
+        0.675
+      ],
+      "rmse": 0.1790474161281152
+    },
+    "midpoint_0_5": {
+      "mae": 0.1684337105389737,
+      "max_abs_error": 0.37301587301587313,
+      "predictions": [
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "rmse": 0.22301710195105465
+    },
+    "model_phase_proxy": {
+      "mae": 0.3272777587815543,
+      "max_abs_error": 0.5622832016817341,
+      "predictions": [
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139
+      ],
+      "rmse": 0.3712148708430276
+    }
+  },
+  "best_mae_baselines": [
+    "learned_calibrator_proxy"
+  ],
+  "best_rmse_baselines": [
+    "legacy_heuristic_proxy"
+  ],
+  "external_alignment": {
+    "official_cosine_similarity": 0.5365196925805269,
+    "official_overall_alignment": 0.5705703297400067,
+    "official_phase_distance": 0.32727775878155435
+  },
+  "question": "How does the locked learned calibrator transfer to a supplementary CRaTER/LRO lunar radiation basket that was not used in the original Chang'e-4 alignment work?",
+  "records": [
+    {
+      "id": "crater_annual_10000km_to_microdosimeter_ratio",
+      "learned_calibrator_prediction": 0.6770463808102717,
+      "learned_calibrator_raw_prediction": 12.796176597314133,
+      "legacy_heuristic_prediction": 0.675,
+      "legacy_heuristic_raw_prediction": 12.7575,
+      "normalized_target": 0.8730158730158731,
+      "notes": "Annualized D1-D2 silicon dose rate at about 10,000 km altitude relative to the CRaTER microdosimeter annualized dose rate.",
+      "observed_value": 16.5,
+      "published_date": "2011-11-05",
+      "source": "Schwadron et al. 2011 CRaTER paper",
+      "source_url": "https://prediccs.sr.unh.edu/papers/schwadron2011JE003978.pdf",
+      "units": "annual_10000km_to_microdosimeter_dose_rate_ratio"
+    },
+    {
+      "id": "crater_annual_surface_to_10000km_ratio",
+      "learned_calibrator_prediction": 0.6773173343675992,
+      "learned_calibrator_raw_prediction": 11.175736017065388,
+      "legacy_heuristic_prediction": 0.675,
+      "legacy_heuristic_raw_prediction": 11.137500000000001,
+      "normalized_target": 0.503030303030303,
+      "notes": "Annualized D1-D2 silicon dose rate at the lunar surface relative to the annualized rate at about 10,000 km altitude.",
+      "observed_value": 8.3,
+      "published_date": "2011-11-05",
+      "source": "Schwadron et al. 2011 CRaTER paper",
+      "source_url": "https://prediccs.sr.unh.edu/papers/schwadron2011JE003978.pdf",
+      "units": "annual_surface_to_10000km_dose_rate_ratio"
+    },
+    {
+      "id": "crater_annual_surface_to_microdosimeter_ratio",
+      "learned_calibrator_prediction": 0.6770463808102711,
+      "learned_calibrator_raw_prediction": 12.796176597314123,
+      "legacy_heuristic_prediction": 0.675,
+      "legacy_heuristic_raw_prediction": 12.7575,
+      "normalized_target": 0.43915343915343924,
+      "notes": "Annualized D1-D2 silicon dose rate at the lunar surface relative to the CRaTER microdosimeter annualized dose rate.",
+      "observed_value": 8.3,
+      "published_date": "2011-11-05",
+      "source": "Schwadron et al. 2011 CRaTER paper",
+      "source_url": "https://prediccs.sr.unh.edu/papers/schwadron2011JE003978.pdf",
+      "units": "annual_surface_to_microdosimeter_dose_rate_ratio"
+    },
+    {
+      "id": "crater_june7_surface_to_10000km_event_ratio",
+      "learned_calibrator_prediction": 0.6811069445744011,
+      "learned_calibrator_raw_prediction": 1.2941031946913621,
+      "legacy_heuristic_prediction": 0.675,
+      "legacy_heuristic_raw_prediction": 1.2825,
+      "normalized_target": 0.7368421052631579,
+      "notes": "June 7 2011 event dose at the lunar surface relative to the modeled/observed event dose at about 10,000 km altitude.",
+      "observed_value": 1.4,
+      "published_date": "2011-11-05",
+      "source": "Schwadron et al. 2011 CRaTER paper",
+      "source_url": "https://prediccs.sr.unh.edu/papers/schwadron2011JE003978.pdf",
+      "units": "surface_to_10000km_event_dose_ratio"
+    }
+  ],
+  "reproducibility": {
+    "command": "python scripts/run_crater_lro_external_validation.py --output-dir docs/validation",
+    "fixture_path": "D:\\Cosmos\\tests\\galactic_cosmic_rays\\crater_lro_reference.json",
+    "fixture_sha256": "95483a0cb50d17d9822dc6d7c7cf4bd2ff90309a189d913c14ce229dc245be11",
+    "python_version": "3.12.6"
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "baselines": {
+    "learned_calibrator_proxy": {
+      "mae": 0.16597115647212157,
+      "max_abs_error": 0.24029294174776455,
+      "predictions": [
+        0.6794463809012043,
+        0.6797173344585319,
+        0.6794463809012038,
+        0.6835069446653338
+      ],
+      "rmse": 0.1797726290083122
+    },
+    "legacy_heuristic_proxy": {
+      "mae": 0.16691855902382216,
+      "max_abs_error": 0.2358465608465608,
+      "predictions": [
+        0.675,
+        0.675,
+        0.675,
+        0.675
+      ],
+      "rmse": 0.1790474161281152
+    },
+    "lunar_bundle_mean": {
+      "mae": 0.1669185590238222,
+      "max_abs_error": 0.3603732928211727,
+      "predictions": [
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004,
+        0.5126425801947004
+      ],
+      "rmse": 0.21542248428551053
+    },
+    "lunar_bundle_weighted_mean": {
+      "mae": 0.1669185590238222,
+      "max_abs_error": 0.3257938375428522,
+      "predictions": [
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021,
+        0.547222035473021
+      ],
+      "rmse": 0.19731264922381953
+    },
+    "midpoint_0_5": {
+      "mae": 0.1684337105389737,
+      "max_abs_error": 0.37301587301587313,
+      "predictions": [
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "rmse": 0.22301710195105465
+    },
+    "model_phase_proxy": {
+      "mae": 0.3272777587815543,
+      "max_abs_error": 0.5622832016817341,
+      "predictions": [
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139,
+        0.310732671334139
+      ],
+      "rmse": 0.3712148708430276
+    }
+  },
+  "best_mae_baselines": [
+    "learned_calibrator_proxy"
+  ],
+  "best_rmse_baselines": [
+    "legacy_heuristic_proxy"
+  ],
+  "label": "crater_lro_v1",
+  "predictions_path": "docs\\validation\\blind_predictions_crater_v1.json",
+  "predictions_sha256": "f569ca49b1d2fe3ec1ac9d8c375d89aadbe7a9d1c7391ddf6ea5340060beb048",
+  "records": [
+    {
+      "id": "crater_annual_10000km_to_microdosimeter_ratio",
+      "learned_calibrator_raw_prediction": 0.6794463809012043,
+      "learned_calibrator_scalar": 0.6794463809012043,
+      "legacy_heuristic_raw_prediction": 0.675,
+      "legacy_heuristic_scalar": 0.675,
+      "model_phase_proxy_raw_prediction": 0.310732671334139,
+      "model_phase_proxy_scalar": 0.310732671334139,
+      "normalized_target": 0.8730158730158731,
+      "observed_value": 16.5
+    },
+    {
+      "id": "crater_annual_surface_to_10000km_ratio",
+      "learned_calibrator_raw_prediction": 0.6797173344585319,
+      "learned_calibrator_scalar": 0.6797173344585319,
+      "legacy_heuristic_raw_prediction": 0.675,
+      "legacy_heuristic_scalar": 0.675,
+      "model_phase_proxy_raw_prediction": 0.310732671334139,
+      "model_phase_proxy_scalar": 0.310732671334139,
+      "normalized_target": 0.503030303030303,
+      "observed_value": 8.3
+    },
+    {
+      "id": "crater_annual_surface_to_microdosimeter_ratio",
+      "learned_calibrator_raw_prediction": 0.6794463809012038,
+      "learned_calibrator_scalar": 0.6794463809012038,
+      "legacy_heuristic_raw_prediction": 0.675,
+      "legacy_heuristic_scalar": 0.675,
+      "model_phase_proxy_raw_prediction": 0.310732671334139,
+      "model_phase_proxy_scalar": 0.310732671334139,
+      "normalized_target": 0.43915343915343924,
+      "observed_value": 8.3
+    },
+    {
+      "id": "crater_june7_surface_to_10000km_event_ratio",
+      "learned_calibrator_raw_prediction": 0.6835069446653338,
+      "learned_calibrator_scalar": 0.6835069446653338,
+      "legacy_heuristic_raw_prediction": 0.675,
+      "legacy_heuristic_scalar": 0.675,
+      "model_phase_proxy_raw_prediction": 0.310732671334139,
+      "model_phase_proxy_scalar": 0.310732671334139,
+      "normalized_target": 0.7368421052631579,
+      "observed_value": 1.4
+    }
+  ],
+  "reproducibility": {
+    "command": "python scripts/score_blind_validation_predictions.py --predictions docs\\validation\\blind_predictions_crater_v1.json --revealed tests\\galactic_cosmic_rays\\crater_lro_reference.json --output <output>",
+    "python_version": "3.12.6"
+  },
+  "revealed_path": "tests\\galactic_cosmic_rays\\crater_lro_reference.json",
+  "revealed_sha256": "95483a0cb50d17d9822dc6d7c7cf4bd2ff90309a189d913c14ce229dc245be11"
+}

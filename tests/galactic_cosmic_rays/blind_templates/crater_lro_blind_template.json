@@ -1,0 +1,42 @@
+[
+  {
+    "id": "crater_annual_10000km_to_microdosimeter_ratio",
+    "published_date": "2011-11-05",
+    "source": "Schwadron et al. 2011 CRaTER paper",
+    "source_url": "https://prediccs.sr.unh.edu/papers/schwadron2011JE003978.pdf",
+    "denominator": 18.9,
+    "weight": 1.0,
+    "units": "annual_10000km_to_microdosimeter_dose_rate_ratio",
+    "notes": "Blind template keeps the microdosimeter denominator but removes the 10,000 km numerator."
+  },
+  {
+    "id": "crater_annual_surface_to_10000km_ratio",
+    "published_date": "2011-11-05",
+    "source": "Schwadron et al. 2011 CRaTER paper",
+    "source_url": "https://prediccs.sr.unh.edu/papers/schwadron2011JE003978.pdf",
+    "denominator": 16.5,
+    "weight": 1.0,
+    "units": "annual_surface_to_10000km_dose_rate_ratio",
+    "notes": "Blind template keeps the 10,000 km denominator but removes the surface numerator."
+  },
+  {
+    "id": "crater_annual_surface_to_microdosimeter_ratio",
+    "published_date": "2011-11-05",
+    "source": "Schwadron et al. 2011 CRaTER paper",
+    "source_url": "https://prediccs.sr.unh.edu/papers/schwadron2011JE003978.pdf",
+    "denominator": 18.9,
+    "weight": 1.0,
+    "units": "annual_surface_to_microdosimeter_dose_rate_ratio",
+    "notes": "Blind template keeps the microdosimeter denominator but removes the surface numerator."
+  },
+  {
+    "id": "crater_june7_surface_to_10000km_event_ratio",
+    "published_date": "2011-11-05",
+    "source": "Schwadron et al. 2011 CRaTER paper",
+    "source_url": "https://prediccs.sr.unh.edu/papers/schwadron2011JE003978.pdf",
+    "denominator": 1.9,
+    "weight": 1.0,
+    "units": "surface_to_10000km_event_dose_ratio",
+    "notes": "Blind template keeps the 10,000 km event denominator but removes the surface event numerator."
+  }
+]
