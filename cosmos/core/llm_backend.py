@@ -804,10 +804,16 @@ class OpenAICompatibleBackend(LLMBackend):
         if self._client is None:
             try:
                 from openai import AsyncOpenAI
-                self._client = AsyncOpenAI(
-                    api_key=self.api_key,
-                    base_url=self.base_url,
-                )
+                kwargs = {
+                    "api_key": self.api_key,
+                    "base_url": self.base_url,
+                }
+                if "openrouter.ai" in (self.base_url or ""):
+                    kwargs["default_headers"] = {
+                        "HTTP-Referer": "https://github.com/Farnsworth-Cosmos/Cosmos",
+                        "X-OpenRouter-Title": "Cosmos",
+                    }
+                self._client = AsyncOpenAI(**kwargs)
             except ImportError:
                 raise RuntimeError("openai package not installed. Run: pip install openai")
         return self._client
