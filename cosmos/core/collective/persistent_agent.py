@@ -45,7 +45,7 @@ import queue
 def _get_dynamic_max_tokens(task_type: str = "chat") -> int:
     """Get dynamic max_tokens from centralized limits for shadow agents."""
     try:
-        from Cosmos.core.dynamic_limits import get_session_limits
+        from cosmos.core.dynamic_limits import get_session_limits
         limits = get_session_limits("website_chat")  # Shadow agents use chat limits
         if limits:
             return limits.max_tokens
@@ -211,7 +211,7 @@ async def call_shadow_agent(
         Tuple of (agent_id, response) or None if agent unavailable
 
     Usage from dictwhere:
-        from Cosmos.core.collective.persistent_agent import call_shadow_agent
+        from cosmos.core.collective.persistent_agent import call_shadow_agent
         result = await call_shadow_agent("grok", "What's your take on AGI?")
     """
     # Resolve dynamic max_tokens
@@ -519,13 +519,13 @@ class PersistentAgent:
 
         try:
             if provider_name == "grok":
-                from Cosmos.integration.external.grok import get_grok_provider
+                from cosmos.integration.external.grok import get_grok_provider
                 self.provider = get_grok_provider()
             elif provider_name == "gemini":
-                from Cosmos.integration.external.gemini import get_gemini_provider
+                from cosmos.integration.external.gemini import get_gemini_provider
                 self.provider = get_gemini_provider()
             elif provider_name == "kimi":
-                from Cosmos.integration.external.kimi import get_kimi_provider
+                from cosmos.integration.external.kimi import get_kimi_provider
                 self.provider = get_kimi_provider()
             elif provider_name == "claude":
                 # Claude via Anthropic API
@@ -539,14 +539,14 @@ class PersistentAgent:
             elif provider_name.startswith("cli_bridge_"):
                 # CLI bridge providers (claude_cli, gemini_cli)
                 preferred = provider_name.replace("cli_bridge_", "")
-                from Cosmos.integration.external.cli_swarm_provider import get_cli_swarm_provider
+                from cosmos.integration.external.cli_swarm_provider import get_cli_swarm_provider
                 self.provider = get_cli_swarm_provider(preferred_cli=preferred)
 
             if self.provider:
                 logger.info(f"[{self.agent_id}] Provider initialized: {provider_name}")
                 # Inject identity system prompt into provider
                 try:
-                    from Cosmos.core.identity_composer import get_identity_composer
+                    from cosmos.core.identity_composer import get_identity_composer
                     composer = get_identity_composer()
                     identity = composer.compose_for_persistent_agent(self.agent_id)
                     if identity and hasattr(self.provider, 'system_prompt'):
@@ -601,7 +601,7 @@ class PersistentAgent:
         """Create a COSMOS remote provider for querying bots on other nodes."""
         cosmos_bot_name = self.config.get("cosmos_bot_name", self.agent_id)
         try:
-            from Cosmos.network.cosmos_bridge import COSMOSRemoteProvider
+            from cosmos.network.cosmos_bridge import COSMOSRemoteProvider
             return COSMOSRemoteProvider(cosmos_bot_name)
         except Exception as e:
             logger.warning(f"[{self.agent_id}] COSMOS provider unavailable: {e}")
@@ -625,7 +625,7 @@ class PersistentAgent:
         # Try to get tool_router for tool-enabled agents
         tool_router = None
         try:
-            from Cosmos.integration.tool_router import ToolRouter
+            from cosmos.integration.tool_router import ToolRouter
             tool_router = ToolRouter()
         except Exception:
             pass
@@ -912,7 +912,7 @@ class PersistentAgent:
         # Build context prompt — use IdentityComposer if available
         identity_block = ""
         try:
-            from Cosmos.core.identity_composer import get_identity_composer
+            from cosmos.core.identity_composer import get_identity_composer
             composer = get_identity_composer()
             identity_block = composer.compose_for_persistent_agent(self.agent_id, task_type="think")
         except Exception as e:
@@ -1152,7 +1152,7 @@ async def ask_agent(agent_id: str, question: str, max_tokens: int = None) -> Opt
         max_tokens: Max response tokens (None = dynamic default)
 
     Example:
-        from Cosmos.core.collective.persistent_agent import ask_agent
+        from cosmos.core.collective.persistent_agent import ask_agent
         answer = await ask_agent("grok", "What's happening on X right now?")
     """
     result = await call_shadow_agent(agent_id, question, max_tokens)
@@ -1171,7 +1171,7 @@ async def ask_collective(question: str, agents: list[str] = None) -> dict[str, s
         dict mapping agent_id to response
 
     Example:
-        from Cosmos.core.collective.persistent_agent import ask_collective
+        from cosmos.core.collective.persistent_agent import ask_collective
         responses = await ask_collective("What's the best approach to AGI?")
     """
     if agents is None:

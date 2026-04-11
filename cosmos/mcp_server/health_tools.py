@@ -32,10 +32,10 @@ def _ensure_health_modules():
         return
 
     try:
-        from Cosmos.health.providers import HealthProviderManager, MockHealthProvider
-        from Cosmos.health.analysis import HealthAnalysisEngine
-        from Cosmos.health.nutrition import NutritionManager
-        from Cosmos.health.models import UserHealthProfile
+        from cosmos.health.providers import HealthProviderManager, MockHealthProvider
+        from cosmos.health.analysis import HealthAnalysisEngine
+        from cosmos.health.nutrition import NutritionManager
+        from cosmos.health.models import UserHealthProfile
 
         # Initialize managers
         _provider_manager = HealthProviderManager()
@@ -162,7 +162,7 @@ class HealthTools:
             )
 
         try:
-            from Cosmos.health.models import MetricType
+            from cosmos.health.models import MetricType
 
             # Parse metric type
             try:
@@ -243,7 +243,7 @@ class HealthTools:
             )
 
         try:
-            from Cosmos.health.models import MealType
+            from cosmos.health.models import MealType
 
             # Parse meal type
             try:
@@ -261,7 +261,7 @@ class HealthTools:
                     processed_foods.append(food)
                 elif "name" in food:
                     # Create a custom food entry
-                    from Cosmos.health.models import FoodItem, NutrientInfo
+                    from cosmos.health.models import FoodItem, NutrientInfo
                     custom = FoodItem(
                         name=food["name"],
                         nutrients=NutrientInfo(
@@ -444,7 +444,7 @@ class HealthTools:
         _ensure_health_modules()
 
         try:
-            from Cosmos.health.models import HealthGoal, MetricType
+            from cosmos.health.models import HealthGoal, MetricType
 
             # Parse metric type
             try:
@@ -532,8 +532,8 @@ class HealthTools:
         _ensure_health_modules()
 
         try:
-            from Cosmos.health.ocr_parser import DeepSeekOCRParser
-            from Cosmos.health.models import DocumentType
+            from cosmos.health.ocr_parser import DeepSeekOCRParser
+            from cosmos.health.models import DocumentType
 
             # Parse document type
             try:

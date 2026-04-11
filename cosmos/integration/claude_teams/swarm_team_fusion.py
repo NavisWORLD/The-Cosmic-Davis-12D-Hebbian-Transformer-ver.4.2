@@ -438,7 +438,7 @@ class SwarmTeamFusion:
 
         # Use Cosmos's swarm to evaluate
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
 
             eval_prompt = f"""Task: {task}
 
@@ -543,7 +543,7 @@ Be precise. Follow the plan. Report completion status.""",
     ) -> None:
         """Report delegation results back to Cosmos's swarm."""
         try:
-            from Cosmos.core.nexus import get_nexus, Signal
+            from cosmos.core.nexus import get_nexus, Signal
 
             nexus = get_nexus()
             await nexus.emit(Signal.EXTERNAL_INPUT, {
@@ -562,7 +562,7 @@ Be precise. Follow the plan. Report completion status.""",
     ) -> Optional[str]:
         """Request input from Cosmos's swarm for a delegation."""
         try:
-            from Cosmos.integration.solana.swarm_oracle import get_swarm_oracle
+            from cosmos.integration.solana.swarm_oracle import get_swarm_oracle
 
             oracle = get_swarm_oracle()
             result = await oracle.submit_query(question, "claude_team_input", timeout=60.0)

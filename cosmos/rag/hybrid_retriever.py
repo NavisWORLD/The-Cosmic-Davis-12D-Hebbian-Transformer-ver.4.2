@@ -20,7 +20,7 @@ try:
 except ImportError:
     np = None
 
-from Cosmos.rag.embeddings import EmbeddingManager
+from cosmos.rag.embeddings import EmbeddingManager
 
 
 @dataclass

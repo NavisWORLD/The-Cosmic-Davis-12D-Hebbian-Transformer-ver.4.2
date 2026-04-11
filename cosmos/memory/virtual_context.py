@@ -58,7 +58,7 @@ class AllocationPlan:
 
 # Nexus integration for overflow warnings
 try:
-    from Cosmos.core.nexus import nexus, SignalType
+    from cosmos.core.nexus import nexus, SignalType
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False

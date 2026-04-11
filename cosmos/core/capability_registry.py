@@ -396,7 +396,7 @@ class CapabilityRegistry:
     async def store_in_memory(self):
         """Store capability registry in memory for model discovery"""
         try:
-            from Cosmos.memory.memory_system import get_memory_system
+            from cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
 
             summary = self.get_summary()

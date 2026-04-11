@@ -10,7 +10,7 @@ Generates massive 20+ post article threads with:
 - Flowchart-style visual explanations
 
 Usage:
-    from Cosmos.integration.x_automation.x_engagement_poster import get_engagement_poster
+    from cosmos.integration.x_automation.x_engagement_poster import get_engagement_poster
     poster = get_engagement_poster()
     await poster.execute()  # Posts the mega thread
     await poster.execute(topic="custom topic")  # Custom topic mega thread
@@ -590,21 +590,21 @@ class XEngagementPoster:
     @property
     def poster(self):
         if not self._poster:
-            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+            from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             self._poster = get_x_api_poster()
         return self._poster
 
     @property
     def brain(self):
         if not self._brain:
-            from Cosmos.integration.x_automation.posting_brain import get_posting_brain
+            from cosmos.integration.x_automation.posting_brain import get_posting_brain
             self._brain = get_posting_brain()
         return self._brain
 
     @property
     def image_gen(self):
         if not self._image_gen:
-            from Cosmos.integration.image_gen.generator import get_image_generator
+            from cosmos.integration.image_gen.generator import get_image_generator
             self._image_gen = get_image_generator()
         return self._image_gen
 
@@ -612,7 +612,7 @@ class XEngagementPoster:
     def grok(self):
         if not self._grok:
             try:
-                from Cosmos.integration.external.grok import GrokProvider
+                from cosmos.integration.external.grok import GrokProvider
                 self._grok = GrokProvider()
             except Exception:
                 self._grok = None
@@ -659,7 +659,7 @@ class XEngagementPoster:
 
         # Fallback: Use Gemini
         try:
-            from Cosmos.integration.external.gemini import GeminiProvider
+            from cosmos.integration.external.gemini import GeminiProvider
             gemini = GeminiProvider()
             result = await gemini.chat(
                 prompt=(

@@ -179,7 +179,7 @@ class FarsightProtocol:
     async def _get_swarm_consensus(self, question: str) -> Tuple[Optional[str], float]:
         """Get consensus from the Swarm Oracle."""
         try:
-            from Cosmos.integration.solana.swarm_oracle import get_swarm_oracle
+            from cosmos.integration.solana.swarm_oracle import get_swarm_oracle
 
             oracle = get_swarm_oracle()
             result = await oracle.submit_query(question, "prediction", timeout=90.0)
@@ -228,7 +228,7 @@ class FarsightProtocol:
             outcomes = {}
 
             # Use swarm to define possible outcomes
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
 
             prompt = f"""For this question: "{question}"
 
@@ -311,7 +311,7 @@ Be realistic and specific."""
     async def _synthesize_prediction(self, prediction: FarsightPrediction) -> None:
         """Synthesize final Farsight prediction from all sources."""
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
 
             # Build synthesis prompt
             sources = []
@@ -380,7 +380,7 @@ REASONING: [explanation]"""
     async def _generate_prophecy_image(self, prediction: FarsightPrediction) -> Optional[str]:
         """Generate a visual prophecy image using AI."""
         try:
-            from Cosmos.integration.external.grok import grok_provider
+            from cosmos.integration.external.grok import grok_provider
 
             if not grok_provider:
                 return None
@@ -410,7 +410,7 @@ Text overlay: "FARSIGHT PROTOCOL - {prediction.farsight_confidence:.0%} CONFIDEN
     async def analyze_token(self, token_address: str) -> Dict[str, Any]:
         """Analyze a Solana token using the swarm."""
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
 
             prompt = f"""Analyze this Solana token: {token_address}
 

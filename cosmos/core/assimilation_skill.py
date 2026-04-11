@@ -154,7 +154,7 @@ class AssimilationSkill:
     def _get_protocol(self):
         """Lazy-load the AssimilationProtocol."""
         if self._protocol is None:
-            from Cosmos.core.assimilation_protocol import get_assimilation_protocol
+            from cosmos.core.assimilation_protocol import get_assimilation_protocol
             self._protocol = get_assimilation_protocol()
         return self._protocol
 

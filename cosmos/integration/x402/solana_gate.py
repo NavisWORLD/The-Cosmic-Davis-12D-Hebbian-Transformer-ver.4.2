@@ -671,11 +671,11 @@ async def run_premium_quantum_analysis(
 
     # 1. Generate quantum trading signal
     try:
-        from Cosmos.core.quantum_trading import get_quantum_cortex
+        from cosmos.core.quantum_trading import get_quantum_cortex
         cortex = get_quantum_cortex()
 
         if cortex is None:
-            from Cosmos.core.quantum_trading import initialize_quantum_cortex
+            from cosmos.core.quantum_trading import initialize_quantum_cortex
             cortex = await initialize_quantum_cortex()
 
         # Fetch live price data

@@ -6,31 +6,31 @@ cosmos Sysadmin Tools
 System monitoring, service management, log analysis, network diagnostics, and backups.
 """
 
-from Cosmos.tools.sysadmin.system_monitor import (
+from cosmos.tools.sysadmin.system_monitor import (
     SystemMonitor,
     SystemMetrics,
     system_monitor,
 )
-from Cosmos.tools.sysadmin.service_manager import (
+from cosmos.tools.sysadmin.service_manager import (
     ServiceManager,
     ServiceInfo,
     ServiceStatus,
     service_manager,
 )
-from Cosmos.tools.sysadmin.log_analyzer import (
+from cosmos.tools.sysadmin.log_analyzer import (
     LogAnalyzer,
     LogEntry,
     LogLevel,
     LogAnalysisResult,
     log_analyzer,
 )
-from Cosmos.tools.sysadmin.network_tools import (
+from cosmos.tools.sysadmin.network_tools import (
     NetworkTools,
     HostInfo,
     PortScanResult,
     network_tools,
 )
-from Cosmos.tools.sysadmin.backup_manager import (
+from cosmos.tools.sysadmin.backup_manager import (
     BackupManager,
     BackupJob,
     BackupType,

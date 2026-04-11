@@ -25,7 +25,7 @@ from enum import Enum
 from loguru import logger
 
 # Core systems
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.nexus import nexus, Signal, SignalType
 
 
 class MindType(Enum):

@@ -143,7 +143,7 @@ async def _completion_kimi(
 ) -> str:
     """Get completion from Kimi (Moonshot AI)."""
     try:
-        from Cosmos.integration.external.kimi import get_kimi_provider
+        from cosmos.integration.external.kimi import get_kimi_provider
 
         provider = get_kimi_provider()
         if provider is None:
@@ -175,7 +175,7 @@ async def _completion_grok(
 ) -> str:
     """Get completion from Grok (xAI)."""
     try:
-        from Cosmos.integration.external.grok import GrokProvider
+        from cosmos.integration.external.grok import GrokProvider
 
         grok = GrokProvider()
         if not await grok.connect():
@@ -204,7 +204,7 @@ async def _completion_gemini(
 ) -> str:
     """Get completion from Gemini (Google AI)."""
     try:
-        from Cosmos.integration.external.gemini import get_gemini_provider
+        from cosmos.integration.external.gemini import get_gemini_provider
 
         provider = get_gemini_provider()
         if provider is None:

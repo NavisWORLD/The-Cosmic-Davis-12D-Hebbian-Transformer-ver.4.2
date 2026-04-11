@@ -19,8 +19,8 @@ from typing import Any, Dict, List, Optional
 from loguru import logger
 
 from .base import ExternalProvider, IntegrationConfig, ConnectionStatus
-from Cosmos.integration.cli_bridge.base import CLICapability
-from Cosmos.integration.cli_bridge.capability_router import CLICapabilityRouter, get_cli_router
+from cosmos.integration.cli_bridge.base import CLICapability
+from cosmos.integration.cli_bridge.capability_router import CLICapabilityRouter, get_cli_router
 
 
 class CLISwarmProvider(ExternalProvider):

@@ -17,7 +17,7 @@ import sys
 from typing import Dict, Any, List, Optional
 from loguru import logger
 
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.nexus import nexus, Signal, SignalType
 
 class VSCodeBridge:
     """

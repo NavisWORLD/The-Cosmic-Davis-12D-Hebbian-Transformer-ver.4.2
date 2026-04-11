@@ -573,7 +573,7 @@ output = json
 ### Option C: Direct Configuration
 
 ```python
-from Cosmos.integration.cloud.aws_manager import AWSManager, AWSConfig
+from cosmos.integration.cloud.aws_manager import AWSManager, AWSConfig
 
 config = AWSConfig(
     access_key_id="your-access-key",

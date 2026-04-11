@@ -23,7 +23,7 @@ import asyncio
 async def launch_mega_thread(request: Request):
     """Launch the quantum/tech mega thread."""
     try:
-        from Cosmos.integration.x_automation.x_engagement_poster import get_engagement_poster
+        from cosmos.integration.x_automation.x_engagement_poster import get_engagement_poster
         poster = get_engagement_poster()
 
         body = await request.json() if request.headers.get("content-type") == "application/json" else {}
@@ -52,7 +52,7 @@ async def launch_mega_thread(request: Request):
 async def launch_custom_mega_thread(request: Request):
     """Launch a custom topic mega thread."""
     try:
-        from Cosmos.integration.x_automation.x_engagement_poster import get_engagement_poster
+        from cosmos.integration.x_automation.x_engagement_poster import get_engagement_poster
         poster = get_engagement_poster()
 
         body = await request.json()
@@ -84,7 +84,7 @@ async def launch_custom_mega_thread(request: Request):
 async def mega_thread_status():
     """Get current mega thread status."""
     try:
-        from Cosmos.integration.x_automation.x_engagement_poster import get_engagement_poster
+        from cosmos.integration.x_automation.x_engagement_poster import get_engagement_poster
         poster = get_engagement_poster()
         return {
             "status": "ready",
@@ -99,7 +99,7 @@ async def mega_thread_status():
 async def get_trending():
     """Fetch current trending topics."""
     try:
-        from Cosmos.integration.x_automation.x_engagement_poster import get_engagement_poster
+        from cosmos.integration.x_automation.x_engagement_poster import get_engagement_poster
         poster = get_engagement_poster()
         trending = await poster.get_trending_topics()
         return {"trending": trending, "count": len(trending)}

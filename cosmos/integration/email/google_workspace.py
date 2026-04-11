@@ -757,7 +757,7 @@ GOOGLE_DELEGATED_USER=admin@yourdomain.com
 ## Step 7: Test Connection
 
 ```python
-from Cosmos.integration.email.google_workspace import GoogleWorkspaceIntegration, GoogleConfig
+from cosmos.integration.email.google_workspace import GoogleWorkspaceIntegration, GoogleConfig
 
 # OAuth flow
 config = GoogleConfig(

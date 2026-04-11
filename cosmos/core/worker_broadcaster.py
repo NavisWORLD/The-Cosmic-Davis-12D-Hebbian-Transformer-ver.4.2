@@ -9,7 +9,7 @@ from typing import Optional, TYPE_CHECKING
 import logging
 
 if TYPE_CHECKING:
-    from Cosmos.web.server import SwarmChatManager
+    from cosmos.web.server import SwarmChatManager
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class WorkerBroadcaster:
     async def _broadcast_progress(self):
         """Broadcast current worker progress to chat"""
         try:
-            from Cosmos.core.agent_spawner import get_spawner
+            from cosmos.core.agent_spawner import get_spawner
             spawner = get_spawner()
 
             # Get status

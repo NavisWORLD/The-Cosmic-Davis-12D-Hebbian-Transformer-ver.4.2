@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 def _get_dynamic_max_tokens(model_id: str = "codex", task_type: str = "code") -> int:
     """AGI v1.8: Get dynamic max_tokens from centralized limits."""
     try:
-        from Cosmos.core.dynamic_limits import get_max_tokens
+        from cosmos.core.dynamic_limits import get_max_tokens
         return get_max_tokens(model_id, task_type)
     except Exception:
         defaults = {"chat": 2000, "thinking": 8000, "quick": 800, "code": 16000}

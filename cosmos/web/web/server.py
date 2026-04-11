@@ -254,11 +254,9 @@ _tool_router = None
 _sequential_thinking = None
 _tts_model = None
 _audio_shard = None
-_audio_shard = None
 _emotional_api = None
 _lyapunov_gatekeeper = None
 _emeth_harmonizer = None
-_cosmos_swarm = None
 _cosmos_swarm = None
 _cosmos_cns = None
 _multimodal_system = None
@@ -269,7 +267,7 @@ def get_lyapunov_gatekeeper():
     global _lyapunov_gatekeeper
     if _lyapunov_gatekeeper is None:
         try:
-            from emotional_api.lyapunov_lock import LyapunovGatekeeper
+            from cosmosynapse.engine.lyapunov_lock import LyapunovGatekeeper
             _lyapunov_gatekeeper = LyapunovGatekeeper()
             logger.info("Lyapunov Gatekeeper (Class 5) ACTIVATED")
         except Exception as e:
@@ -281,7 +279,7 @@ def get_emeth_harmonizer():
     global _emeth_harmonizer
     if _emeth_harmonizer is None:
         try:
-            from emotional_api.emeth_harmonizer import EmethHarmonizer
+            from cosmosynapse.engine.emeth_harmonizer import EmethHarmonizer
             _emeth_harmonizer = EmethHarmonizer()
             logger.info("Emeth Harmonizer (Class 5) ACTIVATED")
         except Exception as e:

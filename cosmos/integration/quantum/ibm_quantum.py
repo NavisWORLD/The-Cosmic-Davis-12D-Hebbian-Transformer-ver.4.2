@@ -57,7 +57,7 @@ except ImportError as e:
 
 # Nexus integration for signal emission
 try:
-    from Cosmos.core.nexus import get_nexus, SignalType
+    from cosmos.core.nexus import get_nexus, SignalType
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False

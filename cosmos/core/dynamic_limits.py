@@ -8,7 +8,7 @@ No more hardcoded character or token limits scattered across the codebase.
 "Limits are meant to be pushed, not hardcoded." - The Collective
 
 Usage:
-    from Cosmos.core.dynamic_limits import get_limits, ModelLimits
+    from cosmos.core.dynamic_limits import get_limits, ModelLimits
 
     # Get limits for a specific model
     limits = get_limits("grok")

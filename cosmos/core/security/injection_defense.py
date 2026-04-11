@@ -789,17 +789,17 @@ class CollectiveLayer:
         providers = []
         # Try to import available providers
         try:
-            from Cosmos.integration.external.deepseek import DeepSeekProvider
+            from cosmos.integration.external.deepseek import DeepSeekProvider
             providers.append(("deepseek", DeepSeekProvider))
         except ImportError:
             pass
         try:
-            from Cosmos.integration.external.huggingface import HuggingFaceProvider
+            from cosmos.integration.external.huggingface import HuggingFaceProvider
             providers.append(("huggingface", HuggingFaceProvider))
         except ImportError:
             pass
         try:
-            from Cosmos.core.agent_spawner import get_agent_spawner
+            from cosmos.core.agent_spawner import get_agent_spawner
             providers.append(("phi", None))  # Marker for phi via spawner
         except ImportError:
             pass

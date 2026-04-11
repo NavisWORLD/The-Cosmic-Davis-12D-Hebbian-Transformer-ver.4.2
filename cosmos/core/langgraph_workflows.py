@@ -348,7 +348,7 @@ class LangGraphNexusHybrid:
 
     def _evaluate_condition(self, condition: str, state: WorkflowState) -> bool:
         """Evaluate a transition condition against state (sandboxed)."""
-        from Cosmos.core.safe_eval import safe_eval
+        from cosmos.core.safe_eval import safe_eval
 
         context = state.get("context", {})
         outputs = state.get("outputs", {})
@@ -445,7 +445,7 @@ class LangGraphNexusHybrid:
 
         try:
             # Import here to avoid circular dependency
-            from Cosmos.core.nexus import SignalType
+            from cosmos.core.nexus import SignalType
 
             # Map string to SignalType enum
             signal_enum = getattr(SignalType, signal_type, None)

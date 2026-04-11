@@ -49,7 +49,7 @@ def prompt_memory_load(
 
     Usage:
         # In your bot's main.py:
-        from Cosmos.integration.chain_memory import prompt_memory_load
+        from cosmos.integration.chain_memory import prompt_memory_load
 
         def main():
             memories_to_load = prompt_memory_load()

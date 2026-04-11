@@ -593,7 +593,7 @@ class HandlerBenchmarkEngine:
         """
         # Import nexus dynamically to avoid circular imports
         try:
-            from Cosmos.core.nexus import nexus, SignalType
+            from cosmos.core.nexus import nexus, SignalType
 
             # Emit evaluation signal
             await nexus.emit(

@@ -6,11 +6,11 @@ cosmos Cloud Integration Package
 Comprehensive cloud provider integrations for Azure, AWS, GCP.
 """
 
-from Cosmos.integration.cloud.azure_manager import (
+from cosmos.integration.cloud.azure_manager import (
     AzureManager,
     azure_manager,
 )
-from Cosmos.integration.cloud.aws_manager import (
+from cosmos.integration.cloud.aws_manager import (
     AWSManager,
     aws_manager,
 )

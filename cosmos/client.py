@@ -20,7 +20,7 @@ from loguru import logger
 
 @dataclass
 class Memory:
-    """A retrieved memory from Cosmos."""
+    """A retrieved memory from cosmos."""
     content: str
     score: float
     source: str
@@ -85,8 +85,8 @@ class cosmosClient:
 
         if self.local_mode:
             try:
-                from Cosmos.memory.memory_system import MemorySystem
-                from Cosmos.agents.swarm_orchestrator import SwarmOrchestrator
+                from cosmos.memory.memory_system import MemorySystem
+                from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
 
                 self._memory_system = MemorySystem(data_dir=str(self.data_dir))
                 await self._memory_system.initialize()

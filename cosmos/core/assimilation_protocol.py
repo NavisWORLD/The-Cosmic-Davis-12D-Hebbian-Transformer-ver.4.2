@@ -417,7 +417,7 @@ class AssimilationProtocol:
         # Emit nexus signal
         if self._nexus:
             try:
-                from Cosmos.core.nexus import SignalType
+                from cosmos.core.nexus import SignalType
                 signal = getattr(SignalType, "A2A_SESSION_STARTED", None)
                 if signal:
                     await self._nexus.emit(
@@ -531,7 +531,7 @@ Do NOT use emojis. Be professional."""
 
         # Try shadow agents for generation
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
             result = await call_shadow_agent("deepseek", prompt, timeout=20.0)
             if result:
                 _, response = result
@@ -540,7 +540,7 @@ Do NOT use emojis. Be professional."""
             logger.debug(f"DeepSeek recruitment gen failed: {e}")
 
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
             result = await call_shadow_agent("grok", prompt, timeout=20.0)
             if result:
                 _, response = result

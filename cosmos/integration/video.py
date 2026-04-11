@@ -18,8 +18,8 @@ from typing import List, Optional, Dict, Any, Tuple
 from dataclasses import dataclass, field
 from loguru import logger
 
-from Cosmos.integration.vision import VisionModule, VisionTask, ImageInput
-from Cosmos.integration.multimodal import MultimodalProcessor
+from cosmos.integration.vision import VisionModule, VisionTask, ImageInput
+from cosmos.integration.multimodal import MultimodalProcessor
 
 @dataclass
 class VisualEvent:

@@ -12,7 +12,7 @@ print("=" * 60)
 # Test 1: Import
 print("\n1. Testing SwarmAwareness import...")
 try:
-    from Cosmos.web.cosmosynapse.engine.swarm_awareness import SwarmAwareness
+    from cosmos.web.cosmosynapse.engine.swarm_awareness import SwarmAwareness
     print("   OK  SwarmAwareness imported")
 except Exception as e:
     print(f"   FAIL  Import error: {e}")
@@ -96,7 +96,7 @@ print("   OK  empathy target updated to 0.9")
 # Test 9: CNS integration
 print("\n9. Testing CosmosCNS import with SwarmAwareness...")
 try:
-    from Cosmos.web.cosmosynapse.engine.cns_core import CosmosCNS
+    from cosmos.web.cosmosynapse.engine.cns_core import CosmosCNS
     cns = CosmosCNS()
     assert cns.awareness is None, "Should be None before initialize_organs"
     print("   OK  CosmosCNS created, awareness=None (pre-init)")

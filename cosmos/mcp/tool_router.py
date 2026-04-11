@@ -137,7 +137,7 @@ class ToolRouter:
     async def _web_search_grok(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Search via Grok API."""
         try:
-            from Cosmos.integration.external.grok import get_grok_provider
+            from cosmos.integration.external.grok import get_grok_provider
 
             grok = get_grok_provider()
             if grok and grok.api_key:
@@ -155,7 +155,7 @@ class ToolRouter:
     async def _web_search_gemini(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Search via Gemini API with grounding."""
         try:
-            from Cosmos.integration.external.gemini import get_gemini_provider
+            from cosmos.integration.external.gemini import get_gemini_provider
 
             gemini = get_gemini_provider()
             if gemini:
@@ -228,7 +228,7 @@ class ToolRouter:
     async def _collect_feedback(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Collect user feedback."""
         try:
-            from Cosmos.core.collective.evolution import get_evolution_engine
+            from cosmos.core.collective.evolution import get_evolution_engine
 
             feedback = params.get("feedback", "")
             context = params.get("context", {})
@@ -249,7 +249,7 @@ class ToolRouter:
     async def _get_suggestions(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Get improvement suggestions."""
         try:
-            from Cosmos.core.collective.evolution import get_evolution_engine
+            from cosmos.core.collective.evolution import get_evolution_engine
 
             evolution = get_evolution_engine()
             if evolution:
@@ -264,7 +264,7 @@ class ToolRouter:
     async def _get_collective_summary(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Get summary of collective deliberations."""
         try:
-            from Cosmos.core.collective.deliberation import get_deliberation_stats
+            from cosmos.core.collective.deliberation import get_deliberation_stats
 
             stats = await get_deliberation_stats()
             return {

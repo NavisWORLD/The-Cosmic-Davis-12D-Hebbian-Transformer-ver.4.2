@@ -198,7 +198,7 @@ Output your findings as a detailed analysis with actionable recommendations.""",
         """Call Kimi API for Kimi tasks"""
         try:
             # Import here to avoid circular deps
-            from Cosmos.integration.external.kimi import kimi_swarm_respond
+            from cosmos.integration.external.kimi import kimi_swarm_respond
             if kimi_swarm_respond:
                 return await kimi_swarm_respond(prompt, [], "Kimi")
         except Exception as e:
@@ -208,7 +208,7 @@ Output your findings as a detailed analysis with actionable recommendations.""",
     async def _call_claude(self, prompt: str) -> Optional[str]:
         """Call Claude Code CLI for Claude tasks"""
         try:
-            from Cosmos.integration.external.claude_code import claude_swarm_respond
+            from cosmos.integration.external.claude_code import claude_swarm_respond
             if claude_swarm_respond:
                 return await claude_swarm_respond(prompt, [], "Claude")
         except Exception as e:

@@ -567,7 +567,7 @@ class SubSwarmSpawner:
     async def _emit_swarm_signal(self, event_type: str, swarm: SubSwarm):
         """Emit a Nexus signal for swarm events."""
         try:
-            from Cosmos.core.nexus import nexus, SignalType
+            from cosmos.core.nexus import nexus, SignalType
 
             signal_map = {
                 "spawn": SignalType.SUBSWARM_SPAWN,

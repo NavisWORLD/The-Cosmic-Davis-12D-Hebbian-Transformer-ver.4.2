@@ -74,7 +74,7 @@ class MemoryWidget(QWidget if PYSIDE_AVAILABLE else object):
         self.results_list.clear()
 
         try:
-            from Cosmos.memory.memory_system import get_memory_system
+            from cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
 
             if memory:
@@ -93,7 +93,7 @@ class MemoryWidget(QWidget if PYSIDE_AVAILABLE else object):
     def _load_stats(self):
         """Load memory system statistics."""
         try:
-            from Cosmos.memory.memory_system import get_memory_system
+            from cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
 
             if memory:

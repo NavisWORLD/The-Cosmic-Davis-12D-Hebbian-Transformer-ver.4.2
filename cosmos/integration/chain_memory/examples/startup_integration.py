@@ -27,7 +27,7 @@ def start_bot_with_chain_memory():
 
     This should be called before your bot's main initialization.
     """
-    from Cosmos.integration.chain_memory import (
+    from cosmos.integration.chain_memory import (
         prompt_memory_load,
         auto_load_memories
     )
@@ -66,14 +66,14 @@ def start_bot_with_chain_memory():
     print("Continuing with normal startup...\n")
 
     # Your bot's initialization code here...
-    # from Cosmos.core import CosmosBot
+    # from cosmos.core import CosmosBot
     # bot = CosmosBot()
     # bot.run()
 
 
 def quick_push_example():
     """Quick example of pushing current memory to chain."""
-    from Cosmos.integration.chain_memory import ChainMemory
+    from cosmos.integration.chain_memory import ChainMemory
 
     async def push():
         # Initialize with your wallet key
@@ -130,7 +130,7 @@ def quick_push_example():
 
 def quick_pull_example():
     """Quick example of pulling memory from chain."""
-    from Cosmos.integration.chain_memory import ChainMemory
+    from cosmos.integration.chain_memory import ChainMemory
 
     async def pull():
         cm = ChainMemory(bot_type="cosmos")

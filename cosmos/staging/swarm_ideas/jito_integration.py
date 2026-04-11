@@ -7,8 +7,8 @@ import asyncio
 from typing import Dict, List, Optional
 from loguru import logger
 from aiohttp import ClientSession, ClientResponse
-from Cosmos.memory.memory_system import get_memory_system
-from Cosmos.core.capability_registry import get_capability_registry
+from cosmos.memory.memory_system import get_memory_system
+from cosmos.core.capability_registry import get_capability_registry
 
 class JitoIntegrationError(Exception):
     """Base exception class for Jito integration errors."""

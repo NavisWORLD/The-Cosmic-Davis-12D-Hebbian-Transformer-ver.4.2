@@ -448,7 +448,7 @@ class DriftDetector:
 
 # Import TerraformAction for type hints
 try:
-    from Cosmos.infrastructure.terraform_manager import TerraformAction
+    from cosmos.infrastructure.terraform_manager import TerraformAction
 except ImportError:
     pass
 

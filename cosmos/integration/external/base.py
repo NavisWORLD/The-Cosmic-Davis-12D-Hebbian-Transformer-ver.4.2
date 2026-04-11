@@ -12,7 +12,7 @@ from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
 from enum import Enum
 
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.nexus import nexus, Signal, SignalType
 
 class ConnectionStatus(Enum):
     DISCONNECTED = "disconnected"

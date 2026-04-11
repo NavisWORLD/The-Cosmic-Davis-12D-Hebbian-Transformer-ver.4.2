@@ -141,7 +141,7 @@ class FrequencyAnalyzer:
     
     def analyze(
         self,
-        audio_buffer: Union[bytes[float], "np.ndarray"],
+        audio_buffer: Union[bytes, "np.ndarray"],
         normalize: bool = True,
     ) -> Tuple[float, list[float], list[float]]:
         """

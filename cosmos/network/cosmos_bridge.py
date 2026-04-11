@@ -52,11 +52,11 @@ def register_cosmos_bots_as_shadow_agents():
     Register all remote COSMOS bots as shadow agents in the PersistentAgent system.
 
     This makes remote bots callable via:
-        from Cosmos.core.collective.persistent_agent import call_shadow_agent
+        from cosmos.core.collective.persistent_agent import call_shadow_agent
         result = await call_shadow_agent("qwen3-coder-next", "Write a parser")
     """
     try:
-        from Cosmos.core.collective.persistent_agent import (
+        from cosmos.core.collective.persistent_agent import (
             AGENT_CONFIGS, PersistentAgent, _SHADOW_AGENTS, _SHADOW_LOCK,
         )
 
@@ -85,7 +85,7 @@ def register_cosmos_bots_with_spawner():
     Register remote COSMOS bots with the AgentSpawner system.
     """
     try:
-        from Cosmos.core.agent_spawner import get_spawner, TaskType
+        from cosmos.core.agent_spawner import get_spawner, TaskType
 
         spawner = get_spawner()
         client = get_cosmos_client()
@@ -124,7 +124,7 @@ async def start_cosmos_bridge():
     node = get_cosmos_node()
     if node:
         try:
-            from Cosmos.core.collective.persistent_agent import (
+            from cosmos.core.collective.persistent_agent import (
                 call_shadow_agent, get_shadow_agents,
             )
             for agent_id in get_shadow_agents():

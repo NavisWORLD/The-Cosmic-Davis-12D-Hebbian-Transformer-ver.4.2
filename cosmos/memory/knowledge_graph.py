@@ -230,8 +230,8 @@ class KnowledgeGraph:
         self._quantum_available = False
         self._quantum_pattern_extractor = None
         try:
-            from Cosmos.integration.quantum import QISKIT_AVAILABLE, get_quantum_provider
-            from Cosmos.integration.quantum.ibm_quantum import QuantumPatternExtractor
+            from cosmos.integration.quantum import QISKIT_AVAILABLE, get_quantum_provider
+            from cosmos.integration.quantum.ibm_quantum import QuantumPatternExtractor
             self._quantum_available = QISKIT_AVAILABLE
             if QISKIT_AVAILABLE:
                 provider = get_quantum_provider()

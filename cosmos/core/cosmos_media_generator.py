@@ -134,7 +134,7 @@ class CosmosMediaGenerator:
                 cst["dark_matter_w"] = dm.get("w", 0.1)
 
                 # Quantum entropy
-                from Cosmos.core.quantum_bridge import get_quantum_bridge
+                from cosmos.core.quantum_bridge import get_quantum_bridge
                 qb = get_quantum_bridge()
                 if qb:
                     cst["quantum_entropy"] = qb.get_entropy(physics)

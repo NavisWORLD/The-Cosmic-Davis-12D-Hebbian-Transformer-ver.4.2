@@ -140,8 +140,8 @@ class AgentRegistry:
         providers with capability-based routing and fallback chains.
         """
         try:
-            from Cosmos.integration.cli_bridge.capability_router import get_cli_router
-            from Cosmos.integration.cli_bridge.base import CLICapability
+            from cosmos.integration.cli_bridge.capability_router import get_cli_router
+            from cosmos.integration.cli_bridge.base import CLICapability
 
             router = await get_cli_router()
             bridges = router.get_available_bridges()
@@ -191,7 +191,7 @@ class AgentRegistry:
         """Register Grok (xAI) agent."""
         async def query_grok(prompt: str, max_tokens: int) -> Optional[Tuple[str, str]]:
             try:
-                from Cosmos.integration.external.grok import get_grok_provider
+                from cosmos.integration.external.grok import get_grok_provider
                 grok = get_grok_provider()
                 if grok and grok.api_key:
                     result = await grok.chat(prompt, max_tokens=max_tokens, temperature=0.8)
@@ -207,7 +207,7 @@ class AgentRegistry:
         """Register Gemini (Google) agent."""
         async def query_gemini(prompt: str, max_tokens: int) -> Optional[Tuple[str, str]]:
             try:
-                from Cosmos.integration.external.gemini import get_gemini_provider
+                from cosmos.integration.external.gemini import get_gemini_provider
                 gemini = get_gemini_provider()
                 if gemini:
                     result = await gemini.chat(prompt, max_tokens=max_tokens)
@@ -223,7 +223,7 @@ class AgentRegistry:
         """Register Kimi (Moonshot) agent."""
         async def query_kimi(prompt: str, max_tokens: int) -> Optional[Tuple[str, str]]:
             try:
-                from Cosmos.integration.external.kimi import get_kimi_provider
+                from cosmos.integration.external.kimi import get_kimi_provider
                 kimi = get_kimi_provider()
                 if kimi and kimi.api_key:
                     result = await kimi.chat(prompt, max_tokens=max_tokens, model_tier="k2.5")

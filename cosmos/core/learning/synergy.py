@@ -15,12 +15,12 @@ Functionality:
 import asyncio
 from loguru import logger
 
-from Cosmos.core.nexus import nexus, Signal, SignalType
-from Cosmos.core.neuromorphic.engine import neuro_engine
-from Cosmos.core.learning.continual import continual_learner
+from cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.neuromorphic.engine import neuro_engine
+from cosmos.core.learning.continual import continual_learner
 
-from Cosmos.memory.project_tracking import ProjectTracker
-from Cosmos.core.learning.paths import learning_copilot
+from cosmos.memory.project_tracking import ProjectTracker
+from cosmos.core.learning.paths import learning_copilot
 
 class SynergyEngine:
     def __init__(self, project_tracker: ProjectTracker):

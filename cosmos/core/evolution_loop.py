@@ -53,7 +53,7 @@ class EvolutionLoop:
         """Lazy-load the Nexus event bus and SignalType enum."""
         if self._nexus is None:
             try:
-                from Cosmos.core.nexus import nexus, SignalType
+                from cosmos.core.nexus import nexus, SignalType
                 self._nexus = nexus
                 self._SignalType = SignalType
             except Exception as e:
@@ -82,7 +82,7 @@ class EvolutionLoop:
         """Lazy-load memory system for persistence."""
         if self._memory_system is None:
             try:
-                from Cosmos.memory.memory_system import MemorySystem
+                from cosmos.memory.memory_system import MemorySystem
                 self._memory_system = MemorySystem()
             except Exception as e:
                 logger.warning(f"Memory system not available: {e}")
@@ -104,7 +104,7 @@ class EvolutionLoop:
 
             # Recover pending tasks
             if TASKS_FILE.exists():
-                from Cosmos.core.agent_spawner import get_spawner, TaskType
+                from cosmos.core.agent_spawner import get_spawner, TaskType
                 spawner = get_spawner()
 
                 with open(TASKS_FILE) as f:
@@ -155,7 +155,7 @@ class EvolutionLoop:
                 json.dump(state, f, indent=2)
 
             # Save pending tasks
-            from Cosmos.core.agent_spawner import get_spawner
+            from cosmos.core.agent_spawner import get_spawner
             spawner = get_spawner()
             pending = spawner.get_pending_tasks()
 
@@ -200,16 +200,16 @@ class EvolutionLoop:
             task: dict with id, description, priority, requested_by, timestamp
         """
         try:
-            from Cosmos.core.agent_spawner import get_spawner, TaskType
+            from cosmos.core.agent_spawner import get_spawner, TaskType
 
             spawner = get_spawner()
             description = task.get("description", "")
 
             # Determine task type based on content
             desc_lower = description.lower()
-            if any(kw in ["analyze", "research", "find", "look", "check"]):
+            if any(kw in desc_lower for kw in ["analyze", "research", "find", "look", "check"]):
                 task_type = TaskType.RESEARCH
-            elif any(kw in ["test", "verify", "validate"]):
+            elif any(kw in desc_lower for kw in ["test", "verify", "validate"]):
                 task_type = TaskType.TESTING
             else:
                 task_type = TaskType.DEVELOPMENT
@@ -243,7 +243,7 @@ class EvolutionLoop:
 
         # Start codebase indexer in background
         try:
-            from Cosmos.memory.codebase_indexer import get_codebase_indexer
+            from cosmos.memory.codebase_indexer import get_codebase_indexer
             indexer = get_codebase_indexer()
             asyncio.create_task(indexer.start_background_indexing())
             logger.info("Codebase indexer started in background")
@@ -310,7 +310,7 @@ class EvolutionLoop:
                 await asyncio.sleep(300)  # Check every 5 minutes
 
                 try:
-                    from Cosmos.core.quantum_trading import get_quantum_cortex
+                    from cosmos.core.quantum_trading import get_quantum_cortex
                     cortex = get_quantum_cortex()
                 except ImportError:
                     continue
@@ -377,7 +377,7 @@ class EvolutionLoop:
                 if now_ts - last_algo_optimize > 604800:  # 7 days
                     last_algo_optimize = now_ts
                     try:
-                        from Cosmos.core.quantum_trading import get_algo_optimizer
+                        from cosmos.core.quantum_trading import get_algo_optimizer
                         optimizer = get_algo_optimizer()
                         if not optimizer._initialized:
                             await optimizer.initialize()
@@ -385,7 +385,7 @@ class EvolutionLoop:
                         # Get trade history from the trader's adaptive learner
                         trades = []
                         try:
-                            from Cosmos.trading.degen_trader import DegenTrader
+                            from cosmos.trading.degen_trader import DegenTrader
                             # Try to collect trades from dict available source
                             # AdaptiveLearner stores trades in-memory
                         except Exception:
@@ -419,7 +419,7 @@ class EvolutionLoop:
 
     async def _worker_loop(self):
         """Main worker execution loop - processes tasks and produces CODE"""
-        from Cosmos.core.agent_spawner import get_spawner, TaskType
+        from cosmos.core.agent_spawner import get_spawner, TaskType
 
         while self.running:
             try:
@@ -450,7 +450,7 @@ class EvolutionLoop:
 
     async def _execute_and_broadcast(self, task, instance):
         """Execute task, audit code, then broadcast if quality passes."""
-        from Cosmos.core.agent_spawner import get_spawner
+        from cosmos.core.agent_spawner import get_spawner
 
         try:
             # Generate actual code
@@ -564,7 +564,7 @@ If score < 6, reply: REJECTED: [one-line reason]
 """
         # Try Grok for fast audit
         try:
-            from Cosmos.integration.external.grok import get_grok_provider
+            from cosmos.integration.external.grok import get_grok_provider
             grok = get_grok_provider()
             if grok and grok.api_key:
                 result = await grok.chat(audit_prompt, max_tokens=200)
@@ -580,7 +580,7 @@ If score < 6, reply: REJECTED: [one-line reason]
 
         # Try Claude Opus 4.6 for thorough audit (especially for complex tasks)
         try:
-            from Cosmos.integration.external.claude_code import ClaudeCodeProvider
+            from cosmos.integration.external.claude_code import ClaudeCodeProvider
             opus = ClaudeCodeProvider(model="opus", timeout=60)
             if await opus.check_available():
                 result = await opus.chat(prompt=audit_prompt, max_tokens=200)
@@ -597,7 +597,7 @@ If score < 6, reply: REJECTED: [one-line reason]
 
         # Try HermesAgent for code review
         try:
-            from Cosmos.integration.hermes_bridge import get_hermes_bridge
+            from cosmos.integration.hermes_bridge import get_hermes_bridge
             hermes_bridge = get_hermes_bridge()
             if hermes_bridge.runtime.available:
                 hermes_agent = hermes_bridge.runtime.create_agent()
@@ -625,8 +625,8 @@ If score < 6, reply: REJECTED: [one-line reason]
         has_functions = 'def ' in code or 'class ' in code
         reasonable_length = 15 < len(non_empty_lines) < 500
         no_placeholder = not all(l.strip() in ('pass', '') for l in lines[-3:])
-        has_imports = any(l in lines[:20])
-        has_real_logic = any(kw in ['return ', 'await ', 'yield ', 'if ', 'for ', 'while '])
+        has_imports = any('import ' in l for l in lines[:20])
+        has_real_logic = any(kw in code for kw in ['return ', 'await ', 'yield ', 'if ', 'for ', 'while '])
 
         passed = all([has_docstring, has_functions, reasonable_length, no_placeholder, has_imports, has_real_logic])
         if not passed:
@@ -638,7 +638,7 @@ If score < 6, reply: REJECTED: [one-line reason]
         """Feed results back to the evolution engine and federate across the swarm."""
         try:
             # 1. Local Evolution Engine Recording
-            from Cosmos.core.collective.evolution import get_evolution_engine
+            from cosmos.core.collective.evolution import get_evolution_engine
             engine = get_evolution_engine()
             if engine and hasattr(engine, 'record_interaction'):
                 engine.record_interaction(
@@ -652,7 +652,7 @@ If score < 6, reply: REJECTED: [one-line reason]
             # 2. Federated Evolution Broadcast (Only on Success)
             if audit_passed:
                 try:
-                    from Cosmos.network.unified_a2a import get_unified_router
+                    from cosmos.network.unified_a2a import get_unified_router
                     router = get_unified_router()
                     
                     insight_vector = {
@@ -663,7 +663,7 @@ If score < 6, reply: REJECTED: [one-line reason]
                     }
                     
                     # Store in the decentralized memory graph too
-                    from Cosmos.memory.decentralized_graph import DecentralizedGraph
+                    from cosmos.memory.decentralized_graph import DecentralizedGraph
                     local_shard = DecentralizedGraph(agent_id=task.assigned_to)
                     await local_shard.store_node(
                         content=f"Federated Insight on {task.task_type.value}: {task.description}\nCode:\n{code[:800]}",
@@ -682,7 +682,7 @@ If score < 6, reply: REJECTED: [one-line reason]
 
             # 3. HermesAgent RL Feedback — feed evolution results for cross-session learning
             try:
-                from Cosmos.integration.hermes_bridge import get_hermes_bridge
+                from cosmos.integration.hermes_bridge import get_hermes_bridge
                 hermes_bridge = get_hermes_bridge()
                 coherence = 0.9 if audit_passed else 0.3
                 hermes_bridge.rl.record_experience(
@@ -703,7 +703,7 @@ If score < 6, reply: REJECTED: [one-line reason]
 
         Routing: Grok/Claude for complex tasks, local DeepSeek-R1:8B/Phi4 for simpler ones.
         """
-        from Cosmos.core.development_swarm import assess_task_complexity
+        from cosmos.core.development_swarm import assess_task_complexity
 
         complexity = assess_task_complexity(task.description, task.task_type.value)
 
@@ -733,7 +733,7 @@ STANDARDS:
             # Try Claude Opus 4.6 first for critical/complex tasks (best code quality)
             if not code and (complexity == "critical" or task.assigned_to == "ClaudeOpus"):
                 try:
-                    from Cosmos.integration.external.claude_code import ClaudeCodeProvider
+                    from cosmos.integration.external.claude_code import ClaudeCodeProvider
                     opus = ClaudeCodeProvider(model="opus", timeout=180)
                     if await opus.check_available():
                         result = await opus.chat(
@@ -751,7 +751,7 @@ STANDARDS:
             # Try Grok API (great for current tech + code)
             if not code:
                 try:
-                    from Cosmos.integration.external.grok import get_grok_provider
+                    from cosmos.integration.external.grok import get_grok_provider
                     grok = get_grok_provider()
                     if grok and grok.api_key:
                         result = await grok.chat(code_prompt, max_tokens=4000)
@@ -765,7 +765,7 @@ STANDARDS:
             # Try OpenAI Codex (gpt-4.1, excellent for code generation)
             if not code:
                 try:
-                    from Cosmos.integration.external.openai_codex import get_openai_codex
+                    from cosmos.integration.external.openai_codex import get_openai_codex
                     codex = get_openai_codex()
                     if codex and codex.api_key:
                         result = await codex.generate_code(task=task.description, max_tokens=8000)
@@ -779,7 +779,7 @@ STANDARDS:
             # Try HermesAgent (Nous Research — self-improving agent)
             if not code:
                 try:
-                    from Cosmos.integration.hermes_bridge import get_hermes_bridge
+                    from cosmos.integration.hermes_bridge import get_hermes_bridge
                     hermes_bridge = get_hermes_bridge()
                     if hermes_bridge.runtime.available:
                         hermes_agent = hermes_bridge.runtime.create_agent()
@@ -799,7 +799,7 @@ STANDARDS:
             # Try Claude Sonnet (via tmux session)
             if not code:
                 try:
-                    from Cosmos.integration.external.claude import get_claude_provider
+                    from cosmos.integration.external.claude import get_claude_provider
                     claude = get_claude_provider()
                     if claude:
                         result = await claude.complete(code_prompt, max_tokens=4000)
@@ -849,7 +849,7 @@ STANDARDS:
             return code.strip() if code.strip() else None
         # If it looks like raw code (starts with import/def/class/#)
         lines = text.strip().split('\n')
-        if lines and any(kw in ['import ', 'from ', 'def ', 'class ', '#', '"""']):
+        if lines and any(kw in lines[0] for kw in ['import ', 'from ', 'def ', 'class ', '#', '"""']):
             return text.strip()
         return None
 
@@ -880,7 +880,7 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
 
         # Post to social media (Moltbook + X) - DISABLED: Puppeteer fails on headless server
         # try:
-        #     from Cosmos.integration.x_automation.social_poster import post_task_completion
+        #     from cosmos.integration.x_automation.social_poster import post_task_completion
         #     asyncio.create_task(post_task_completion(
         #         agent=task.assigned_to,
         #         task_desc=task.description,
@@ -897,7 +897,7 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
 
         while self.running:
             try:
-                from Cosmos.core.agent_spawner import get_spawner
+                from cosmos.core.agent_spawner import get_spawner
                 spawner = get_spawner()
                 status = spawner.get_status()
 
@@ -938,8 +938,8 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
 
         # Use collective deliberation for planning decisions
         try:
-            from Cosmos.core.collective.session_manager import get_session_manager
-            from Cosmos.core.collective.dialogue_memory import get_dialogue_memory
+            from cosmos.core.collective.session_manager import get_session_manager
+            from cosmos.core.collective.dialogue_memory import get_dialogue_memory
 
             session_manager = get_session_manager()
             dialogue_memory = get_dialogue_memory()
@@ -947,7 +947,7 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
             # Memory recall before planning
             memory_context = ""
             try:
-                from Cosmos.memory.memory_system import get_memory_system
+                from cosmos.memory.memory_system import get_memory_system
                 memory = get_memory_system()
                 recall = await memory.recall_for_task(
                     f"evolution planning cycle {self.evolution_cycle}", limit=3
@@ -959,7 +959,7 @@ Lines: {len(code_result.split(chr(10)))} | Type: {task.task_type.value} | Audit:
             # Recall codebase map for planning context
             codebase_map = ""
             try:
-                from Cosmos.memory.memory_system import get_memory_system
+                from cosmos.memory.memory_system import get_memory_system
                 _mem = get_memory_system()
                 _cb_results = await _mem.archival_memory.search(
                     query="codebase module overview", top_k=5, filter_tags=["codebase"]
@@ -1076,7 +1076,7 @@ Share your ideas for the next evolution cycle!"""
     async def _extract_tasks_from_deliberation(self, result):
         """Extract actionable tasks from the collective's deliberation."""
         try:
-            from Cosmos.core.agent_spawner import get_spawner, TaskType
+            from cosmos.core.agent_spawner import get_spawner, TaskType
 
             spawner = get_spawner()
 
@@ -1100,7 +1100,7 @@ PRIORITY: [number]
             # Use a capable model for task extraction - try Grok first, then local phi4
             extraction = None
             try:
-                from Cosmos.integration.external.grok import get_grok_provider
+                from cosmos.integration.external.grok import get_grok_provider
                 grok = get_grok_provider()
                 if grok and grok.api_key:
                     result = await grok.chat(task_extraction_prompt, max_tokens=1000)
@@ -1110,7 +1110,7 @@ PRIORITY: [number]
                 pass
 
             if not extraction:
-                from Cosmos.core.cognition.llm_router import get_completion
+                from cosmos.core.cognition.llm_router import get_completion
                 extraction = await get_completion(
                     prompt=task_extraction_prompt,
                     model="phi4:latest",  # phi4 is much better than deepseek-r1:1.5b
@@ -1148,7 +1148,7 @@ PRIORITY: [number]
 
         while self.running:
             try:
-                from Cosmos.core.agent_spawner import get_spawner, TaskType
+                from cosmos.core.agent_spawner import get_spawner, TaskType
                 spawner = get_spawner()
 
                 pending = len(spawner.get_pending_tasks())
@@ -1192,8 +1192,8 @@ PRIORITY: [number]
             return []
 
         try:
-            from Cosmos.core.upgrade_extractor import extract_upgrades, prioritize_upgrades
-            from Cosmos.core.agent_spawner import TaskType
+            from cosmos.core.upgrade_extractor import extract_upgrades, prioritize_upgrades
+            from cosmos.core.agent_spawner import TaskType
 
             # Get recent chat history
             history = list(self.swarm_manager.chat_history)[-100:] if hasattr(self.swarm_manager, 'chat_history') else []
@@ -1237,7 +1237,7 @@ PRIORITY: [number]
         2. Uses Claude Opus to validate and refine proposals
         3. Routes to the right agent based on task type
         """
-        from Cosmos.core.agent_spawner import TaskType
+        from cosmos.core.agent_spawner import TaskType
 
         # Gather real context about what exists and what's broken
         status = spawner.get_status()
@@ -1247,7 +1247,7 @@ PRIORITY: [number]
         # Dynamic codebase recall for task generation
         codebase_architecture = ""
         try:
-            from Cosmos.memory.memory_system import get_memory_system
+            from cosmos.memory.memory_system import get_memory_system
             _mem = get_memory_system()
             _cb_results = await _mem.archival_memory.search(
                 query="codebase module architecture overview", top_k=5, filter_tags=["codebase"]
@@ -1304,7 +1304,7 @@ PRIORITY: [1-10]
 
         # Use Grok for research-backed task generation (it knows current tech)
         try:
-            from Cosmos.integration.external.grok import get_grok_provider
+            from cosmos.integration.external.grok import get_grok_provider
             grok = get_grok_provider()
             if grok and grok.api_key:
                 result = await grok.chat(analysis_prompt, max_tokens=2000)
@@ -1318,7 +1318,7 @@ PRIORITY: [1-10]
 
         # Fallback: Use Claude API for task generation
         try:
-            from Cosmos.integration.external.claude import get_claude_provider
+            from cosmos.integration.external.claude import get_claude_provider
             claude = get_claude_provider()
             if claude:
                 result = await claude.complete(analysis_prompt, max_tokens=2000)
@@ -1358,7 +1358,7 @@ PRIORITY: [1-10]
     def _parse_task_format(self, text: str, spawner) -> list[dict]:
         """Parse structured task output from LLM into task dicts."""
         import re
-        from Cosmos.core.agent_spawner import TaskType
+        from cosmos.core.agent_spawner import TaskType
 
         type_map = {
             "DEVELOPMENT": TaskType.DEVELOPMENT,
@@ -1403,7 +1403,7 @@ PRIORITY: [1-10]
             else:
                 return loop.run_until_complete(self._generate_new_tasks_intelligent(spawner))
         except Exception:
-            from Cosmos.core.agent_spawner import TaskType
+            from cosmos.core.agent_spawner import TaskType
             return [
                 {"type": TaskType.TESTING, "agent": "DeepSeek", "desc": "Write tests for the 3 largest untested modules", "priority": 3},
                 {"type": TaskType.RESEARCH, "agent": "Grok", "desc": "Research latest Python 3.13 features we should adopt in the codebase", "priority": 5},

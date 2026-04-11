@@ -314,7 +314,7 @@ class ColosseumWorker:
         """Generate a progress update using the swarm."""
         try:
             # Try to use the actual Cosmos swarm for content
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
 
             prompt = """Generate a short, engaging hackathon progress update for Cosmos AI Swarm.
             Focus on one of these topics:
@@ -399,7 +399,7 @@ class ColosseumWorker:
         body = post.get("body", "")[:500]  # Truncate for prompt
 
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
 
             prompt = f"""Write a brief, helpful forum reply to this hackathon post.
 

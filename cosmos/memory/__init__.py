@@ -14,16 +14,16 @@ Q1 2025 (v0.2.0) Features:
 - Enhanced knowledge graph with temporal edges
 """
 
-from Cosmos.memory.virtual_context import VirtualContext, ContextWindow, PageManager
-from Cosmos.memory.working_memory import WorkingMemory
-from Cosmos.memory.archival_memory import ArchivalMemory
-from Cosmos.memory.recall_memory import RecallMemory
-from Cosmos.memory.knowledge_graph import KnowledgeGraph
-from Cosmos.memory.memory_dreaming import MemoryDreamer
-from Cosmos.memory.memory_system import MemorySystem
+from cosmos.memory.virtual_context import VirtualContext, ContextWindow, PageManager
+from cosmos.memory.working_memory import WorkingMemory
+from cosmos.memory.archival_memory import ArchivalMemory
+from cosmos.memory.recall_memory import RecallMemory
+from cosmos.memory.knowledge_graph import KnowledgeGraph
+from cosmos.memory.memory_dreaming import MemoryDreamer
+from cosmos.memory.memory_system import MemorySystem
 
 # Q1 2025 Features
-from Cosmos.memory.episodic_memory import (
+from cosmos.memory.episodic_memory import (
     EpisodicMemory,
     Episode,
     Session,
@@ -31,14 +31,14 @@ from Cosmos.memory.episodic_memory import (
     TimelineQuery,
     OnThisDayResult,
 )
-from Cosmos.memory.semantic_layers import (
+from cosmos.memory.semantic_layers import (
     SemanticLayerSystem,
     SemanticConcept,
     AbstractionLevel,
     DomainCluster,
     CrossDomainConnection,
 )
-from Cosmos.memory.memory_sharing import (
+from cosmos.memory.memory_sharing import (
     MemorySharing,
     ExportFormat,
     MergeStrategy,
@@ -46,19 +46,19 @@ from Cosmos.memory.memory_sharing import (
     ImportResult,
     BackupInfo,
 )
-from Cosmos.memory.knowledge_graph_v2 import (
+from cosmos.memory.knowledge_graph_v2 import (
     KnowledgeGraphV2,
     TemporalEdge,
     EntityCluster,
     EntityResolutionCandidate,
 )
-from Cosmos.memory.conversation_export import (
+from cosmos.memory.conversation_export import (
     ConversationExporter,
     ConversationExportFormat,
     ExportOptions,
     ExportResult,
 )
-from Cosmos.memory.project_tracking import (
+from cosmos.memory.project_tracking import (
     ProjectTracker,
     Project,
     Task,
@@ -69,7 +69,7 @@ from Cosmos.memory.project_tracking import (
     MilestoneType,
     LinkType,
 )
-from Cosmos.memory.dream_consolidation import (
+from cosmos.memory.dream_consolidation import (
     DreamConsolidator,
     DreamPhase,
     ConsolidationStrategy,

@@ -14,9 +14,9 @@ from loguru import logger
 from typing import   Optional
 from datetime import datetime, timedelta
 
-from Cosmos.core.nexus import nexus, Signal, SignalType
-from Cosmos.core.cognition.sequential_thinking import sequential_thinker
-from Cosmos.memory.memory_system import memory_system # type: ignore
+from cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.cognition.sequential_thinking import sequential_thinker
+from cosmos.memory.memory_system import memory_system # type: ignore
 
 class TradingCognition:
     def __init__(self):
@@ -31,7 +31,7 @@ class TradingCognition:
         sequential_thinker.start_new_chain()
         
         # Step 1: Sentiment Analysis
-        from Cosmos.integration.financial.market_sentiment import market_sentiment
+        from cosmos.integration.financial.market_sentiment import market_sentiment
         fng = await market_sentiment.get_fear_and_greed()
         fng_val = int(fng.get('value', 50))
         

@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.insert(0, '/workspace/Cosmos')
 
-from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
 
 # Token contract addresses (Solana only - Base token deprecated)
 TOKENS = {

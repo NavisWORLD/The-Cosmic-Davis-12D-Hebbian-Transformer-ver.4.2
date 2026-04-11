@@ -888,7 +888,7 @@ class A2AMesh:
             return
 
         try:
-            from Cosmos.core.nexus import SignalType
+            from cosmos.core.nexus import SignalType
 
             signal_enum = getattr(SignalType, signal_type, None)
             if signal_enum:

@@ -10,7 +10,7 @@ from loguru import logger
 from notion_client import Client, AsyncClient
 
 from .base import ExternalProvider, IntegrationConfig, ConnectionStatus
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.nexus import nexus, Signal, SignalType
 
 class NotionProvider(ExternalProvider):
     def __init__(self, token: str):

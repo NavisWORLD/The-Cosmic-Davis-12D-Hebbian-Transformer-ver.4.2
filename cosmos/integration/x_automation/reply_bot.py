@@ -85,7 +85,7 @@ class ReplyBot:
         - author_username: Author's @handle
         """
         try:
-            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+            from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             import httpx
 
             poster = get_x_api_poster()
@@ -167,7 +167,7 @@ class ReplyBot:
         """
         try:
             # Try to use the swarm orchestrator
-            from Cosmos.core.swarm.orchestrator import get_swarm_orchestrator
+            from cosmos.core.swarm.orchestrator import get_swarm_orchestrator
 
             orchestrator = get_swarm_orchestrator()
 
@@ -250,7 +250,7 @@ OUTPUT: Just the reply text, nothing else."""
 
             # Track in challenge state
             try:
-                from Cosmos.integration.x_automation.grok_challenge import get_grok_challenger
+                from cosmos.integration.x_automation.grok_challenge import get_grok_challenger
                 challenger = get_grok_challenger()
                 challenger.conversation_history.append({
                     "role": "grok",
@@ -263,13 +263,13 @@ OUTPUT: Just the reply text, nothing else."""
                 logger.warning(f"Could not track conversation: {e}")
 
             # Generate response using posting_brain's Grok conversation method
-            from Cosmos.integration.x_automation.posting_brain import get_posting_brain
+            from cosmos.integration.x_automation.posting_brain import get_posting_brain
             brain = get_posting_brain()
 
             response = await brain.generate_grok_response(mention["text"])
 
             # Post the reply
-            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+            from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
 
             result = await poster.post_reply(
@@ -335,7 +335,7 @@ OUTPUT: Just the reply text, nothing else."""
             )
 
             # Format reply
-            from Cosmos.integration.x_automation.posting_brain import get_posting_brain
+            from cosmos.integration.x_automation.posting_brain import get_posting_brain
             brain = get_posting_brain()
 
             reply_text = await brain.generate_swarm_reply(
@@ -345,7 +345,7 @@ OUTPUT: Just the reply text, nothing else."""
             )
 
             # Post reply
-            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+            from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
 
             result = await poster.post_reply(

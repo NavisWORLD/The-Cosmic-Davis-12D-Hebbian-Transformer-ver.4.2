@@ -10,7 +10,7 @@ Provides a centralized registry of ALL capabilities across the swarm:
 - MCP tools
 
 Usage:
-    from Cosmos.core.skill_registry import get_skill_registry
+    from cosmos.core.skill_registry import get_skill_registry
     registry = get_skill_registry()
 
     # Find skills matching a need
@@ -281,7 +281,7 @@ class SkillRegistry:
         """Discover and register Hermes skills via the compatibility layer."""
         count = 0
         try:
-            from Cosmos.compatibility.hermes_adapter import (
+            from cosmos.compatibility.hermes_adapter import (
                 HermesAgentAdapter,
                 HermesAgentToolGroup,
             )
@@ -369,7 +369,7 @@ class SkillRegistry:
         count = 0
         try:
             # Discover from Cosmos's MCP server
-            from Cosmos.mcp_server import CosmosMCPServer
+            from cosmos.mcp_server import CosmosMCPServer
             mcp = CosmosMCPServer()
 
             # Register MCP memory tools
@@ -403,7 +403,7 @@ class SkillRegistry:
 
             # Discover from Claude Teams MCP bridge
             try:
-                from Cosmos.integration.claude_teams.mcp_bridge import CosmosMCPServer as TeamsMCP
+                from cosmos.integration.claude_teams.mcp_bridge import CosmosMCPServer as TeamsMCP
                 teams_mcp = TeamsMCP()
                 if hasattr(teams_mcp, 'list_tools'):
                     tools = teams_mcp.list_tools()

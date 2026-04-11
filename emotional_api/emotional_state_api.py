@@ -56,8 +56,9 @@ try:
     from scipy.fft import fft
     from scipy.signal import spectrogram
     SCIPY_AVAILABLE = True
-except ImportError:
+except (ImportError, MemoryError) as _e:
     SCIPY_AVAILABLE = False
+    print(f"[WARN] scipy unavailable ({type(_e).__name__}): audio analysis disabled")
 
 try:
     import cv2

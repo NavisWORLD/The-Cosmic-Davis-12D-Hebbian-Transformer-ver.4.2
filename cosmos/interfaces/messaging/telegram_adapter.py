@@ -6,7 +6,7 @@ Connects cosmos to Telegram via python-telegram-bot.
 Usage:
     export TELEGRAM_BOT_TOKEN=your_bot_token
 
-    from Cosmos.interfaces.messaging.telegram_adapter import TelegramAdapter
+    from cosmos.interfaces.messaging.telegram_adapter import TelegramAdapter
 
     adapter = TelegramAdapter()
     adapter.set_callback(my_message_handler)
@@ -19,7 +19,7 @@ from datetime import datetime
 from typing import Optional, Callable, Awaitable
 from loguru import logger
 
-from Cosmos.interfaces.messaging.base import (
+from cosmos.interfaces.messaging.base import (
     MessagingProvider,
     IncomingMessage,
     OutgoingMessage,

@@ -67,10 +67,9 @@ if os.environ.get("COSMOS_SKIP_TORCH") != "1":
 else:
     print("    [SKIP]  torch (COSMOS_SKIP_TORCH=1)")
 
-# ALIAS FIX FOR WINDOWS: Map 'Cosmos' to 'cosmos' to allow lowercase imports
+# ALIAS FIX FOR WINDOWS: Ensure 'cosmos' is importable
 try:
-    import Cosmos
-    sys.modules['cosmos'] = Cosmos
+    import cosmos
 except ImportError:
     pass
 

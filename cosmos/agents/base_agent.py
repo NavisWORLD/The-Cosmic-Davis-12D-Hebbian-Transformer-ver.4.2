@@ -27,7 +27,7 @@ from loguru import logger
 
 # Import embedded prompts system
 try:
-    from Cosmos.core.embedded_prompts import (
+    from cosmos.core.embedded_prompts import (
         prompt_manager,
         ModelTier,
         get_agent_init_prompt,
@@ -333,7 +333,7 @@ class BaseAgent(ABC):
     def _get_token_budget(self) -> int:
         """Get token budget based on model tier - uses dynamic limits."""
         try:
-            from Cosmos.core.dynamic_limits import get_model_limits
+            from cosmos.core.dynamic_limits import get_model_limits
             # Map tier to representative model for dynamic lookup
             tier_models = {
                 "lightweight": "phi4",

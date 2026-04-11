@@ -817,7 +817,7 @@ class ArchivalMemory:
             model: HuggingFace embedding model ID (default: all-MiniLM-L6-v2)
         """
         try:
-            from Cosmos.integration.external.huggingface import get_huggingface_provider
+            from cosmos.integration.external.huggingface import get_huggingface_provider
 
             hf = get_huggingface_provider()
             if hf is None:

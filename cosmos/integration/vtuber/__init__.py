@@ -14,7 +14,7 @@ A complete AI VTuber streaming system that integrates:
 - Swarm collective integration for multi-agent responses
 
 Quick Start:
-    from Cosmos.integration.vtuber import CosmosVTuber, VTuberConfig
+    from cosmos.integration.vtuber import CosmosVTuber, VTuberConfig
 
     config = VTuberConfig(
         stream_key="your_twitter_stream_key",

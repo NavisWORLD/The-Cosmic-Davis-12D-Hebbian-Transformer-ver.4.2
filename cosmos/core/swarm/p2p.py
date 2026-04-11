@@ -27,8 +27,8 @@ try:
 except ImportError:
     WEBSOCKETS_AVAILABLE = False
 
-from Cosmos.core.nexus import nexus, Signal, SignalType
-from Cosmos.core.swarm.dkg import DecentralizedKnowledgeGraph
+from cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.swarm.dkg import DecentralizedKnowledgeGraph
 
 @dataclass
 class PeerInfo:

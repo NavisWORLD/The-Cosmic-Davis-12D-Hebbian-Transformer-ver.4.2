@@ -283,7 +283,7 @@ class FreeDiscussionEngine:
         """Generate topics from codebase context, memory, etc."""
         topics = []
         try:
-            from Cosmos.memory.memory_system import MemorySystem
+            from cosmos.memory.memory_system import MemorySystem
             ms = MemorySystem._instance if hasattr(MemorySystem, '_instance') else None
             if ms and hasattr(ms, 'working_memory'):
                 recent = ms.working_memory.get_recent(5) if hasattr(ms.working_memory, 'get_recent') else []
@@ -440,7 +440,7 @@ class FreeDiscussionEngine:
     async def _broadcast_to_ui(self, agent_id: str, content: str):
         """Broadcast discussion message to swarm chat websocket."""
         try:
-            from Cosmos.web.server import swarm_manager
+            from cosmos.web.server import swarm_manager
             # Map agent_id to display name
             display_names = {
                 "phi": "Phi",

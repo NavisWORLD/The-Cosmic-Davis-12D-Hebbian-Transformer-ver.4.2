@@ -64,7 +64,7 @@ class AddPhaseRequest(BaseModel):
 
 def _get_engine(workspace: str = "/workspace/Cosmos"):
     """Get or create a ForgeEngine instance."""
-    from Cosmos.core.forge.forge_engine import ForgeEngine
+    from cosmos.core.forge.forge_engine import ForgeEngine
     return ForgeEngine(workspace)
 
 
@@ -76,8 +76,8 @@ def _get_engine(workspace: str = "/workspace/Cosmos"):
 async def forge_status():
     """Get FORGE system status."""
     try:
-        from Cosmos.core.forge import __version__
-        from Cosmos.core.collective.persistent_agent import get_shadow_agents
+        from cosmos.core.forge import __version__
+        from cosmos.core.collective.persistent_agent import get_shadow_agents
 
         agents = get_shadow_agents()
 

@@ -6,12 +6,12 @@ cosmos Container Management Package
 Docker, Kubernetes, and container registry management.
 """
 
-from Cosmos.containers.docker_manager import (
+from cosmos.containers.docker_manager import (
     DockerManager,
     Container,
     DockerImage,
 )
-from Cosmos.containers.kubernetes_manager import (
+from cosmos.containers.kubernetes_manager import (
     KubernetesManager,
     K8sDeployment,
     K8sService,

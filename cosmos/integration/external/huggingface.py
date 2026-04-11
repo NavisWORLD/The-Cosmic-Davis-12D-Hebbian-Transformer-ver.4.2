@@ -33,7 +33,7 @@ def _get_dynamic_max_tokens(model_id: str = "huggingface", task_type: str = "cha
     AGI v1.8: Get dynamic max_tokens from centralized limits.
     """
     try:
-        from Cosmos.core.dynamic_limits import get_max_tokens
+        from cosmos.core.dynamic_limits import get_max_tokens
         return get_max_tokens(model_id, task_type)
     except Exception:
         defaults = {"chat": 1000, "thinking": 2000, "quick": 300, "code": 2000}

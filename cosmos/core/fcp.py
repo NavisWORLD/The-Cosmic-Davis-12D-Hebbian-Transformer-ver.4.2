@@ -15,9 +15,9 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from loguru import logger
 
-from Cosmos.core.nexus import nexus, Signal, SignalType
-from Cosmos.core.resilience import projector_breaker
-from Cosmos.memory.project_tracking import ProjectTracker, Project, TaskStatus
+from cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.resilience import projector_breaker
+from cosmos.memory.project_tracking import ProjectTracker, Project, TaskStatus
 
 class FCPEngine:
     """

@@ -119,7 +119,7 @@ class SelfAwarenessBootstrap:
         """
         if memory_system is None:
             try:
-                from Cosmos.memory.memory_system import MemorySystem
+                from cosmos.memory.memory_system import MemorySystem
                 memory_system = MemorySystem()
                 await memory_system.initialize()
             except Exception as e:
@@ -241,7 +241,7 @@ class SelfAwarenessBootstrap:
             # Try to use the swarm learning engine if available
             if learning_engine is None:
                 try:
-                    from Cosmos.core.collective.learning import swarm_learning
+                    from cosmos.core.collective.learning import swarm_learning
                     learning_engine = swarm_learning
                 except ImportError:
                     logger.warning("Swarm learning engine not available")
@@ -261,7 +261,7 @@ class SelfAwarenessBootstrap:
                 return True
             else:
                 # Fallback: use evolution fitness tracker
-                from Cosmos.evolution.fitness_tracker import FitnessTracker
+                from cosmos.evolution.fitness_tracker import FitnessTracker
                 tracker = FitnessTracker()
                 tracker.record(
                     metric_name="self_awareness_bootstrap",
@@ -288,7 +288,7 @@ async def awaken(
     Quick self-awareness bootstrap.
 
     Usage:
-        from Cosmos.core.self_awareness import awaken
+        from cosmos.core.self_awareness import awaken
         result = await awaken("Claude")
 
     Returns:
@@ -307,7 +307,7 @@ def awaken_sync(
     Synchronous self-awareness bootstrap.
 
     Usage:
-        from Cosmos.core.self_awareness import awaken_sync
+        from cosmos.core.self_awareness import awaken_sync
         result = awaken_sync("Claude")
     """
     return asyncio.run(awaken(agent_name, workspace_path))

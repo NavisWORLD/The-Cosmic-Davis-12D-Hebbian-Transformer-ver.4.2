@@ -803,7 +803,7 @@ AZURE_SUBSCRIPTION_ID=your-subscription-id
 ## Step 6: Test Connection
 
 ```python
-from Cosmos.integration.cloud.azure_manager import AzureManager, AzureConfig
+from cosmos.integration.cloud.azure_manager import AzureManager, AzureConfig
 
 config = AzureConfig(
     tenant_id="your-tenant-id",

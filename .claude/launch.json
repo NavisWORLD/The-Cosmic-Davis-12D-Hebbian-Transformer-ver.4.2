@@ -1,0 +1,65 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Web Chat + Emotional API",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["run_web.py", "--port", "8081", "--emotion-port", "8765"],
+      "port": 8081
+    },
+    {
+      "name": "Emotional Token Server",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["emotional_api/emotion_server.py", "--port", "8765"],
+      "port": 8765
+    },
+    {
+      "name": "Full Sensory System",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["emotional_api/full_system.py"],
+      "port": 8765
+    },
+    {
+      "name": "Streamlit Dashboard",
+      "runtimeExecutable": "streamlit",
+      "runtimeArgs": ["run", "cosmos/ui/streamlit_app.py"],
+      "port": 8501
+    },
+    {
+      "name": "Interactive CLI",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["main.py", "--cli"],
+      "port": 0
+    },
+    {
+      "name": "Health Dashboard",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["main.py", "--health"],
+      "port": 8081
+    },
+    {
+      "name": "P2P Network Node",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["main.py", "--node"],
+      "port": 8888
+    },
+    {
+      "name": "MCP Server",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["main.py", "--mcp"],
+      "port": 8765
+    },
+    {
+      "name": "CST Physics Demo",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["demo_cst.py"],
+      "port": 0
+    },
+    {
+      "name": "CNS Digital Organism",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["cosmos/web/cosmosynapse/engine/cosmos_cns.py"],
+      "port": 0
+    }
+  ]
+}

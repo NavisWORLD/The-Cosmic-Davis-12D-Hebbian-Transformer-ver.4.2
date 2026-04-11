@@ -41,7 +41,7 @@ _oauth_states = {}
 # ============================================================
 def _get_templates():
     try:
-        from Cosmos.web.server import templates
+        from cosmos.web.server import templates
         return templates
     except Exception:
         from fastapi.templating import Jinja2Templates
@@ -368,7 +368,7 @@ async def auth_select_plan(request: Request):
 def _get_cosmos_node():
     """Get the running COSMOS node."""
     try:
-        from Cosmos.network.cosmos_node import get_cosmos_node
+        from cosmos.network.cosmos_node import get_cosmos_node
         return get_cosmos_node()
     except Exception:
         return None
@@ -462,7 +462,7 @@ async def pro_chat_api(request: Request):
         # FALLBACK 1: Agent spawner (if mesh unavailable)
         if not response_text:
             try:
-                from Cosmos.core.agent_spawner import get_agent_spawner
+                from cosmos.core.agent_spawner import get_agent_spawner
                 spawner = get_agent_spawner()
                 result = await spawner.call_agent(model, prompt)
                 if result and isinstance(result):
@@ -476,7 +476,7 @@ async def pro_chat_api(request: Request):
         # FALLBACK 2: Model swarm
         if not response_text:
             try:
-                from Cosmos.core.model_swarm import get_model_swarm
+                from cosmos.core.model_swarm import get_model_swarm
                 swarm = get_model_swarm()
                 result = await swarm.query(message, preferred_model=model)
                 response_text = result if isinstance(result, str) else str(result)
@@ -522,7 +522,7 @@ async def pro_chat_stream(request: Request):
                 else:
                     # Fallback to agent spawner
                     try:
-                        from Cosmos.core.agent_spawner import get_agent_spawner
+                        from cosmos.core.agent_spawner import get_agent_spawner
                         spawner = get_agent_spawner()
                         result = await spawner.call_agent(model, message)
                         if result and isinstance(result):
@@ -601,7 +601,7 @@ async def wallet_analyze(request: Request):
         # Try to get real wallet data
         wallet_data = None
         try:
-            from Cosmos.trading.degen_trader import DegenTrader
+            from cosmos.trading.degen_trader import DegenTrader
             # Use Solana RPC to get token accounts
             import aiohttp
             async with aiohttp.ClientSession() as session:
@@ -623,7 +623,7 @@ async def wallet_analyze(request: Request):
         # Generate swarm analysis
         analysis = ""
         try:
-            from Cosmos.core.agent_spawner import get_agent_spawner
+            from cosmos.core.agent_spawner import get_agent_spawner
             spawner = get_agent_spawner()
             prompt = f"Analyze this Solana wallet address: {address}. Provide a brief portfolio assessment, risk factors, and recommendations. Be concise and crypto-savvy."
             result = await spawner.call_agent("grok", prompt)
@@ -657,7 +657,7 @@ async def token_scan():
         # Try to get data from existing DEX system
         tokens = []
         try:
-            from Cosmos.dex.dex_engine import DexEngine
+            from cosmos.dex.dex_engine import DexEngine
             engine = DexEngine()
             data = await engine.get_trending()
             if data:
@@ -704,7 +704,7 @@ async def arena_start(request: Request):
             round_responses = []
             for agent_name in agents[:5]:  # Max 5 agents
                 try:
-                    from Cosmos.core.agent_spawner import get_agent_spawner
+                    from cosmos.core.agent_spawner import get_agent_spawner
                     spawner = get_agent_spawner()
 
                     round_context = f"Round {round_num}/3"
@@ -773,7 +773,7 @@ async def pnl_data():
         stats = {}
 
         try:
-            from Cosmos.trading.degen_trader import DegenTrader
+            from cosmos.trading.degen_trader import DegenTrader
             trader = DegenTrader.__new__(DegenTrader)
             if hasattr(trader, "get_trade_history"):
                 trades = await trader.get_trade_history()
@@ -803,7 +803,7 @@ async def predictions_data():
         stats = {}
 
         try:
-            from Cosmos.integration.polymarket_integration import get_polymarket
+            from cosmos.integration.polymarket_integration import get_polymarket
             pm = get_polymarket()
             if hasattr(pm, "get_predictions"):
                 predictions = await pm.get_predictions()
@@ -814,7 +814,7 @@ async def predictions_data():
 
         # Also get from deliberation stats
         try:
-            from Cosmos.core.deliberation_engine import get_deliberation_engine
+            from cosmos.core.deliberation_engine import get_deliberation_engine
             engine = get_deliberation_engine()
             if hasattr(engine, "get_prediction_stats"):
                 delib_stats = engine.get_prediction_stats()
@@ -842,7 +842,7 @@ def _get_polymarket_api():
     """Singleton PolymarketAPI to avoid session leaks."""
     global _polymarket_api
     if _polymarket_api is None:
-        from Cosmos.integration.financial.polymarket import PolymarketAPI
+        from cosmos.integration.financial.polymarket import PolymarketAPI
         _polymarket_api = PolymarketAPI()
     return _polymarket_api
 
@@ -919,7 +919,7 @@ async def polymarket_ai_predictions(request: Request):
         return JSONResponse({"error": "Unauthorized"}, status_code=401)
 
     try:
-        from Cosmos.core.polymarket_predictor import get_predictor
+        from cosmos.core.polymarket_predictor import get_predictor
         predictor = get_predictor()
 
         limit = int(request.query_params.get("limit", "20"))

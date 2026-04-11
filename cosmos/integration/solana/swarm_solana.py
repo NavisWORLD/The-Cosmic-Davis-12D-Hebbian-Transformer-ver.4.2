@@ -228,7 +228,7 @@ class SwarmSolana:
     ) -> Optional[Dict[str, Any]]:
         """Get swarm consensus on token analysis."""
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
 
             # Build context
             context = f"""
@@ -346,7 +346,7 @@ REASONING: [your analysis]"""
         )
 
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
 
             prompt = f"""Recommend a Solana DeFi strategy:
 
@@ -442,7 +442,7 @@ Be specific and actionable."""
                 wallet_data["sol_balance"] = lamports / 1e9
 
             # Get swarm assessment
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
 
             prompt = f"""Analyze this Solana wallet:
 
@@ -509,7 +509,7 @@ Keep response under 100 words."""
                 quote["route"] = data.get("routePlan", [])
 
                 # Get swarm advice on the swap
-                from Cosmos.core.collective.persistent_agent import call_shadow_agent
+                from cosmos.core.collective.persistent_agent import call_shadow_agent
 
                 impact_pct = quote["price_impact"]
                 prompt = f"""Evaluate this Solana swap:

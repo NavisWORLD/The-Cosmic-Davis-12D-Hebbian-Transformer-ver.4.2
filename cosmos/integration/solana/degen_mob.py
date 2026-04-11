@@ -133,7 +133,7 @@ class DeGenMob:
     # --- CT Sentiment Scaler ---
     async def run_alpha_leak_loop(self, keywords: List[str]):
         """Run scaled sentiment analysis on narratives."""
-        from Cosmos.integration.external.grok import create_grok_provider
+        from cosmos.integration.external.grok import create_grok_provider
         
         api_key = os.environ.get("XAI_API_KEY")
         if not api_key:

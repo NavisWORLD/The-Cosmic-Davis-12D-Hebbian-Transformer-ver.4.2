@@ -6,37 +6,37 @@ cosmos Security Tools
 Comprehensive offensive and defensive security toolkit for authorized testing.
 """
 
-from Cosmos.tools.security.vulnerability_scanner import (
+from cosmos.tools.security.vulnerability_scanner import (
     VulnerabilityScanner,
     VulnerabilityReport,
     vulnerability_scanner,
 )
-from Cosmos.tools.security.threat_analyzer import (
+from cosmos.tools.security.threat_analyzer import (
     ThreatAnalyzer,
     ThreatIndicator,
     threat_analyzer,
 )
-from Cosmos.tools.security.forensics import (
+from cosmos.tools.security.forensics import (
     ForensicsToolkit,
     forensics_toolkit,
 )
-from Cosmos.tools.security.header_analyzer import (
+from cosmos.tools.security.header_analyzer import (
     HeaderAnalyzer,
     EmailHeaderAnalysis,
     header_analyzer,
 )
-from Cosmos.tools.security.recon import (
+from cosmos.tools.security.recon import (
     ReconEngine,
     ReconResult,
     recon_engine,
 )
-from Cosmos.tools.security.edr import (
+from cosmos.tools.security.edr import (
     EDREngine,
     SecurityAlert,
     DetectionRule,
     edr_engine,
 )
-from Cosmos.tools.security.log_parser import (
+from cosmos.tools.security.log_parser import (
     SecurityLogParser,
     ParsedLogEntry,
     LogAnalysisReport,

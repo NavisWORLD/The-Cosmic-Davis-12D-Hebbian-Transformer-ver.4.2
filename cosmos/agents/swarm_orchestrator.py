@@ -39,7 +39,7 @@ import uuid
 
 from loguru import logger
 
-from Cosmos.agents.base_agent import BaseAgent, AgentCapability, AgentStatus, TaskResult
+from cosmos.agents.base_agent import BaseAgent, AgentCapability, AgentStatus, TaskResult
 
 
 class TaskStatus(Enum):
@@ -2396,7 +2396,7 @@ class SwarmOrchestrator:
             return None
 
         try:
-            from Cosmos.core.cross_agent_memory import HandoffReason
+            from cosmos.core.cross_agent_memory import HandoffReason
 
             # Determine handoff reason
             reason = HandoffReason.CAPABILITY_MISMATCH
@@ -2464,7 +2464,7 @@ class SwarmOrchestrator:
             return None
 
         try:
-            from Cosmos.core.langgraph_workflows import TaskExecutionWorkflow
+            from cosmos.core.langgraph_workflows import TaskExecutionWorkflow
 
             # Create task execution workflow if not exists
             if not hasattr(self, '_task_execution_workflow'):
@@ -2515,7 +2515,7 @@ class SwarmOrchestrator:
             return None
 
         try:
-            from Cosmos.core.langgraph_workflows import DeliberationWorkflow
+            from cosmos.core.langgraph_workflows import DeliberationWorkflow
 
             # Create deliberation workflow if not exists
             if not hasattr(self, '_deliberation_workflow'):

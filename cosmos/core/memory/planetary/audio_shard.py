@@ -29,14 +29,14 @@ from loguru import logger
 
 # Try to import Nexus for signal handling
 try:
-    from Cosmos.core.nexus import nexus, Signal, SignalType
+    from cosmos.core.nexus import nexus, Signal, SignalType
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False
 
 # Try to import sharding
 try:
-    from Cosmos.memory.sharding import ShardManager
+    from cosmos.memory.sharding import ShardManager
     SHARDING_AVAILABLE = True
 except ImportError:
     SHARDING_AVAILABLE = False
@@ -302,7 +302,7 @@ class PlanetaryAudioShard:
     async def _broadcast_metadata(self, metadata: AudioMetadata):
         """Broadcast audio metadata to P2P network."""
         try:
-            from Cosmos.core.swarm.p2p import swarm_fabric
+            from cosmos.core.swarm.p2p import swarm_fabric
 
             # Send via P2P fabric
             message = {
@@ -340,7 +340,7 @@ class PlanetaryAudioShard:
             return None
 
         try:
-            from Cosmos.core.swarm.p2p import swarm_fabric
+            from cosmos.core.swarm.p2p import swarm_fabric
 
             # Create future for response
             future = asyncio.Future()
@@ -387,7 +387,7 @@ class PlanetaryAudioShard:
     async def _respond_to_audio_request(self, text_hash: str, requester_id: str):
         """Send audio file to requesting peer."""
         try:
-            from Cosmos.core.swarm.p2p import swarm_fabric
+            from cosmos.core.swarm.p2p import swarm_fabric
 
             audio_path = self.get_audio_path(text_hash)
             if not audio_path.exists():

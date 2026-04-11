@@ -6,19 +6,19 @@ cosmos Compliance and Audit Engine
 Comprehensive compliance monitoring, audit logging, and policy enforcement.
 """
 
-from Cosmos.compliance.compliance_engine import (
+from cosmos.compliance.compliance_engine import (
     ComplianceEngine,
     CompliancePolicy,
     ComplianceCheck,
     ComplianceViolation,
     ComplianceStatus,
 )
-from Cosmos.compliance.audit_logger import (
+from cosmos.compliance.audit_logger import (
     AuditLogger,
     AuditEvent,
     AuditEventType,
 )
-from Cosmos.compliance.policy_engine import (
+from cosmos.compliance.policy_engine import (
     PolicyEngine,
     Policy,
     PolicyRule,

@@ -6,15 +6,15 @@ cosmos CI/CD Pipeline Management
 Comprehensive CI/CD integration for GitHub Actions, GitLab CI, and Jenkins.
 """
 
-from Cosmos.cicd.pipeline_manager import (
+from cosmos.cicd.pipeline_manager import (
     PipelineManager,
     Pipeline,
     PipelineRun,
     PipelineStatus,
 )
-from Cosmos.cicd.github_actions import GitHubActionsManager
-from Cosmos.cicd.gitlab_ci import GitLabCIManager
-from Cosmos.cicd.jenkins_manager import JenkinsManager
+from cosmos.cicd.github_actions import GitHubActionsManager
+from cosmos.cicd.gitlab_ci import GitLabCIManager
+from cosmos.cicd.jenkins_manager import JenkinsManager
 
 __all__ = [
     "PipelineManager",

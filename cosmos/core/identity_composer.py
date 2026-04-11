@@ -17,7 +17,7 @@ Sources:
     - evolution.py -> get_evolved_context() (learned patterns per agent)
 
 Usage:
-    from Cosmos.core.identity_composer import get_identity_composer
+    from cosmos.core.identity_composer import get_identity_composer
     composer = get_identity_composer()
 
     # For deliberation rounds
@@ -188,7 +188,7 @@ class IdentityComposer:
         """Lazy-load personality data for an agent."""
         if self._personalities is None:
             try:
-                from Cosmos.core.collective.evolution import DEFAULT_BOT_PERSONALITIES
+                from cosmos.core.collective.evolution import DEFAULT_BOT_PERSONALITIES
                 self._personalities = DEFAULT_BOT_PERSONALITIES
             except Exception as e:
                 logger.debug(f"Could not load personalities: {e}")
@@ -205,7 +205,7 @@ class IdentityComposer:
         """Lazy-load evolution learnings for an agent on a topic."""
         if self._evolution_engine is None:
             try:
-                from Cosmos.core.collective.evolution import get_evolution_engine
+                from cosmos.core.collective.evolution import get_evolution_engine
                 self._evolution_engine = get_evolution_engine()
             except Exception as e:
                 logger.debug(f"Could not load evolution engine: {e}")
@@ -221,7 +221,7 @@ class IdentityComposer:
         """Lazy-load skill context for an agent."""
         if self._skill_registry is None:
             try:
-                from Cosmos.core.skill_registry import get_skill_registry
+                from cosmos.core.skill_registry import get_skill_registry
                 self._skill_registry = get_skill_registry()
             except Exception as e:
                 logger.debug(f"Could not load skill registry: {e}")

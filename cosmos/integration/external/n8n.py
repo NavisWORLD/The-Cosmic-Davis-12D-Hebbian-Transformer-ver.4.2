@@ -12,7 +12,7 @@ from loguru import logger
 import aiohttp
 
 from .base import ExternalProvider, IntegrationConfig, ConnectionStatus
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.nexus import nexus, Signal, SignalType
 
 class N8nProvider(ExternalProvider):
     def __init__(self, api_key: str, base_url: str):

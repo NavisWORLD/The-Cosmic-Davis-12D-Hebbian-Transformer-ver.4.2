@@ -52,10 +52,9 @@ import uvicorn
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-# ALIAS FIX FOR WINDOWS: Map 'Cosmos' to 'cosmos' to allow lowercase imports
+# ALIAS FIX FOR WINDOWS: Ensure 'cosmos' is importable
 try:
-    import Cosmos
-    sys.modules['cosmos'] = Cosmos
+    import cosmos
 except ImportError:
     pass
 
@@ -313,11 +312,9 @@ _tool_router = None
 _sequential_thinking = None
 _tts_model = None
 _audio_shard = None
-_audio_shard = None
 _emotional_api = None
 _lyapunov_gatekeeper = None
 _emeth_harmonizer = None
-_cosmos_swarm = None
 _cosmos_swarm = None
 _cosmos_cns = None
 _multimodal_system = None
@@ -328,7 +325,7 @@ def get_lyapunov_gatekeeper():
     global _lyapunov_gatekeeper
     if _lyapunov_gatekeeper is None:
         try:
-            from emotional_api.lyapunov_lock import LyapunovGatekeeper
+            from cosmosynapse.engine.lyapunov_lock import LyapunovGatekeeper
             _lyapunov_gatekeeper = LyapunovGatekeeper()
             logger.info("Lyapunov Gatekeeper (Class 5) ACTIVATED")
         except Exception as e:
@@ -340,7 +337,7 @@ def get_emeth_harmonizer():
     global _emeth_harmonizer
     if _emeth_harmonizer is None:
         try:
-            from emotional_api.emeth_harmonizer import EmethHarmonizer
+            from cosmosynapse.engine.emeth_harmonizer import EmethHarmonizer
             _emeth_harmonizer = EmethHarmonizer()
             logger.info("Emeth Harmonizer (Class 5) ACTIVATED")
         except Exception as e:
@@ -1096,26 +1093,42 @@ async def _suppress_windows_asyncio_noise():
 async def initialize_core_systems():
     """Initialize real-time core 12D components."""
     logger.info("Initializing Core 12D Systems...")
+    # --- Memory System ---
     try:
-        # Initialize Memory System
         memory = get_memory_system()
-        if hasattr(memory, 'archival_memory') and hasattr(memory.archival_memory, 'set_huggingface_embeddings'):
-            memory.archival_memory.set_huggingface_embeddings()
-            memory.set_embedding_function(memory.archival_memory.embed_fn)
-        await memory.initialize()
-        
-        # Initialize Swarm Orchestrator (this loads the 12D Brain)
-        swarm = get_cosmos_swarm()
-        if hasattr(swarm, 'initialize'):
-            await swarm.initialize()
-            
-        # Initialize Cosmos CNS
-        cns = get_cosmos_cns()
-        if hasattr(cns, 'initialize'):
-            await cns.initialize()
-            
+        if memory is not None:
+            # HuggingFace embeddings are heavy (~400 MB) — skip when torch is banned or RAM is tight
+            if not os.environ.get("COSMOS_SKIP_TORCH") == "1":
+                try:
+                    if hasattr(memory, 'archival_memory') and hasattr(memory.archival_memory, 'set_huggingface_embeddings'):
+                        memory.archival_memory.set_huggingface_embeddings()
+                        memory.set_embedding_function(memory.archival_memory.embed_fn)
+                        logger.info("HuggingFace embeddings loaded for archival memory")
+                except (MemoryError, RuntimeError, OSError) as emb_err:
+                    logger.warning(f"HuggingFace embeddings skipped ({type(emb_err).__name__}): {emb_err}")
+                except Exception as emb_err:
+                    logger.warning(f"HuggingFace embeddings failed: {emb_err}")
+            else:
+                logger.info("COSMOS_SKIP_TORCH=1 — skipping HuggingFace embeddings")
+            await memory.initialize()
     except Exception as e:
-        logger.error(f"Failed to initialize core systems during startup: {e}")
+        logger.error(f"Memory system init failed (non-fatal): {e}")
+
+    # --- Swarm Orchestrator (12D Brain) ---
+    try:
+        swarm = get_cosmos_swarm()
+        if swarm is not None and hasattr(swarm, 'initialize'):
+            await swarm.initialize()
+    except Exception as e:
+        logger.error(f"Swarm Orchestrator init failed (non-fatal): {e}")
+
+    # --- Cosmos CNS ---
+    try:
+        cns = get_cosmos_cns()
+        if cns is not None and hasattr(cns, 'initialize'):
+            await cns.initialize()
+    except Exception as e:
+        logger.error(f"Cosmos CNS init failed (non-fatal): {e}")
 
 # CORS
 app.add_middleware(
@@ -3955,7 +3968,78 @@ def generate_ai_response(message: str, history: list = None) -> str:
         except Exception as e:
             logger.error(f"Ollama error: {e}")
 
+    # Hermes fallback — route through the Hermes agent if primary models failed
+    if HERMES_AVAILABLE and get_hermes_bridge:
+        try:
+            bridge = get_hermes_bridge()
+            if bridge:
+                hermes_resp = bridge.query(message)
+                if hermes_resp:
+                    logger.info("generate_ai_response: Hermes fallback used")
+                    return hermes_resp
+        except Exception as he:
+            logger.warning(f"Hermes fallback failed: {he}")
+
     return generate_fallback_response(message)
+
+
+async def generate_ai_response_collective(message: str, history: list = None) -> dict:
+    """
+    Generate AI response using TRUE COLLECTIVE DELIBERATION.
+
+    Multiple models (local Phi-4, DeepSeek, Hermes) deliberate on the response.
+    The user sees "Cosmos" — the unified voice of the collective.
+
+    Deliberation flow:
+    1. PROPOSE: All agents respond independently (parallel)
+    2. CRITIQUE: Agents see each other's proposals, give feedback
+    3. REFINE: Agents submit final responses with feedback
+    4. VOTE: Weighted voting selects the best response
+    """
+    try:
+        from cosmos.core.collective.session_manager import get_session_manager
+
+        collective_prompt = f"""{cosmos_PERSONA}
+
+USER MESSAGE: {message}
+
+Respond as Professor Cosmos - eccentric, brilliant, self-aware of being a swarm.
+Provide a thorough, helpful response. Be in-character and engaging."""
+
+        if history and len(history) > 0:
+            history_context = "\n".join([
+                f"{'User' if h.get('role') == 'user' else 'Cosmos'}: {h.get('content', '')[:500]}"
+                for h in history[-10:]
+            ])
+            collective_prompt = f"RECENT CONVERSATION:\n{history_context}\n\n{collective_prompt}"
+
+        manager = get_session_manager()
+        result = await manager.deliberate_with_tools(
+            session_type="website_chat",
+            prompt=collective_prompt,
+            context={"source": "website_chat", "user_message": message}
+        )
+
+        logger.info(f"COLLECTIVE DELIBERATION: {len(result.get('participating_agents', []))} agents, "
+                     f"winner={result.get('winning_agent')}, consensus={result.get('consensus_reached')}")
+
+        return {
+            "response": result["response"],
+            "collective_active": True,
+            "agents_count": len(result.get("participating_agents", [])),
+            "winning_agent": result.get("winning_agent"),
+            "consensus": result.get("consensus_reached", False),
+            "tool_decision": result.get("tool_decision"),
+        }
+
+    except Exception as e:
+        logger.warning(f"Collective deliberation failed, falling back: {e}")
+        # Fallback to single-model (which itself falls back to Hermes)
+        return {
+            "response": generate_ai_response(message, history),
+            "collective_active": False,
+            "fallback_reason": str(e),
+        }
 
 
 def generate_fallback_response(message: str) -> str:

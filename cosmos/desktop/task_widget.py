@@ -66,7 +66,7 @@ class TaskWidget(QWidget if PYSIDE_AVAILABLE else object):
         self.task_table.setRowCount(0)
 
         try:
-            from Cosmos.core.agent_spawner import get_spawner
+            from cosmos.core.agent_spawner import get_spawner
             spawner = get_spawner()
             if spawner:
                 tasks = spawner.get_pending_tasks() + spawner.get_active_tasks()
@@ -91,7 +91,7 @@ class TaskWidget(QWidget if PYSIDE_AVAILABLE else object):
         desc, ok = QInputDialog.getText(self, "Add Task", "Task description:")
         if ok and desc:
             try:
-                from Cosmos.core.agent_spawner import get_spawner, TaskType
+                from cosmos.core.agent_spawner import get_spawner, TaskType
                 spawner = get_spawner()
                 if spawner:
                     spawner.add_task(

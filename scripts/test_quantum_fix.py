@@ -8,7 +8,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from Cosmos.core.quantum_bridge import get_quantum_bridge
+from cosmos.core.quantum_bridge import get_quantum_bridge
 
 def test_resonance_mapping():
     print("=== Testing Quantum Resonance Mapping Fix ===")

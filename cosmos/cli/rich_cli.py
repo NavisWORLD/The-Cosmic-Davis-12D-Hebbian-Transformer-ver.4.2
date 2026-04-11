@@ -264,7 +264,7 @@ class RichCLI:
     async def _init_session(self) -> None:
         """Initialize swarm session."""
         try:
-            from Cosmos.cli.swarm_session import create_swarm_session
+            from cosmos.cli.swarm_session import create_swarm_session
 
             self._swarm_session = create_swarm_session()
             await self._swarm_session.connect()
@@ -685,7 +685,7 @@ class RichCLI:
             ))
 
         # Subscribe to common signals
-        from Cosmos.core.nexus import SignalType
+        from cosmos.core.nexus import SignalType
 
         for signal_type in [
             SignalType.DIALOGUE_PROPOSE,

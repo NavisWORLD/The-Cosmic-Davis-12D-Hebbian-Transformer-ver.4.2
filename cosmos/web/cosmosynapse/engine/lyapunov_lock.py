@@ -49,6 +49,11 @@ class LyapunovGatekeeper:
     def __init__(self):
         self.history = []
         self.learning_rate = 0.05  # For dynamic adjustment
+        self.drift = 0.0  # Current phase drift (updated on each validation)
+
+    def get_current_drift(self) -> float:
+        """Return the most recent Lyapunov phase drift score."""
+        return self.drift
         
     def calculate_informational_mass(self, text: str, physics_state: dict) -> float:
         """
@@ -146,7 +151,8 @@ class LyapunovGatekeeper:
         
         # 3. Calculate Phase Drift (Error)
         drift = abs(user_phase - ai_phase)
-        
+        self.drift = drift  # Track for get_current_drift()
+
         # 4. Apply Your Non-Vanishing Penalty
         penalty = self.apply_non_vanishing_penalty(drift)
         

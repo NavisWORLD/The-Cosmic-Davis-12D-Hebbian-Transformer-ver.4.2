@@ -253,7 +253,7 @@ class cosmosCLI:
 
         # Initialize memory system
         try:
-            from Cosmos.memory.memory_system import MemorySystem
+            from cosmos.memory.memory_system import MemorySystem
             self._memory = MemorySystem(data_dir=str(self.data_dir))
             await self._memory.initialize()
             print("  Memory system ready")
@@ -262,7 +262,7 @@ class cosmosCLI:
 
         # Initialize health manager
         try:
-            from Cosmos.health.providers import HealthProviderManager
+            from cosmos.health.providers import HealthProviderManager
             self._health_manager = HealthProviderManager()
             print("  Health tracking ready")
         except Exception as e:
@@ -480,8 +480,8 @@ class cosmosCLI:
             return
 
         try:
-            from Cosmos.health.models import MetricType
-            from Cosmos.health.analysis import HealthAnalysisEngine
+            from cosmos.health.models import MetricType
+            from cosmos.health.analysis import HealthAnalysisEngine
 
             # Get today's summary
             today = date.today()
@@ -515,7 +515,7 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
-            from Cosmos.health.nutrition import NutritionManager
+            from cosmos.health.nutrition import NutritionManager
 
             nutrition = NutritionManager(str(self.data_dir / "nutrition"))
 
@@ -563,7 +563,7 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
-            from Cosmos.health.swarm_advisor import SwarmHealthAdvisor
+            from cosmos.health.swarm_advisor import SwarmHealthAdvisor
 
             advisor = SwarmHealthAdvisor()
 
@@ -604,7 +604,7 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
-            from Cosmos.health.ocr_parser import DeepSeekOCRParser
+            from cosmos.health.ocr_parser import DeepSeekOCRParser
 
             parser = DeepSeekOCRParser()
 
@@ -660,7 +660,7 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
-            from Cosmos.health.models import HealthGoal, GoalType, GoalPeriod
+            from cosmos.health.models import HealthGoal, GoalType, GoalPeriod
 
             # Goal type
             goal_types = list(GoalType)
@@ -830,7 +830,7 @@ class cosmosCLI:
         output_path = output_path or "memories_export.json"
 
         try:
-            from Cosmos.memory.conversation_export import ConversationExporter
+            from cosmos.memory.conversation_export import ConversationExporter
 
             exporter = ConversationExporter(str(self.data_dir))
             await exporter.export_all(output_path, format="json")
@@ -876,7 +876,7 @@ class cosmosCLI:
 
         try:
             # Use swarm orchestrator to get response
-            from Cosmos.agents.swarm_orchestrator import SwarmOrchestrator
+            from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
 
             orchestrator = SwarmOrchestrator()
 
@@ -908,7 +908,7 @@ class cosmosCLI:
         print("\nAssigning task to agents...")
 
         try:
-            from Cosmos.agents.swarm_orchestrator import SwarmOrchestrator
+            from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
 
             orchestrator = SwarmOrchestrator()
             result = await orchestrator.process(query=task)
@@ -941,7 +941,7 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
-            from Cosmos.automation.workflow_builder import WorkflowBuilder
+            from cosmos.automation.workflow_builder import WorkflowBuilder
 
             builder = WorkflowBuilder()
 
@@ -982,7 +982,7 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
-            from Cosmos.automation.workflow_builder import WorkflowBuilder
+            from cosmos.automation.workflow_builder import WorkflowBuilder
 
             builder = WorkflowBuilder()
             workflows = builder.list_workflows()
@@ -1020,7 +1020,7 @@ class cosmosCLI:
         print("=" * 50)
 
         try:
-            from Cosmos.automation.n8n_enhanced import EnhancedN8nIntegration
+            from cosmos.automation.n8n_enhanced import EnhancedN8nIntegration
 
             print("\nn8n is a powerful workflow automation tool.")
             print("You can connect cosmos to trigger and receive n8n workflows.\n")
@@ -1147,7 +1147,7 @@ class cosmosCLI:
 
         # Check for various integrations
         try:
-            from Cosmos.core.swarm.p2p import swarm_fabric
+            from cosmos.core.swarm.p2p import swarm_fabric
             p2p_status = "" if swarm_fabric.peers else ""
             print(f"\n{p2p_status} P2P Network")
             print(f"   Peers: {len(swarm_fabric.peers)}")

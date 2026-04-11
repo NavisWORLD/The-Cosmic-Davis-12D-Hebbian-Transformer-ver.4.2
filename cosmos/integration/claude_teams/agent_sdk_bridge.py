@@ -381,7 +381,7 @@ class AgentSDKBridge:
             # Fallback: use Cosmos's shadow agents instead
             logger.info("Claude SDK/CLI/API unavailable, falling back to shadow agents")
             try:
-                from Cosmos.core.collective.persistent_agent import call_shadow_agent
+                from cosmos.core.collective.persistent_agent import call_shadow_agent
                 result = await call_shadow_agent("grok", task, timeout=timeout)
                 if result:
                     agent_name, response_text = result

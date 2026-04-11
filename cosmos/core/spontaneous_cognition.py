@@ -409,7 +409,7 @@ class SpontaneousCognition:
     async def store_in_memory(self):
         """Store thoughts and experiences in memory"""
         try:
-            from Cosmos.memory.memory_system import get_memory_system
+            from cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
 
             # Store recent thoughts

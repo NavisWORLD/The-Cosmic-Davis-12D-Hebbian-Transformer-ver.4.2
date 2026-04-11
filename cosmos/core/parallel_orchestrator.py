@@ -11,7 +11,7 @@ and fusing the results.
 import asyncio
 , Callable
 from loguru import logger
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.nexus import nexus, Signal, SignalType
 
 class ParallelAIOrchestrator:
     def __init__(self, backends: list[Callable]):

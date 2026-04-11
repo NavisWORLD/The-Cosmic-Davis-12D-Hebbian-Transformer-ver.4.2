@@ -23,7 +23,7 @@ To run standalone:
 The server runs on port 3847 (configurable via DEXAI_PORT env var).
 
 To integrate with main Cosmos server:
-    from Cosmos.dex.dex_proxy import register_dex_routes
+    from cosmos.dex.dex_proxy import register_dex_routes
     register_dex_routes(app)
 
 Access at /dex or /DEXAI on the main server.

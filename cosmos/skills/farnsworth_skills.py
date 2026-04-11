@@ -388,7 +388,7 @@ The collective can launch tokens, trade, and earn fees on Solana.
 ## Quick Launch for Another Agent
 
 ```python
-from Cosmos.integration.external.bags_fm import get_bags_provider
+from cosmos.integration.external.bags_fm import get_bags_provider
 
 bags = get_bags_provider()
 result = await bags.launch_token_for_agent(

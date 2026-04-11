@@ -17,7 +17,7 @@ def get_sysadmin_tools():
     """Get sysadmin tools module."""
     global _sysadmin_tools
     if _sysadmin_tools is None:
-        from Cosmos.tools import sysadmin as _sysadmin_tools
+        from cosmos.tools import sysadmin as _sysadmin_tools
     return _sysadmin_tools
 
 
@@ -25,7 +25,7 @@ def get_security_tools():
     """Get security tools module."""
     global _security_tools
     if _security_tools is None:
-        from Cosmos.tools import security as _security_tools
+        from cosmos.tools import security as _security_tools
     return _security_tools
 
 

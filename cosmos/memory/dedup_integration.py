@@ -8,7 +8,7 @@ Shadow architecture pattern.
 from typing import Optional, Dict, Any
 from loguru import logger
 
-from Cosmos.memory.semantic_deduplication import (
+from cosmos.memory.semantic_deduplication import (
     SemanticDeduplicator,
     get_deduplicator,
     SimilarityMatch

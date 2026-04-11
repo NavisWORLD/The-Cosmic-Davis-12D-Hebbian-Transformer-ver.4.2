@@ -644,7 +644,7 @@ O365_REDIRECT_URI=http://localhost:8400/callback
 ## Step 5: Test Connection
 
 ```python
-from Cosmos.integration.email.office365 import Office365Integration, O365Config
+from cosmos.integration.email.office365 import Office365Integration, O365Config
 
 config = O365Config(
     tenant_id="your-tenant-id",

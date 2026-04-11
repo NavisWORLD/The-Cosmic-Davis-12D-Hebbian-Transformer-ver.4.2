@@ -20,7 +20,7 @@ from loguru import logger
 
 # Guard orchestrator import
 try:
-    from Cosmos.core.token_orchestrator import get_token_orchestrator
+    from cosmos.core.token_orchestrator import get_token_orchestrator
     ORCHESTRATOR_AVAILABLE = True
 except ImportError:
     ORCHESTRATOR_AVAILABLE = False

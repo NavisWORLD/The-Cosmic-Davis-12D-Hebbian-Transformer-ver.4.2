@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from loguru import logger
 import networkx as nx
 
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.nexus import nexus, Signal, SignalType
 
 @dataclass
 class CausalNode:

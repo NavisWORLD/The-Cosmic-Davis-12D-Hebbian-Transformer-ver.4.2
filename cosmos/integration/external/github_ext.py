@@ -16,7 +16,7 @@ from github import Github, Auth
 from github.GithubException import GithubException
 
 from .base import ExternalProvider, IntegrationConfig, ConnectionStatus
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.nexus import nexus, Signal, SignalType
 
 class GitHubProvider(ExternalProvider):
     def __init__(self, token: str, repo: str):

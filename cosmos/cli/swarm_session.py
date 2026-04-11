@@ -235,7 +235,7 @@ class SwarmSession:
     async def _connect_deliberation_room(self) -> None:
         """Try to connect to the deliberation room."""
         try:
-            from Cosmos.core.collective.deliberation import DeliberationRoom
+            from cosmos.core.collective.deliberation import DeliberationRoom
             self._deliberation_room = DeliberationRoom()
             logger.debug("Connected to deliberation room")
         except ImportError:
@@ -669,7 +669,7 @@ class SwarmSession:
             return
 
         try:
-            from Cosmos.core.nexus import SignalType
+            from cosmos.core.nexus import SignalType
 
             signal_enum = getattr(SignalType, signal_type, None)
             if signal_enum:

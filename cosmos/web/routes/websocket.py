@@ -23,7 +23,7 @@ router = APIRouter()
 
 def _get_shared():
     """Import shared state from server module lazily."""
-    from Cosmos.web import server
+    from cosmos.web import server
     return server
 
 

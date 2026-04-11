@@ -283,7 +283,7 @@ class CosmosMCPServer:
     async def _handle_oracle_query(self, question: str, query_type: str = "general") -> Dict[str, Any]:
         """Handle swarm oracle query."""
         try:
-            from Cosmos.integration.solana.swarm_oracle import get_swarm_oracle
+            from cosmos.integration.solana.swarm_oracle import get_swarm_oracle
 
             oracle = get_swarm_oracle()
             result = await oracle.submit_query(question, query_type, timeout=60.0)
@@ -300,7 +300,7 @@ class CosmosMCPServer:
     async def _handle_memory_read(self, query: str, memory_layer: str = "working") -> Dict[str, Any]:
         """Handle memory read request."""
         try:
-            from Cosmos.memory.memory_system import get_memory_system
+            from cosmos.memory.memory_system import get_memory_system
 
             memory = get_memory_system()
 
@@ -318,7 +318,7 @@ class CosmosMCPServer:
     async def _handle_swarm_status(self) -> Dict[str, Any]:
         """Handle swarm status request."""
         try:
-            from Cosmos.core.organism import get_organism
+            from cosmos.core.organism import get_organism
 
             organism = get_organism()
             return {
@@ -332,7 +332,7 @@ class CosmosMCPServer:
     async def _handle_farsight_predict(self, question: str, category: str = "general") -> Dict[str, Any]:
         """Handle Farsight prediction request."""
         try:
-            from Cosmos.integration.hackathon.farsight_protocol import get_farsight
+            from cosmos.integration.hackathon.farsight_protocol import get_farsight
 
             farsight = get_farsight()
             prediction = await farsight.predict(question, category, include_visual=False)
@@ -349,7 +349,7 @@ class CosmosMCPServer:
     async def _handle_shadow_agent_call(self, agent: str, prompt: str) -> Dict[str, Any]:
         """Handle shadow agent call request."""
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
 
             result = await call_shadow_agent(agent.lower(), prompt, timeout=30.0)
             if result:
@@ -362,7 +362,7 @@ class CosmosMCPServer:
     async def _handle_kg_query(self, query: str) -> Dict[str, Any]:
         """Handle knowledge graph query."""
         try:
-            from Cosmos.memory.knowledge_graph import get_knowledge_graph
+            from cosmos.memory.knowledge_graph import get_knowledge_graph
 
             kg = get_knowledge_graph()
             results = kg.search(query, limit=10)
@@ -373,7 +373,7 @@ class CosmosMCPServer:
     async def _handle_token_analysis(self, token_address: str) -> Dict[str, Any]:
         """Handle Solana token analysis."""
         try:
-            from Cosmos.integration.solana.swarm_solana import get_swarm_solana
+            from cosmos.integration.solana.swarm_solana import get_swarm_solana
 
             solana = get_swarm_solana()
             analysis = await solana.analyze_token(token_address)

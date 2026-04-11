@@ -251,7 +251,7 @@ class SwarmOracle:
     ) -> None:
         """Run the PROPOSE-CRITIQUE-REFINE-VOTE deliberation protocol."""
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
         except ImportError:
             logger.error("Cannot import shadow agent caller")
             return
@@ -384,7 +384,7 @@ Then on a new line, give a confidence score 0.0-1.0"""
         # Quantum Physics Injection
         # Fetch live entropy from the bridge
         try:
-            from Cosmos.core.quantum_bridge import get_quantum_bridge
+            from cosmos.core.quantum_bridge import get_quantum_bridge
             qb = get_quantum_bridge()
             if qb and qb.entropy_buffer:
                 query.quantum_entropy_injected = qb.entropy_buffer.pop(0)
@@ -431,7 +431,7 @@ Then on a new line, give a confidence score 0.0-1.0"""
         """Call an agent and return response. Tries shadow agent first, then direct API."""
         # Try shadow agent first
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
             result = await call_shadow_agent(agent_id, prompt, timeout=30.0)
             if result:
                 _, response = result
@@ -447,28 +447,28 @@ Then on a new line, give a confidence score 0.0-1.0"""
         """Call agent directly via their API provider."""
         try:
             if agent_id == "grok":
-                from Cosmos.integration.external.grok import grok_provider
+                from cosmos.integration.external.grok import grok_provider
                 if grok_provider:
                     result = await grok_provider.chat(prompt=prompt, max_tokens=300)
                     if result:
                         return result.get("content") if isinstance(result, dict) else result
 
             elif agent_id == "gemini":
-                from Cosmos.integration.external.gemini import gemini_provider
+                from cosmos.integration.external.gemini import gemini_provider
                 if gemini_provider:
                     result = await gemini_provider.chat(prompt=prompt, max_tokens=300)
                     if result:
                         return result.get("content") if isinstance(result, dict) else result
 
             elif agent_id == "claude":
-                from Cosmos.integration.external.claude_api import claude_provider
+                from cosmos.integration.external.claude_api import claude_provider
                 if claude_provider:
                     result = await claude_provider.chat(prompt=prompt, max_tokens=300)
                     if result:
                         return result if isinstance(result, str) else str(result)
 
             elif agent_id == "kimi":
-                from Cosmos.integration.external.kimi import kimi_provider
+                from cosmos.integration.external.kimi import kimi_provider
                 if kimi_provider:
                     result = await kimi_provider.chat(prompt=prompt, max_tokens=300)
                     if result:

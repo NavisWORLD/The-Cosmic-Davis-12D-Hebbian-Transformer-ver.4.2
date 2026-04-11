@@ -9,11 +9,11 @@ External tool and capability integration with:
 - Voice interaction (Whisper/TTS)
 """
 
-from Cosmos.integration.tool_router import ToolRouter
-from Cosmos.integration.multimodal import MultimodalProcessor
+from cosmos.integration.tool_router import ToolRouter
+from cosmos.integration.multimodal import MultimodalProcessor
 
 # Vision capabilities
-from Cosmos.integration.vision import (
+from cosmos.integration.vision import (
     VisionModule,
     VisionTask,
     VisionResult,
@@ -22,7 +22,7 @@ from Cosmos.integration.vision import (
 )
 
 # Voice capabilities
-from Cosmos.integration.voice import (
+from cosmos.integration.voice import (
     VoiceModule,
     TranscriptionResult,
     TranscriptionSegment,

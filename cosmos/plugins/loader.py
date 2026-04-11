@@ -255,7 +255,7 @@ Description: A custom plugin that...
 """
 
 from typing import Dict, Any
-from Cosmos.plugins.base import (
+from cosmos.plugins.base import (
     Plugin,
     PluginMetadata,
     PluginCapability,

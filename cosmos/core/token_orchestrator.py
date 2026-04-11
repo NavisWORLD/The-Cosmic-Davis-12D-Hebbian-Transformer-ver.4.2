@@ -26,19 +26,19 @@ from loguru import logger
 # ---------------------------------------------------------------------------
 
 try:
-    from Cosmos.core.dynamic_limits import get_limits, get_max_tokens, ModelTier
+    from cosmos.core.dynamic_limits import get_limits, get_max_tokens, ModelTier
 except ImportError:
     get_limits = None
     get_max_tokens = None
     ModelTier = None
 
 try:
-    from Cosmos.core.token_saver import ContextCompressor
+    from cosmos.core.token_saver import ContextCompressor
 except ImportError:
     ContextCompressor = None
 
 try:
-    from Cosmos.core.nexus import nexus, SignalType
+    from cosmos.core.nexus import nexus, SignalType
 except ImportError:
     nexus = None
     SignalType = None
@@ -428,11 +428,11 @@ class TokenOrchestrator:
         """Attempt to call a provider's swarm_respond for tandem handoff."""
         try:
             if agent_id == "grok":
-                from Cosmos.integration.external.grok import GrokProvider
+                from cosmos.integration.external.grok import GrokProvider
                 provider = GrokProvider()
                 return await provider.swarm_respond(context, task_type=task_type)
             elif agent_id == "kimi":
-                from Cosmos.integration.external.kimi import KimiProvider
+                from cosmos.integration.external.kimi import KimiProvider
                 provider = KimiProvider()
                 return await provider.swarm_respond(context, task_type=task_type)
         except ImportError:

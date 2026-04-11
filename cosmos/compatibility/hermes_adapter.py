@@ -203,13 +203,13 @@ class HermesAdapter:
     async def _load_cosmos_modules(self):
         """Lazy-load Cosmos modules for tool execution."""
         try:
-            from Cosmos.memory.memory_system import get_memory_system
+            from cosmos.memory.memory_system import get_memory_system
             self._memory_system = get_memory_system()
         except ImportError:
             logger.debug("Memory system not available")
 
         try:
-            from Cosmos.core.nexus import get_nexus
+            from cosmos.core.nexus import get_nexus
             self._nexus = get_nexus()
         except ImportError:
             logger.debug("Nexus not available")
@@ -729,7 +729,7 @@ Execute this skill and provide the result."""
     async def _handle_sessions_list(self, action: str, params: Dict) -> HermesToolResult:
         """Handle session listing - maps to Cosmos session manager."""
         try:
-            from Cosmos.core.collective.session_manager import get_session_manager
+            from cosmos.core.collective.session_manager import get_session_manager
             manager = get_session_manager()
             stats = manager.get_session_stats()
 
@@ -762,7 +762,7 @@ Execute this skill and provide the result."""
             return HermesToolResult(success=False, tool="sessions_history", error="Missing sessionKey")
 
         try:
-            from Cosmos.core.collective.session_manager import get_session_manager
+            from cosmos.core.collective.session_manager import get_session_manager
             manager = get_session_manager()
 
             if session_key in manager.sessions:
@@ -838,7 +838,7 @@ Execute this skill and provide the result."""
             return HermesToolResult(success=False, tool="sessions_spawn", error="Missing prompt")
 
         try:
-            from Cosmos.core.agent_spawner import spawn_agent
+            from cosmos.core.agent_spawner import spawn_agent
 
             result = await spawn_agent(
                 task=prompt,
@@ -861,7 +861,7 @@ Execute this skill and provide the result."""
     async def _handle_session_status(self, action: str, params: Dict) -> HermesToolResult:
         """Handle session status query."""
         try:
-            from Cosmos.core.collective.session_manager import get_session_manager
+            from cosmos.core.collective.session_manager import get_session_manager
             manager = get_session_manager()
 
             return HermesToolResult(
@@ -956,7 +956,7 @@ Execute this skill and provide the result."""
 
         try:
             # Try Grok/Gemini for web search
-            from Cosmos.integration.external.grok import grok_search
+            from cosmos.integration.external.grok import grok_search
             results = await grok_search(query, limit=limit)
 
             return HermesToolResult(
@@ -1079,7 +1079,7 @@ Execute this skill and provide the result."""
         cron_action = params.get("action", action)
 
         try:
-            from Cosmos.automation.scheduler import get_scheduler
+            from cosmos.automation.scheduler import get_scheduler
             scheduler = get_scheduler()
 
             if cron_action == "list":
@@ -1134,7 +1134,7 @@ Execute this skill and provide the result."""
 
                 # Route to appropriate Cosmos channel
                 if channel == "twitter" or channel == "x":
-                    from Cosmos.integration.x_automation.x_api_poster import XOAuth2Poster
+                    from cosmos.integration.x_automation.x_api_poster import XOAuth2Poster
                     poster = XOAuth2Poster()
                     result = await poster.post_tweet(text)
                     return HermesToolResult(success=True, tool="message", action="send", data=result)
@@ -1221,7 +1221,7 @@ Execute this skill and provide the result."""
         try:
             if img_action == "understand" or img_action == "caption":
                 # Use Cosmos image understanding (via Claude/Gemini)
-                from Cosmos.integration.external.gemini import gemini_understand_image
+                from cosmos.integration.external.gemini import gemini_understand_image
                 result = await gemini_understand_image(path)
                 return HermesToolResult(success=True, tool="image", action=img_action, data=result)
 

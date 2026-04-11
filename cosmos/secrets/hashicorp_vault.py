@@ -16,7 +16,7 @@ try:
 except ImportError:
     HAS_HTTPX = False
 
-from Cosmos.secrets.vault_manager import (
+from cosmos.secrets.vault_manager import (
     SecretsProvider,
     Secret,
     SecretVersion,

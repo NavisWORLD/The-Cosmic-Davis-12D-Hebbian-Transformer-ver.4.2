@@ -40,7 +40,7 @@ class VTuberAvatarGenerator:
         """Lazy load the image generator"""
         if self._image_generator is None:
             try:
-                from Cosmos.integration.image_gen.generator import get_image_generator
+                from cosmos.integration.image_gen.generator import get_image_generator
                 self._image_generator = get_image_generator()
             except ImportError as e:
                 logger.error(f"Failed to import image generator: {e}")

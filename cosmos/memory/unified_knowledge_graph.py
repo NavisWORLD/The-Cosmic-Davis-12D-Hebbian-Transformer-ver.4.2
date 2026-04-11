@@ -33,8 +33,8 @@ logger = logging.getLogger("UNIFIED_KG")
 
 # Import base classes
 try:
-    from Cosmos.memory.knowledge_graph_v2 import KnowledgeGraphV2, TemporalEdge
-    from Cosmos.memory.knowledge_graph import Entity, Relationship, GraphQuery
+    from cosmos.memory.knowledge_graph_v2 import KnowledgeGraphV2, TemporalEdge
+    from cosmos.memory.knowledge_graph import Entity, Relationship, GraphQuery
 except ImportError:
     try:
         from knowledge_graph_v2 import KnowledgeGraphV2, TemporalEdge

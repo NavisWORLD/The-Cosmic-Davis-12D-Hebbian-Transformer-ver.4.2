@@ -16,9 +16,9 @@ sys.path.insert(0, str(project_root))
 # Set API Key early for all modules
 os.environ["IBM_QUANTUM_TOKEN"] = "gQZcrqfRzKL5rzF86L-LIx3afGsz1e1ULBquzyS4BoSm"
 
-from Cosmos.web.server import get_cosmos_swarm
-from Cosmos.web.cosmosynapse.engine.cosmos_swarm_orchestrator import SwarmResponse
-from Cosmos.core.quantum_bridge import get_quantum_bridge
+from cosmos.web.server import get_cosmos_swarm
+from cosmos.web.cosmosynapse.engine.cosmos_swarm_orchestrator import SwarmResponse
+from cosmos.core.quantum_bridge import get_quantum_bridge
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

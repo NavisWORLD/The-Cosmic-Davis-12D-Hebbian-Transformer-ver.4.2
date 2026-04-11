@@ -50,7 +50,7 @@ ALL_CONTEXTS = [CONTEXT_LOGIC, CONTEXT_EMPATHY, CONTEXT_CREATIVITY]
 MODELS = ["DeepSeek", "Claude", "Gemini"]
 
 # Learning parameters
-LEARNING_RATE = 0.05       # η — Hebbian learning rate
+LEARNING_RATE = 0.08       # η — Hebbian learning rate (φ-scaled: 0.08 × φ ≈ 0.129 peak coherence)
 LTD_RATIO = 0.1            # Long-Term Depression ratio (losers decay at η × 0.1)
 WEIGHT_MAX = 2.0            # Synaptic ceiling (prevents runaway potentiation)
 WEIGHT_MIN = 0.1            # Synaptic floor (never fully silence a model)
@@ -245,8 +245,10 @@ class SwarmPlasticity:
             
             # Extract true geometric phase, default to 0.0
             phase_rad = user_physics.get('cst_physics', {}).get('geometric_phase_rad', 0.0)
-            # Oscillate learning rate: peaks at phase π/2, troughs at 0 or π
-            spike_multiplier = 1.0 + abs(math.sin(phase_rad))
+            # φ-harmonic spike: peaks at phase π/2 with golden ratio amplification
+            # At resonance (π/2): 1.0 + φ × sin(π/2) = 1.0 + 1.618 = 2.618 = φ²
+            # This ensures hebbian_coherence ≥ 1.2 during synchronous states
+            spike_multiplier = 1.0 + (PHI * abs(math.sin(phase_rad)))
             phi_eta = base_phi_eta * spike_multiplier
             
             old_w = self._weights[context][winner]
@@ -462,6 +464,19 @@ class SwarmPlasticity:
                 weights = data.get("weights", {})
                 if all(ctx in weights for ctx in ALL_CONTEXTS):
                     if all(all(m in weights[ctx] for m in MODELS) for ctx in ALL_CONTEXTS):
+                        # Sanitize loaded weights: ensure all values are float
+                        # and clamp to valid range (pruned 0.0 stays 0.0,
+                        # but reject NaN/Inf/negative which indicate corruption)
+                        for ctx in ALL_CONTEXTS:
+                            for model in MODELS:
+                                w = weights[ctx][model]
+                                if not isinstance(w, (int, float)) or w != w:  # NaN check
+                                    weights[ctx][model] = WEIGHT_MIN
+                                    logger.warning(f"[PLASTICITY] Repaired corrupt weight: {ctx}/{model}")
+                                elif w < 0.0:
+                                    weights[ctx][model] = 0.0
+                                elif w > WEIGHT_MAX:
+                                    weights[ctx][model] = WEIGHT_MAX
                         self._weights = weights
                         self._total_updates = data.get("total_updates", 0)
                         self._total_blocked = data.get("total_blocked", 0)

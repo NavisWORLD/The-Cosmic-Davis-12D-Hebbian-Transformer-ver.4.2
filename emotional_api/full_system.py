@@ -100,7 +100,7 @@ class FullSystemController:
             project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             if project_root not in sys.path:
                 sys.path.insert(0, project_root)
-            from Cosmos.core.multimodal.real_time_audio_pipe import RealTimeAudioPipe
+            from cosmos.core.multimodal.real_time_audio_pipe import RealTimeAudioPipe
             self.audio_pipe = RealTimeAudioPipe()
             self.audio_pipe.start()
             print("🎤 Real-Time Audio Pipeline Started")

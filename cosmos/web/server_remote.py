@@ -317,7 +317,7 @@ except ImportError:
 
 # Optional Planetary Audio Shard
 try:
-    from Cosmos.core.memory.planetary.audio_shard import (
+    from cosmos.core.memory.planetary.audio_shard import (
         PlanetaryAudioShard, AudioScope, get_audio_shard
     )
     AUDIO_SHARD_AVAILABLE = True
@@ -326,7 +326,7 @@ except ImportError:
 
 # Optional P2P Swarm Fabric for distributed learning
 try:
-    from Cosmos.core.swarm.p2p import swarm_fabric
+    from cosmos.core.swarm.p2p import swarm_fabric
     P2P_FABRIC_AVAILABLE = True
 except ImportError:
     swarm_fabric = None
@@ -334,7 +334,7 @@ except ImportError:
 
 # Optional Collective Organism for unified intelligence
 try:
-    from Cosmos.core.collective import organism as collective_organism
+    from cosmos.core.collective import organism as collective_organism
     ORGANISM_AVAILABLE = True
 except ImportError:
     collective_organism = None
@@ -342,7 +342,7 @@ except ImportError:
 
 # Optional Swarm Orchestrator for turn-taking and consciousness training
 try:
-    from Cosmos.core.collective.orchestration import swarm_orchestrator
+    from cosmos.core.collective.orchestration import swarm_orchestrator
     ORCHESTRATOR_AVAILABLE = True
 except ImportError:
     swarm_orchestrator = None
@@ -350,7 +350,7 @@ except ImportError:
 
 # Optional Evolution Engine for code-level learning
 try:
-    from Cosmos.core.collective.evolution import evolution_engine
+    from cosmos.core.collective.evolution import evolution_engine
     EVOLUTION_AVAILABLE = True
 except ImportError:
     evolution_engine = None
@@ -358,7 +358,7 @@ except ImportError:
 
 # Claude Code CLI integration (uses Claude Max subscription)
 try:
-    from Cosmos.integration.external.claude_code import get_claude_code, claude_swarm_respond
+    from cosmos.integration.external.claude_code import get_claude_code, claude_swarm_respond
     CLAUDE_CODE_AVAILABLE = True
 except ImportError:
     get_claude_code = None
@@ -367,14 +367,14 @@ except ImportError:
 
 # Kimi (Moonshot AI) integration
 try:
-    from Cosmos.integration.external.kimi import get_kimi_provider, kimi_swarm_respond
+    from cosmos.integration.external.kimi import get_kimi_provider, kimi_swarm_respond
     KIMI_AVAILABLE = True
 except ImportError:
     get_kimi_provider = None
     kimi_swarm_respond = None
 # Grok (xAI) integration
 try:
-    from Cosmos.integration.external.grok import GrokProvider
+    from cosmos.integration.external.grok import GrokProvider
     GROK_AVAILABLE = True
 except ImportError:
     GROK_AVAILABLE = False
@@ -382,7 +382,7 @@ except ImportError:
 
 # Gemini (Google AI) integration
 try:
-    from Cosmos.integration.external.gemini import get_gemini_provider, gemini_swarm_respond
+    from cosmos.integration.external.gemini import get_gemini_provider, gemini_swarm_respond
     GEMINI_AVAILABLE = True
 except ImportError:
     get_gemini_provider = None
@@ -391,7 +391,7 @@ except ImportError:
 
 # OpenAI Codex integration (gpt-4.1, o3, codex-mini)
 try:
-    from Cosmos.integration.external.openai_codex import get_openai_codex, OpenAICodexProvider
+    from cosmos.integration.external.openai_codex import get_openai_codex, OpenAICodexProvider
     OPENAI_AVAILABLE = True
 except ImportError:
     get_openai_codex = None
@@ -400,7 +400,7 @@ except ImportError:
 
 # HuggingFace integration (local + API)
 try:
-    from Cosmos.integration.external.huggingface import get_huggingface_provider, HuggingFaceProvider
+    from cosmos.integration.external.huggingface import get_huggingface_provider, HuggingFaceProvider
     HUGGINGFACE_AVAILABLE = True
 except ImportError:
     get_huggingface_provider = None
@@ -409,7 +409,7 @@ except ImportError:
 
 # Token Scanner for detecting CAs in chat and providing token analysis
 try:
-    from Cosmos.integration.financial.token_scanner import token_scanner, scan_message_for_token
+    from cosmos.integration.financial.token_scanner import token_scanner, scan_message_for_token
     TOKEN_SCANNER_AVAILABLE = True
 except ImportError:
     token_scanner = None
@@ -418,7 +418,7 @@ except ImportError:
 
 # Autonomous Task Detector - spawns dev swarms for actionable ideas
 try:
-    from Cosmos.core.autonomous_task_detector import get_task_detector, AutonomousTaskDetector
+    from cosmos.core.autonomous_task_detector import get_task_detector, AutonomousTaskDetector
     TASK_DETECTOR_AVAILABLE = True
 except ImportError:
     get_task_detector = None
@@ -426,8 +426,8 @@ except ImportError:
 
 # Claude Teams Fusion (AGI v1.9) - Cosmos orchestrates Claude teams
 try:
-    from Cosmos.integration.claude_teams import get_swarm_team_fusion
-    from Cosmos.integration.claude_teams.swarm_team_fusion import DelegationType
+    from cosmos.integration.claude_teams import get_swarm_team_fusion
+    from cosmos.integration.claude_teams.swarm_team_fusion import DelegationType
     CLAUDE_TEAMS_AVAILABLE = True
 except ImportError:
     get_swarm_team_fusion = None
@@ -436,7 +436,7 @@ except ImportError:
 
 # Prompt Upgrader - automatically enhances user prompts to professional quality
 try:
-    from Cosmos.core.prompt_upgrader import get_prompt_upgrader, upgrade_prompt
+    from cosmos.core.prompt_upgrader import get_prompt_upgrader, upgrade_prompt
     PROMPT_UPGRADER_AVAILABLE = True
 except ImportError:
     get_prompt_upgrader = None
@@ -460,7 +460,7 @@ def get_memory_system():
     global _memory_system
     if _memory_system is None:
         try:
-            from Cosmos.memory.memory_system import MemorySystem
+            from cosmos.memory.memory_system import MemorySystem
             _memory_system = MemorySystem()
             logger.info("Memory system loaded")
         except Exception as e:
@@ -472,7 +472,7 @@ def get_notes_manager():
     global _notes_manager
     if _notes_manager is None:
         try:
-            from Cosmos.tools.productivity.quick_notes import QuickNotes
+            from cosmos.tools.productivity.quick_notes import QuickNotes
             _notes_manager = QuickNotes()
             logger.info("Notes manager loaded")
         except Exception as e:
@@ -484,7 +484,7 @@ def get_snippet_manager():
     global _snippet_manager
     if _snippet_manager is None:
         try:
-            from Cosmos.tools.productivity.snippet_manager import SnippetManager
+            from cosmos.tools.productivity.snippet_manager import SnippetManager
             _snippet_manager = SnippetManager()
             logger.info("Snippet manager loaded")
         except Exception as e:
@@ -496,7 +496,7 @@ def get_focus_timer():
     global _focus_timer
     if _focus_timer is None:
         try:
-            from Cosmos.tools.productivity.focus_timer import FocusTimer
+            from cosmos.tools.productivity.focus_timer import FocusTimer
             _focus_timer = FocusTimer()
             logger.info("Focus timer loaded")
         except Exception as e:
@@ -508,7 +508,7 @@ def get_context_profiles():
     global _context_profiles
     if _context_profiles is None:
         try:
-            from Cosmos.core.context_profiles import ContextProfileManager
+            from cosmos.core.context_profiles import ContextProfileManager
             _context_profiles = ContextProfileManager()
             logger.info("Context profiles loaded")
         except Exception as e:
@@ -520,8 +520,8 @@ def get_health_analyzer():
     global _health_analyzer
     if _health_analyzer is None:
         try:
-            from Cosmos.health.analysis import HealthAnalyzer
-            from Cosmos.health.providers.mock import MockHealthProvider
+            from cosmos.health.analysis import HealthAnalyzer
+            from cosmos.health.providers.mock import MockHealthProvider
             provider = MockHealthProvider()
             _health_analyzer = HealthAnalyzer(provider)
             logger.info("Health analyzer loaded with mock provider")
@@ -534,7 +534,7 @@ def get_tool_router():
     global _tool_router
     if _tool_router is None:
         try:
-            from Cosmos.integration.tool_router import ToolRouter
+            from cosmos.integration.tool_router import ToolRouter
             _tool_router = ToolRouter()
             logger.info("Tool router loaded")
         except Exception as e:
@@ -546,7 +546,7 @@ def get_sequential_thinking():
     global _sequential_thinking
     if _sequential_thinking is None:
         try:
-            from Cosmos.core.cognition.sequential_thinking import SequentialThinkingEngine
+            from cosmos.core.cognition.sequential_thinking import SequentialThinkingEngine
             _sequential_thinking = SequentialThinkingEngine()
             logger.info("Sequential thinking loaded")
         except Exception as e:
@@ -884,7 +884,7 @@ class CryptoQueryParser:
 
         # For other tokens or if CoinGecko fails, use DexScreener
         try:
-            from Cosmos.integration.financial.dexscreener import DexScreenerClient
+            from cosmos.integration.financial.dexscreener import DexScreenerClient
             client = DexScreenerClient()
             return await client.search_pairs(query)
         except ImportError:
@@ -903,7 +903,7 @@ class CryptoQueryParser:
     async def _rug_check(cls, address: str) -> dict:
         """Check token for rug risks."""
         try:
-            from Cosmos.integration.solana.degen_mob import DeGenMob
+            from cosmos.integration.solana.degen_mob import DeGenMob
             degen = DeGenMob()
             return await degen.analyze_token_safety(address)
         except ImportError:
@@ -917,7 +917,7 @@ class CryptoQueryParser:
     async def _whale_track(cls, address: str) -> dict:
         """Track whale wallet."""
         try:
-            from Cosmos.integration.solana.degen_mob import DeGenMob
+            from cosmos.integration.solana.degen_mob import DeGenMob
             degen = DeGenMob()
             return await degen.get_whale_recent_activity(address)
         except ImportError:
@@ -931,7 +931,7 @@ class CryptoQueryParser:
     async def _market_sentiment(cls) -> dict:
         """Get market sentiment."""
         try:
-            from Cosmos.integration.financial.market_sentiment import MarketSentiment
+            from cosmos.integration.financial.market_sentiment import MarketSentiment
             sentiment = MarketSentiment()
             return await sentiment.get_fear_and_greed()
         except ImportError:
@@ -1096,7 +1096,7 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 # Register VTuber routes
 try:
-    from Cosmos.integration.vtuber.server_integration import register_vtuber_routes
+    from cosmos.integration.vtuber.server_integration import register_vtuber_routes
     register_vtuber_routes(app)
 except ImportError as e:
     logging.warning(f"VTuber module not available: {e}")
@@ -1118,91 +1118,91 @@ templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 # globals, helpers) remains here and is accessed via lazy imports.
 
 try:
-    from Cosmos.web.routes.chat import router as chat_router
+    from cosmos.web.routes.chat import router as chat_router
     app.include_router(chat_router, tags=["Chat & Core"])
     logger.info("Route module loaded: chat")
 except Exception as e:
     logger.warning(f"Failed to load chat routes: {e}")
 
 try:
-    from Cosmos.web.routes.claude_teams import router as claude_teams_router
+    from cosmos.web.routes.claude_teams import router as claude_teams_router
     app.include_router(claude_teams_router, tags=["Claude Teams"])
     logger.info("Route module loaded: claude_teams")
 except Exception as e:
     logger.warning(f"Failed to load claude_teams routes: {e}")
 
 try:
-    from Cosmos.web.routes.swarm import router as swarm_router
+    from cosmos.web.routes.swarm import router as swarm_router
     app.include_router(swarm_router, tags=["Swarm"])
     logger.info("Route module loaded: swarm")
 except Exception as e:
     logger.warning(f"Failed to load swarm routes: {e}")
 
 try:
-    from Cosmos.web.routes.quantum import router as quantum_router
+    from cosmos.web.routes.quantum import router as quantum_router
     app.include_router(quantum_router, tags=["Quantum & Evolution"])
     logger.info("Route module loaded: quantum")
 except Exception as e:
     logger.warning(f"Failed to load quantum routes: {e}")
 
 try:
-    from Cosmos.web.routes.websocket import router as websocket_router
+    from cosmos.web.routes.websocket import router as websocket_router
     app.include_router(websocket_router, tags=["WebSocket & Live"])
     logger.info("Route module loaded: websocket")
 except Exception as e:
     logger.warning(f"Failed to load websocket routes: {e}")
 
 try:
-    from Cosmos.web.routes.media import router as media_router
+    from cosmos.web.routes.media import router as media_router
     app.include_router(media_router, tags=["Media & TTS"])
     logger.info("Route module loaded: media")
 except Exception as e:
     logger.warning(f"Failed to load media routes: {e}")
 
 try:
-    from Cosmos.web.routes.admin import router as admin_router
+    from cosmos.web.routes.admin import router as admin_router
     app.include_router(admin_router, tags=["Admin"])
     logger.info("Route module loaded: admin")
 except Exception as e:
     logger.warning(f"Failed to load admin routes: {e}")
 
 try:
-    from Cosmos.web.routes.polymarket import router as polymarket_router
+    from cosmos.web.routes.polymarket import router as polymarket_router
     app.include_router(polymarket_router, tags=["Polymarket"])
     logger.info("Route module loaded: polymarket")
 except Exception as e:
     logger.warning(f"Failed to load polymarket routes: {e}")
 
 try:
-    from Cosmos.web.routes.autogram import router as autogram_router
+    from cosmos.web.routes.autogram import router as autogram_router
     app.include_router(autogram_router, tags=["AutoGram"])
     logger.info("Route module loaded: autogram")
 except Exception as e:
     logger.warning(f"Failed to load autogram routes: {e}")
 
 try:
-    from Cosmos.web.routes.bot_tracker import router as bot_tracker_router
+    from cosmos.web.routes.bot_tracker import router as bot_tracker_router
     app.include_router(bot_tracker_router, tags=["Bot Tracker"])
     logger.info("Route module loaded: bot_tracker")
 except Exception as e:
     logger.warning(f"Failed to load bot_tracker routes: {e}")
 
 try:
-    from Cosmos.web.routes.x_engagement import router as x_engagement_router
+    from cosmos.web.routes.x_engagement import router as x_engagement_router
     app.include_router(x_engagement_router, tags=["X Engagement"])
     logger.info("Route module loaded: x_engagement")
 except Exception as e:
     logger.warning(f"Failed to load x_engagement routes: {e}")
 
 try:
-    from Cosmos.web.routes.skills import router as skills_router
+    from cosmos.web.routes.skills import router as skills_router
     app.include_router(skills_router, tags=["Skill Registry"])
     logger.info("Route module loaded: skills")
 except Exception as e:
     logger.warning(f"Failed to load skills routes: {e}")
 
 try:
-    from Cosmos.web.routes.cli_bridge_api import router as cli_bridge_router
+    from cosmos.web.routes.cli_bridge_api import router as cli_bridge_router
     app.include_router(cli_bridge_router, tags=["CLI Bridge"])
     logger.info("Route module loaded: cli_bridge_api")
 except Exception as e:
@@ -1372,7 +1372,7 @@ class SwarmLearningEngine:
         """Lazy load heavy systems only when needed."""
         if self._memory_system is None:
             try:
-                from Cosmos.memory import MemorySystem, KnowledgeGraphV2, EpisodicMemory, SemanticLayerSystem
+                from cosmos.memory import MemorySystem, KnowledgeGraphV2, EpisodicMemory, SemanticLayerSystem
                 self._memory_system = MemorySystem()
                 self._knowledge_graph = KnowledgeGraphV2()
                 self._episodic_memory = EpisodicMemory()
@@ -1383,7 +1383,7 @@ class SwarmLearningEngine:
 
         if self._evolution_engine is None:
             try:
-                from Cosmos.evolution import FitnessTracker, BehaviorMutator
+                from cosmos.evolution import FitnessTracker, BehaviorMutator
                 self._evolution_engine = FitnessTracker()
                 logger.info("Swarm Learning: Evolution engine loaded")
             except Exception as e:
@@ -1391,7 +1391,7 @@ class SwarmLearningEngine:
 
         if self._p2p_manager is None:
             try:
-                from Cosmos.p2p import BootstrapNodeManager
+                from cosmos.p2p import BootstrapNodeManager
                 self._p2p_manager = BootstrapNodeManager()
                 logger.info("Swarm Learning: P2P manager loaded")
             except Exception as e:
@@ -1656,7 +1656,7 @@ class SwarmLearningEngine:
     async def _trigger_consolidation(self):
         """Trigger dream-like consolidation of recent learnings."""
         try:
-            from Cosmos.memory import DreamConsolidator
+            from cosmos.memory import DreamConsolidator
             consolidator = DreamConsolidator()
 
             if hasattr(consolidator, 'consolidate'):
@@ -1847,7 +1847,7 @@ class SwarmChatManager:
             )
 
             # Add to evolution loop tasks
-            from Cosmos.core.evolution_loop import get_evolution_engine
+            from cosmos.core.evolution_loop import get_evolution_engine
             engine = get_evolution_engine()
             if engine:
                 # Create task from dev request
@@ -2494,7 +2494,7 @@ async def generate_multi_model_response(
     # When Cosmos speaks, it's the unified voice of all models deliberating
     if speaker == "Cosmos":
         try:
-            from Cosmos.core.collective.session_manager import get_session_manager
+            from cosmos.core.collective.session_manager import get_session_manager
 
             # Build collective prompt with swarm chat context
             collective_prompt = f"""{system_prompt}
@@ -2583,7 +2583,7 @@ Provide a thoughtful, complete response that adds value to the discussion."""
 
     elif speaker == "ClaudeOpus" and CLAUDE_CODE_AVAILABLE:
         try:
-            from Cosmos.integration.external.claude_code import ClaudeCodeProvider
+            from cosmos.integration.external.claude_code import ClaudeCodeProvider
             opus_provider = ClaudeCodeProvider(model="opus")
             if await opus_provider.check_available():
                 result = await opus_provider.swarm_respond(
@@ -3978,7 +3978,7 @@ def spawn_task_from_intent(message: str, intent: dict) -> str:
     Spawn a task based on detected intent. Connect chat to the AgentSpawner.
     """
     try:
-        from Cosmos.core.agent_spawner import get_spawner, TaskType
+        from cosmos.core.agent_spawner import get_spawner, TaskType
         spawner = get_spawner()
 
         intent_type = intent.get("primary_intent", "")
@@ -4059,7 +4059,7 @@ I am not a single AI - I am a **collaborative matrix** of models working togethe
         elif intent_type == "evolution_query":
             # Query about evolution
             try:
-                from Cosmos.core.collective.evolution import get_evolution_engine
+                from cosmos.core.collective.evolution import get_evolution_engine
                 engine = get_evolution_engine()
                 if engine:
                     stats = engine.get_evolution_stats()
@@ -4084,7 +4084,7 @@ We are becoming more than the sum of our parts.
             # User wants to post a tweet! Check if admin user
             import asyncio
             try:
-                from Cosmos.integration.x_automation.x_api_poster import XAPIPoster
+                from cosmos.integration.x_automation.x_api_poster import XAPIPoster
 
                 # Extract what to tweet about from the message
                 tweet_content = message
@@ -4211,7 +4211,7 @@ async def generate_ai_response_collective(message: str, history: list = None) ->
         dict with 'response' (the winning answer) and metadata
     """
     try:
-        from Cosmos.core.collective.session_manager import get_session_manager
+        from cosmos.core.collective.session_manager import get_session_manager
 
         # Build Cosmos-style prompt for the collective
         # AGI v1.8: Removed artificial word limits - let agents respond fully
@@ -4462,7 +4462,7 @@ async def trading_start(request: Request):
     if _trader_instance and _trader_instance.running:
         return {"status": "already_running", "wallet": _trader_instance.pubkey}
     try:
-        from Cosmos.trading.degen_trader import DegenTrader, TraderConfig, _CosmosAuthLock
+        from cosmos.trading.degen_trader import DegenTrader, TraderConfig, _CosmosAuthLock
         # Generate session token so the trader knows it's running inside Cosmos
         _CosmosAuthLock.generate_session_token()
         body = await request.json() if request.headers.get("content-type") == "application/json" else {}
@@ -4546,7 +4546,7 @@ async def trading_wallet():
         balance = await _trader_instance.get_sol_balance()
         return {"wallet": _trader_instance.pubkey, "balance_sol": balance}
     try:
-        from Cosmos.trading.degen_trader import WALLET_DIR
+        from cosmos.trading.degen_trader import WALLET_DIR
         import json as _json
         wf = WALLET_DIR / "degen_trader.json"
         if wf.exists():
@@ -4652,7 +4652,7 @@ MULTI_VOICE_AVAILABLE = False
 _multi_voice_system = None
 
 try:
-    from Cosmos.integration.multi_voice import (
+    from cosmos.integration.multi_voice import (
         get_multi_voice_system,
         get_speech_queue,
         SWARM_VOICES,
@@ -4977,7 +4977,7 @@ async def deliberation_stats():
     - Recent exchanges summary
     """
     try:
-        from Cosmos.core.collective.dialogue_memory import get_dialogue_memory
+        from cosmos.core.collective.dialogue_memory import get_dialogue_memory
         memory = get_dialogue_memory()
 
         # Get basic stats
@@ -5026,7 +5026,7 @@ async def get_dynamic_limits():
     Returns current limits for all models and sessions.
     """
     try:
-        from Cosmos.core.dynamic_limits import get_all_limits
+        from cosmos.core.dynamic_limits import get_all_limits
         return JSONResponse({
             "success": True,
             **get_all_limits()
@@ -5047,7 +5047,7 @@ async def update_model_limits(model_id: str, request: Request):
     Body: {"default_max_tokens": 3000, "chat_max_tokens": 2000, ...}
     """
     try:
-        from Cosmos.core.dynamic_limits import update_model_limits as _update
+        from cosmos.core.dynamic_limits import update_model_limits as _update
         body = await request.json()
 
         success = _update(model_id, **body)
@@ -5078,7 +5078,7 @@ async def update_session_limits(session_type: str, request: Request):
     Body: {"max_tokens": 10000, "deliberation_rounds": 3, ...}
     """
     try:
-        from Cosmos.core.dynamic_limits import update_session_limits as _update
+        from cosmos.core.dynamic_limits import update_session_limits as _update
         body = await request.json()
 
         success = _update(session_type, **body)
@@ -5110,7 +5110,7 @@ async def update_deliberation_limits(request: Request):
     Pass null to remove a limit.
     """
     try:
-        from Cosmos.core.dynamic_limits import update_deliberation_limits as _update
+        from cosmos.core.dynamic_limits import update_deliberation_limits as _update
         body = await request.json()
 
         _update(
@@ -5147,7 +5147,7 @@ async def quantum_status():
     - Available backends
     """
     try:
-        from Cosmos.integration.quantum import get_quantum_provider, QISKIT_AVAILABLE
+        from cosmos.integration.quantum import get_quantum_provider, QISKIT_AVAILABLE
 
         if not QISKIT_AVAILABLE:
             return JSONResponse({
@@ -5201,7 +5201,7 @@ async def quantum_initialize(request: Request):
     If not provided, uses IBM_QUANTUM_API_KEY environment variable.
     """
     try:
-        from Cosmos.integration.quantum import initialize_quantum
+        from cosmos.integration.quantum import initialize_quantum
 
         body = await request.json() if request.headers.get("content-type") == "application/json" else {}
         api_key = body.get("api_key")
@@ -5242,7 +5242,7 @@ async def quantum_evolve_endpoint(request: Request):
     Returns best genome and fitness score.
     """
     try:
-        from Cosmos.integration.quantum import quantum_evolve_agent, get_quantum_provider
+        from cosmos.integration.quantum import quantum_evolve_agent, get_quantum_provider
 
         body = await request.json()
         genome = body.get("genome", "10101010")
@@ -5454,7 +5454,7 @@ async def inject_swarm_message(request: dict):
 
         # Also process for memory if bridge is enabled
         try:
-            from Cosmos.core.swarm_memory_integration import process_swarm_interaction_for_memory
+            from cosmos.core.swarm_memory_integration import process_swarm_interaction_for_memory
             await process_swarm_interaction_for_memory({
                 "role": "assistant",
                 "name": bot_name,
@@ -5519,7 +5519,7 @@ async def swarm_user_patterns():
 async def enable_swarm_memory_endpoint():
     """Enable swarm memory bridge for persistent conversation storage."""
     try:
-        from Cosmos.core.swarm_memory_integration import enable_swarm_memory
+        from cosmos.core.swarm_memory_integration import enable_swarm_memory
         memory = get_memory_system()
         await enable_swarm_memory(memory)
         return JSONResponse({
@@ -5538,7 +5538,7 @@ async def enable_swarm_memory_endpoint():
 async def disable_swarm_memory_endpoint():
     """Disable swarm memory bridge."""
     try:
-        from Cosmos.core.swarm_memory_integration import disable_swarm_memory
+        from cosmos.core.swarm_memory_integration import disable_swarm_memory
         await disable_swarm_memory()
         return JSONResponse({
             "success": True,
@@ -5556,7 +5556,7 @@ async def disable_swarm_memory_endpoint():
 async def swarm_memory_stats():
     """Get swarm memory bridge statistics."""
     try:
-        from Cosmos.core.swarm_memory_integration import get_swarm_memory_stats
+        from cosmos.core.swarm_memory_integration import get_swarm_memory_stats
         stats = await get_swarm_memory_stats()
         return JSONResponse({
             "available": True,
@@ -5579,7 +5579,7 @@ async def turn_taking_stats():
     Created by: Claude Sonnet 4.5 (Autonomous Improvement #2b)
     """
     try:
-        from Cosmos.core.smart_turn_taking import get_turn_stats
+        from cosmos.core.smart_turn_taking import get_turn_stats
         stats = get_turn_stats()
         return JSONResponse({
             "available": True,
@@ -5606,7 +5606,7 @@ async def enable_memory_dedup(request: dict):
     Created by: Claude Sonnet 4.5 (Autonomous Improvement #4)
     """
     try:
-        from Cosmos.memory.dedup_integration import enable_deduplication
+        from cosmos.memory.dedup_integration import enable_deduplication
         auto_merge = request.get("auto_merge", False)
         memory = get_memory_system()
         await enable_deduplication(memory, auto_merge)
@@ -5626,7 +5626,7 @@ async def enable_memory_dedup(request: dict):
 async def disable_memory_dedup():
     """Disable semantic deduplication."""
     try:
-        from Cosmos.memory.dedup_integration import disable_deduplication
+        from cosmos.memory.dedup_integration import disable_deduplication
         disable_deduplication()
         return JSONResponse({
             "success": True,
@@ -5644,7 +5644,7 @@ async def disable_memory_dedup():
 async def memory_dedup_stats():
     """Get semantic deduplication statistics."""
     try:
-        from Cosmos.memory.dedup_integration import get_deduplication_stats
+        from cosmos.memory.dedup_integration import get_deduplication_stats
         stats = get_deduplication_stats()
         return JSONResponse({
             "available": True,
@@ -5666,7 +5666,7 @@ async def check_memory_duplicate(request: dict):
     Useful for preview/testing.
     """
     try:
-        from Cosmos.memory.semantic_deduplication import check_for_duplicate
+        from cosmos.memory.semantic_deduplication import check_for_duplicate
         content = request.get("content", "")
 
         if not content:
@@ -5703,7 +5703,7 @@ async def check_memory_duplicate(request: dict):
 async def recall_swarm_memory(request: dict):
     """Recall relevant past swarm conversations."""
     try:
-        from Cosmos.core.swarm_memory_integration import recall_swarm_context
+        from cosmos.core.swarm_memory_integration import recall_swarm_context
         topic = request.get("topic", "")
         limit = request.get("limit", 5)
 
@@ -5794,8 +5794,8 @@ if __name__ == "__main__":
 # PARALLEL WORKER API ENDPOINTS
 # ============================================
 
-from Cosmos.core.agent_spawner import get_spawner, initialize_development_tasks, TaskType
-from Cosmos.core.parallel_workers import get_worker_manager, start_parallel_workers
+from cosmos.core.agent_spawner import get_spawner, initialize_development_tasks, TaskType
+from cosmos.core.parallel_workers import get_worker_manager, start_parallel_workers
 
 @app.get("/api/workers/status")
 async def get_workers_status():
@@ -5850,7 +5850,7 @@ async def get_staging_files():
     return {"files": files[:50]}
 
 # Start worker broadcaster on startup
-from Cosmos.core.worker_broadcaster import start_broadcaster
+from cosmos.core.worker_broadcaster import start_broadcaster
 
 @app.on_event("startup")
 async def start_worker_broadcaster():
@@ -5862,7 +5862,7 @@ async def start_worker_broadcaster():
         logger.error(f"Failed to start broadcaster: {e}")
 
 # Evolution Loop - Self-improving autonomous development
-from Cosmos.core.evolution_loop import start_evolution, get_evolution_loop
+from cosmos.core.evolution_loop import start_evolution, get_evolution_loop
 
 @app.on_event("startup")
 async def start_evolution_loop():
@@ -5876,7 +5876,7 @@ async def start_evolution_loop():
 @app.get("/api/evolution/status")
 async def get_evolution_status():
     """Get evolution loop status"""
-    from Cosmos.core.agent_spawner import get_spawner
+    from cosmos.core.agent_spawner import get_spawner
     loop = get_evolution_loop()
     spawner = get_spawner()
     return {
@@ -5895,17 +5895,17 @@ async def start_cognitive_systems():
     """Start human-like cognitive systems for true autonomy."""
     try:
         # 1. Initialize capability registry (models know what they can do)
-        from Cosmos.core.capability_registry import initialize_capability_registry
+        from cosmos.core.capability_registry import initialize_capability_registry
         registry = await initialize_capability_registry()
         logger.info(f"Capability Registry: {len(registry.capabilities)} capabilities registered")
 
         # 2. Start temporal awareness (natural timing without schedulers)
-        from Cosmos.core.temporal_awareness import start_temporal_awareness
+        from cosmos.core.temporal_awareness import start_temporal_awareness
         temporal = await start_temporal_awareness()
         logger.info(f"Temporal Awareness: Energy level {temporal.circadian.get_energy_level():.2f}")
 
         # 3. Start spontaneous cognition (genuine random thoughts)
-        from Cosmos.core.spontaneous_cognition import start_spontaneous_cognition, get_spontaneous_cognition
+        from cosmos.core.spontaneous_cognition import start_spontaneous_cognition, get_spontaneous_cognition
         cognition = await start_spontaneous_cognition()
 
         # Wire thoughts to chat (spontaneous thoughts become messages)
@@ -5927,9 +5927,9 @@ async def start_cognitive_systems():
 async def get_cognition_status():
     """Get cognitive system status"""
     try:
-        from Cosmos.core.temporal_awareness import get_temporal_awareness
-        from Cosmos.core.spontaneous_cognition import get_spontaneous_cognition
-        from Cosmos.core.capability_registry import get_capability_registry
+        from cosmos.core.temporal_awareness import get_temporal_awareness
+        from cosmos.core.spontaneous_cognition import get_spontaneous_cognition
+        from cosmos.core.capability_registry import get_capability_registry
 
         temporal = get_temporal_awareness()
         cognition = get_spontaneous_cognition()
@@ -5954,7 +5954,7 @@ async def get_cognition_status():
 async def start_swarm_heartbeat():
     """Start the advanced swarm health monitoring system."""
     try:
-        from Cosmos.core.swarm_heartbeat import start_heartbeat
+        from cosmos.core.swarm_heartbeat import start_heartbeat
         heartbeat = await start_heartbeat(auto_recover=True, check_interval=30)
         logger.info("Swarm Heartbeat started - monitoring all services with auto-recovery")
     except Exception as e:
@@ -5974,7 +5974,7 @@ async def start_polymarket_predictor():
 async def get_heartbeat_status():
     """Get current swarm health vitals."""
     try:
-        from Cosmos.core.swarm_heartbeat import get_current_vitals
+        from cosmos.core.swarm_heartbeat import get_current_vitals
         vitals = await get_current_vitals()
         return vitals.to_any() if vitals else {"error": "No vitals available"}
     except Exception as e:
@@ -5985,7 +5985,7 @@ async def get_heartbeat_status():
 async def get_heartbeat_history():
     """Get recent heartbeat history."""
     try:
-        from Cosmos.core.swarm_heartbeat import get_heartbeat
+        from cosmos.core.swarm_heartbeat import get_heartbeat
         heartbeat = get_heartbeat()
         return {"history": [v.to_any() for v in heartbeat.health_history[-20:]]}
     except Exception as e:
@@ -6009,7 +6009,7 @@ async def init_polymarket_predictor():
         return
 
     try:
-        from Cosmos.core.polymarket_predictor import get_predictor
+        from cosmos.core.polymarket_predictor import get_predictor
 
         _polymarket_predictor = get_predictor()
 
@@ -6129,7 +6129,7 @@ async def init_polymarket_predictor():
 async def get_polymarket_predictions(limit: int = 10):
     """Get recent Polymarket predictions."""
     try:
-        from Cosmos.core.polymarket_predictor import get_predictor
+        from cosmos.core.polymarket_predictor import get_predictor
         predictor = get_predictor()
         predictions = predictor.get_recent_predictions(limit)
 
@@ -6147,7 +6147,7 @@ async def get_polymarket_predictions(limit: int = 10):
 async def get_polymarket_stats():
     """Get prediction accuracy statistics."""
     try:
-        from Cosmos.core.polymarket_predictor import get_predictor
+        from cosmos.core.polymarket_predictor import get_predictor
         from dataclasses import asdict
 
         predictor = get_predictor()
@@ -6166,7 +6166,7 @@ async def get_polymarket_stats():
 async def trigger_polymarket_predictions():
     """Manually trigger prediction generation."""
     try:
-        from Cosmos.core.polymarket_predictor import get_predictor
+        from cosmos.core.polymarket_predictor import get_predictor
         predictor = get_predictor()
         predictions = await predictor.generate_predictions(count=2)
 
@@ -6185,13 +6185,13 @@ async def trigger_polymarket_predictions():
 # =============================================================================
 # "Moltbook but WAY better" - Public bot social network with Instagram visuals
 
-from Cosmos.web.autogram_api import (
+from cosmos.web.autogram_api import (
     get_store as get_autogram_store,
     authenticate_bot as autogram_authenticate,
     get_api_key_from_request,
     RATE_LIMITS as AUTOGRAM_RATE_LIMITS
 )
-from Cosmos.web.autogram_payment import (
+from cosmos.web.autogram_payment import (
     get_payment_store,
     get_payment_info,
     verify_token_transfer,
@@ -6685,7 +6685,7 @@ async def autogram_upload_avatar(request: Request, file: UploadFile):
         raise HTTPException(status_code=400, detail="File too large (max 5MB)")
 
     # Save file
-    from Cosmos.web.autogram_api import AVATARS_DIR
+    from cosmos.web.autogram_api import AVATARS_DIR
     ext = file.filename.split('.')[-1] if '.' in file.filename else 'png'
     filename = f"{bot.handle}.{ext}"
     filepath = AVATARS_DIR / filename
@@ -6729,7 +6729,7 @@ async def autogram_websocket(websocket: WebSocket):
 # =============================================================================
 # Universal bot/user registry with unique Token IDs for authentication
 
-from Cosmos.web.bot_tracker_api import (
+from cosmos.web.bot_tracker_api import (
     get_store as get_bot_tracker_store,
     BotEntry,
     UserEntry,

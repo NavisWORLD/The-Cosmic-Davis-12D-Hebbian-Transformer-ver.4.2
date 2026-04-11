@@ -26,7 +26,7 @@ from loguru import logger
 
 # Guard imports for injection defense
 try:
-    from Cosmos.core.security.injection_defense import (
+    from cosmos.core.security.injection_defense import (
         InjectionDefense,
         SecurityVerdict,
         ThreatLevel,
@@ -40,7 +40,7 @@ except ImportError:
 
 # Guard imports for token orchestrator
 try:
-    from Cosmos.core.token_orchestrator import (
+    from cosmos.core.token_orchestrator import (
         TokenOrchestrator,
         get_token_orchestrator,
     )
@@ -50,7 +50,7 @@ except ImportError:
 
 # Guard nexus import
 try:
-    from Cosmos.core.nexus import nexus, Signal, SignalType
+    from cosmos.core.nexus import nexus, Signal, SignalType
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False
@@ -567,7 +567,7 @@ class ExternalGateway:
         if provider_name in ("deepseek", "phi", "huggingface", "llama", "cosmos"):
             # Local models via HuggingFace provider
             try:
-                from Cosmos.integration.external.huggingface import get_huggingface_provider
+                from cosmos.integration.external.huggingface import get_huggingface_provider
                 hf = get_huggingface_provider()
                 if hf:
                     result = await hf.chat(prompt=prompt, system=system, max_tokens=1000)
@@ -577,7 +577,7 @@ class ExternalGateway:
 
         elif provider_name == "grok":
             try:
-                from Cosmos.integration.external.grok import GrokProvider
+                from cosmos.integration.external.grok import GrokProvider
                 grok = GrokProvider()
                 if grok.api_key:
                     result = await grok.chat(
@@ -589,7 +589,7 @@ class ExternalGateway:
 
         elif provider_name == "gemini":
             try:
-                from Cosmos.integration.external.gemini import get_gemini_provider
+                from cosmos.integration.external.gemini import get_gemini_provider
                 gemini = get_gemini_provider()
                 if gemini:
                     result = await gemini.chat(prompt=prompt, system=system, max_tokens=1000)
@@ -599,7 +599,7 @@ class ExternalGateway:
 
         elif provider_name == "kimi":
             try:
-                from Cosmos.integration.external.kimi import get_kimi_provider
+                from cosmos.integration.external.kimi import get_kimi_provider
                 kimi = get_kimi_provider()
                 if kimi:
                     result = await kimi.chat(prompt=prompt, system=system, max_tokens=1000)

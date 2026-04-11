@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from typing import List, Optional, Dict, Any
 from loguru import logger
 
-from Cosmos.integration.vision import VisionModule, VisionTask, ImageInput
+from cosmos.integration.vision import VisionModule, VisionTask, ImageInput
 
 @dataclass
 class UIElement:

@@ -46,7 +46,7 @@ class AgentTools:
 
     def _setup_agents(self):
         """Set up agent factories."""
-        from Cosmos.agents.specialist_agents import (
+        from cosmos.agents.specialist_agents import (
             create_code_agent,
             create_reasoning_agent,
             create_research_agent,
@@ -254,7 +254,7 @@ class AgentTools:
         List available agent types and their capabilities.
         """
         try:
-            from Cosmos.agents.base_agent import AgentCapability
+            from cosmos.agents.base_agent import AgentCapability
 
             agent_info = {
                 "code": {

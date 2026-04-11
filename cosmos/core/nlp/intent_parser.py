@@ -167,7 +167,7 @@ class IntentParser:
         """
         # Try to import local LLM
         try:
-            from Cosmos.core.local_llm import get_local_llm
+            from cosmos.core.local_llm import get_local_llm
             llm = get_local_llm()
 
             prompt = f"""Extract the intent from this command:

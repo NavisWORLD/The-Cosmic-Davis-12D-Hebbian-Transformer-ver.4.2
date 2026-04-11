@@ -46,7 +46,7 @@ class RegisterRequest(BaseModel):
 
 def _get_protocol():
     """Get or create the AssimilationProtocol singleton."""
-    from Cosmos.core.assimilation_protocol import get_assimilation_protocol
+    from cosmos.core.assimilation_protocol import get_assimilation_protocol
     return get_assimilation_protocol()
 
 

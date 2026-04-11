@@ -51,7 +51,7 @@ class TokenScanner:
     def dex_screener(self):
         if self._dex_screener is None:
             try:
-                from Cosmos.integration.financial.dexscreener import dex_screener
+                from cosmos.integration.financial.dexscreener import dex_screener
                 self._dex_screener = dex_screener
             except ImportError:
                 logger.warning("DexScreener not available")
@@ -61,7 +61,7 @@ class TokenScanner:
     def bankr_client(self):
         if self._bankr_client is None:
             try:
-                from Cosmos.integration.bankr import get_bankr_client
+                from cosmos.integration.bankr import get_bankr_client
                 self._bankr_client = get_bankr_client()
             except ImportError:
                 pass
@@ -72,7 +72,7 @@ class TokenScanner:
         """Get Grok for X/Twitter search."""
         if self._grok_provider is None:
             try:
-                from Cosmos.integration.external.grok import get_grok_provider
+                from cosmos.integration.external.grok import get_grok_provider
                 self._grok_provider = get_grok_provider()
             except ImportError:
                 logger.debug("Grok provider not available for X search")
@@ -273,7 +273,7 @@ class TokenScanner:
         Generate a deep analysis of the token using collective deliberation.
         """
         try:
-            from Cosmos.core.collective.session_manager import get_session_manager
+            from cosmos.core.collective.session_manager import get_session_manager
 
             symbol = token_info.get('symbol', 'Unknown')
             address = token_info.get('address', '')

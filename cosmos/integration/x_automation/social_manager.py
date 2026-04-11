@@ -65,7 +65,7 @@ class ImageGeneratorWrapper:
     def _get_generator(self):
         if self._generator is None:
             try:
-                from Cosmos.integration.image_gen.generator import ImageGenerator
+                from cosmos.integration.image_gen.generator import ImageGenerator
                 self._generator = ImageGenerator()
             except ImportError:
                 logger.warning("Image generator module not available")
@@ -132,7 +132,7 @@ class SocialMediaManager:
     async def post_to_x(self, text: str, image_bytes: Optional[bytes] = None) -> bool:
         """Post to X/Twitter"""
         try:
-            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+            from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
 
             if not poster.is_configured():

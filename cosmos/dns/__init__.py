@@ -6,12 +6,12 @@ cosmos DNS Management Package
 Multi-provider DNS management including MX records and SSL certificates.
 """
 
-from Cosmos.dns.dns_manager import (
+from cosmos.dns.dns_manager import (
     DNSManager,
     DNSRecord,
     DNSRecordType,
 )
-from Cosmos.dns.ssl_certificates import (
+from cosmos.dns.ssl_certificates import (
     SSLManager,
     Certificate,
 )

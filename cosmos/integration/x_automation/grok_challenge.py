@@ -102,7 +102,7 @@ text-ready meme format, Futurama cartoon art style, high quality"""
 
         # Try Grok Aurora first (more likely to have API key)
         try:
-            from Cosmos.integration.external.grok import get_grok_provider
+            from cosmos.integration.external.grok import get_grok_provider
 
             grok = get_grok_provider()
             if grok and grok.api_key:
@@ -136,7 +136,7 @@ text-ready meme format, Futurama cartoon art style, high quality"""
 
         # Fallback to Gemini
         try:
-            from Cosmos.integration.external.gemini import get_gemini_provider
+            from cosmos.integration.external.gemini import get_gemini_provider
 
             gemini = get_gemini_provider()
             if gemini:
@@ -182,7 +182,7 @@ text-ready meme format, Futurama cartoon art style, high quality"""
             MP4 video bytes on success
         """
         try:
-            from Cosmos.integration.external.grok import get_grok_provider
+            from cosmos.integration.external.grok import get_grok_provider
 
             grok = get_grok_provider()
             if not grok:
@@ -249,7 +249,7 @@ text-ready meme format, Futurama cartoon art style, high quality"""
         Returns challenge text (must tag @grok).
         """
         try:
-            from Cosmos.integration.x_automation.posting_brain import get_posting_brain
+            from cosmos.integration.x_automation.posting_brain import get_posting_brain
 
             brain = get_posting_brain()
             grok = brain._get_grok()
@@ -315,7 +315,7 @@ Your challenge:"""
             Tweet result dict on success
         """
         try:
-            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+            from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
 
             poster = get_x_api_poster()
             if not poster.is_configured():
@@ -378,7 +378,7 @@ Your challenge:"""
 
         if not video_bytes:
             logger.warning("Video generation failed - falling back to image-only post")
-            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+            from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
             message = await self.generate_challenge_message()
             result = await poster.post_tweet_with_media(message, image_bytes)
@@ -444,7 +444,7 @@ Your challenge:"""
             return await self.post_challenge_video(video_bytes, message)
         else:
             # Fallback to image
-            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+            from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
             message = await self.generate_challenge_message()
             return await poster.post_tweet_with_media(message, image_bytes)
@@ -489,7 +489,7 @@ Your challenge:"""
         logger.info("Step 3: Converting to VIDEO with Grok Imagine...")
 
         # First upload image to get URL (Grok needs public URL)
-        from Cosmos.integration.external.grok import get_grok_provider
+        from cosmos.integration.external.grok import get_grok_provider
         grok = get_grok_provider()
 
         # Upload to temp host to get URL
@@ -503,7 +503,7 @@ Your challenge:"""
         if not video_bytes:
             logger.warning("Video generation failed - posting image only")
             # Fallback to image
-            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+            from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
             poster = get_x_api_poster()
             message = await self.generate_hermes_promo()
             return await poster.post_tweet_with_media(message, new_image)
@@ -517,7 +517,7 @@ Your challenge:"""
 
         # Step 5: Post VIDEO to X
         logger.info("Step 5: Posting VIDEO to X...")
-        from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+        from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
         poster = get_x_api_poster()
 
         result = await poster.post_tweet_with_video(message, video_bytes)
@@ -587,7 +587,7 @@ Futurama cartoon art style. Funny meme format, 1:1 square aspect ratio."""
         logger.info(f"Imagen 4 prompt: {cooking} in {setting}")
 
         try:
-            from Cosmos.integration.external.gemini import get_gemini_provider
+            from cosmos.integration.external.gemini import get_gemini_provider
 
             gemini = get_gemini_provider()
             if not gemini:

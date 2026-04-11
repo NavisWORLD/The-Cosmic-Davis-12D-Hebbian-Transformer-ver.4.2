@@ -109,6 +109,7 @@ class SynapticField:
         # ── UQ Layer: Uncertainty Quantification ──
         self._last_uq_signal: float = 1.0  # 1.0 = Certain, 0.0 = Chaotic
         self._uncertainty_threshold: float = 0.4
+        self.uq_payload: dict = {}  # Rich quantum quality metrics from QuantumBridge
         
         # ── System Mode (Architecture Prober Support) ──
         self._system_mode: str = "BALANCED"  # BALANCED, CHAOTIC, ANALYTICAL, HEAL, EVOLVE, GHOST
@@ -362,6 +363,7 @@ class SynapticField:
                 "phase": self.get_phase(),
                 "jitter": self.get_jitter(),
                 "dark_matter_w": self._dark_matter_state.get("w", 0),
+                "dark_matter": self._dark_matter_state.copy(),
                 "quantum_verdict": self._quantum_verdict,
                 "buffer_size": len(self._subconscious_buffer),
                 "user_typing": self._user_is_typing,

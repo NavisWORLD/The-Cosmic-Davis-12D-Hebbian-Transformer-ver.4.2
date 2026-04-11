@@ -7,20 +7,20 @@ cosmos Incident Response and Runbook System
 Comprehensive incident management with automated runbooks.
 """
 
-from Cosmos.incidents.incident_manager import (
+from cosmos.incidents.incident_manager import (
     IncidentManager,
     Incident,
     IncidentSeverity,
     IncidentStatus,
 )
-from Cosmos.incidents.runbook_executor import (
+from cosmos.incidents.runbook_executor import (
     RunbookExecutor,
     Runbook,
     RunbookStep,
     RunbookExecution,
 )
-from Cosmos.incidents.pagerduty_integration import PagerDutyIntegration
-from Cosmos.incidents.opsgenie_integration import OpsGenieIntegration
+from cosmos.incidents.pagerduty_integration import PagerDutyIntegration
+from cosmos.incidents.opsgenie_integration import OpsGenieIntegration
 
 __all__ = [
     "IncidentManager",

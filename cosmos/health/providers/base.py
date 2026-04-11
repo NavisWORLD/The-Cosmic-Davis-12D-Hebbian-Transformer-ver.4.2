@@ -19,7 +19,7 @@ from ..models import (
 )
 
 try:
-    from Cosmos.integration.bio.interface import (
+    from cosmos.integration.bio.interface import (
         BioInterfaceProvider,
         BioDataPacket,
     )

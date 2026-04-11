@@ -17,7 +17,7 @@ router = APIRouter()
 
 def _get_templates():
     try:
-        from Cosmos.web.server import templates
+        from cosmos.web.server import templates
         return templates
     except Exception:
         from fastapi.templating import Jinja2Templates
@@ -27,7 +27,7 @@ def _get_templates():
 def _get_node():
     """Get the running COSMOS node, if available."""
     try:
-        from Cosmos.network.cosmos_node import get_cosmos_node
+        from cosmos.network.cosmos_node import get_cosmos_node
         return get_cosmos_node()
     except Exception:
         return None

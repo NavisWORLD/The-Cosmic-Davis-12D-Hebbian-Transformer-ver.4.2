@@ -217,7 +217,7 @@ class AdaptiveTemperature:
 
         if code_score >= 2:
             return "code"
-        elif any(word in ["story", "imagine", "creative", "write a"]):
+        elif any(w in text.lower() for w in ["story", "imagine", "creative", "write a"]):
             return "creative"
         return "general"
 
@@ -1414,16 +1414,8 @@ class CosmosBackend(LLMBackend):
             import sys
             import os
 
-            # Add CosmoSynapse to path
-            cosmos_root = os.path.join(
-                os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
-                "Cosmic Genesis A.Lmi Cybernetic Bio Resonance Core",
-            )
-            if cosmos_root not in sys.path:
-                sys.path.insert(0, cosmos_root)
-
-            from cosmosynapse.model.cosmos_config import CosmosConfig
-            from cosmosynapse.model.cosmos_model import CosmosTransformer
+            from cosmos.web.cosmosynapse.model.cosmos_config import CosmosConfig
+            from cosmos.web.cosmosynapse.model.cosmos_model import CosmosTransformer
 
             # Device
             if self.device_str == "auto":
@@ -1441,9 +1433,12 @@ class CosmosBackend(LLMBackend):
                     n_layers=cfg_dict["n_layers"],
                     n_heads=cfg_dict["n_heads"],
                     d_state=cfg_dict.get("d_state", 54),
+                    max_seq_len=cfg_dict.get("max_seq_len", 2048),
+                    memory_size=cfg_dict.get("memory_size", 256),
+                    n_chaos_oscillators=cfg_dict.get("n_chaos_oscillators", 6),
                 )
                 self._model = CosmosTransformer(cfg)
-                self._model.load_state_any(checkpoint["model_state_dict"])
+                self._model.load_state_dict(checkpoint["model_state_dict"])
                 self._persistent_state = checkpoint.get("persistent_state")
                 logger.info(f"[COSMOS] Loaded checkpoint: {self.checkpoint_path}")
             else:
@@ -1457,8 +1452,9 @@ class CosmosBackend(LLMBackend):
             self._setup_tokenizer(cfg.vocab_size)
 
             self._is_loaded = True
+            param_count = sum(p.numel() for p in self._model.parameters())
             logger.info(f"[COSMOS] Model loaded on {self._device} "
-                        f"({self._model.get_num_params()/1e6:.1f}M params)")
+                        f"({param_count/1e6:.1f}M params)")
             return True
 
         except Exception as e:
@@ -1504,18 +1500,15 @@ class CosmosBackend(LLMBackend):
                 
             idx = torch.tensor([tokens], dtype=torch.long, device=self._device)
 
-            # Generate with state persistence
+            # Generate with CosmosTransformer
             with torch.no_grad():
-                output, new_state = self._model.generate(
+                output = self._model.generate(
                     idx,
                     max_new_tokens=cfg.max_tokens,
                     temperature=cfg.temperature,
                     top_k=cfg.top_k,
-                    state_x54=self._persistent_state,
+                    top_p=cfg.top_p,
                 )
-
-            # Update persistent state
-            self._persistent_state = new_state
 
             # Decode generated tokens
             gen_tokens = output[0, len(tokens):].tolist()
@@ -1591,10 +1584,10 @@ class CosmosBackend(LLMBackend):
         idx = torch.tensor([tokens], dtype=torch.long, device=self._device)
 
         with torch.no_grad():
-            _, _, _, state = self._model(idx, state_x54=self._persistent_state)
+            result = self._model(idx)
 
-        # Flatten the 54D state into an embedding vector
-        embedding = state.detach().cpu().flatten().tolist()
+        # Use the 54D state vector as a rich embedding
+        embedding = result["state_54d"].detach().cpu().flatten().tolist()
 
         # Pad or truncate to standard 384 dimensions
         if len(embedding) < 384:

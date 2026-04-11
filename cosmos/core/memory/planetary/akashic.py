@@ -25,7 +25,7 @@ from loguru import logger
 
 # Try to import Nexus for signal handling
 try:
-    from Cosmos.core.nexus import nexus, SignalType
+    from cosmos.core.nexus import nexus, SignalType
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False
@@ -135,7 +135,7 @@ class PlanetaryMemory:
     async def _broadcast_to_swarm(self, skill: SkillVector):
         """Broadcast skill to P2P swarm network."""
         try:
-            from Cosmos.core.swarm.p2p import swarm_fabric
+            from cosmos.core.swarm.p2p import swarm_fabric
 
             # Serialize skill for transmission
             skill_data = {

@@ -56,7 +56,7 @@ class _CosmosAuthLock:
         """Called by server.py at startup — generates a one-time session token
         derived from the Cosmos Nexus state + current process."""
         try:
-            from Cosmos.core.nexus import Nexus
+            from cosmos.core.nexus import Nexus
             nexus_exists = Nexus._instance is not None
         except ImportError:
             nexus_exists = False
@@ -74,8 +74,8 @@ class _CosmosAuthLock:
         """Validate the trader is authorized to run."""
         # Check 1: Must be running inside Cosmos process (Nexus importable)
         try:
-            from Cosmos.core.nexus import Nexus
-            from Cosmos.memory.memory_system import MemorySystem
+            from cosmos.core.nexus import Nexus
+            from cosmos.memory.memory_system import MemorySystem
         except ImportError:
             logger.error("AUTH LOCK: Cosmos core not found. Trader requires the full swarm.")
             return False
@@ -2761,7 +2761,7 @@ class SwarmTradeIntelligence:
         results = {"verdict": "SKIP", "confidence": 0, "reasons": []}
 
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
             self._shadow_available = True
         except ImportError:
             self._shadow_available = False
@@ -3143,7 +3143,7 @@ class XSentinelMonitor:
     async def _scan_x_sentiment(self):
         """Use Grok shadow agent to scan X for memecoin signals."""
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
         except ImportError:
             return
 
@@ -3422,7 +3422,7 @@ class QuantumTradeOracle:
     async def _get_farsight(self):
         if self._farsight is None:
             try:
-                from Cosmos.integration.hackathon.farsight_protocol import FarsightProtocol
+                from cosmos.integration.hackathon.farsight_protocol import FarsightProtocol
                 self._farsight = FarsightProtocol()
             except ImportError:
                 self._farsight = False
@@ -3431,7 +3431,7 @@ class QuantumTradeOracle:
     async def _get_quantum_proof(self):
         if self._quantum_proof is None:
             try:
-                from Cosmos.integration.hackathon.quantum_proof import QuantumProof
+                from cosmos.integration.hackathon.quantum_proof import QuantumProof
                 self._quantum_proof = QuantumProof()
             except ImportError:
                 self._quantum_proof = False
@@ -3616,7 +3616,7 @@ class QuantumWalletPredictor:
     async def _get_quantum(self):
         if self._quantum_proof is None:
             try:
-                from Cosmos.integration.hackathon.quantum_proof import QuantumProof
+                from cosmos.integration.hackathon.quantum_proof import QuantumProof
                 self._quantum_proof = QuantumProof()
             except ImportError:
                 self._quantum_proof = False
@@ -3670,7 +3670,7 @@ class TradingMemory:
 
     async def initialize(self):
         try:
-            from Cosmos.memory import MemorySystem
+            from cosmos.memory import MemorySystem
             self._memory = MemorySystem()
             await self._memory.initialize()
             self._initialized = True
@@ -5129,7 +5129,7 @@ class DegenTrader:
 
         # v4.4: Subscribe to Quantum Trading Cortex signals via Nexus
         try:
-            from Cosmos.core.nexus import Nexus, SignalType
+            from cosmos.core.nexus import Nexus, SignalType
             nexus = Nexus._instance
             if nexus:
                 await nexus.subscribe(

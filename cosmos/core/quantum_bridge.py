@@ -16,8 +16,7 @@ try:
 except ImportError as e:
     QISKIT_AVAILABLE = False
     QISKIT_ERROR = str(e)
-    with open("quantum_debug.log", "a") as f:
-        f.write(f"\n[INIT] Qiskit Import Failed: {e}\n")
+    logger.debug(f"[INIT] Qiskit Import Failed: {e}")
 
 # HermesAgent integration (optional — degrades gracefully)
 try:
@@ -52,8 +51,7 @@ class QuantumEntanglementBridge:
         self._threshold_update_interval: float = 300.0 # Update every 5 minutes
         
         # Log init
-        with open("quantum_debug.log", "a") as f:
-            f.write(f"\n[INIT] Bridge Initialized. Token present: {bool(api_token)}. Qiskit Avail: {QISKIT_AVAILABLE}\n")
+        logger.info(f"[INIT] Bridge Initialized. Token present: {bool(api_token)}. Qiskit Avail: {QISKIT_AVAILABLE}")
 
         if QISKIT_AVAILABLE and self.api_token:
             self._connect()
@@ -83,8 +81,7 @@ class QuantumEntanglementBridge:
 
         import traceback
         
-        with open("quantum_debug.log", "a") as f:
-            f.write(f"[CONNECT] Attempting connection with token (First 5): {self.api_token[:5] if self.api_token else 'None'}...\n")
+        logger.debug(f"[CONNECT] Attempting connection with token (First 5): {self.api_token[:5] if self.api_token else 'None'}...")
 
         # If no token is configured, stay in simulation mode and DO NOT
         # attempt dict remote connection. This prevents noisy stack traces
@@ -94,8 +91,7 @@ class QuantumEntanglementBridge:
             print(f"[QUANTUM] {msg}")
             self.last_error = msg
             self.connected = False
-            with open("quantum_debug.log", "a") as f:
-                f.write(f"[CONNECT] Skipped: {msg}\n")
+            logger.debug(f"[CONNECT] Skipped: {msg}")
             return
 
         if not QISKIT_AVAILABLE:
@@ -103,8 +99,7 @@ class QuantumEntanglementBridge:
             print(f"[QUANTUM] {error_msg}")
             self.last_error = error_msg
             self.connected = False
-            with open("quantum_debug.log", "a") as f:
-                f.write(f"[CONNECT] Failed: {error_msg}\n")
+            logger.debug(f"[CONNECT] Failed: {error_msg}")
             return
             
         if self.api_token:
@@ -132,8 +127,7 @@ class QuantumEntanglementBridge:
                 raise ValueError("No operational backends found.")
 
             self.connected = True
-            with open("quantum_debug.log", "a") as f:
-                f.write(f"[CONNECT] Success! Backend: {self.backend.name}\n")
+            logger.info(f"[CONNECT] Success! Backend: {self.backend.name}")
             
             # 3. Start Buffer Refill
             self._trigger_refill()
@@ -147,8 +141,7 @@ class QuantumEntanglementBridge:
             
             self.last_error = msg
             self.connected = False
-            with open("quantum_debug.log", "a") as f:
-                f.write(f"[CONNECT] Failed: {e}\n")
+            logger.warning(f"[CONNECT] Failed: {e}")
 
     def set_synaptic_field(self, field):
         """Associate with the CNS Synaptic Field for direct UQ pushing."""
@@ -409,10 +402,13 @@ class QuantumEntanglementBridge:
                 deviation = abs(phase - (np.pi/4))
                 resonance = max(0.0, 1.0 - (deviation / (np.pi/4)))
 
-            # Map current session physics to rotation angles
-            theta_1 = float(abs(phase) % np.pi)
-            theta_2 = float((entropy * np.pi) % np.pi)
-            theta_3 = float((abs(resonance) * np.pi) % np.pi)
+            # Map current session physics to φ-harmonic rotation angles
+            # Scale by PHI (1.618) to ensure full Bloch sphere coverage
+            # Without φ-scaling, angles cluster in [0, π) and under-rotate
+            PHI_SCALE = 1.618033988749895
+            theta_1 = float((abs(phase) * PHI_SCALE) % (2 * np.pi))
+            theta_2 = float((entropy * np.pi * PHI_SCALE) % (2 * np.pi))
+            theta_3 = float((abs(resonance) * np.pi * PHI_SCALE) % (2 * np.pi))
 
             # [UPGRADE 1] Query the pre-run oracle for advisory thetas from historical best runs
             oracle_thetas = self._hermes_get_oracle_thetas(phase, entropy, resonance)

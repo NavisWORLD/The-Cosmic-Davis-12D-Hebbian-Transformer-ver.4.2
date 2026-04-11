@@ -20,7 +20,7 @@ from loguru import logger
 # Lazy-loaded inside methods to prevent startup hang
 pyautogui = None
 
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.nexus import nexus, Signal, SignalType
 
 class SystemContext:
     """Captures the holistic state of the machine."""

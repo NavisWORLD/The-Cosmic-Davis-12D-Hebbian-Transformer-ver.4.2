@@ -28,7 +28,7 @@ from datetime import datetime
 
 # Quantum integration
 try:
-    from Cosmos.integration.quantum import (
+    from cosmos.integration.quantum import (
         get_quantum_provider,
         initialize_quantum,
         QuantumGeneticOptimizer,
@@ -44,14 +44,14 @@ except ImportError:
 
 # Existing evolution system
 try:
-    from Cosmos.evolution.fitness_tracker import FitnessTracker, get_fitness_tracker
+    from cosmos.evolution.fitness_tracker import FitnessTracker, get_fitness_tracker
     FITNESS_AVAILABLE = True
 except ImportError:
     FITNESS_AVAILABLE = False
 
 # Nexus integration for signal emission
 try:
-    from Cosmos.core.nexus import get_nexus
+    from cosmos.core.nexus import get_nexus
     NEXUS_AVAILABLE = True
 except ImportError:
     NEXUS_AVAILABLE = False

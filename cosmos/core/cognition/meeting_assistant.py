@@ -14,8 +14,8 @@ import asyncio
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from Cosmos.memory.project_tracking import ProjectTracker, Task
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.memory.project_tracking import ProjectTracker, Task
+from cosmos.core.nexus import nexus, Signal, SignalType
 
 @dataclass
 class MeetingContext:

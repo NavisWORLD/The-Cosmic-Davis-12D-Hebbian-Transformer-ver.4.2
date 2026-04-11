@@ -18,7 +18,7 @@ SETUP:
     python -m cosmos.integration.chain_memory.setup
 
 USAGE:
-    from Cosmos.integration.chain_memory import ChainMemory
+    from cosmos.integration.chain_memory import ChainMemory
 
     cm = ChainMemory()
     result = await cm.push_memory(title="My Bot Backup")

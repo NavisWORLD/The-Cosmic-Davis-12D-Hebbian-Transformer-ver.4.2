@@ -80,7 +80,7 @@ class ModelInvoker:
 
         # Grok (xAI)
         try:
-            from Cosmos.integration.external.grok import get_grok_provider
+            from cosmos.integration.external.grok import get_grok_provider
             provider = get_grok_provider()
             if provider and getattr(provider, 'api_key', None):
                 self._providers["Grok"] = provider
@@ -90,7 +90,7 @@ class ModelInvoker:
 
         # Gemini (Google)
         try:
-            from Cosmos.integration.external.gemini import get_gemini_provider
+            from cosmos.integration.external.gemini import get_gemini_provider
             provider = get_gemini_provider()
             if provider and getattr(provider, 'api_key', None):
                 self._providers["Gemini"] = provider
@@ -100,7 +100,7 @@ class ModelInvoker:
 
         # Claude (via tmux session)
         try:
-            from Cosmos.integration.external.claude import get_claude_provider
+            from cosmos.integration.external.claude import get_claude_provider
             provider = get_claude_provider()
             if provider:
                 self._providers["Claude"] = provider
@@ -111,7 +111,7 @@ class ModelInvoker:
 
         # Kimi (Moonshot)
         try:
-            from Cosmos.integration.external.kimi import get_kimi_provider
+            from cosmos.integration.external.kimi import get_kimi_provider
             provider = get_kimi_provider()
             if provider and getattr(provider, 'api_key', None):
                 self._providers["Kimi"] = provider
@@ -129,7 +129,7 @@ class ModelInvoker:
 
         # HuggingFace (Local inference)
         try:
-            from Cosmos.integration.external.huggingface import get_huggingface_provider
+            from cosmos.integration.external.huggingface import get_huggingface_provider
             provider = get_huggingface_provider()
             if provider:
                 self._providers["HuggingFace"] = provider
@@ -139,7 +139,7 @@ class ModelInvoker:
 
         # Shadow agents (tmux persistent) - fallback for all models
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent, AGENT_CONFIGS
+            from cosmos.core.collective.persistent_agent import call_shadow_agent, AGENT_CONFIGS
             if AGENT_CONFIGS:
                 self._shadow_agents_available = True
                 logger.info(f"✓ Shadow agents available: {list(AGENT_CONFIGS.keys())}")
@@ -530,7 +530,7 @@ class ModelInvoker:
     async def _call_shadow_agent(self, agent_id: str, prompt: str, max_tokens: int) -> ModelResponse:
         """Call a tmux shadow agent."""
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
 
             # Map model IDs to shadow agent names
             shadow_map = {

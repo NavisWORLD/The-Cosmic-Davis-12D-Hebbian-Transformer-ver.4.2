@@ -16,7 +16,7 @@ import asyncio
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import   Optional
+from typing import Dict, List, Optional
 from loguru import logger
 
 from .deliberation import DeliberationRoom, DeliberationResult, get_deliberation_room
@@ -36,7 +36,7 @@ def _get_dynamic_session_config(session_type: str) -> dict:
 
     if not _dynamic_limits_loaded:
         try:
-            from Cosmos.core.dynamic_limits import get_session_limits
+            from cosmos.core.dynamic_limits import get_session_limits
             _session_limits_cache["_getter"] = get_session_limits
             _dynamic_limits_loaded = True
         except Exception as e:
@@ -68,7 +68,7 @@ def _get_dynamic_session_config(session_type: str) -> dict:
 @dataclass
 class CollectiveConfig:
     """Configuration for a collective session."""
-    agents: list[str]
+    agents: List[str]
     deliberation_rounds: int = 2
     tool_awareness: bool = True
     max_tokens: int = 5000
@@ -91,7 +91,7 @@ class CollectiveSession:
     last_active: datetime
     deliberation_count: int = 0
     total_turns: int = 0
-    history: list[DeliberationResult] = field(default_factory=list)
+    history: List[DeliberationResult] = field(default_factory=list)
 
     def record_deliberation(self, result: DeliberationResult):
         """Record a completed deliberation."""
@@ -170,7 +170,7 @@ class CollectiveSessionManager:
     # Legacy DEFAULT_CONFIGS for backward compatibility
     # These are now dynamically generated
     @property
-    def DEFAULT_CONFIGS(self) -> dict[str, "CollectiveConfig"]:
+    def DEFAULT_CONFIGS(self) -> Dict[str, "CollectiveConfig"]:
         """Dynamic configs - rebuilds on each access to pick up limit changes."""
         return {
             session_type: self._build_config(session_type)
@@ -178,7 +178,7 @@ class CollectiveSessionManager:
         }
 
     def __init__(self):
-        self.sessions: dict[str, CollectiveSession] = {}
+        self.sessions: Dict[str, CollectiveSession] = {}
         self._deliberation_room = get_deliberation_room()
         self._lock = asyncio.Lock()
         self._agents_initialized = False

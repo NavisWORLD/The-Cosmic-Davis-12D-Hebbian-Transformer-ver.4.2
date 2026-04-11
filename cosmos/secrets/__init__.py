@@ -7,15 +7,15 @@ cosmos Secrets and Credentials Vault
 Multi-provider secrets management with rotation and audit logging.
 """
 
-from Cosmos.secrets.vault_manager import (
+from cosmos.secrets.vault_manager import (
     VaultManager,
     Secret,
     SecretVersion,
     SecretType,
 )
-from Cosmos.secrets.hashicorp_vault import HashiCorpVaultProvider
-from Cosmos.secrets.aws_secrets import AWSSecretsProvider
-from Cosmos.secrets.azure_keyvault import AzureKeyVaultProvider
+from cosmos.secrets.hashicorp_vault import HashiCorpVaultProvider
+from cosmos.secrets.aws_secrets import AWSSecretsProvider
+from cosmos.secrets.azure_keyvault import AzureKeyVaultProvider
 
 __all__ = [
     "VaultManager",

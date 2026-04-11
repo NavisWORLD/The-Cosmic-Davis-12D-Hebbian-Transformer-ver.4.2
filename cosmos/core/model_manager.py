@@ -24,7 +24,7 @@ from datetime import datetime
 import yaml
 from loguru import logger
 
-from Cosmos.core.llm_backend import (
+from cosmos.core.llm_backend import (
     LLMBackend,
     OllamaBackend,
     LlamaCppBackend,

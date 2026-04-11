@@ -11,7 +11,7 @@ Agents:
 import re
 from typing import Optional
 
-from Cosmos.agents.base_agent import BaseAgent, AgentCapability, TaskResult
+from cosmos.agents.base_agent import BaseAgent, AgentCapability, TaskResult
 
 
 class CodeAgent(BaseAgent):

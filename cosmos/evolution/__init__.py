@@ -10,10 +10,10 @@ Genetic optimization for self-improvement with:
 - Quantum-enhanced evolution via IBM Quantum (AGI v1.8)
 """
 
-from Cosmos.evolution.genetic_optimizer import GeneticOptimizer
-from Cosmos.evolution.lora_evolver import LoRAEvolver
-from Cosmos.evolution.behavior_mutation import BehaviorMutator
-from Cosmos.evolution.fitness_tracker import FitnessTracker
+from cosmos.evolution.genetic_optimizer import GeneticOptimizer
+from cosmos.evolution.lora_evolver import LoRAEvolver
+from cosmos.evolution.behavior_mutation import BehaviorMutator
+from cosmos.evolution.fitness_tracker import FitnessTracker
 
 __all__ = [
     "GeneticOptimizer",

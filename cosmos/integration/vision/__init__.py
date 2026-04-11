@@ -2,7 +2,7 @@
 Vision integration package.
 
 Exposes the high-level VisionModule API and related dataclasses so that
-imports like `from Cosmos.integration.vision import VisionModule` work
+imports like `from cosmos.integration.vision import VisionModule` work
 correctly across the codebase (tool router, MCP server, visual debugging).
 """
 

@@ -8,7 +8,7 @@ via a standardized high-level API.
 """
 
 from typing import Dict, Any, List
-from Cosmos.mcp_server.server import cosmosMCPServer
+from cosmos.mcp_server.server import cosmosMCPServer
 
 class AgentInterface:
     def __init__(self, server: cosmosMCPServer):

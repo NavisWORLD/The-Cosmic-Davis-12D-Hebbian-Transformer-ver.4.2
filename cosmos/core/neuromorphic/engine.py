@@ -16,7 +16,7 @@ from datetime import datetime
 from loguru import logger
 
 print("DEBUG: neuro_engine.py: Importing nexus...")
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.nexus import nexus, Signal, SignalType
 print("DEBUG: neuro_engine.py: nexus imported")
 
 @dataclass

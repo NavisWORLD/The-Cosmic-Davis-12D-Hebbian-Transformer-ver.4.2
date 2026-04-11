@@ -145,8 +145,8 @@ class FederatedPopulationManager:
         self._quantum_available = False
         self._quantum_optimizer = None
         try:
-            from Cosmos.integration.quantum import QISKIT_AVAILABLE, get_quantum_provider
-            from Cosmos.integration.quantum.ibm_quantum import QuantumGeneticOptimizer
+            from cosmos.integration.quantum import QISKIT_AVAILABLE, get_quantum_provider
+            from cosmos.integration.quantum.ibm_quantum import QuantumGeneticOptimizer
             self._quantum_available = QISKIT_AVAILABLE
             if QISKIT_AVAILABLE:
                 provider = get_quantum_provider()
@@ -259,7 +259,7 @@ class FederatedPopulationManager:
         if not self.optimizer:
             return
 
-        from Cosmos.evolution.genetic_optimizer import Genome, Gene
+        from cosmos.evolution.genetic_optimizer import Genome, Gene
 
         # Create new Genome from migrant data
         genes = {}
@@ -601,7 +601,7 @@ class FederatedPopulationManager:
 
             # Integrate improved quantum genomes into local population
             improved_count = 0
-            from Cosmos.evolution.genetic_optimizer import Genome, Gene
+            from cosmos.evolution.genetic_optimizer import Genome, Gene
 
             for bitstring, qfitness in quantum_population:
                 # Convert bitstring to gene values
@@ -746,7 +746,7 @@ async def setup_federated_evolution(
 
     # Set up Nexus event handlers if available
     if nexus:
-        from Cosmos.core.nexus import SignalType
+        from cosmos.core.nexus import SignalType
 
         async def on_genome_migration(signal):
             """Handle incoming genome migration via Nexus."""

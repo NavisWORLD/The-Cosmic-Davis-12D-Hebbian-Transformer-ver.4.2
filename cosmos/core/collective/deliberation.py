@@ -18,7 +18,7 @@ import asyncio
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import   Optional, Tuple, Callable, Awaitable
+from typing import Dict, List, Optional, Tuple, Callable, Awaitable
 from enum import Enum
 from loguru import logger
 
@@ -39,8 +39,8 @@ class AgentTurn:
     agent_id: str
     content: str
     round_type: DeliberationRound
-    addressing: list[str] = field(default_factory=list)  # Which agents being addressed
-    references: list[str] = field(default_factory=list)  # turn_ids being referenced
+    addressing: List[str] = field(default_factory=list)  # Which agents being addressed
+    references: List[str] = field(default_factory=list)  # turn_ids being referenced
     vote_for: Optional[str] = None  # In vote round, which agent they support
     metadata: dict = field(default_factory=dict)
 
@@ -54,11 +54,11 @@ class DeliberationResult:
     """Complete result of a deliberation session."""
     deliberation_id: str
     prompt: str
-    participating_agents: list[str]
-    rounds: dict[str[AgentTurn]]  # round_type -> turns
+    participating_agents: List[str]
+    rounds: Dict[str, List["AgentTurn"]]  # round_type -> turns
     final_response: str
     winning_agent: str
-    vote_breakdown: dict[str, float]
+    vote_breakdown: Dict[str, float]
     tool_decision: Optional[dict] = None
     consensus_reached: bool = False
     total_duration_ms: float = 0
@@ -81,7 +81,7 @@ class DeliberationResult:
 
         return " | ".join(summary_parts)
 
-    def get_agent_contributions(self, agent_id: str) -> list[AgentTurn]:
+    def get_agent_contributions(self, agent_id: str) -> List[AgentTurn]:
         """Get all contributions from a specific agent."""
         contributions = []
         for turns in self.rounds.values():
@@ -123,7 +123,7 @@ class DeliberationRoom:
 
     def __init__(self):
         self.active_deliberations: dict = {}
-        self._agent_funcs: dict[str, AgentQueryFunc] = {}
+        self._agent_funcs: Dict[str, AgentQueryFunc] = {}
 
     def register_agent(self, agent_id: str, query_func: AgentQueryFunc):
         """Register an agent's query function for deliberation."""
@@ -133,7 +133,7 @@ class DeliberationRoom:
     async def deliberate(
         self,
         prompt: str,
-        agents: list[str] = None,
+        agents: List[str] = None,
         max_rounds: int = 3,
         require_consensus: bool = False,
         max_tokens: int = 5000,
@@ -167,7 +167,7 @@ class DeliberationRoom:
 
         logger.info(f"[Deliberation {deliberation_id}] Starting with {len(agents)} agents: {agents}")
 
-        rounds: dict[str[AgentTurn]] = {
+        rounds: Dict[str[AgentTurn]] = {
             DeliberationRound.PROPOSE.value: [],
             DeliberationRound.CRITIQUE.value: [],
             DeliberationRound.REFINE.value: [],
@@ -247,10 +247,10 @@ class DeliberationRoom:
 
     async def _round_propose(
         self,
-        agents: list[str],
+        agents: List[str],
         prompt: str,
         max_tokens: int
-    ) -> list[AgentTurn]:
+    ) -> List[AgentTurn]:
         """
         ROUND 1: Each agent proposes their response independently.
         Run in parallel for speed.
@@ -286,11 +286,11 @@ class DeliberationRoom:
 
     async def _round_critique(
         self,
-        agents: list[str],
+        agents: List[str],
         original_prompt: str,
-        proposals: list[AgentTurn],
+        proposals: List[AgentTurn],
         max_tokens: int
-    ) -> list[AgentTurn]:
+    ) -> List[AgentTurn]:
         """
         ROUND 2: Agents see all proposals and provide feedback.
         """
@@ -345,12 +345,12 @@ Be specific and constructive. Max 200 characters."""
 
     async def _round_refine(
         self,
-        agents: list[str],
+        agents: List[str],
         original_prompt: str,
-        proposals: list[AgentTurn],
-        critiques: list[AgentTurn],
+        proposals: List[AgentTurn],
+        critiques: List[AgentTurn],
         max_tokens: int
-    ) -> list[AgentTurn]:
+    ) -> List[AgentTurn]:
         """
         ROUND 3: Agents submit final responses incorporating feedback.
         """
@@ -412,9 +412,9 @@ Output ONLY your final response. Max 280 characters."""
 
     async def _round_vote(
         self,
-        candidates: list[AgentTurn],
+        candidates: List[AgentTurn],
         require_consensus: bool = False
-    ) -> Tuple[AgentTurn[str, float], bool]:
+    ) -> Tuple[AgentTurn, Dict[str, float], bool]:
         """
         VOTE: Score and select the best response.
 
@@ -425,7 +425,7 @@ Output ONLY your final response. Max 280 characters."""
         4. Length (optimal range)
         5. Model expertise weight
         """
-        scores: dict[str, float] = {}
+        scores: Dict[str, float] = {}
 
         # Technical keywords that show depth
         technical_keywords = [
@@ -516,7 +516,7 @@ def get_deliberation_room() -> DeliberationRoom:
 
 async def quick_deliberate(
     prompt: str,
-    agents: list[str] = None,
+    agents: List[str] = None,
     max_rounds: int = 2,
 ) -> str:
     """

@@ -108,7 +108,7 @@ class ForgeStateManager:
     def _init_memory(self):
         """Connect to Cosmos memory system if available."""
         try:
-            from Cosmos.memory.memory_system import get_memory_system
+            from cosmos.memory.memory_system import get_memory_system
             self._memory = get_memory_system()
         except Exception:
             self._memory = None

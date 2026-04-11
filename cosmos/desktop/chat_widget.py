@@ -96,7 +96,7 @@ class ChatWidget(QWidget if PYSIDE_AVAILABLE else object):
         """Process user message through NLP system."""
         try:
             # Use the NLP command router
-            from Cosmos.core.nlp import process_command
+            from cosmos.core.nlp import process_command
 
             # Run async processing
             loop = asyncio.new_event_loop()

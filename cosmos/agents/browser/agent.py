@@ -225,7 +225,7 @@ class CosmosBrowserAgent:
         """Get default LLM for browser-use."""
         # Try to use local LLM first
         try:
-            from Cosmos.core.local_llm import get_local_llm
+            from cosmos.core.local_llm import get_local_llm
             return get_local_llm()
         except Exception:
             pass

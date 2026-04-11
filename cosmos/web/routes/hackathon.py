@@ -45,7 +45,7 @@ def _get_archival_count() -> int:
 def _get_templates():
     """Lazy-load Jinja2 templates."""
     try:
-        from Cosmos.web.server import templates
+        from cosmos.web.server import templates
         return templates
     except Exception:
         from fastapi.templating import Jinja2Templates
@@ -77,7 +77,7 @@ async def hackathon_status():
 
         # Active swarms
         try:
-            from Cosmos.core.development_swarm import DevelopmentSwarm
+            from cosmos.core.development_swarm import DevelopmentSwarm
             result["all_active_swarms"] = len(DevelopmentSwarm._active_swarms)
             if hasattr(DevelopmentSwarm, "_hackathon_state"):
                 state = DevelopmentSwarm._hackathon_state
@@ -99,21 +99,21 @@ async def hackathon_status():
 
         # Tools
         try:
-            from Cosmos.core.collective.tool_awareness import get_tool_awareness
+            from cosmos.core.collective.tool_awareness import get_tool_awareness
             result["tools_available"] = len(get_tool_awareness().AVAILABLE_TOOLS)
         except Exception:
             result["tools_available"] = 0
 
         # Skills
         try:
-            from Cosmos.core.skill_registry import get_skill_registry
+            from cosmos.core.skill_registry import get_skill_registry
             result["skills_registered"] = len(get_skill_registry()._skills)
         except Exception:
             result["skills_registered"] = 0
 
         # Memory
         try:
-            from Cosmos.memory.memory_system import get_memory_system
+            from cosmos.memory.memory_system import get_memory_system
             mem = get_memory_system()
             total = 0
             if hasattr(mem, "get_stats"):
@@ -132,21 +132,21 @@ async def hackathon_status():
 
         # Evolution
         try:
-            from Cosmos.core.evolution_loop import get_evolution_loop
+            from cosmos.core.evolution_loop import get_evolution_loop
             result["evolution_cycle"] = get_evolution_loop().evolution_cycle
         except Exception:
             result["evolution_cycle"] = 0
 
         # Gateway
         try:
-            from Cosmos.core.external_gateway import get_external_gateway
+            from cosmos.core.external_gateway import get_external_gateway
             result["gateway"] = get_external_gateway().get_stats()
         except Exception:
             result["gateway"] = {}
 
         # Orchestrator
         try:
-            from Cosmos.core.token_orchestrator import get_token_orchestrator
+            from cosmos.core.token_orchestrator import get_token_orchestrator
             result["orchestrator"] = get_token_orchestrator().get_dashboard()
         except Exception:
             result["orchestrator"] = {}
@@ -161,7 +161,7 @@ async def hackathon_status():
 async def hackathon_deliberations():
     """Get recent hackathon deliberation transcripts."""
     try:
-        from Cosmos.core.development_swarm import DevelopmentSwarm
+        from cosmos.core.development_swarm import DevelopmentSwarm
         if hasattr(DevelopmentSwarm, "_hackathon_state"):
             deliberations = DevelopmentSwarm._hackathon_state.get("deliberations", [])
         else:
@@ -179,7 +179,7 @@ async def hackathon_deliberations():
 async def populate_usage():
     """Inject estimated hackathon usage data into the running orchestrator."""
     try:
-        from Cosmos.core.token_orchestrator import get_token_orchestrator
+        from cosmos.core.token_orchestrator import get_token_orchestrator
         orch = get_token_orchestrator()
 
         AGENT_USAGE = {
@@ -231,7 +231,7 @@ async def hackathon_trigger(request: Request):
         if not description.startswith("[HACKATHON]"):
             description = f"[HACKATHON] {description}"
 
-        from Cosmos.core.development_swarm import DevelopmentSwarm
+        from cosmos.core.development_swarm import DevelopmentSwarm
 
         swarm = DevelopmentSwarm(
             task_id=f"hackathon_{datetime.now().strftime('%Y%m%d_%H%M%S')}",

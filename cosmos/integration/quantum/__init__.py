@@ -20,7 +20,7 @@ Error Mitigation (per IBM docs):
 - Level 2: TREX + ZNE + gate twirling (~3x overhead)
 
 Quick Start:
-    from Cosmos.integration.quantum import (
+    from cosmos.integration.quantum import (
         initialize_quantum, quantum_evolve_agent,
         QuantumOptions, ResilienceLevel, ExecutionMode
     )

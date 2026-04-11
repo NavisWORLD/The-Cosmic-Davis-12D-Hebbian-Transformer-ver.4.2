@@ -275,7 +275,7 @@ def integrate_with_evolution_loop(evolution_loop, swarm_manager):
     async def enhanced_discovery():
         """Enhanced discovery that also checks chat for upgrade suggestions."""
         import asyncio
-        from Cosmos.core.agent_spawner import get_spawner, TaskType
+        from cosmos.core.agent_spawner import get_spawner, TaskType
 
         await asyncio.sleep(120)  # Initial delay
 

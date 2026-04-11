@@ -8,24 +8,24 @@ Team collaboration features for multi-user cosmos deployments:
 - Collaborative Sessions
 """
 
-from Cosmos.collaboration.shared_memory import (
+from cosmos.collaboration.shared_memory import (
     SharedMemoryPool,
     MemoryPermission,
     MemoryAccess,
 )
-from Cosmos.collaboration.multi_user import (
+from cosmos.collaboration.multi_user import (
     UserManager,
     UserProfile,
     UserSession,
     UserRole,
 )
-from Cosmos.collaboration.permissions import (
+from cosmos.collaboration.permissions import (
     PermissionManager,
     Permission,
     PermissionLevel,
     AccessControl,
 )
-from Cosmos.collaboration.sessions import (
+from cosmos.collaboration.sessions import (
     CollaborativeSession,
     SessionManager,
     SessionEvent,

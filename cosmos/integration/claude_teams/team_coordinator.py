@@ -435,10 +435,10 @@ Synthesize the final result for this task."""
     ) -> Optional[str]:
         """Request a deliberation from Cosmos's swarm."""
         try:
-            from Cosmos.core.collective.persistent_agent import call_shadow_agent
+            from cosmos.core.collective.persistent_agent import call_shadow_agent
 
             # Use Cosmos's swarm oracle
-            from Cosmos.integration.solana.swarm_oracle import get_swarm_oracle
+            from cosmos.integration.solana.swarm_oracle import get_swarm_oracle
 
             oracle = get_swarm_oracle()
             result = await oracle.submit_query(question, "claude_team_request", timeout=90.0)
@@ -500,8 +500,8 @@ Synthesize the final result for this task."""
             async def get_cosmos_response():
                 # Try the full deliberation protocol (PROPOSE/CRITIQUE/REFINE/VOTE)
                 try:
-                    from Cosmos.core.collective.deliberation import get_deliberation_room
-                    from Cosmos.core.collective.session_manager import get_session_manager
+                    from cosmos.core.collective.deliberation import get_deliberation_room
+                    from cosmos.core.collective.session_manager import get_session_manager
 
                     session_mgr = get_session_manager()
                     session = await session_mgr.create_session(
@@ -526,7 +526,7 @@ Synthesize the final result for this task."""
 
                 # Fall back to swarm oracle
                 try:
-                    from Cosmos.integration.solana.swarm_oracle import get_swarm_oracle
+                    from cosmos.integration.solana.swarm_oracle import get_swarm_oracle
                     oracle = get_swarm_oracle()
                     result = await oracle.submit_query(topic, "hybrid_deliberation", timeout=90.0)
                     results["method"] = "swarm_oracle"
@@ -536,7 +536,7 @@ Synthesize the final result for this task."""
 
                 # Last resort: direct shadow agent call
                 try:
-                    from Cosmos.core.collective.persistent_agent import call_shadow_agent
+                    from cosmos.core.collective.persistent_agent import call_shadow_agent
                     result = await call_shadow_agent("grok", topic, timeout=30.0)
                     if result:
                         _, response = result

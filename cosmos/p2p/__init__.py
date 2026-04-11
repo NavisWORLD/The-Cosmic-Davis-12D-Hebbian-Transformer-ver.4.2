@@ -7,7 +7,7 @@ cosmos P2P Network Module
 Peer-to-peer networking for distributed swarm operations.
 """
 
-from Cosmos.p2p.bootstrap_nodes import (
+from cosmos.p2p.bootstrap_nodes import (
     BootstrapNodeManager,
     BootstrapNode,
     PeerInfo,

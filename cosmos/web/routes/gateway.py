@@ -22,7 +22,7 @@ from loguru import logger
 
 # Guard gateway import
 try:
-    from Cosmos.core.external_gateway import get_external_gateway
+    from cosmos.core.external_gateway import get_external_gateway
     GATEWAY_AVAILABLE = True
 except ImportError:
     GATEWAY_AVAILABLE = False

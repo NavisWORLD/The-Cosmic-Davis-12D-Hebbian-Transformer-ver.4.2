@@ -25,7 +25,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from loguru import logger
 
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.nexus import nexus, Signal, SignalType
 
 @dataclass
 class MentalState:

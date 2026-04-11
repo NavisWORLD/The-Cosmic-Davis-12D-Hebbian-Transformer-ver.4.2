@@ -139,7 +139,7 @@ class CosmosBackend:
                 d_state=cfg_dict.get("d_state", 54),
                 max_seq_len=cfg_dict.get("max_seq_len", 2048),
                 memory_size=cfg_dict.get("memory_size", 256),
-                n_chaos_oscillators=cfg_dict.get("n_chaos_oscillators", 7),
+                n_chaos_oscillators=cfg_dict.get("n_chaos_oscillators", 6),
             )
             
             self.model = CosmosTransformer(config)
@@ -1283,7 +1283,7 @@ class CosmosSwarmOrchestrator:
         # so ALL models in the swarm receive the same search context.
         search_context = ""
         try:
-            from Cosmos.tools.web_search import search_web, format_search_context, should_search
+            from cosmos.tools.web_search import search_web, format_search_context, should_search
             if should_search(prompt):
                 logger.info(f"[SWARM] Web search triggered for: {prompt[:60]}...")
                 results = await search_web(prompt, max_results=5)

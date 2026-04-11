@@ -19,7 +19,7 @@ from pathlib import Path
 # Add parent to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from Cosmos.integration.chain_memory.config import (
+from cosmos.integration.chain_memory.config import (
     ChainMemoryConfig,
     verify_cosmos_holdings,
     check_monad_balance,

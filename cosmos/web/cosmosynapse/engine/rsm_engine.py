@@ -612,7 +612,7 @@ class RSMEngine:
 
         # Ask HermesAgent to analyze and suggest edits
         try:
-            from Cosmos.integration.hermes_bridge import get_hermes_bridge
+            from cosmos.integration.hermes_bridge import get_hermes_bridge
             bridge = get_hermes_bridge()
             if not bridge.runtime.available:
                 return [], "HermesAgent runtime not available."
@@ -649,15 +649,7 @@ RULES:
 """
 
             # Run Hermes analysis (blocks, but RSM is not time-critical)
-            import asyncio
-            try:
-                loop = asyncio.get_running_loop()
-                import concurrent.futures
-                with concurrent.futures.ThreadPoolExecutor() as pool:
-                    result = loop.run_in_executor(pool, agent.run, analysis_prompt)
-            except RuntimeError:
-                # No event loop — run directly
-                result = agent.run(analysis_prompt, max_iterations=5)
+            result = agent.run(analysis_prompt, max_iterations=5)
 
             if not result:
                 return [], "HermesAgent returned no analysis."
@@ -675,7 +667,7 @@ RULES:
 
             # Feed back to Hermes RL
             try:
-                coherence = 0.8 if any(res in results for res in results) else 0.3
+                coherence = 0.8 if any('✅' in res for res in results) else 0.3
                 bridge.rl.record_experience(
                     speaker="RSMEngine",
                     response=f"[RSM] Hermes proposed {len(proposals)} edits for {filename}: {'; '.join(results)}",
@@ -706,7 +698,7 @@ RULES:
             return None
 
         try:
-            from Cosmos.integration.hermes_bridge import get_hermes_bridge
+            from cosmos.integration.hermes_bridge import get_hermes_bridge
             bridge = get_hermes_bridge()
             if not bridge.runtime.available:
                 return "HermesAgent not available for analysis."
@@ -743,7 +735,7 @@ Provide:
         # Check Hermes availability
         hermes_available = False
         try:
-            from Cosmos.integration.hermes_bridge import get_hermes_bridge
+            from cosmos.integration.hermes_bridge import get_hermes_bridge
             bridge = get_hermes_bridge()
             hermes_available = bridge.runtime.available
         except Exception:

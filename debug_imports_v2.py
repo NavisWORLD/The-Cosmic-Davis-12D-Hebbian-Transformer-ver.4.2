@@ -9,13 +9,12 @@ import importlib
 base_path = r"D:\Cosmos"
 sys.path.insert(0, base_path)
 
-# Alias Cosmos to cosmos
+# Ensure cosmos is importable
 try:
-    import Cosmos
-    sys.modules['cosmos'] = Cosmos
-    print("Aliased Cosmos to cosmos")
+    import cosmos
+    print("cosmos package imported OK")
 except ImportError:
-    print("FAILED to alias Cosmos to cosmos")
+    print("FAILED to import cosmos")
 
 # Add web to path for cosmosynapse
 sys.path.append(os.path.join(base_path, "Cosmos", "web"))

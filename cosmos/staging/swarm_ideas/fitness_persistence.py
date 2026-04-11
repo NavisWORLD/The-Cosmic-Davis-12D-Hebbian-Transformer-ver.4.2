@@ -11,7 +11,7 @@ from loguru import logger
 import sqlite3
 from datetime import datetime
 
-from Cosmos.core.config import get_config
+from cosmos.core.config import get_config
 
 class FitnessStorage:
     def __init__(self, db_path: Optional[str] = None) -> None:

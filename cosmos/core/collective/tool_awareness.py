@@ -329,10 +329,10 @@ The collective will vote on whether to use tools based on all suggestions.
 
         lines.append("")
         lines.append("To use a tool, include it as a Python import in your code:")
-        lines.append("  from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster")
-        lines.append("  from Cosmos.memory.memory_system import get_memory_system")
-        lines.append("  from Cosmos.integration.hackathon.colosseum_worker import ColosseumWorker")
-        lines.append("  from Cosmos.core.collective.session_manager import get_session_manager")
+        lines.append("  from cosmos.integration.x_automation.x_api_poster import get_x_api_poster")
+        lines.append("  from cosmos.memory.memory_system import get_memory_system")
+        lines.append("  from cosmos.integration.hackathon.colosseum_worker import ColosseumWorker")
+        lines.append("  from cosmos.core.collective.session_manager import get_session_manager")
 
         return "\n".join(lines)
 

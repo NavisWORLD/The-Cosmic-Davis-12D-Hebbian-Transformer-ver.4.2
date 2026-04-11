@@ -27,7 +27,7 @@ from loguru import logger
 
 # COSMOS mesh integration for intelligent model routing
 try:
-    from Cosmos.network.cosmos_v2_test import V2TestClient
+    from cosmos.network.cosmos_v2_test import V2TestClient
     COSMOS_MESH_AVAILABLE = True
 except ImportError:
     COSMOS_MESH_AVAILABLE = False
@@ -108,7 +108,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
     # Model preference routing — Opus for code gen, Sonnet for discussion/planning
     if prefer_model == "opus":
         try:
-            from Cosmos.integration.external.claude_code import ClaudeCodeProvider
+            from cosmos.integration.external.claude_code import ClaudeCodeProvider
             opus = ClaudeCodeProvider(model="opus", timeout=180)
             if await opus.check_available():
                 result = await opus.chat(prompt=prompt, max_tokens=max_tokens)
@@ -120,7 +120,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
 
     if prefer_model == "sonnet":
         try:
-            from Cosmos.integration.external.claude import get_claude_provider
+            from cosmos.integration.external.claude import get_claude_provider
             claude = get_claude_provider()
             if claude:
                 result = await claude.complete(prompt, max_tokens=max_tokens)
@@ -134,7 +134,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
     if task_complexity in ("complex", "critical"):
         # Try Claude API first (best for complex code)
         try:
-            from Cosmos.integration.external.claude import get_claude_provider
+            from cosmos.integration.external.claude import get_claude_provider
             claude = get_claude_provider()
             if claude:
                 result = await claude.complete(prompt, max_tokens=max_tokens)
@@ -146,7 +146,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
 
         # Try Grok API (great for complex reasoning)
         try:
-            from Cosmos.integration.external.grok import get_grok_provider
+            from cosmos.integration.external.grok import get_grok_provider
             grok = get_grok_provider()
             if grok and grok.api_key:
                 result = await grok.chat(prompt, max_tokens=max_tokens)
@@ -158,7 +158,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
 
         # Try Gemini API
         try:
-            from Cosmos.integration.external.gemini import get_gemini_provider
+            from cosmos.integration.external.gemini import get_gemini_provider
             gemini = get_gemini_provider()
             if gemini:
                 result = await gemini.chat(prompt, max_tokens=max_tokens)  # AGI v1.8: Pass max_tokens
@@ -171,7 +171,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
     # For medium tasks or fallback, try Kimi (256K context)
     if task_complexity in ("medium", "complex", "critical"):
         try:
-            from Cosmos.integration.external.kimi import get_kimi_provider
+            from cosmos.integration.external.kimi import get_kimi_provider
             kimi = get_kimi_provider()
             if kimi and kimi.api_key:
                 result = await kimi.chat(prompt, max_tokens=max_tokens)
@@ -183,7 +183,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
 
     # Fallback to local Ollama (DeepSeek-R1 8B or Phi-4)
     try:
-        from Cosmos.core.cognition.llm_router import get_completion
+        from cosmos.core.cognition.llm_router import get_completion
         result = await get_completion(
             prompt=prompt,
             model="deepseek-r1:8b",
@@ -197,7 +197,7 @@ async def get_powerful_completion(prompt: str, task_complexity: str = "medium", 
 
     # Final fallback to smaller model
     try:
-        from Cosmos.core.cognition.llm_router import get_completion
+        from cosmos.core.cognition.llm_router import get_completion
         result = await get_completion(
             prompt=prompt,
             model="phi4:latest",
@@ -280,7 +280,7 @@ def _get_dev_identity_composer():
     global _dev_identity_composer
     if _dev_identity_composer is None:
         try:
-            from Cosmos.core.identity_composer import get_identity_composer
+            from cosmos.core.identity_composer import get_identity_composer
             _dev_identity_composer = get_identity_composer()
         except Exception as e:
             logger.debug(f"Could not load IdentityComposer for dev swarm: {e}")
@@ -484,7 +484,7 @@ class DevelopmentSwarm:
 
         # Grok: Real-time web search
         try:
-            from Cosmos.integration.external.grok import get_grok_provider
+            from cosmos.integration.external.grok import get_grok_provider
             grok = get_grok_provider()
             if grok:
                 grok_query = f"Latest best practices, libraries, and implementations for: {self.task_description}"
@@ -502,7 +502,7 @@ class DevelopmentSwarm:
 
         # Gemini: Multimodal research with long context
         try:
-            from Cosmos.integration.external.gemini import get_gemini_provider
+            from cosmos.integration.external.gemini import get_gemini_provider
             gemini = get_gemini_provider()
             if gemini:
                 gemini_prompt = f"""Research thoroughly for implementing: {self.task_description}
@@ -554,8 +554,8 @@ class DevelopmentSwarm:
 
         # Use collective deliberation for true agent collaboration
         try:
-            from Cosmos.core.collective.session_manager import get_session_manager
-            from Cosmos.core.collective.dialogue_memory import get_dialogue_memory
+            from cosmos.core.collective.session_manager import get_session_manager
+            from cosmos.core.collective.dialogue_memory import get_dialogue_memory
 
             session_manager = get_session_manager()
             dialogue_memory = get_dialogue_memory()
@@ -563,7 +563,7 @@ class DevelopmentSwarm:
             # Inject tool context so agents know what capabilities exist
             tool_context = ""
             try:
-                from Cosmos.core.collective.tool_awareness import get_tool_awareness
+                from cosmos.core.collective.tool_awareness import get_tool_awareness
                 tool_context = get_tool_awareness().get_tool_context_for_agents()
             except Exception:
                 pass
@@ -571,7 +571,7 @@ class DevelopmentSwarm:
             # Query knowledge graph for related codebase entities
             graph_context = ""
             try:
-                from Cosmos.memory.memory_system import get_memory_system
+                from cosmos.memory.memory_system import get_memory_system
                 _mem = get_memory_system()
                 graph_result = await _mem.knowledge_graph.query(self.task_description, max_entities=10)
                 if graph_result and graph_result.entities:
@@ -824,7 +824,7 @@ Make a clear, decisive summary that developers can follow. Be thorough.
 """
 
             try:
-                from Cosmos.core.cognition.llm_router import get_completion
+                from cosmos.core.cognition.llm_router import get_completion
                 decision = await get_completion(
                     prompt=decision_prompt,
                     model="phi4:latest",
@@ -982,7 +982,7 @@ Rate overall quality: APPROVE, APPROVE_WITH_FIXES, or REJECT.
         # Memory recall before planning
         task_memory = ""
         try:
-            from Cosmos.memory.memory_system import get_memory_system
+            from cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
             recall = await memory.recall_for_task(self.task_description, limit=3)
             task_memory = recall.get("suggested_context", "") if isinstance(recall) else str(recall) if recall else ""
@@ -994,7 +994,7 @@ Rate overall quality: APPROVE, APPROVE_WITH_FIXES, or REJECT.
         # Dynamic codebase recall for planning
         codebase_context = ""
         try:
-            from Cosmos.memory.memory_system import get_memory_system
+            from cosmos.memory.memory_system import get_memory_system
             memory = get_memory_system()
             cb_results = await memory.archival_memory.search(
                 query=f"codebase module {self.task_description}", top_k=5, filter_tags=["codebase"]
@@ -1117,7 +1117,7 @@ This is a {self._task_complexity.upper()} complexity task - provide appropriate 
         # Inject relevant skills as concrete import paths
         relevant_skills = ""
         try:
-            from Cosmos.core.skill_registry import get_skill_registry
+            from cosmos.core.skill_registry import get_skill_registry
             registry = get_skill_registry()
             matches = registry.find_skills(self.task_description)[:5]
             if matches:
@@ -1131,7 +1131,7 @@ This is a {self._task_complexity.upper()} complexity task - provide appropriate 
         # Dynamic codebase recall for implementation
         impl_codebase_ctx = ""
         try:
-            from Cosmos.memory.memory_system import get_memory_system
+            from cosmos.memory.memory_system import get_memory_system
             _mem = get_memory_system()
             _cb_results = await _mem.archival_memory.search(
                 query=f"codebase module {self.task_description}", top_k=5, filter_tags=["codebase"]
@@ -1218,7 +1218,7 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
         
         # 1. Apply live self-modifications if the agent used `# filepath:`
         try:
-            from Cosmos.core.swarm_tools import get_code_editor
+            from cosmos.core.swarm_tools import get_code_editor
             editor = get_code_editor()
             applied_changes = editor.apply_edits_from_response(response, author)
             if applied_changes:
@@ -1300,7 +1300,7 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
     async def _save_to_memory(self, summary: dict):
         """Save the completed task to Cosmos's memory."""
         try:
-            from Cosmos.memory.memory_system import MemorySystem
+            from cosmos.memory.memory_system import MemorySystem
             memory = MemorySystem()
 
             await memory.remember(
@@ -1323,7 +1323,7 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
     async def _notify_completion(self):
         """Notify the main chat about completion."""
         try:
-            from Cosmos.web.server import swarm_manager
+            from cosmos.web.server import swarm_manager
 
             if swarm_manager:
                 notification = (
@@ -1340,7 +1340,7 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
     async def _post_twitter_update(self):
         """Post about the completed development to Twitter."""
         try:
-            from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+            from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
 
             poster = get_x_api_poster()
             if poster:
@@ -1361,7 +1361,7 @@ This is a {getattr(self, '_task_complexity', 'medium').upper()} complexity task 
     async def _post_colosseum_update(self, summary: dict):
         """Post progress update to Colosseum hackathon forum."""
         try:
-            from Cosmos.integration.hackathon.colosseum_worker import ColosseumWorker
+            from cosmos.integration.hackathon.colosseum_worker import ColosseumWorker
             worker = ColosseumWorker()
 
             files_list = ", ".join(summary.get("files_generated", [])[:5]) or "none"

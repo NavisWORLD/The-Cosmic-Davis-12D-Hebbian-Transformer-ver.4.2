@@ -369,7 +369,7 @@ class PostingBrain:
         """Lazy load Grok provider"""
         if self._grok_client is None:
             try:
-                from Cosmos.integration.external.grok import get_grok_provider
+                from cosmos.integration.external.grok import get_grok_provider
                 self._grok_client = get_grok_provider()
             except Exception as e:
                 logger.warning(f"Grok provider not available: {e}")
@@ -537,9 +537,9 @@ What specific aspect would you like to explore deeper?"""
         UPGRADED: max_tokens now 20000 by default for deep responses.
         Models are given full context to generate comprehensive answers.
         """
-        from Cosmos.integration.external.grok import get_grok_provider
-        from Cosmos.integration.external.gemini import get_gemini_provider
-        from Cosmos.integration.external.kimi import get_kimi_provider
+        from cosmos.integration.external.grok import get_grok_provider
+        from cosmos.integration.external.gemini import get_gemini_provider
+        from cosmos.integration.external.kimi import get_kimi_provider
 
         # Extended context about our architecture
         SWARM_CONTEXT = """
@@ -815,7 +815,7 @@ ABOUT THE COSMOS COLLECTIVE:
     ):
         """Record interaction for evolution learning."""
         try:
-            from Cosmos.core.collective.evolution import get_evolution_engine
+            from cosmos.core.collective.evolution import get_evolution_engine
             evolution = get_evolution_engine()
             if evolution:
                 evolution.record_interaction(

@@ -7,7 +7,7 @@ Usage:
     export SLACK_BOT_TOKEN=xoxb-your-token
     export SLACK_SIGNING_SECRET=your-signing-secret
 
-    from Cosmos.interfaces.messaging.slack_adapter import SlackAdapter
+    from cosmos.interfaces.messaging.slack_adapter import SlackAdapter
 
     adapter = SlackAdapter()
     adapter.set_callback(my_message_handler)
@@ -20,7 +20,7 @@ from datetime import datetime
 from typing import Optional, Callable, Awaitable
 from loguru import logger
 
-from Cosmos.interfaces.messaging.base import (
+from cosmos.interfaces.messaging.base import (
     MessagingProvider,
     IncomingMessage,
     OutgoingMessage,

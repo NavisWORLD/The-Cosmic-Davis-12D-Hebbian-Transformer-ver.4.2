@@ -3,7 +3,7 @@ COSMOS Client — Async client for querying remote bots via the COSMOS mesh.
 
 Simple API for the rest of the codebase:
 
-    from Cosmos.network.cosmos_client import COSMOSClient
+    from cosmos.network.cosmos_client import COSMOSClient
 
     client = COSMOSClient()
     await client.connect()

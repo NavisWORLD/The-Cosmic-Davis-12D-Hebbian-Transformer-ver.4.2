@@ -73,7 +73,7 @@ class UE5Bridge:
         if self._mode == "direct" and self._unreal:
             try:
                 # Execute with restricted builtins (AGI v1.9.1)
-                from Cosmos.core.safe_eval import SAFE_BUILTINS
+                from cosmos.core.safe_eval import SAFE_BUILTINS
                 local_vars = {"unreal": self._unreal}
                 exec(code, {"__builtins__": SAFE_BUILTINS, "unreal": self._unreal}, local_vars)
                 return {"success": True, "result": local_vars}

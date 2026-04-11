@@ -40,14 +40,14 @@ DeliberationRoom = None
 MultiVoiceSystem = None
 
 try:
-    from Cosmos.core.collective.deliberation import DeliberationRoom
+    from cosmos.core.collective.deliberation import DeliberationRoom
     HAS_COSMOS = True
     logger.info("Cosmos collective deliberation loaded")
 except Exception as e:
     logger.warning(f"Deliberation not available: {e}")
 
 try:
-    from Cosmos.integration.multi_voice import MultiVoiceSystem
+    from cosmos.integration.multi_voice import MultiVoiceSystem
     logger.info("Multi-voice TTS system loaded")
 except Exception as e:
     MultiVoiceSystem = None
@@ -470,20 +470,20 @@ class CosmosVTuber:
             OLLAMA_AVAILABLE = False
 
         try:
-            from Cosmos.integration.external.grok import GrokProvider
+            from cosmos.integration.external.grok import GrokProvider
             GROK_AVAILABLE = True
         except ImportError:
             GROK_AVAILABLE = False
 
         try:
-            from Cosmos.integration.external.gemini import get_gemini_provider
+            from cosmos.integration.external.gemini import get_gemini_provider
             GEMINI_AVAILABLE = True
         except ImportError:
             get_gemini_provider = None
             GEMINI_AVAILABLE = False
 
         try:
-            from Cosmos.integration.external.kimi import get_kimi_provider
+            from cosmos.integration.external.kimi import get_kimi_provider
             KIMI_AVAILABLE = True
         except ImportError:
             get_kimi_provider = None
@@ -628,7 +628,7 @@ class CosmosVTuber:
 
         # Register HuggingFace (if available)
         try:
-            from Cosmos.integration.external.huggingface import HuggingFaceProvider
+            from cosmos.integration.external.huggingface import HuggingFaceProvider
 
             async def query_huggingface(prompt: str, max_tokens: int):
                 try:

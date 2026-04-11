@@ -9,7 +9,7 @@ Provides multi-backend LLM inference with:
 - Model Swarm collaborative inference (PSO-based)
 """
 
-from Cosmos.core.llm_backend import (
+from cosmos.core.llm_backend import (
     LLMBackend,
     OllamaBackend,
     LlamaCppBackend,
@@ -19,9 +19,9 @@ from Cosmos.core.llm_backend import (
     GenerationResult,
     StreamChunk,
 )
-from Cosmos.core.model_manager import ModelManager
-from Cosmos.core.inference_engine import InferenceEngine
-from Cosmos.core.model_swarm import (
+from cosmos.core.model_manager import ModelManager
+from cosmos.core.inference_engine import InferenceEngine
+from cosmos.core.model_swarm import (
     ModelSwarm,
     ModelParticle,
     SwarmStrategy,

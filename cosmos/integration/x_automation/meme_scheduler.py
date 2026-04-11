@@ -15,9 +15,9 @@ import sys
 # Add parent path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from Cosmos.integration.image_gen.generator import get_image_generator
-from Cosmos.integration.x_automation.x_api_poster import get_x_api_poster
-from Cosmos.integration.x_automation.posting_brain import get_posting_brain
+from cosmos.integration.image_gen.generator import get_image_generator
+from cosmos.integration.x_automation.x_api_poster import get_x_api_poster
+from cosmos.integration.x_automation.posting_brain import get_posting_brain
 
 logging.basicConfig(
     level=logging.INFO,

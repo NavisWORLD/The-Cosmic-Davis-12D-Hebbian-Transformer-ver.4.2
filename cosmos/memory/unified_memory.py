@@ -695,12 +695,12 @@ class UnifiedMemoryAPI:
         # Import and initialize each system
         try:
             # Core memory systems
-            from Cosmos.memory.working_memory import WorkingMemory
-            from Cosmos.memory.archival_memory import ArchivalMemory
-            from Cosmos.memory.recall_memory import RecallMemory
-            from Cosmos.memory.knowledge_graph import KnowledgeGraph
-            from Cosmos.memory.virtual_context import VirtualContext
-            from Cosmos.memory.memory_dreaming import MemoryDreamer
+            from cosmos.memory.working_memory import WorkingMemory
+            from cosmos.memory.archival_memory import ArchivalMemory
+            from cosmos.memory.recall_memory import RecallMemory
+            from cosmos.memory.knowledge_graph import KnowledgeGraph
+            from cosmos.memory.virtual_context import VirtualContext
+            from cosmos.memory.memory_dreaming import MemoryDreamer
 
             self._systems["working_memory"] = WorkingMemory()
             self._systems["archival_memory"] = ArchivalMemory(str(self.data_dir / "archival"))
@@ -714,43 +714,43 @@ class UnifiedMemoryAPI:
 
         # Extended memory systems
         try:
-            from Cosmos.memory.episodic_memory import EpisodicMemory
+            from cosmos.memory.episodic_memory import EpisodicMemory
             self._systems["episodic_memory"] = EpisodicMemory(str(self.data_dir / "episodic"))
         except ImportError:
             pass
 
         try:
-            from Cosmos.memory.knowledge_graph_v2 import KnowledgeGraphV2
+            from cosmos.memory.knowledge_graph_v2 import KnowledgeGraphV2
             self._systems["knowledge_graph_v2"] = KnowledgeGraphV2(str(self.data_dir / "graph_v2"))
         except ImportError:
             pass
 
         try:
-            from Cosmos.memory.dream_consolidation import DreamConsolidator
+            from cosmos.memory.dream_consolidation import DreamConsolidator
             self._systems["dream_consolidation"] = DreamConsolidator(str(self.data_dir / "dreams"))
         except ImportError:
             pass
 
         try:
-            from Cosmos.memory.semantic_layers import SemanticLayerSystem
+            from cosmos.memory.semantic_layers import SemanticLayerSystem
             self._systems["semantic_layers"] = SemanticLayerSystem(str(self.data_dir / "semantic"))
         except ImportError:
             pass
 
         try:
-            from Cosmos.memory.project_tracking import ProjectTracker
+            from cosmos.memory.project_tracking import ProjectTracker
             self._systems["project_tracking"] = ProjectTracker(str(self.data_dir / "projects"))
         except ImportError:
             pass
 
         try:
-            from Cosmos.memory.semantic_deduplication import SemanticDeduplicator
+            from cosmos.memory.semantic_deduplication import SemanticDeduplicator
             self._systems["semantic_dedup"] = SemanticDeduplicator()
         except ImportError:
             pass
 
         try:
-            from Cosmos.memory.memory_sharing import MemorySharing
+            from cosmos.memory.memory_sharing import MemorySharing
             self._systems["memory_sharing"] = MemorySharing(str(self.data_dir))
         except ImportError:
             pass
@@ -877,7 +877,7 @@ class UnifiedMemoryAPI:
         # Add to working memory if important
         if importance > 0.7 and "working_memory" in self._systems:
             try:
-                from Cosmos.memory.working_memory import SlotType
+                from cosmos.memory.working_memory import SlotType
                 await self._systems["working_memory"].set(
                     name=f"memory_{memory_id[:8]}",
                     value=content[:500],

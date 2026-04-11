@@ -14,7 +14,7 @@ from loguru import logger
 import aiohttp
 import json
 
-from Cosmos.core.llm_backend import LLMBackend, GenerationConfig, GenerationResult, BackendType, StreamChunk
+from cosmos.core.llm_backend import LLMBackend, GenerationConfig, GenerationResult, BackendType, StreamChunk
 
 @dataclass
 class APIEndpoint:

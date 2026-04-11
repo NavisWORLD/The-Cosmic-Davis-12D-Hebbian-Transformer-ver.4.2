@@ -606,7 +606,7 @@ class AutonomousTaskDetector:
     async def _llm_extract_task(self, content: str) -> Optional[str]:
         """Use LLM to extract task description from complex message."""
         try:
-            from Cosmos.core.agent_spawner import call_shadow_agent
+            from cosmos.core.agent_spawner import call_shadow_agent
 
             prompt = f"""Extract a clear, concise task/feature name from this message.
 Return ONLY the task name (5-15 words), nothing else.
@@ -667,7 +667,7 @@ Task name:"""
         ENHANCED: Routes to recommended coding agent for faster completion.
         """
         try:
-            from Cosmos.core.development_swarm import DevelopmentSwarm
+            from cosmos.core.development_swarm import DevelopmentSwarm
 
             # Create development swarm with recommended agent
             dev_swarm = DevelopmentSwarm(
@@ -702,7 +702,7 @@ Task name:"""
         except ImportError:
             logger.warning("DevelopmentSwarm not available - task queued for manual processing")
             # Fallback to evolution loop
-            from Cosmos.core.evolution_loop import get_evolution_engine
+            from cosmos.core.evolution_loop import get_evolution_engine
             engine = get_evolution_engine()
             if engine:
                 engine.add_priority_task({
@@ -750,7 +750,7 @@ Task name:"""
         """Notify the main chat that a task was detected and is being worked on."""
         try:
             # Import swarm manager to broadcast
-            from Cosmos.web.server import swarm_manager
+            from cosmos.web.server import swarm_manager
 
             if swarm_manager:
                 if task.is_innovation:

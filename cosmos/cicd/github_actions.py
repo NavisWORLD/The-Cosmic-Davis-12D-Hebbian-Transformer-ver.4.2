@@ -22,7 +22,7 @@ try:
 except ImportError:
     HAS_HTTPX = False
 
-from Cosmos.cicd.pipeline_manager import (
+from cosmos.cicd.pipeline_manager import (
     CICDProvider,
     Pipeline,
     PipelineRun,

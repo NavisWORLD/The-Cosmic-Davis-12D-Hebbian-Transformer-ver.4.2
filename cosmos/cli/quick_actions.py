@@ -31,7 +31,7 @@ class QuickActions:
         """Ensure memory system is initialized."""
         if not self._memory:
             try:
-                from Cosmos.memory.memory_system import MemorySystem
+                from cosmos.memory.memory_system import MemorySystem
                 self._memory = MemorySystem(data_dir=self.data_dir)
                 await self._memory.initialize()
             except Exception:
@@ -42,7 +42,7 @@ class QuickActions:
         """Ensure health system is initialized."""
         if not self._health:
             try:
-                from Cosmos.health.providers import HealthProviderManager
+                from cosmos.health.providers import HealthProviderManager
                 self._health = HealthProviderManager()
             except Exception:
                 pass
@@ -124,7 +124,7 @@ class QuickActions:
         Usage: await quick.log_food("Apple", 95, "snack")
         """
         try:
-            from Cosmos.health.nutrition import NutritionManager
+            from cosmos.health.nutrition import NutritionManager
 
             nutrition = NutritionManager(f"{self.data_dir}/nutrition")
             nutrition.log_meal(
@@ -168,7 +168,7 @@ class QuickActions:
         Usage: answer = await quick.ask("What is Python?")
         """
         try:
-            from Cosmos.agents.swarm_orchestrator import SwarmOrchestrator
+            from cosmos.agents.swarm_orchestrator import SwarmOrchestrator
 
             orchestrator = SwarmOrchestrator()
             result = await orchestrator.process(query=question, task_type=expert)
@@ -201,7 +201,7 @@ class QuickActions:
         Usage: await quick.trigger_workflow("daily_backup")
         """
         try:
-            from Cosmos.automation.workflow_builder import WorkflowBuilder
+            from cosmos.automation.workflow_builder import WorkflowBuilder
 
             builder = WorkflowBuilder(f"{self.data_dir}/workflows")
             workflows = builder.list_workflows()
@@ -221,7 +221,7 @@ class QuickActions:
         Usage: result = await quick.trigger_n8n("123", {"key": "value"})
         """
         try:
-            from Cosmos.automation.n8n_enhanced import EnhancedN8nIntegration
+            from cosmos.automation.n8n_enhanced import EnhancedN8nIntegration
             import os
 
             n8n = EnhancedN8nIntegration(
@@ -244,7 +244,7 @@ class QuickActions:
         Usage: await quick.backup()
         """
         try:
-            from Cosmos.core.resilience import BackupManager
+            from cosmos.core.resilience import BackupManager
 
             backup_mgr = BackupManager(
                 data_dir=self.data_dir,

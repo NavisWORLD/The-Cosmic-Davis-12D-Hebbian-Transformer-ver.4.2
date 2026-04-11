@@ -71,9 +71,9 @@ class OrchestrationPlanRequest(BaseModel):
 async def claude_delegate(request: ClaudeDelegateRequest):
     """Cosmos delegates to Claude."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
-        from Cosmos.integration.claude_teams.swarm_team_fusion import DelegationType
-        from Cosmos.integration.claude_teams.agent_sdk_bridge import ClaudeModel
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams.swarm_team_fusion import DelegationType
+        from cosmos.integration.claude_teams.agent_sdk_bridge import ClaudeModel
 
         fusion = get_swarm_team_fusion()
 
@@ -103,9 +103,9 @@ async def claude_delegate(request: ClaudeDelegateRequest):
 async def claude_create_team_task(request: ClaudeTeamRequest):
     """Create a Claude team and delegate a complex task."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
-        from Cosmos.integration.claude_teams.team_coordinator import TeamRole
-        from Cosmos.integration.claude_teams.agent_sdk_bridge import ClaudeModel
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams.team_coordinator import TeamRole
+        from cosmos.integration.claude_teams.agent_sdk_bridge import ClaudeModel
 
         fusion = get_swarm_team_fusion()
 
@@ -136,8 +136,8 @@ async def claude_create_team_task(request: ClaudeTeamRequest):
 async def claude_create_plan(request: OrchestrationPlanRequest):
     """Create a multi-step orchestration plan."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
-        from Cosmos.integration.claude_teams.swarm_team_fusion import OrchestrationMode
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams.swarm_team_fusion import OrchestrationMode
 
         fusion = get_swarm_team_fusion()
 
@@ -164,7 +164,7 @@ async def claude_create_plan(request: OrchestrationPlanRequest):
 async def claude_execute_plan(plan_id: str):
     """Execute an orchestration plan."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
 
         fusion = get_swarm_team_fusion()
         results = await fusion.execute_plan(plan_id)
@@ -184,7 +184,7 @@ async def claude_execute_plan(plan_id: str):
 async def claude_hybrid_deliberation(question: str, team_id: Optional[str] = None):
     """Run hybrid deliberation - Cosmos swarm + Claude team."""
     try:
-        from Cosmos.integration.claude_teams import get_team_coordinator
+        from cosmos.integration.claude_teams import get_team_coordinator
 
         coordinator = get_team_coordinator()
         result = await coordinator.hybrid_deliberation(
@@ -211,7 +211,7 @@ async def claude_hybrid_deliberation(question: str, team_id: Optional[str] = Non
 async def claude_list_teams():
     """list all Claude teams."""
     try:
-        from Cosmos.integration.claude_teams import get_team_coordinator
+        from cosmos.integration.claude_teams import get_team_coordinator
 
         coordinator = get_team_coordinator()
         teams = coordinator.get_teams()
@@ -234,7 +234,7 @@ async def claude_list_teams():
 async def claude_get_switches():
     """Get current agent switch states."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
 
         fusion = get_swarm_team_fusion()
         switches = fusion.get_agent_switches()
@@ -253,7 +253,7 @@ async def claude_get_switches():
 async def claude_set_switch(agent: str, enabled: bool = True):
     """Set an agent switch."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
 
         fusion = get_swarm_team_fusion()
         success = fusion.set_agent_switch(agent, enabled)
@@ -278,7 +278,7 @@ async def claude_set_switch(agent: str, enabled: bool = True):
 async def claude_set_switches_bulk(switches: dict[str, bool]):
     """Set multiple agent switches at once."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
 
         fusion = get_swarm_team_fusion()
         results = {}
@@ -299,7 +299,7 @@ async def claude_set_switches_bulk(switches: dict[str, bool]):
 async def claude_set_priority(priority: list[str]):
     """Set model priority order for fallback."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
 
         fusion = get_swarm_team_fusion()
         fusion.set_model_priority(priority)
@@ -322,7 +322,7 @@ async def claude_set_priority(priority: list[str]):
 async def claude_integration_stats():
     """Get Claude Teams integration statistics."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
 
         fusion = get_swarm_team_fusion()
         stats = fusion.get_stats()
@@ -342,7 +342,7 @@ async def claude_integration_stats():
 async def claude_mcp_tools(team_id: Optional[str] = None):
     """list MCP tools available to Claude teams."""
     try:
-        from Cosmos.integration.claude_teams import get_mcp_server
+        from cosmos.integration.claude_teams import get_mcp_server
 
         mcp = get_mcp_server()
         tools = mcp.list_tools(team_id)
@@ -361,7 +361,7 @@ async def claude_mcp_tools(team_id: Optional[str] = None):
 async def claude_recent_delegations(limit: int = 10):
     """Get recent delegation history."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
 
         fusion = get_swarm_team_fusion()
         delegations = fusion.get_recent_delegations(limit)
@@ -384,8 +384,8 @@ async def claude_recent_delegations(limit: int = 10):
 async def claude_quick_research(topic: str, model: str = "haiku"):
     """Quick research delegation."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
-        from Cosmos.integration.claude_teams.agent_sdk_bridge import ClaudeModel
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams.agent_sdk_bridge import ClaudeModel
 
         fusion = get_swarm_team_fusion()
         result = await fusion.quick_research(topic, ClaudeModel(model))
@@ -400,8 +400,8 @@ async def claude_quick_research(topic: str, model: str = "haiku"):
 async def claude_quick_code(task: str, model: str = "sonnet"):
     """Quick coding delegation."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
-        from Cosmos.integration.claude_teams.agent_sdk_bridge import ClaudeModel
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams.agent_sdk_bridge import ClaudeModel
 
         fusion = get_swarm_team_fusion()
         result = await fusion.quick_code(task, ClaudeModel(model))
@@ -416,8 +416,8 @@ async def claude_quick_code(task: str, model: str = "sonnet"):
 async def claude_quick_analyze(data: str, model: str = "sonnet"):
     """Quick analysis delegation."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
-        from Cosmos.integration.claude_teams.agent_sdk_bridge import ClaudeModel
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams.agent_sdk_bridge import ClaudeModel
 
         fusion = get_swarm_team_fusion()
         result = await fusion.quick_analyze(data, ClaudeModel(model))
@@ -432,8 +432,8 @@ async def claude_quick_analyze(data: str, model: str = "sonnet"):
 async def claude_quick_critique(work: str, model: str = "opus"):
     """Quick critique delegation - uses Opus for depth."""
     try:
-        from Cosmos.integration.claude_teams import get_swarm_team_fusion
-        from Cosmos.integration.claude_teams.agent_sdk_bridge import ClaudeModel
+        from cosmos.integration.claude_teams import get_swarm_team_fusion
+        from cosmos.integration.claude_teams.agent_sdk_bridge import ClaudeModel
 
         fusion = get_swarm_team_fusion()
         result = await fusion.quick_critique(work, ClaudeModel(model))

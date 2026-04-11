@@ -11,7 +11,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 os.environ["COSMOS_SKIP_TORCH"] = "1"
 
 try:
-    from Cosmos.web.cosmosynapse.engine.synaptic_field import SynapticField
+    from cosmos.web.cosmosynapse.engine.synaptic_field import SynapticField
     
     print("--- 12D Dimension Mapping Verification ---")
     field = SynapticField()

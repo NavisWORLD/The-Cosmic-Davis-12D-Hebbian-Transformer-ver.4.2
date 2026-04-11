@@ -772,7 +772,7 @@ class ImageGenerator:
 
         # Get a caption from posting brain if available
         try:
-            from Cosmos.integration.x_automation.posting_brain import get_posting_brain
+            from cosmos.integration.x_automation.posting_brain import get_posting_brain
             brain = get_posting_brain()
             caption = brain.get_meme_caption()
         except ImportError:

@@ -130,7 +130,7 @@ class HackathonDominator:
         credit exhaustion or other persistent errors, it's marked dead for
         1 hour to avoid wasting cycles.
         """
-        from Cosmos.core.collective.persistent_agent import call_shadow_agent
+        from cosmos.core.collective.persistent_agent import call_shadow_agent
 
         now = datetime.now().timestamp()
 

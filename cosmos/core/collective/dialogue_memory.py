@@ -198,7 +198,7 @@ class DialogueMemory:
             # Lazy initialization of archival memory
             if not _archival_memory_initialized:
                 try:
-                    from Cosmos.memory.archival_memory import ArchivalMemory
+                    from cosmos.memory.archival_memory import ArchivalMemory
                     import os
 
                     # Determine data directory

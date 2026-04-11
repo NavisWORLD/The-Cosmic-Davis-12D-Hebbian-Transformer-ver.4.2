@@ -8,7 +8,7 @@ Usage:
     export TWILIO_AUTH_TOKEN=your_auth_token
     export TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886  # Twilio sandbox number
 
-    from Cosmos.interfaces.messaging.whatsapp_adapter import WhatsAppAdapter
+    from cosmos.interfaces.messaging.whatsapp_adapter import WhatsAppAdapter
 
     adapter = WhatsAppAdapter()
     adapter.set_callback(my_message_handler)
@@ -23,7 +23,7 @@ from datetime import datetime
 from typing import Optional, Callable, Awaitable
 from loguru import logger
 
-from Cosmos.interfaces.messaging.base import (
+from cosmos.interfaces.messaging.base import (
     MessagingProvider,
     IncomingMessage,
     OutgoingMessage,
@@ -178,7 +178,7 @@ class WhatsAppAdapter(MessagingProvider):
         Returns FastAPI route for WhatsApp webhook.
 
         Usage:
-            from Cosmos.interfaces.messaging.whatsapp_adapter import WhatsAppAdapter
+            from cosmos.interfaces.messaging.whatsapp_adapter import WhatsAppAdapter
 
             adapter = WhatsAppAdapter()
             app.include_router(adapter.get_webhook_route())

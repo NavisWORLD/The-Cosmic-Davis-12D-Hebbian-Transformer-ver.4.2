@@ -12,8 +12,8 @@ import os
 from loguru import logger
 from typing import Optional, Dict, Any
 
-from Cosmos.core.nexus import nexus, Signal, SignalType
-from Cosmos.integration.tool_router import ToolRouter
+from cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.integration.tool_router import ToolRouter
 
 class DiscordBridge:
     def __init__(self, token: Optional[str] = None):

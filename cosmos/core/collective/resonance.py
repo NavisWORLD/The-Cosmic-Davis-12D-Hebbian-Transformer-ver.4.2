@@ -26,7 +26,7 @@ from typing import   Optional, Callable, Awaitable
 from enum import Enum
 from loguru import logger
 
-from Cosmos.core.nexus import nexus, Signal, SignalType
+from cosmos.core.nexus import nexus, Signal, SignalType
 
 
 class ThoughtVisibility(Enum):
@@ -711,7 +711,7 @@ async def setup_public_chat_integration(ws_manager, inference_router=None):
         inference_router: Optional inference function (domain, messages, preferred_model) -> response
 
     Usage in server.py:
-        from Cosmos.core.collective.resonance import setup_public_chat_integration
+        from cosmos.core.collective.resonance import setup_public_chat_integration
         await setup_public_chat_integration(ws_manager, my_infer_fn)
     """
     mind = get_collective_mind()

@@ -7,7 +7,7 @@ context, episodic). This gives agents deep codebase awareness when planning
 or implementing tasks.
 
 Usage:
-    from Cosmos.memory.codebase_indexer import get_codebase_indexer
+    from cosmos.memory.codebase_indexer import get_codebase_indexer
     indexer = get_codebase_indexer()
     stats = await indexer.index_codebase()
 """
@@ -268,7 +268,7 @@ class CodebaseIndexer:
             # Get memory system
             if memory_system is None:
                 try:
-                    from Cosmos.memory.memory_system import get_memory_system
+                    from cosmos.memory.memory_system import get_memory_system
                     memory_system = get_memory_system()
                     if not memory_system._initialized:
                         await memory_system.initialize()
@@ -560,7 +560,7 @@ class CodebaseIndexer:
         self, memory_system, modules: List[ModuleInfo]
     ):
         """Store tiered directory listings in virtual context."""
-        from Cosmos.memory.virtual_context import MemoryBlock, MemoryTier
+        from cosmos.memory.virtual_context import MemoryBlock, MemoryTier
 
         # Group modules by category
         by_category: Dict[str, List[ModuleInfo]] = {}

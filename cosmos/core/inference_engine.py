@@ -17,14 +17,14 @@ from collections import deque
 
 from loguru import logger
 
-from Cosmos.core.llm_backend import (
+from cosmos.core.llm_backend import (
     LLMBackend,
     GenerationConfig,
     GenerationResult,
     StreamChunk,
     ConfidenceEstimator,
 )
-from Cosmos.core.model_manager import ModelManager
+from cosmos.core.model_manager import ModelManager
 
 
 class InferenceMode(Enum):
