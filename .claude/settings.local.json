@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /d/Cosmos -type f -name server.py -not -path *.claude*)",
+      "Bash(grep -rn \"sk-192nn\\\\|Missing Authentication header\" /d/Cosmos/Cosmos --include=*.py)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -rn 'Missing Authentication' /d/Cosmos/Cosmos --include=*.py)",
+      "Bash(find /d/Cosmos -type d -name *hermes*)",
+      "Bash(python3 -c \"from openai import OpenAI; help\\(OpenAI.__init__\\)\")",
+      "Bash(python -c \":*)",
+      "Bash(ls -1 /d/Cosmos/hermes-agent/tools/*.py)",
+      "Bash(for tool:*)",
+      "Bash(do echo:*)",
+      "Bash(pip install:*)",
+      "Bash(curl -s http://127.0.0.1:11434/api/tags)",
+      "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(f  {m[''''name'''']:30s} {m[''''details''''].get\\(''''parameter_size'''',''''?''''\\):>8s}\\) for m in data.get\\(''''models'''',[]\\)]\")",
+      "Bash(ollama pull:*)",
+      "Read(//d/Cosmos/**)",
+      "Bash(find . -type f -name *hermes*)",
+      "Bash(ollama list:*)",
+      "Bash(PYTHONIOENCODING=utf-8 python -c \":*)",
+      "Bash(ls -la \"workloads \\(14\\)656.zip\")",
+      "Bash(python -c \"import zipfile; z=zipfile.ZipFile\\(''workloads \\(14\\)656.zip''\\); [print\\(f\\) for f in z.namelist\\(\\)[:50]]\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(find /d/Cosmos -name quantum_bridge.py -o -name *quantum* -type f)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\(''Cosmos/core/quantum_bridge.py''\\).read\\(\\)\\); print\\(''quantum_bridge.py: OK''\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\(''emotional_api/emotional_state_api.py''\\).read\\(\\)\\); print\\(''emotional_state_api.py: OK''\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\(''Cosmos/web/cosmosynapse/engine/cosmos_cns.py''\\).read\\(\\)\\); print\\(''cosmos_cns.py: OK''\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\(''Cosmos/core/quantum_bridge.py'', encoding=''utf-8''\\).read\\(\\)\\); print\\(''quantum_bridge.py: OK''\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\(''emotional_api/emotional_state_api.py'', encoding=''utf-8''\\).read\\(\\)\\); print\\(''emotional_state_api.py: OK''\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\(''Cosmos/web/cosmosynapse/engine/cosmos_cns.py'', encoding=''utf-8''\\).read\\(\\)\\); print\\(''cosmos_cns.py: OK''\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\(''Cosmos/web/cosmosynapse/engine/architecture_prober.py'', encoding=''utf-8''\\).read\\(\\)\\); print\\(''architecture_prober.py: OK''\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\(''Cosmos/web/cosmosynapse/engine/cosmos_swarm_orchestrator.py'', encoding=''utf-8''\\).read\\(\\)\\); print\\(''cosmos_swarm_orchestrator.py: OK''\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\(''Cosmos/web/server.py'', encoding=''utf-8''\\).read\\(\\)\\); print\\(''server.py: OK''\\)\")",
+      "Bash(python -m py_compile Cosmoswebcosmosynapseenginersm_engine.py)",
+      "Bash(cd /d D:Cosmos)",
+      "Bash(python -m py_compile \"Cosmos\\\\web\\\\cosmosynapse\\\\engine\\\\rsm_engine.py\")",
+      "Bash(python -m py_compile \"D:/Cosmos/Cosmos/web/cosmosynapse/engine/rsm_engine.py\")"
+    ]
+  }
+}
