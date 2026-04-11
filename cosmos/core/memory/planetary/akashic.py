@@ -18,7 +18,7 @@ import json
 import hashlib
 from dataclasses import dataclass, field
 from datetime import datetime
-, Optional
+from typing import Optional
 from enum import Enum
 
 from loguru import logger

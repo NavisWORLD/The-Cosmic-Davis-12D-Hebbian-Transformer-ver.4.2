@@ -121,6 +121,14 @@ class HebbianPlasticityLayer(nn.Module):
         # Synaptic trace (running average of co-activations)
         self.register_buffer("trace", torch.zeros(d_hebbian, d_hebbian))
 
+    @property
+    def effective_W(self) -> torch.Tensor:
+        """
+        Read-only view of the live plastic-weight matrix: W_plastic + trace.
+        Used by external monitors (e.g. Fold-Onset Triplet's lambda_2 signal).
+        """
+        return self.W_plastic.detach() + self.trace.detach()
+
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Apply Hebbian plasticity modulation.
@@ -622,6 +630,254 @@ class CosmosTransformer(nn.Module):
             ids = torch.cat([ids, next_token], dim=-1)
 
         return ids
+
+    # =======================================================================
+    # CCT-UFF Integration Hooks (additive; original generate() is unchanged)
+    # =======================================================================
+
+    @torch.no_grad()
+    def _extract_cct_signals(
+        self,
+        state_54d: torch.Tensor,
+        layer_states: list,
+    ) -> dict:
+        """
+        Derive the scalar signals consumed by the CCT-UFF dashboard from a
+        single forward pass.
+
+        Coherence C is sigmoid(mean(cst_12)) mapped into (0, 1); the Sophia
+        Point target is phi_inv = 0.618.  Lambda_2 is the second-largest
+        magnitude eigenvalue of the last block's Hebbian effective_W (24x24).
+        Ideational density (ID) is 1 / (1 + var(cst_12)), and topical
+        coherence (zeta) is 1 / (1 + var(chaos_18)).
+
+        Returns a plain-python dict of floats so it can be fed directly into
+        cct_uff_integrations.CCTUFFDashboard.step().
+        """
+        # Take batch-0 slice for monitoring scalars
+        vec = state_54d[0].detach()
+        cst_12 = vec[:12]
+        chaos_18 = vec[36:54]
+
+        coherence = float(torch.sigmoid(cst_12.mean()).item())
+        ideational_density = float(1.0 / (1.0 + cst_12.var(unbiased=False).item()))
+        zeta = float(1.0 / (1.0 + chaos_18.var(unbiased=False).item()))
+
+        # lambda_2 from the last block's Hebbian effective_W
+        last_block = self.blocks[-1]
+        try:
+            W = last_block.hebbian.effective_W
+            eigvals = torch.linalg.eigvals(W).abs()
+            sorted_eigs, _ = torch.sort(eigvals, descending=True)
+            lambda_2 = float(sorted_eigs[1].item()) if sorted_eigs.numel() > 1 else 0.0
+        except Exception:
+            lambda_2 = 0.0
+
+        # Spectral radius rho = max|lambda| of effective_W (Integration 4)
+        try:
+            rho = float(eigvals.max().item())
+        except Exception:
+            rho = 0.0
+
+        # Paradox intensity: cross-layer disagreement of CST phase (proxy)
+        paradox = 0.0
+        if len(layer_states) >= 2:
+            phases = [ls["cst_phase_12d"].mean(dim=(0, 1)) for ls in layer_states]
+            stacked = torch.stack(phases, dim=0)
+            paradox = float(stacked.var(dim=0, unbiased=False).sum().item())
+
+        # Sigma = noise fraction proxy: std of chaos channel, normalized
+        sigma_noise = float(torch.clamp(chaos_18.std() / 10.0, 0.0, 1.0).item())
+
+        return {
+            "coherence": coherence,
+            "lambda_2": lambda_2,
+            "ideational_density": ideational_density,
+            "zeta": zeta,
+            "spectral_radius": rho,
+            "paradox_intensity": paradox,
+            "sigma": sigma_noise,
+            "x12_avg": float(cst_12.mean().item()),
+            "omega_net": float(cst_12.norm().item()),
+        }
+
+    @torch.no_grad()
+    def generate_cct(
+        self,
+        prompt_ids: torch.Tensor,
+        max_new_tokens: int = 256,
+        base_temperature: float = None,
+        top_k: int = 50,
+        top_p: float = 0.9,
+        dashboard=None,
+        fit_collapse_states: Optional[torch.Tensor] = None,
+        intervention_on_fot: bool = True,
+        verbose: bool = False,
+    ) -> dict:
+        """
+        CCT-UFF-aware autoregressive generation.
+
+        All four CCT-UFF integrations from the Critical Integration Analysis
+        are wired into the generation loop:
+
+          * Integration 3 (Fold-Onset Triplet) -> predictive collapse alert
+          * Integration 2 (Hysteresis Gate)    -> chaos_bank gate dampening
+          * Integration 7 (Mahalanobis)        -> continuous collapse-risk score
+          * Integration 8 (Dynamic Temperature)-> T(t) = phi_inv + 0.2|C-phi_inv|
+
+        The method does not modify the model; it only reads live state via
+        _extract_cct_signals() and applies the CCT-UFF helpers externally.
+
+        Args:
+            prompt_ids:        [1, T] starting tokens
+            max_new_tokens:    generation budget
+            base_temperature:  if None, dynamic_temperature(C) drives sampling
+            top_k / top_p:     standard filtering
+            dashboard:         optional pre-built CCTUFFDashboard; one is
+                               created if omitted
+            fit_collapse_states: optional [N, 54] tensor used to fit the
+                               Mahalanobis model before generation
+            intervention_on_fot: when True, transiently raise temperature if
+                               the Fold-Onset Triplet fires (preemptive
+                               recovery)
+            verbose:           print a one-line status per token
+
+        Returns:
+            dict with:
+              ids                  -> generated token tensor
+              trace                -> list of per-step telemetry dicts
+              final_dashboard      -> dashboard state after last step
+        """
+        # Lazy import so the model file has no hard dependency on the engine
+        # package path.
+        try:
+            from cosmos.web.cosmosynapse.engine import cct_uff_integrations as cct
+        except ImportError:
+            import importlib.util as _iu
+            import pathlib as _pl
+            _here = _pl.Path(__file__).resolve()
+            _cct_path = (
+                _here.parents[1] / "engine" / "cct_uff_integrations.py"
+            )
+            _spec = _iu.spec_from_file_location("cct_uff_integrations", _cct_path)
+            cct = _iu.module_from_spec(_spec)
+            import sys as _sys
+            _sys.modules["cct_uff_integrations"] = cct
+            _spec.loader.exec_module(cct)
+
+        if dashboard is None:
+            dashboard = cct.CCTUFFDashboard()
+
+        if fit_collapse_states is not None:
+            import numpy as _np
+            dashboard.mahalanobis.fit(fit_collapse_states.detach().cpu().numpy())
+
+        self.eval()
+        ids = prompt_ids
+        trace: list = []
+        # Remember the last FOT-driven temperature boost, if any
+        fot_boost = 0.0
+
+        for step in range(max_new_tokens):
+            ids_crop = ids[:, -self.config.max_seq_len:]
+            result = self(ids_crop)
+
+            state_54d = result["state_54d"]
+            layer_states = result["layer_states"]
+
+            signals = self._extract_cct_signals(state_54d, layer_states)
+
+            # Run all CCT-UFF integrations in one step
+            import numpy as _np
+            dash_out = dashboard.step(
+                sigma=signals["sigma"],
+                coherence=signals["coherence"],
+                lambda2=signals["lambda_2"],
+                ideational_density=signals["ideational_density"],
+                zeta=signals["zeta"],
+                w_effective=self.blocks[-1].hebbian.effective_W.cpu().numpy(),
+                agent_coherences=None,
+                paradox_intensity=signals["paradox_intensity"],
+                dx12_dt=0.0,
+                omega_net=signals["omega_net"],
+                x12_avg=signals["x12_avg"],
+                epsilon=signals["coherence"],
+                state_vector=state_54d[0].detach().cpu().numpy(),
+            )
+
+            # --- Integration 8: dynamic temperature ---
+            if base_temperature is None:
+                temperature = dash_out["dynamic_temperature"]
+            else:
+                temperature = base_temperature
+
+            # --- Integration 3: Fold-Onset Triplet preemptive intervention ---
+            if intervention_on_fot and dash_out["fot_active"]:
+                fot_boost = 0.15  # single-shot exploration nudge
+            if fot_boost > 0.0:
+                temperature = min(cct.TEMPERATURE_MAX + 0.05, temperature + fot_boost)
+                fot_boost *= 0.5  # decay back over a few steps
+
+            # --- Integration 2: Hysteresis-gated chaos dampening ---
+            if dash_out["collapsed"]:
+                # When collapsed, transiently dampen the chaos gate so we
+                # stop feeding more turbulence into the residual stream.
+                with torch.no_grad():
+                    self.chaos_bank.chaos_gate.data.mul_(0.9)
+            else:
+                # Nudge chaos gate back toward its natural value when healthy
+                with torch.no_grad():
+                    self.chaos_bank.chaos_gate.data.mul_(1.005)
+
+            # --- Sampling (standard top-k / top-p) ---
+            logits = result["logits"][:, -1, :] / max(temperature, 1e-5)
+            if top_k > 0:
+                v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
+                logits[logits < v[:, [-1]]] = float("-inf")
+            if top_p < 1.0:
+                sorted_logits, sorted_indices = torch.sort(logits, descending=True)
+                cumulative_probs = torch.cumsum(F.softmax(sorted_logits, dim=-1), dim=-1)
+                mask = cumulative_probs > top_p
+                mask[..., 1:] = mask[..., :-1].clone()
+                mask[..., 0] = 0
+                indices_to_remove = mask.scatter(1, sorted_indices, mask)
+                logits[indices_to_remove] = float("-inf")
+            probs = F.softmax(logits, dim=-1)
+            next_token = torch.multinomial(probs, num_samples=1)
+            ids = torch.cat([ids, next_token], dim=-1)
+
+            step_record = {
+                "step": step,
+                "temperature": float(temperature),
+                "coherence": signals["coherence"],
+                "spectral_radius": signals["spectral_radius"],
+                "lambda_2": signals["lambda_2"],
+                "collapsed": bool(dash_out["collapsed"]),
+                "fot_active": bool(dash_out["fot_active"]),
+                "mahalanobis_distance": dash_out["mahalanobis_distance"],
+                "omega_convergence_ratio": dash_out["omega_convergence_ratio"],
+                "true_phase_transition": bool(dash_out["true_phase_transition"]),
+            }
+            trace.append(step_record)
+
+            if verbose:
+                print(
+                    f"[cct t={step:04d}] "
+                    f"C={signals['coherence']:.3f} T={temperature:.3f} "
+                    f"rho={signals['spectral_radius']:.3f} "
+                    f"FOT={'!' if dash_out['fot_active'] else '.'} "
+                    f"coll={'*' if dash_out['collapsed'] else '.'}"
+                )
+
+        return {
+            "ids": ids,
+            "trace": trace,
+            "final_dashboard": {
+                "ci_b": dashboard.ci_b,
+                "ci_c": dashboard.ci_c,
+                "collapsed": dashboard.hysteresis.collapsed,
+            },
+        }
 
     def count_parameters(self) -> dict:
         """Count model parameters by component."""
