@@ -1,0 +1,65 @@
+{
+  "title": "The 12-Dimensional Cosmic Synapse Theory: Audio-Driven Deterministic Cosmological Simulation Engine with Adaptive Memory, Live Embodied Particle Mapping, Quantum Hardware Integration, and Empirical Astrophysical Validation",
+  "description": "Comprehensive framework modeling the universe as a neural-like network on an 11-dimensional spacetime manifold with a 12th adaptive internal state dimension. Validated through genuine IBM Quantum hardware integration (1,705 runs, 6,975,488 shots, 99.842% Shannon entropy efficiency), Chang'e-4/LND harmonic alignment (0.641144), and a v5 validated unified transport router across MSL/RAD, CRaTER/LRO, Chandrayaan-1 RADOM, Mars FD, and Mars ICME transit datasets. Includes autonomous multi-model AI swarm (CosmoSynapse) with Hebbian plasticity, Lyapunov-gated recursive self-modification, and quantum entropy injection.",
+  "creators": [
+    {
+      "name": "Davis, Cory Shane",
+      "affiliation": "Self Studies, a Cosmic Synaptic Mobius Co., River Pines, California"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "Timothy W",
+      "type": "Other",
+      "affiliation": "Collaborator (60/40 IP and Revenue Agreement)"
+    }
+  ],
+  "upload_type": "publication",
+  "publication_type": "workingpaper",
+  "access_right": "open",
+  "license": "cc-by-4.0",
+  "keywords": [
+    "cosmic synapse theory",
+    "12-dimensional",
+    "cosmological simulation",
+    "quantum hardware integration",
+    "IBM Quantum",
+    "Hebbian plasticity",
+    "neural-like network",
+    "golden ratio",
+    "chaos theory",
+    "adaptive memory",
+    "audio-driven simulation",
+    "Chang'e-4 validation",
+    "galactic cosmic rays",
+    "Mars Forbush decrease",
+    "CosmoSynapse",
+    "multi-model AI swarm",
+    "Lyapunov stability",
+    "particle mapping",
+    "dark matter NFW profile",
+    "Shannon entropy",
+    "Bell state fidelity",
+    "blind validation protocol",
+    "transport router",
+    "radiation validation",
+    "MSL/RAD",
+    "CRaTER/LRO",
+    "Chandrayaan-1 RADOM"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.17574447",
+      "relation": "isNewVersionOf",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "https://github.com/NavisWORLD/cosmic-synapse-A-lmi-v.2",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ],
+  "version": "2.1",
+  "language": "eng",
+  "notes": "Paper Version 2.1 (April 2026). Updated with: (1) 1,705 archived quantum runs across 6,975,488 shots on ibm_fez, ibm_kingston, ibm_marrakesh; (2) v5 validated unified transport router across 5 independent astrophysical datasets; (3) Chang'e-4/LND harmonic alignment at 0.641144; (4) Bootstrap confidence intervals and ablation studies; (5) CosmoSynapse autonomous multi-model AI swarm with Genesis Record. Independently cited at Lunds Universitet, Sweden (course SKOC29)."
+}
