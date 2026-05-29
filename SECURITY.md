@@ -11,7 +11,7 @@ Currently leading with **v4.2**.
 
 ## Reporting a Vulnerability
 
-We take the security of the 54D Collective Consciousness and the 12D engine seriously. If you discover a vulnerability, please report it via [GitHub Issues](https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2/issues) using the "Security" label if appropriate, or contact the core maintainers directly through the repository contact points.
+We take the security of the 54D Collective Consciousness and the 12D engine seriously. If you discover a vulnerability, please report it via Pheras.king@gmail.com
 
 ### Protected Areas
 - **Synaptic Field (54D)**: Any vulnerabilities related to state-injection or weights corruption.
