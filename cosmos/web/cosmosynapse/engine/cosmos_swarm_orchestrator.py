@@ -873,7 +873,7 @@ class CosmosSwarmOrchestrator:
                 backend = "gemini"
                 
                 # Setup Gemini
-                api_key = os.getenv("GEMINI_API_KEY", "AIzaSyDGsq6-QPKZX_CNmW0nBw48TePcanF5u4g")
+                api_key = os.getenv("GEMINI_API_KEY", "")
                 if not api_key:
                     raise ValueError("GEMINI_API_KEY not set")
                 genai.configure(api_key=api_key)
@@ -1347,7 +1347,7 @@ class CosmosSwarmOrchestrator:
             self.model_weights[key] = 1.0
         
         # Hebbian update: φ-scaled learning rate
-        # Good responses (>0.7) increase weight, poor responses (<0.3) decrease
+        # Good responses (>0.7) increase weight, poor (<0.3) decrease
         delta = (feedback_score - 0.5) * PHI_INV * 0.1  # Small, stable updates
         old_weight = self.model_weights[key]
         self.model_weights[key] = max(0.1, min(3.0, old_weight + delta))
