@@ -1,5 +1,6 @@
 name: Sanitize committed secrets
 
+# Re-triggered after installation on main so the sanitizer runs against the live branch.
 on:
   push:
     paths:
