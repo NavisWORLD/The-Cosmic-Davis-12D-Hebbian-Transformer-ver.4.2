@@ -1,7 +1,17 @@
 .env
 .env.*
+!.env.example
 venv/
 .venv/
 __pycache__/
 *.pyc
 *.log
+
+# Secret hygiene
+*.key
+*.pem
+*.p12
+*.pfx
+secrets.*
+credentials*.json
+service-account*.json
