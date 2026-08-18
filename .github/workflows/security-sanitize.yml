@@ -1,0 +1,108 @@
+name: Sanitize committed secrets
+
+on:
+  push:
+    paths:
+      - ".github/workflows/security-sanitize.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sanitize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Remove hardcoded credential fallbacks
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          targets = [
+              Path("cosmos/web/cosmosynapse/engine/cosmos_swarm_orchestrator.py"),
+          ]
+
+          changed = []
+          for path in targets:
+              if not path.exists():
+                  continue
+              text = path.read_text(encoding="utf-8")
+              new_text = re.sub(
+                  r'os\.getenv\("GEMINI_API_KEY",\s*"[^"]*"\)',
+                  'os.getenv("GEMINI_API_KEY", "")',
+                  text,
+              )
+              new_text = re.sub(
+                  r'os\.getenv\("GOOGLE_API_KEY",\s*"[^"]*"\)',
+                  'os.getenv("GOOGLE_API_KEY", "")',
+                  new_text,
+              )
+              new_text = re.sub(
+                  r'os\.getenv\("XAI_API_KEY",\s*"[^"]*"\)',
+                  'os.getenv("XAI_API_KEY", "")',
+                  new_text,
+              )
+              new_text = re.sub(
+                  r'os\.getenv\("IBM_CLOUD_API_KEY",\s*"[^"]*"\)',
+                  'os.getenv("IBM_CLOUD_API_KEY", "")',
+                  new_text,
+              )
+              if new_text != text:
+                  path.write_text(new_text, encoding="utf-8")
+                  changed.append(str(path))
+
+          gitignore = Path(".gitignore")
+          existing = gitignore.read_text(encoding="utf-8") if gitignore.exists() else ""
+          guard = """
+
+# Secret hygiene
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+secrets.*
+credentials*.json
+service-account*.json
+"""
+          additions = []
+          for line in guard.splitlines():
+              if line and line not in existing.splitlines():
+                  additions.append(line)
+          if additions:
+              with gitignore.open("a", encoding="utf-8") as f:
+                  if existing and not existing.endswith("\n"):
+                      f.write("\n")
+                  f.write("\n" + "\n".join(additions) + "\n")
+              changed.append(str(gitignore))
+
+          print("Sanitized:", ", ".join(changed) if changed else "no tracked changes needed")
+
+      - name: Verify no obvious hardcoded provider keys remain
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -nE 'AIza[0-9A-Za-z_-]{20,}|xai-[0-9A-Za-z_-]{20,}' -- ':!*.md' ':!*.txt'; then
+            echo "Potential hardcoded provider credential remains in tracked source."
+            exit 1
+          fi
+
+      - name: Commit sanitation
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "Nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add cosmos/web/cosmosynapse/engine/cosmos_swarm_orchestrator.py .gitignore
+          git commit -m "security: remove hardcoded API credential fallbacks"
+          git push
