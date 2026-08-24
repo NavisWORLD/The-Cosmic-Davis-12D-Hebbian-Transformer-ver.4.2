@@ -72,10 +72,10 @@ class CSTPhaseEncoding(nn.Module):
         pos_float = positions.unsqueeze(-1).float()  # [B, T, 1]
         phase_angles = pos_float * self.freqs.unsqueeze(0).unsqueeze(0)  # [B, T, d_cst//2]
 
-        # Build 12D phase vector: interleave sin/cos
+        # Build 12D phase vector as six phase-conjugate sin/cos pairs.
         phase_sin = torch.sin(phase_angles)
         phase_cos = torch.cos(phase_angles)
-        phase_12d = torch.cat([phase_sin, phase_cos], dim=-1)  # [B, T, d_cst]
+        phase_12d = torch.stack((phase_sin, phase_cos), dim=-1).flatten(-2)  # [B, T, d_cst]
 
         # Content-dependent phase modulation
         content_phase = self.phase_proj(x)  # [B, T, d_cst]
@@ -176,19 +176,19 @@ class ChaosOscillatorBank(nn.Module):
     """
     Coupled Lorenz Oscillator Bank for Creative Diversity.
 
-    Seven coupled Lorenz attractors (each 3D) produce deterministic chaos
+    Six coupled Lorenz attractors (each 3D) produce deterministic chaos
     that is injected into the residual stream. This prevents mode collapse
     and encourages creative, non-repetitive generation.
 
-    Total chaos dims: 7 oscillators × 3D = 21D (truncated to 18D)
+    Default chaos dims: 6 oscillators × 3D = 18D. No coordinates are silently truncated.
     """
 
-    def __init__(self, n_oscillators: int = 7, d_model: int = 512,
+    def __init__(self, n_oscillators: int = 6, d_model: int = 512,
                  sigma: float = 10.0, rho: float = 28.0, beta: float = 8.0/3.0,
                  dt: float = 0.01, coupling: float = 0.05):
         super().__init__()
         self.n_osc = n_oscillators
-        self.d_chaos = n_oscillators * 3  # 21D for 7 oscillators
+        self.d_chaos = n_oscillators * 3
         self.sigma = sigma
         self.rho = rho
         self.beta = beta
@@ -204,7 +204,7 @@ class ChaosOscillatorBank(nn.Module):
             self.coupling_matrix.fill_diagonal_(0)
 
         # Project chaos state to model dimension
-        self.chaos_proj = nn.Linear(18, d_model, bias=False)  # Use 18D (6 oscillators × 3)
+        self.chaos_proj = nn.Linear(self.d_chaos, d_model, bias=False)
 
         # Learnable initial conditions
         self.register_buffer(
@@ -248,9 +248,9 @@ class ChaosOscillatorBank(nn.Module):
 
             chaos_states.append(state)
 
-        # Use last state as the chaos injection
-        chaos_flat = state.reshape(B, -1)  # [B, n_osc * 3]
-        chaos_18d = chaos_flat[:, :18]  # Truncate to 18D
+        # Use the full last oscillator state as the chaos injection.
+        # CosmosConfig enforces 6 × 3 = 18 dimensions for the 54D model.
+        chaos_18d = state.reshape(B, -1)  # [B, n_osc * 3]
 
         # Project to model dim and gate
         chaos_signal = self.chaos_proj(chaos_18d)  # [B, D]
@@ -313,8 +313,11 @@ class EpisodicMemoryBank(nn.Module):
         """
         B, T, D = x.shape
 
-        # Expand memory for batch
-        mem = self.memory.expand(B, -1, -1)  # [B, M, D]
+        # Read from an immutable snapshot for this differentiable forward.
+        # The persistent buffer is updated later under no_grad; cloning prevents
+        # that in-place write from invalidating tensors saved by autograd.
+        memory_snapshot = self.memory.detach().clone()
+        mem = memory_snapshot.expand(B, -1, -1)  # [B, M, D]
 
         # --- READ: Attend to memory ---
         q = self.read_query(x)                    # [B, T, D]
