@@ -1,5 +1,6 @@
 name: CST 12D Corrected Inspection
 
+# Verification pulse: rerun against the guarded repaired branch state.
 on:
   push:
     branches: [cst-12d-corrected-inspection-001]
