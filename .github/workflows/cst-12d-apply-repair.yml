@@ -1,8 +1,8 @@
 name: CST 12D Apply Guarded Repair
 
 on:
-  push:
-    branches: [cst-12d-corrected-inspection-001]
+  pull_request:
+    branches: [main]
     paths:
       - "scripts/repair_cst12_v42.py"
       - ".github/workflows/cst-12d-apply-repair.yml"
@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   repair:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
