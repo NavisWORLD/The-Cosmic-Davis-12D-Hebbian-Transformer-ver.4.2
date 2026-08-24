@@ -1,0 +1,52 @@
+name: CST 12D Corrected Inspection
+
+on:
+  push:
+    branches: [cst-12d-corrected-inspection-001]
+    paths:
+      - ".github/workflows/cst-12d-corrected-inspection.yml"
+      - "tests/test_cst12_corrected_inspection.py"
+      - "cosmos/web/cosmosynapse/model/cosmos_model.py"
+      - "cosmos/web/cosmosynapse/model/cosmos_config.py"
+      - "scripts/train_12d_brain.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install inspection dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Run corrected 12D contracts
+        shell: bash
+        run: |
+          set +e
+          pytest -q tests/test_cst12_corrected_inspection.py 2>&1 | tee cst12-inspection.txt
+          status=${PIPESTATUS[0]}
+          echo "$status" > cst12-inspection-status.txt
+          exit "$status"
+
+      - name: Upload inspection evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cst12-corrected-inspection-${{ github.run_id }}
+          path: |
+            cst12-inspection.txt
+            cst12-inspection-status.txt
+          if-no-files-found: warn
