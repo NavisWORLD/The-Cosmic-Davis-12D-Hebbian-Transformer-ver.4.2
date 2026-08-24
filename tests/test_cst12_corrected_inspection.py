@@ -52,6 +52,21 @@ def _load_12d_model_isolated():
     return config_mod, model_mod
 
 
+def _small_model():
+    config_mod, model_mod = _load_12d_model_isolated()
+    cfg = config_mod.CosmosConfig(
+        vocab_size=64,
+        d_model=24,
+        n_layers=1,
+        n_heads=4,
+        d_ff=48,
+        max_seq_len=8,
+        dropout=0.0,
+    )
+    cfg.validate()
+    return cfg, model_mod.CosmosTransformer(cfg)
+
+
 def test_model_import_does_not_require_web_server_extras() -> None:
     proc = subprocess.run(
         [
@@ -110,19 +125,30 @@ def test_training_script_performs_optimizer_training() -> None:
     assert "step" in methods, "optimizer is constructed but never stepped"
 
 
+def test_one_gradient_step_reaches_and_updates_cst_parameters() -> None:
+    _, model = _small_model()
+    model.train()
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+    x = torch.tensor([[1, 2, 3, 4]], dtype=torch.long)
+    y = torch.tensor([[2, 3, 4, 5]], dtype=torch.long)
+
+    before = model.blocks[0].cst_phase.phase_proj.weight.detach().clone()
+    optimizer.zero_grad(set_to_none=True)
+    loss = model(x, targets=y)["loss"]
+    loss.backward()
+    grad = model.blocks[0].cst_phase.phase_proj.weight.grad
+
+    assert grad is not None
+    assert torch.isfinite(grad).all()
+    assert grad.abs().sum().item() > 0.0
+    optimizer.step()
+    after = model.blocks[0].cst_phase.phase_proj.weight.detach()
+    assert not torch.equal(before, after)
+
+
 def test_executable_state_is_exactly_12_plus_24_plus_18() -> None:
-    config_mod, model_mod = _load_12d_model_isolated()
-    cfg = config_mod.CosmosConfig(
-        vocab_size=64,
-        d_model=24,
-        n_layers=1,
-        n_heads=4,
-        d_ff=48,
-        max_seq_len=8,
-        dropout=0.0,
-    )
-    cfg.validate()
-    model = model_mod.CosmosTransformer(cfg).eval()
+    cfg, model = _small_model()
+    model.eval()
     tokens = torch.tensor([[1, 2, 3, 4]], dtype=torch.long)
     result = model(tokens)
     state = result["state_54d"]
