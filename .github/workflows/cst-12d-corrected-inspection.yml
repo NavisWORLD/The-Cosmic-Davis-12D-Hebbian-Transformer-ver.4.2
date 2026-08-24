@@ -9,6 +9,14 @@ on:
       - "cosmos/web/cosmosynapse/model/cosmos_model.py"
       - "cosmos/web/cosmosynapse/model/cosmos_config.py"
       - "scripts/train_12d_brain.py"
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/cst-12d-corrected-inspection.yml"
+      - "tests/test_cst12_corrected_inspection.py"
+      - "cosmos/web/cosmosynapse/model/cosmos_model.py"
+      - "cosmos/web/cosmosynapse/model/cosmos_config.py"
+      - "scripts/train_12d_brain.py"
   workflow_dispatch:
 
 permissions:
