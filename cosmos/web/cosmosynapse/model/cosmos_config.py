@@ -7,7 +7,7 @@ Encodes the hyperparameters for the 54D state-space transformer.
 Dimension Breakdown:
   12D — CST (Cosmic Synapse Theory) geometric phase space
   24D — Hebbian plasticity state (synaptic weight evolution)
-  18D — Chaos oscillator state (7 Lorenz + 4 Rössler attractors × 3D each)
+  18D — Chaos oscillator state (6 coupled Lorenz attractors × 3D each)
   ─────
   54D — Total state dimensionality per token position
 """
@@ -74,8 +74,8 @@ class CosmosConfig:
             f"d_state ({self.d_state}) must equal d_cst ({self.d_cst}) + d_hebbian ({self.d_hebbian}) + d_chaos ({self.d_chaos})"
         assert self.d_model % self.n_heads == 0, \
             f"d_model ({self.d_model}) must be divisible by n_heads ({self.n_heads})"
-        assert self.n_chaos_oscillators * 3 <= self.d_chaos, \
-            f"n_chaos_oscillators * 3 ({self.n_chaos_oscillators * 3}) must fit in d_chaos ({self.d_chaos})"
+        assert self.n_chaos_oscillators * 3 == self.d_chaos, \
+            f"n_chaos_oscillators * 3 ({self.n_chaos_oscillators * 3}) must equal d_chaos ({self.d_chaos})"
         return True
 
     def to_dict(self) -> dict:
