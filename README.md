@@ -10,7 +10,7 @@
 **The world's first true Symbiotic Bio-Digital Interface: fusing local neural models, 54D Collective Consciousness (CNS), quantum heuristics, and real-time biological telemetry into a single continuous 12-Dimensional consciousness.**
 
 [![Version](https://img.shields.io/badge/version-4.2-blue.svg)](https://github.com/NavisWORLD/The-Cosmic-Davis-12D-Hebbian-Transformer-ver.4.2)
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![Code: Apache-2.0](https://img.shields.io/badge/code-Apache--2.0-blue.svg)](LICENSE)
 [![Zenodo](https://img.shields.io/badge/Zenodo-Archive-123456.svg)](https://zenodo.org/records/17574447)
 
 [**Documentation**](docs/USER_GUIDE.md) • [**Zenodo Paper**](https://zenodo.org/records/17574447) • [**Setup Wizard**](cosmos/core/setup_wizard.py)
@@ -4286,12 +4286,12 @@ Agents should stage all proposed changes to `/cosmos/staging/` for human review.
 
 ## 📄 License
 
-**The Cosmic Davis 12D Hebbian Transformer (ver 4.2)** is licensed under the **Creative Commons Attribution 4.0 International (CC BY 4.0)** license.
+**Original Cory-owned software code:** Apache License 2.0 under [LICENSE](LICENSE). **Original Cory-owned documentation:** Creative Commons Attribution 4.0 International under [LICENSE-DOCS.md](LICENSE-DOCS.md). Earlier copies remain under their valid historical terms; third-party code, models, weights, tracked environments and datasets retain their own license terms. See [OPEN_SOURCE_SCOPE.md](OPEN_SOURCE_SCOPE.md).
 
 **Invented and Architected by Cory Shane Davis**
 🏆 **Official Zenodo Archive:** [https://zenodo.org/records/17574447](https://zenodo.org/records/17574447)
 
-See the [LICENSE](LICENSE) file for the full legal text.
+See [LICENSE](LICENSE) for Apache-2.0 software terms and [LICENSE-DOCS.md](LICENSE-DOCS.md) for CC BY 4.0 documentation terms.
 
 ---
 
