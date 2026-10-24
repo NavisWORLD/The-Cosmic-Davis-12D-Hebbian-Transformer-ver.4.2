@@ -23,12 +23,12 @@ except ImportError:
 
 # Ensure the python path contains the project root for Absolute Imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from Cosmos.web.cosmosynapse.model.cosmos_config import CosmosConfig
-from Cosmos.web.cosmosynapse.model.cosmos_model import CosmosTransformer
+from cosmos.web.cosmosynapse.model.cosmos_config import CosmosConfig
+from cosmos.web.cosmosynapse.model.cosmos_model import CosmosTransformer
 
 # Target directories and output paths
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-CHECKPOINT_DIR = os.path.join(PROJECT_ROOT, "Cosmos", "checkpoints", "cosmos")
+CHECKPOINT_DIR = os.path.join(PROJECT_ROOT, "cosmos", "checkpoints", "cosmos")
 os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 CHECKPOINT_PATH = os.path.join(CHECKPOINT_DIR, "cosmos_best.pt")
 
@@ -131,30 +131,33 @@ def main():
     
     optimizer = torch.optim.AdamW(model.parameters(), lr=config.learning_rate, weight_decay=config.weight_decay)
 
-    # 5. Training Loop using 12D Hebbian Plasticity (No-Grad Online Meta-Learning)
-    epochs = 1 
+    # 5. Hybrid training: gradient learning + online Hebbian/memory state updates
+    epochs = 1
     total_steps = len(dataloader) * epochs
-    print(f"\n[12D COMPILER] Commencing Zero-Shot Hebbian & Episodic Storage ({epochs} Epoch, {total_steps} sequence strides)")
+    print(f"\n[12D COMPILER] Commencing gradient + online-plasticity training ({epochs} Epoch, {total_steps} sequence strides)")
 
-    model.eval()  # We leverage the internal Hebbian logic and Memory banks instead of Autograd!
+    model.train()
     step = 0
     start_time = time.time()
     
     try:
-        with torch.no_grad():  # Crucial! Exploits the 12D online plasticity without triggering inplace-gradient crashes!
-            for epoch in range(epochs):
-                for batch_idx, (x, y) in enumerate(dataloader):
-                    x, y = x.to(device), y.to(device)
-                    
-                    # Forward pass updates the 24D self.trace and Episodic memory slots autonomously
-                    result = model(x, targets=y)
-                    loss = result["loss"]
-                    
-                    step += 1
-                    if step % 25 == 0 or step == 1:
-                        elapsed = time.time() - start_time
-                        print(f" [HEBBIAN SYNTHESIS] Step {step}/{total_steps} | Online Coherence: {loss.item():.4f} | Time: {elapsed:.1f}s")
-                    
+        for epoch in range(epochs):
+            for batch_idx, (x, y) in enumerate(dataloader):
+                x, y = x.to(device), y.to(device)
+
+                optimizer.zero_grad(set_to_none=True)
+                # Forward still updates the online Hebbian, memory, and chaos buffers.
+                result = model(x, targets=y)
+                loss = result["loss"]
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+                optimizer.step()
+
+                step += 1
+                if step % 25 == 0 or step == 1:
+                    elapsed = time.time() - start_time
+                    print(f" [HEBBIAN SYNTHESIS] Step {step}/{total_steps} | Loss: {loss.item():.4f} | Time: {elapsed:.1f}s")
+
     except KeyboardInterrupt:
         print("\n[WARNING] Synthesis interrupted! Saving synaptic weights so far...")
 
@@ -165,7 +168,8 @@ def main():
         "model_state_dict": model.state_dict(),
         "config": config.to_dict(),
         "final_loss": loss.item() if 'loss' in locals() else None,
-        "tokens_processed": len(token_ids) * epochs
+        "tokens_processed": len(token_ids) * epochs,
+        "training_mode": "hybrid_gradient_plus_online_plasticity"
     }
     
     torch.save(checkpoint, CHECKPOINT_PATH)
