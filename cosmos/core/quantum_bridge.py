@@ -224,8 +224,12 @@ class QuantumEntanglementBridge:
             )
             similarity = 1.0 / (1.0 + dist)
 
-            # Combined score: 70% Shannon quality, 30% physics similarity
-            combined = (shannon * 0.7) + (similarity * 0.3)
+            # Combined score: 70% Shannon quality, 30% physics similarity.
+            # Shannon is normalized to [0, 1] by the state-space size first;
+            # raw bits (0-5) would swamp the [0, 1] similarity term and the
+            # blend would not be 70/30. (Emeth audit 2026-11-18.)
+            shannon_norm = shannon / float(len(next(iter(counts))))
+            combined = (shannon_norm * 0.7) + (similarity * 0.3)
             scored.append((combined, h_phase, h_entropy, h_res))
 
         if not scored:
@@ -570,7 +574,7 @@ class QuantumEntanglementBridge:
                             f' quality={quality_class}'
                         )
                     except Exception as e:
-                        logger.debug(f'[HERMES+QUANTUM] SessionDB failed: {e}')
+                        logger.warning(f'[HERMES+QUANTUM] SessionDB failed (indexing skipped): {e}')
 
             # --- 2. Feed rich signal to Hermes RL ---
             bridge.rl.record_experience(
@@ -702,7 +706,13 @@ class QuantumEntanglementBridge:
         probs = np.array(list(counts.values()), dtype=float)
         probs /= probs.sum()
         shannon = -np.sum(probs * np.log2(probs + 1e-10))
-        max_entropy = np.log2(max(len(counts), 2))
+        # Normalize by the circuit's full state space (the bitstring length
+        # in bits), not by the number of distinct states observed: a run
+        # collapsed onto a few states must not score as perfect.
+        # (Emeth audit 2026-11-18.)
+        max_entropy = float(len(next(iter(counts))))
+        if max_entropy <= 0:
+            return 0.0
         return float(min(1.0, shannon / max_entropy))
 
     # [UPGRADE 2] Rich Metrics
